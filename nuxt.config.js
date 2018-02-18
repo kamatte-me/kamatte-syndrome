@@ -13,6 +13,11 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
     ],
   },
+  render: {
+    static: {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  },
   /*
   ** Customize the progress bar color
   */

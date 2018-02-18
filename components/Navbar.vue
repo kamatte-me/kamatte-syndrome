@@ -5,7 +5,7 @@
   >
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
-        <img src="../assets/logo.png" alt="kamatte syndrome"/>
+        <img src="/logo.png" alt="kamatte syndrome"/>
       </a>
       <div class="navbar-burger"
            v-bind:class="{'is-active': $store.state.isDropdownActive}"
