@@ -3,7 +3,9 @@
     <header>
       <navbar/>
     </header>
-    <nuxt/>
+    <main>
+      <nuxt/>
+    </main>
   </div>
 </template>
 

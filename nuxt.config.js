@@ -11,7 +11,11 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:100,400' },
     ],
+    htmlAttrs: {
+      class: 'has-navbar-fixed-top',
+    },
   },
   render: {
     static: {
@@ -21,7 +25,7 @@ module.exports = {
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#00c69c' },
   /*
   ** Build configuration
   */
@@ -52,5 +56,8 @@ module.exports = {
   css: [
     'buefy',
     '@/assets/css/main.scss',
+    '@/assets/css/_variables.scss',
+    '@/assets/css/pages/index.scss',
+    '@/assets/css/components/navbar.scss',
   ],
 };
