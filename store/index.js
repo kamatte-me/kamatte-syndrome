@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 const store = () => new Vuex.Store({
   state: {
     isDropdownActive: false,
-    activePage: '',
     pages: {
       Biography: '/biography',
       Portfolio: '/portfolio',
