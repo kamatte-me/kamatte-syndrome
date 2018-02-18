@@ -35,6 +35,11 @@ module.exports = {
       }
     },
   },
+  vendor: [
+    'vue',
+    'vuex',
+    'buefy',
+  ],
   plugins: [
     '~/plugins/buefy',
   ],
