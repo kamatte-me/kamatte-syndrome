@@ -1,5 +1,8 @@
+@import "../variables";
+
 .eyecatch {
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: $designFontFamily;
+  font-weight: 100;
   font-size: 54px;
   display: flex;
   align-items: center;
