@@ -44,6 +44,7 @@ module.exports = {
     'vue',
     'vuex',
     'buefy',
+    '@nuxtjs/component-cache',
   ],
   plugins: [
     '~/plugins/buefy',
