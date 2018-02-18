@@ -3,15 +3,20 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'kamatte-syndrome',
+    title: 'kamatte syndrome',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'kamatte syndrome' },
+      { hid: 'description', name: 'description', content: 'plz kamatte me!!!' },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
     ],
+  },
+  render: {
+    static: {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
   },
   /*
   ** Customize the progress bar color
@@ -35,4 +40,17 @@ module.exports = {
       }
     },
   },
+  vendor: [
+    'vue',
+    'vuex',
+    'buefy',
+    '@nuxtjs/component-cache',
+  ],
+  plugins: [
+    '~/plugins/buefy',
+  ],
+  css: [
+    'buefy',
+    '@/assets/css/main.scss',
+  ],
 };
