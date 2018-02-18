@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-fixed-top"
+  <nav class="navbar is-primary is-fixed-top"
        role="navigation"
        aria-label="main navigation"
   >
