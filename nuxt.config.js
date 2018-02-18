@@ -12,6 +12,9 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
     ],
+    htmlAttrs: {
+      class: 'has-navbar-fixed-top',
+    },
   },
   render: {
     static: {
