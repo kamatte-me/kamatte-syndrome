@@ -22,7 +22,7 @@
     >
       <div class="navbar-start">
         <a class="navbar-item"
-           v-bind:class="{'is-active': $route.path === path}"
+           v-bind:class="{'is-active': isCurrentPage(path)}"
            v-for="(path, pageTitle) in $store.state.pages"
            v-bind:href="path"
            :key="pageTitle"
@@ -38,6 +38,17 @@
 
 export default {
   name: 'navbar',
+  methods: {
+    /**
+     * 渡されたパスが現在表示しているパスか前方一致で判別します
+     * @param path
+     * @returns {boolean}
+     */
+    isCurrentPage(path) {
+      // eslint-disable-next-line prefer-template
+      return new RegExp('^\\' + path).test(this.$route.path);
+    },
+  },
 };
 </script>
 

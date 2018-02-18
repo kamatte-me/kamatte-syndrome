@@ -12,6 +12,10 @@ const store = () => new Vuex.Store({
     },
   },
   mutations: {
+    /**
+     * モバイル表示時のハンバーガーボタンを展開/格納を切り替えます
+     * @param state
+     */
     toggleNavbarDropdown(state) {
       // eslint-disable-next-line no-param-reassign
       state.isDropdownActive = !state.isDropdownActive;
