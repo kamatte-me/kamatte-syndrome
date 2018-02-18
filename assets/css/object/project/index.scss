@@ -1,0 +1,22 @@
+@import "../../foundation/variables";
+
+.p-index {
+  &_eyecatch {
+    font-family: $designFontFamily;
+    font-weight: 100;
+    font-size: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-logo {
+      display: inline-block;
+      margin: auto 10px;
+    }
+
+    &-avatar {
+      display: inline-block;
+      margin-right: 16px;
+    }
+  }
+}

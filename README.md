@@ -2,6 +2,11 @@
 
 > Next kamatte syndrome
 
+* [Node.js](https://github.com/nodejs/node) v8.9.x
+* [Nuxt.js](https://github.com/nuxt/nuxt.js)
+* [Buefy](https://buefy.github.io/#/)
+* Sass ([FLOCCS](https://github.com/hiloki/flocss) style)
+
 ## Build Setup
 
 ``` bash

@@ -56,8 +56,8 @@ module.exports = {
   css: [
     'buefy',
     '@/assets/css/main.scss',
-    '@/assets/css/_variables.scss',
-    '@/assets/css/pages/index.scss',
-    '@/assets/css/components/navbar.scss',
+    '@/assets/css/foundation/_variables.scss',
+    '@/assets/css/object/project/index.scss',
+    '@/assets/css/object/component/navbar.scss',
   ],
 };
