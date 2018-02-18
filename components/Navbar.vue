@@ -22,8 +22,9 @@
     >
       <div class="navbar-start">
         <a class="navbar-item"
-           v-for="(url, pageTitle) in $store.state.pages"
-           v-bind:href="url"
+           v-bind:class="{'is-active': $route.path === path}"
+           v-for="(path, pageTitle) in $store.state.pages"
+           v-bind:href="path"
            :key="pageTitle"
         >
           {{ pageTitle }}
