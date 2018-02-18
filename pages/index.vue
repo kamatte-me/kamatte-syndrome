@@ -2,19 +2,19 @@
   <div>
     <section class="hero is-fullheight is-primary">
       <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title">
-            kamatte syndrome
+        <div class="container is-fluid has-text-centered">
+          <h1 class="title eyecatch">
+            kamatte<img src="/logo.png" width="60px" height="60px" alt=""/>syndrome
           </h1>
         </div>
       </div>
     </section>
     <section class="hero is-fullheight">
       <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title is-primary">
+        <div class="container is-fluid has-text-centered has-text-green">
+          <span class="eyecatch">
             plz kamatte me!!!
-          </h1>
+          </span>
         </div>
       </div>
     </section>

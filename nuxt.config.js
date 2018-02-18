@@ -11,6 +11,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:100' },
     ],
     htmlAttrs: {
       class: 'has-navbar-fixed-top',
@@ -55,5 +56,6 @@ module.exports = {
   css: [
     'buefy',
     '@/assets/css/main.scss',
+    '@/assets/css/index.scss',
   ],
 };
