@@ -14,10 +14,10 @@
     <section class="hero is-fullheight">
       <div class="hero-body">
         <div class="container is-fluid has-text-centered">
-          <span class="title has-text-green p-index_eyecatch">
+          <p class="title is-1 has-text-green p-index_eyecatch">
             <img class="p-index_eyecatch-avatar" src="/avatar.png" width="130" height="130"/>
             plz kamatte me!!!
-          </span>
+          </p>
         </div>
       </div>
     </section>
