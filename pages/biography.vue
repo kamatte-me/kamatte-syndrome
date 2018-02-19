@@ -8,7 +8,9 @@
             <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
           <div class="column">
-            <h2 class="title is-1 p-biography_profile_name">kamatte</h2>
+            <h2 class="title is-1 has-text-green p-biography_profile_name">
+              kamatte
+            </h2>
             <dl class="p-biography_profile_chronology">
               <template v-for="(event, year) in chronology">
                 <dt :key="year">{{ year }}年</dt>
