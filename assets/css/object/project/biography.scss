@@ -1,0 +1,14 @@
+.p-biography {
+  &_chronology {
+    dt {
+      float: left;
+      clear: left;
+      margin-right: 0.5em;
+    }
+
+    dd {
+      float: left;
+      margin-left: 1em;
+    }
+  }
+}

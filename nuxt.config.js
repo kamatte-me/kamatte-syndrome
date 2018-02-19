@@ -58,6 +58,7 @@ module.exports = {
     '@/assets/css/main.scss',
     '@/assets/css/foundation/_variables.scss',
     '@/assets/css/object/project/index.scss',
+    '@/assets/css/object/project/biography.scss',
     '@/assets/css/object/component/navbar.scss',
   ],
 };
