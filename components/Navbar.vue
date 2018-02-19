@@ -4,9 +4,9 @@
        aria-label="main navigation"
   >
     <div class="navbar-brand">
-      <a class="navbar-item" href="/">
+      <nuxt-link class="navbar-item" to="/">
         <img src="/logo.png" alt="kamatte syndrome"/>
-      </a>
+      </nuxt-link>
       <div class="navbar-burger"
            v-bind:class="{'is-active': $store.state.isDropdownActive}"
            v-on:click="$store.commit('toggleNavbarDropdown')"
@@ -21,14 +21,14 @@
          v-bind:class="{'is-active': $store.state.isDropdownActive}"
     >
       <div class="navbar-start">
-        <a class="navbar-item"
+        <nuxt-link class="navbar-item"
            v-bind:class="{'is-active': isCurrentPage(path)}"
            v-for="(path, pageTitle) in $store.state.pages"
-           v-bind:href="path"
+           :to="path"
            :key="pageTitle"
         >
           {{ pageTitle }}
-        </a>
+        </nuxt-link>
       </div>
     </div>
   </nav>
