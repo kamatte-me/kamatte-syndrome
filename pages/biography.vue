@@ -10,8 +10,8 @@
     <section class="section">
       <div class="container">
         <div class="columns">
-          <div class="column is-one-third">
-            <img src="/avatar.png" alt="kamatte"/>
+          <div class="column is-two-fifths has-text-centered">
+            <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
           <div class="column">
             <h2 class="title">kamatte</h2>
