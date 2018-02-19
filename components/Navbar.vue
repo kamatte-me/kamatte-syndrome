@@ -4,7 +4,11 @@
        aria-label="main navigation"
   >
     <div class="navbar-brand">
-      <nuxt-link to="/" class="navbar-item">
+      <nuxt-link
+        to="/"
+        v-on:click.native="$store.commit('closeNavbarDropdown')"
+        class="navbar-item"
+      >
         <img src="/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
       <div class="navbar-burger"
