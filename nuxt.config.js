@@ -60,5 +60,6 @@ module.exports = {
     '@/assets/css/object/project/index.scss',
     '@/assets/css/object/project/biography.scss',
     '@/assets/css/object/component/navbar.scss',
+    '@/assets/css/object/component/pageHeader.scss',
   ],
 };

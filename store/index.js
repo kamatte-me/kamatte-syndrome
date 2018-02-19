@@ -6,6 +6,7 @@ Vue.use(Vuex);
 
 const store = () => new Vuex.Store({
   state: {
+    title: '',
     isDropdownActive: false,
     pages: {
       Biography: '/biography',
@@ -29,6 +30,14 @@ const store = () => new Vuex.Store({
      */
     closeNavbarDropdown(state) {
       state.isDropdownActive = false;
+    },
+    /**
+     * タイトルを更新する
+     * @param state
+     * @param title
+     */
+    updateTitle(state, title) {
+      state.title = title;
     },
   },
 });

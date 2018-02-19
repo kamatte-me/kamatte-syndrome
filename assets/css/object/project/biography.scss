@@ -1,14 +1,22 @@
-.p-biography {
-  &_chronology {
-    dt {
-      float: left;
-      clear: left;
-      margin-right: 0.5em;
-    }
+@import "../../foundation/variables";
 
-    dd {
-      float: left;
-      margin-left: 1em;
+.p-biography {
+  &_profile {
+    &_name {
+      font-family: $designFontFamily;
+      font-weight: 300;
+    }
+    &_chronology {
+      dt {
+        float: left;
+        clear: left;
+        margin-right: 0.5em;
+      }
+
+      dd {
+        float: left;
+        margin-left: 1em;
+      }
     }
   }
 }

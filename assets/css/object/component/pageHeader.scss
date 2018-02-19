@@ -1,0 +1,8 @@
+@import "../../foundation/variables";
+
+.c-pageHeader{
+  &_title {
+    font-family: $designFontFamily;
+    font-weight: 300;
+  }
+}
