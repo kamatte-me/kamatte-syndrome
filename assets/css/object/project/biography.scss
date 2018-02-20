@@ -19,4 +19,11 @@
       }
     }
   }
+
+  &_skills {
+    &_level {
+      display: flex;
+      align-items: center;
+    }
+  }
 }

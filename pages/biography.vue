@@ -31,7 +31,7 @@
               {{ skill }}
             </h3>
           </div>
-          <div class="column">
+          <div class="column p-biography_skills_level">
             <progress class="progress"
                       :class="[isHighLevel(level) ? 'is-primary' : 'is-green']"
                       :value="level"
