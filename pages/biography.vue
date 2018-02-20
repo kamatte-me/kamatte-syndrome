@@ -26,12 +26,16 @@
         <h2 class="title has-text-centered">Skills</h2>
         <div class="columns" v-for="(level, skill) in skills" :key="skill">
           <div class="column is-one-third">
-            <h3 class="title is-4 has-text-right-desktop">
+            <h3 class="title is-4 has-text-right-desktop"
+                :class="{'has-text-primary' : isHighLevel(level)}">
               {{ skill }}
             </h3>
           </div>
           <div class="column">
-            <progress class="progress is-green" :value="level" max="100">
+            <progress class="progress"
+                      :class="[isHighLevel(level) ? 'is-primary' : 'is-green']"
+                      :value="level"
+                      max="100">
               Lv. {{ level }}
             </progress>
           </div>
@@ -49,6 +53,11 @@ export default {
   components: {
     PageHeader,
   },
+  methods: {
+    isHighLevel(level) {
+      return level >= 70;
+    },
+  },
   data() {
     return {
       title: 'Biography',
@@ -63,31 +72,31 @@ export default {
       skills: {
         Python: 100,
         'Ruby(Ruby on Rails)': 80,
-        'Javascript(Node.js)': 70,
-        jQuery: 60,
+        'Javascript(Node.js)': 65,
+        jQuery: 40,
         'Vue.js(Nuxt.js)': 85,
-        'React.js': 50,
-        Golang: 50,
+        'React.js': 55,
+        Golang: 60,
         Java: 85,
         Scala: 40,
         PHP: 55,
         C: 20,
         'C++': 40,
-        'Objective-C': 50,
+        'Objective-C': 55,
         'Android Java': 70,
         R: 10,
         HTML: 60,
-        'CSS/SCSS': 40,
-        MySQL: 80,
-        Nginx: 70,
+        'CSS/SCSS': 50,
+        MySQL: 65,
+        Nginx: 60,
+        Git: 85,
+        Ansible: 70,
+        Zabbix: 70,
         'Linux(Ubuntu/CentOS)': 80,
         AWS: 15,
         GCP: 35,
-        Git: 90,
-        Ansible: 65,
-        Zabbix: 70,
-        'Graph Theory': 80,
-        'Machine Learning/Big Data': 65,
+        'Graph Theory': 75,
+        'Machine Learning/Big Data': 70,
         Photoshop: 40,
         Illustrator: 20,
         kawaii: 100,
