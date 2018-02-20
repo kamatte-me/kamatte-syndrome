@@ -7,7 +7,7 @@
           <div class="column is-two-fifths has-text-centered">
             <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
-          <div class="column">
+          <div class="column is-clearfix">
             <h2 class="title is-1 has-text-green p-biography_profile_name">
               kamatte
             </h2>
@@ -17,6 +17,23 @@
                 <dd :key="event">{{ event }}</dd>
               </template>
             </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h2 class="title has-text-centered">Skills</h2>
+        <div class="columns" v-for="(level, skill) in skills" :key="skill">
+          <div class="column is-one-third">
+            <h3 class="title is-4 has-text-right-desktop">
+              {{ skill }}
+            </h3>
+          </div>
+          <div class="column">
+            <progress class="progress is-green" :value="level" max="100">
+              Lv. {{ level }}
+            </progress>
           </div>
         </div>
       </div>
@@ -42,6 +59,38 @@ export default {
         2014: '20歳になる。',
         2016: 'Web蜃気楼になる。',
         2017: '妖精の国に移住。6さいになる。',
+      },
+      skills: {
+        Python: 100,
+        'Ruby(Ruby on Rails)': 80,
+        'Javascript(Node.js)': 70,
+        jQuery: 60,
+        'Vue.js(Nuxt.js)': 85,
+        'React.js': 50,
+        Golang: 50,
+        Java: 85,
+        Scala: 40,
+        PHP: 55,
+        C: 20,
+        'C++': 40,
+        'Objective-C': 50,
+        'Android Java': 70,
+        R: 10,
+        HTML: 60,
+        'CSS/SCSS': 40,
+        MySQL: 80,
+        Nginx: 70,
+        'Linux(Ubuntu/CentOS)': 80,
+        AWS: 15,
+        GCP: 35,
+        Git: 90,
+        Ansible: 65,
+        Zabbix: 70,
+        'Graph Theory': 80,
+        'Machine Learning/Big Data': 65,
+        Photoshop: 40,
+        Illustrator: 20,
+        kawaii: 100,
       },
     };
   },
