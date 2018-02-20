@@ -8,7 +8,7 @@
             <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
           <div class="column is-clearfix">
-            <h2 class="title is-1 has-text-green p-biography_profile_name">
+            <h2 class="title is-1 has-text-centered-mobile has-text-green p-biography_profile_name">
               kamatte
             </h2>
             <dl class="p-biography_profile_chronology">
