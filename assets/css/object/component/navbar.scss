@@ -1,6 +1,8 @@
 @import "../../foundation/variables";
 
-.c-navbar_item {
-  font-family: $designFontFamily;
-  font-weight: 400;
+.c-navbar {
+  &_item {
+    font-family: $family-designed;
+    font-weight: 400;
+  }
 }
