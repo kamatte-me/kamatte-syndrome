@@ -21,25 +21,27 @@
         </div>
       </div>
     </section>
-    <section class="section">
+    <section class="section p-biography_skills">
+      <h2 class="title has-text-centered p-biography_skills_title">Skills</h2>
       <div class="container">
-        <h2 class="title has-text-centered">Skills</h2>
-        <div class="columns" v-for="(level, skill) in skills" :key="skill">
-          <div class="column is-one-third">
-            <h3 class="title is-4 has-text-right-desktop"
-                :class="{'has-text-primary' : isHighLevel(level)}">
-              {{ skill }}
-            </h3>
-          </div>
-          <div class="column p-biography_skills_level">
-            <progress class="progress"
-                      :class="[isHighLevel(level) ? 'is-primary' : 'is-green']"
-                      :value="level"
-                      max="100">
-              Lv. {{ level }}
-            </progress>
-          </div>
-        </div>
+        <ul>
+          <li class="columns" v-for="(level, skill) in skills" :key="skill">
+            <div class="column is-one-third">
+              <h3 class="title is-4 has-text-right-desktop p-biography_skills_skill"
+                  :class="{'has-text-primary' : isHighLevel(level)}">
+                {{ skill }}
+              </h3>
+            </div>
+            <div class="column p-biography_skills_level">
+              <progress class="progress"
+                        :class="[isHighLevel(level) ? 'is-primary' : 'is-green']"
+                        :value="level"
+                        max="100">
+                Lv. {{ level }}
+              </progress>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
   </div>
@@ -72,7 +74,7 @@ export default {
       skills: {
         Python: 100,
         'Ruby(Ruby on Rails)': 80,
-        'Javascript(Node.js)': 65,
+        'JavaScript(Node.js)': 65,
         jQuery: 40,
         'Vue.js(Nuxt.js)': 85,
         'React.js': 55,

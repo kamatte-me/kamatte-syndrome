@@ -6,24 +6,54 @@
       font-family: $family-designed;
       font-weight: 300;
     }
+
     &_chronology {
+
       dt {
         float: left;
         clear: left;
-        margin-right: 0.5em;
+        margin-right: 0.5rem;
       }
 
       dd {
         float: left;
-        margin-left: 1em;
+        margin-left: 1rem;
       }
     }
   }
 
   &_skills {
+    padding-top: 1.5rem;
+
+    &_title {
+      font-family: $family-designed;
+      font-weight: 300;
+    }
+
+    ul {
+      padding-top: 1rem;
+
+      li {
+        > div {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+      }
+
+      li + li {
+        margin-top: 1.7em;
+      }
+    }
+
+    &_skill {
+      font-family: $family-designed;
+      font-weight: 400;
+    }
+
     &_level {
-      display: flex;
-      align-items: center;
+      progress {
+        display: inline-block;
+      }
     }
   }
 }
