@@ -35,6 +35,9 @@ $link-focus-border: $primary;
 // Font family
 $family-primary: BlinkMacSystemFont, -apple-system, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "Roboto", "Helvetica Neue", "Arial", sans-serif;
 
+// Footer
+$footer-background-color: $white;
+
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
