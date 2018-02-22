@@ -5,10 +5,12 @@
     &_name {
       font-family: $family-designed;
       font-weight: 300;
+      font-size: 3rem;
+      line-height: 1;
+      padding: 0.4rem 0;
     }
 
     &_chronology {
-
       dt {
         float: left;
         clear: left;

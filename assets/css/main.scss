@@ -8,6 +8,8 @@ $green: #00c69c;
 $green-invert: findColorInvert($green);
 $twitter: #4099FF;
 $twitter-invert: findColorInvert($twitter);
+$github: #333;
+$github-invert: findColorInvert($github);
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
@@ -21,7 +23,8 @@ $colors: (
   "warning": ($warning, $warning-invert),
   "danger": ($danger, $danger-invert),
   "green": ($green, $green-invert),
-  "twitter": ($twitter, $twitter-invert)
+  "twitter": ($twitter, $twitter-invert),
+  "github": ($github, $github-invert),
 );
 
 // Links

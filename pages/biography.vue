@@ -7,11 +7,16 @@
           <div class="column is-two-fifths has-text-centered">
             <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
-          <div class="column is-clearfix">
-            <h2 class="title is-1 has-text-centered-mobile has-text-green p-biography_profile_name">
+          <div class="column">
+            <div class="has-text-centered-mobile has-text-green p-biography_profile_name">
               kamatte
-            </h2>
-            <dl class="p-biography_profile_chronology">
+            </div>
+            <div class="block has-text-centered-mobile">
+              <a href="https://github.com/kamatte-me" target="_blank">
+                <b-icon icon="github-circle" size="is-medium" type="is-github"></b-icon>
+              </a>
+            </div>
+            <dl class="p-biography_profile_chronology is-clearfix">
               <template v-for="(event, year) in chronology">
                 <dt :key="year">{{ year }}年</dt>
                 <dd :key="event">{{ event }}</dd>
