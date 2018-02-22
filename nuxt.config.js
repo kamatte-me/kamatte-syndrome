@@ -12,6 +12,7 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:300,400' },
+      { rel: 'stylesheet', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css' },
     ],
     htmlAttrs: {
       class: 'has-navbar-fixed-top',
@@ -58,6 +59,8 @@ module.exports = {
     '@/assets/css/main.scss',
     '@/assets/css/foundation/_variables.scss',
     '@/assets/css/object/project/index.scss',
+    '@/assets/css/object/project/biography.scss',
     '@/assets/css/object/component/navbar.scss',
+    '@/assets/css/object/component/pageHeader.scss',
   ],
 };

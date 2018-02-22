@@ -4,7 +4,11 @@
        aria-label="main navigation"
   >
     <div class="navbar-brand">
-      <nuxt-link to="/" class="navbar-item">
+      <nuxt-link
+        to="/"
+        v-on:click.native="$store.commit('closeNavbarDropdown')"
+        class="navbar-item"
+      >
         <img src="/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
       <div class="navbar-burger"
@@ -21,7 +25,7 @@
          v-bind:class="{'is-active': $store.state.isDropdownActive}"
     >
       <div class="navbar-start">
-        <nuxt-link class="navbar-item"
+        <nuxt-link class="navbar-item c-navbar_item"
            v-on:click.native="$store.commit('closeNavbarDropdown')"
            v-for="(path, pageTitle) in $store.state.pages"
            :to="path"
@@ -51,7 +55,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

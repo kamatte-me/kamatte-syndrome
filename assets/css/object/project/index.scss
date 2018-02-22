@@ -2,9 +2,9 @@
 
 .p-index {
   &_eyecatch {
-    font-family: $designFontFamily;
+    font-family: $family-designed;
     font-weight: 300;
-    font-size: 54px;
+    font-size: 3.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,11 +12,21 @@
     &-logo {
       display: inline-block;
       margin: auto 10px;
+      animation: fadeIn 3s ease 0s 1 normal;
     }
 
     &-avatar {
       display: inline-block;
       margin-right: 16px;
     }
+  }
+
+  &_speech {
+    font-family: $family-designed;
+    font-weight: 300;
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
