@@ -1,0 +1,17 @@
+@import "../../foundation/variables";
+
+.p-portfolio {
+  &_year {
+    font-family: $family-designed;
+    font-weight: 300;
+  }
+
+  &_worksWrap {
+    padding: 0 0 5rem 0;
+
+    &_workWrap {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+}
