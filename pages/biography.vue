@@ -101,6 +101,7 @@ export default {
         Realm: 65,
         Nginx: 65,
         Git: 85,
+        Vagrant: 65,
         Ansible: 70,
         Zabbix: 70,
         'Linux(Ubuntu/CentOS)': 80,
