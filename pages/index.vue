@@ -26,12 +26,20 @@
 
 <script>
 export default {
+  data() {
+    return {
+      pageTitle: '',
+    };
+  },
   head() {
     return {
       htmlAttrs: {
         class: '',
       },
     };
+  },
+  created() {
+    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>

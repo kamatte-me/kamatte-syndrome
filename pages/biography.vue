@@ -67,7 +67,7 @@ export default {
   },
   data() {
     return {
-      title: 'Biography',
+      pageTitle: 'Biography',
       chronology: {
         1994: '富山生まれ',
         2012: '金沢に移住',
@@ -101,6 +101,7 @@ export default {
         Realm: 65,
         Nginx: 65,
         Git: 85,
+        Vagrant: 65,
         Ansible: 70,
         Zabbix: 70,
         'Linux(Ubuntu/CentOS)': 80,
@@ -115,7 +116,7 @@ export default {
     };
   },
   created() {
-    this.$store.commit('updateTitle', this.title);
+    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>
