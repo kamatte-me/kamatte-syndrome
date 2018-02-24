@@ -7,7 +7,9 @@
   }
 
   &_worksWrap {
-    padding: 0 0 5rem 0;
+    li + li {
+      margin-top: 6rem;
+    }
 
     &_workWrap {
       padding-top: 1rem;
