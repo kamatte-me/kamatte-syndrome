@@ -57,7 +57,7 @@ module.exports = {
   ],
   css: [
     'buefy',
-    '@/assets/css/_main.scss',
+    '@/assets/css/main.scss',
     '@/assets/css/foundation/_variables.scss',
     '@/assets/css/object/project/index.scss',
     '@/assets/css/object/project/biography.scss',
