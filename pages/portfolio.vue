@@ -38,6 +38,12 @@
             </div>
           </li>
         </ul>
+        <div class="column">
+          <p class="has-text-grey has-text-right-widescreen">
+            その他、iOSアプリ、Androidアプリ、Webアプリ（Ruby on Rails, Python, PHP, Java）など<br>
+            フルスタックにがんばってむす。
+          </p>
+        </div>
       </div>
     </section>
   </div>
@@ -59,6 +65,25 @@ export default {
         {
           year: 2018,
           works: [
+            {
+              title: 'T*****c',
+              charge: 'ソロプロジェクト',
+              description: 'カァミングスゥーーーン',
+              tags: [
+                'Golang',
+                'JavaScript',
+                'Vue',
+                'Nuxt.js',
+                'HTML',
+                'SCSS',
+                'Bulma',
+                'Python',
+                'Machine Learning',
+                'GCP',
+                'GAE',
+                'Firebase',
+              ],
+            },
             {
               title: 'kamatte syndrome',
               imagePath: '/logo.png',
@@ -85,7 +110,7 @@ export default {
               url: 'https://syudan.me',
               imagePath: '/images/syudan_katsudou.png',
               charge: 'ソロプロジェクト',
-              description: 'バンド「<a href="https://www.syudan.com">集団行動</a>」の非公式ファンサイトです。',
+              description: 'バンド「<a href="https://www.syudan.com" target="_blank">集団行動</a>」の非公式ファンサイトです。',
               tags: [
                 'Ruby',
                 'Ruby on Rails',
@@ -103,18 +128,60 @@ export default {
               title: 'レビューサイトにおけるレビュアーの信頼度評価システムの研究',
               imagePath: '/images/rihh.png',
               charge: '卒業研究',
-              description: 'バンド「<a href="https://www.syudan.com">集団行動</a>」の非公式ファンサイトです。',
+              description: 'レビュー関係を二部グラフでモデル化し、' +
+              '機械学習でレビュアーの信頼度を評価するアルゴリズムをつくりました。<br>' +
+              '中間発表会では学科最優秀賞を頂きました。副賞はUSB2.0メモリ（4GB）でした。',
               tags: [
+                'Python',
+                'Big Data',
+                'Machine Learning',
+                'Graph Theory',
+                'Neo4j',
+              ],
+            },
+          ],
+        },
+        {
+          year: 2016,
+          works: [
+            {
+              title: 'Onbu',
+              imagePath: '/images/onbu.jpg',
+              charge: 'ハッカソン',
+              description: '「KITハッカソン vol.4」にて、小学生が自治的にケンカを仲裁するためのシステムをつくりました。<br>' +
+              '審査員（小学生）賞を受賞しました。副賞はありませんでした。<br>' +
+              '<a href="http://www.huffingtonpost.jp/2016/04/11/kit-hackathon_n_9631618.html" target="_blank">' +
+              '近未来の小学校を創造せよ 〜金沢工業大学の「ハッカソン×地域密着」が示す、巻き込み型のまちづくり</a>',
+              tags: [
+                'IoT',
                 'Ruby',
                 'Ruby on Rails',
-                'JavaScript',
-                'React',
+                'Raspberry Pi',
                 'HTML',
-                'CSS',
-                'Semantic UI',
-                'MariaDB',
-                'Nginx',
-                'Ubuntu',
+                'Bootstrap3',
+                'MySQL',
+              ],
+            },
+          ],
+        },
+        {
+          year: 2015,
+          works: [
+            {
+              title: 'どっち派論争',
+              imagePath: '/images/docchiha_ronsou.png',
+              charge: 'ハッカソン',
+              description: '「DMMハッカソン」にて、２つの派閥に分かれて口喧嘩するWebアプリをつくりました。<br>' +
+              '3位入賞、そしてMVP賞を受賞しました。副賞はいっぱい貰えました。<br>' +
+              '<a href="https://www.jobweb.jp/blog/student/2049689/18992" target="_blank">' +
+              'DMMハッカソンDAY3 最終日レポート その４</a>',
+              tags: [
+                'PHP',
+                'HTML',
+                'Bootstrap3',
+                'MySQL',
+                'Apache',
+                'CentOS',
               ],
             },
           ],
