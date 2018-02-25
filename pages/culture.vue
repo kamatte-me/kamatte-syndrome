@@ -54,6 +54,54 @@ export default {
             name: '相対性理論',
             youtubeVideoId: 'nFG4oQE1Et8',
           },
+          {
+            name: 'Awesome City Club',
+            youtubeVideoId: '3M6_LJG7si0',
+          },
+          {
+            name: 'ハナエ',
+            youtubeVideoId: 'iYDTN0zMv4w',
+          },
+          {
+            name: 'SHE IS SUMMER',
+            youtubeVideoId: 'w13vejFKsFs',
+          },
+          {
+            name: 'ふぇのたす',
+            youtubeVideoId: 'Vfav27BDlrs',
+          },
+          {
+            name: '赤い公園',
+            youtubeVideoId: 'gQpMiooyBWM',
+          },
+          {
+            name: 'Shiggy Jr.',
+            youtubeVideoId: 'gq5DPSPP47g',
+          },
+          {
+            name: 'ヤバイTシャツ屋さん',
+            youtubeVideoId: 'J5oytYDMWHA',
+          },
+          {
+            name: 'パスピエ',
+            youtubeVideoId: '-DZuJWfPzJE',
+          },
+          {
+            name: 'ポルカドットスティングレイ',
+            youtubeVideoId: '3ad4NsEy1tg',
+          },
+          {
+            name: 'フレデリック',
+            youtubeVideoId: 'PCp2iXA1uLE',
+          },
+          {
+            name: 'ラブリーサマーちゃん',
+            youtubeVideoId: '0HmFe-OicGY',
+          },
+          {
+            name: '泉まくら',
+            youtubeVideoId: 'BXs0VuDWp7I',
+          },
         ],
         Idol: [
           {
@@ -65,8 +113,28 @@ export default {
             youtubeVideoId: 'M1EXYQvAIvw',
           },
           {
+            name: '伊藤万理華',
+            youtubeVideoId: 'V_M9uJ75_Zg',
+          },
+          {
             name: '生ハムと焼うどん',
             youtubeVideoId: 'Uw2XLLPy2EE',
+          },
+          {
+            name: 'バンドじゃないもん！',
+            youtubeVideoId: 'wf7dgLoaBCc',
+          },
+          {
+            name: 'Maison book girl',
+            youtubeVideoId: 'xuNHdqNbvH4',
+          },
+          {
+            name: '水野しず',
+            youtubeVideoId: 'eonSr75DQb0',
+          },
+          {
+            name: 'ベッド・イン',
+            youtubeVideoId: 'ahmgp5DyW64',
           },
         ],
       },
