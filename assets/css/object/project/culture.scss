@@ -1,0 +1,41 @@
+@import "../../foundation/variables";
+
+.p-culture {
+  &_tabs {
+    nav {
+      font-family: $family-designed;
+      font-weight: 300;
+    }
+  }
+
+  &_cultureWrap {
+    li {
+      padding-bottom: 4rem;
+    }
+    li:last-child {
+      padding-bottom: 0;
+    }
+
+    &_videoWrap {
+      width: 100%;
+      max-width: 640px;
+      max-height: 360px;
+      margin: 0 auto;
+
+      &--video {
+        width: 100%;
+        padding-bottom: 56.25%;
+        height: 0;
+        position: relative;
+
+        iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
