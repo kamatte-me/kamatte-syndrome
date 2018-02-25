@@ -3,20 +3,25 @@
     <page-header/>
     <section class="section">
       <div class="container">
-        <div class="columns"
-             v-for="(illustrationsList, index) in splitIllustrationsList(maxColumns)"
-             :key="index"
-        >
-          <article class="column"
-               v-for="illustration in illustrationsList" :key="illustration.title"
+        <div class="tile is-ancestor">
+          <div class="tile is-vertical" :class="'is' + columnSize"
+               v-for="(illustrationsList, index) in divideIllustrationsList(columns)"
+               :key="index"
           >
-            <div class="box">
-              <h2 class="title has-text-centered">{{ illustration.title }}</h2>
-              <figure class="has-text-centered">
-                <img :src="illustration.imagePath"/>
-              </figure>
+            <div class="tile is-parent is-vertical">
+              <article class="tile is-child"
+                       v-for="illustration in illustrationsList"
+                       :key="illustration.title"
+              >
+                <div class="box">
+                  <h2 class="title is-4 has-text-centered">{{ illustration.title }}</h2>
+                  <figure class="has-text-centered">
+                    <img :src="illustration.imagePath"/>
+                  </figure>
+                </div>
+              </article>
             </div>
-          </article>
+          </div>
         </div>
       </div>
     </section>
@@ -35,19 +40,19 @@ export default {
   data() {
     return {
       pageTitle: '俺の絵',
-      maxColumns: 2,
+      columns: 2,
       illustrations: [
         {
-          title: 'コマとビート板が遊んでいるところ',
+          title: 'ビート板とコマが遊んでいるところ',
           imagePath: '/images/orenoe/bi-to_ban_to_koma.jpg',
-        },
-        {
-          title: 'おばあちゃんの',
-          imagePath: '/images/orenoe/obaachan_no.jpg',
         },
         {
           title: '当たり障りない騙し合い',
           imagePath: '/images/orenoe/atarisawari_nai_damashiai.jpg',
+        },
+        {
+          title: 'おばあちゃんの',
+          imagePath: '/images/orenoe/obaachan_no.jpg',
         },
         {
           title: 'おでかけ',
@@ -56,9 +61,22 @@ export default {
       ],
     };
   },
+  computed: {
+    columnSize() {
+      return Math.floor(12 / this.columns);
+    },
+  },
   methods: {
-    splitIllustrationsList(columns) {
-      return _.chunk(this.illustrations, columns);
+    divideIllustrationsList(columns) {
+      const devidedList = [];
+      for (let column = 0; column < columns; column += 1) {
+        devidedList.push([]);
+      }
+      _.each(this.illustrations, (illustration, index) => {
+        const column = Math.floor(index % columns);
+        devidedList[column].push(illustration);
+      });
+      return devidedList;
     },
   },
   created() {
