@@ -12,7 +12,10 @@
                  v-for="(work, index) in portfolio.works" :key="index"
             >
               <div class="column is-one-third has-text-centered">
-                <img :src="work.imagePath" width="150" height="150"/>
+                <figure v-if="work.imagePath !== undefined">
+                  <img :src="work.imagePath" class="p-portfolio_worksWrap_workWrap--image"/>
+                </figure>
+                <div class="p-portfolio_worksWrap_workWrap--noimage" v-else></div>
               </div>
               <div class="column">
                 <div class="content">
