@@ -46,12 +46,12 @@
             </div>
           </li>
         </ul>
-        <div class="column">
+        <aside class="p-portfolio_supplement">
           <p class="has-text-grey has-text-right-widescreen">
-            その他、iOSアプリ、Androidアプリ、Webアプリ（Ruby on Rails, Python, PHP, Java）など。<br>
+            その他、iOSアプリ、Androidアプリ、Webアプリ（Ruby on Rails, Python, PHP, Java, Scala）など。<br>
             フルスタックにがんばってむす。
           </p>
-        </div>
+        </aside>
       </div>
     </section>
   </div>
