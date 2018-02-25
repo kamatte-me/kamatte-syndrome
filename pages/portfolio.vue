@@ -13,7 +13,12 @@
             >
               <div class="column is-one-third has-text-centered">
                 <figure v-if="work.imagePath !== undefined">
-                  <img :src="work.imagePath" class="p-portfolio_worksWrap_workWrap--image"/>
+                  <a v-if="work.url !== undefined" :href="work.url" target="_blank">
+                    <img :src="work.imagePath" class="p-portfolio_worksWrap_workWrap--image"/>
+                  </a>
+                  <template v-else>
+                    <img :src="work.imagePath" class="p-portfolio_worksWrap_workWrap--image"/>
+                  </template>
                 </figure>
                 <div class="p-portfolio_worksWrap_workWrap--noimage" v-else></div>
               </div>
@@ -43,7 +48,7 @@
         </ul>
         <div class="column">
           <p class="has-text-grey has-text-right-widescreen">
-            その他、iOSアプリ、Androidアプリ、Webアプリ（Ruby on Rails, Python, PHP, Java）など<br>
+            その他、iOSアプリ、Androidアプリ、Webアプリ（Ruby on Rails, Python, PHP, Java）など。<br>
             フルスタックにがんばってむす。
           </p>
         </div>
