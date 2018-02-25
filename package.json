@@ -15,6 +15,7 @@
   "dependencies": {
     "@nuxtjs/component-cache": "^1.1.1",
     "buefy": "^0.6.3",
+    "lodash": "^4.17.5",
     "nuxt": "^1.0.0",
     "vue": "^2.5.13",
     "vuex": "^3.0.1"
