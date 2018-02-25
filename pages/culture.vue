@@ -3,23 +3,21 @@
     <page-header/>
     <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
-        <section>
-          <div class="container">
-            <ul class="p-culture_cultureWrap">
-              <li class="column has-text-centered"
-                   v-for="culture in culturesList" :key="culture.name"
-              >
-                <h2 class="title">{{ culture.name }}</h2>
-                <div class="p-culture_cultureWrap_videoWrap">
-                  <div class="p-culture_cultureWrap_videoWrap--video">
-                    <iframe :src="'https://www.youtube.com/embed/' + culture.youtubeVideoId"
-                            frameborder="0" allowfullscreen></iframe>
-                  </div>
+        <div class="container">
+          <ul class="p-culture_cultureWrap">
+            <li class="column has-text-centered"
+                 v-for="culture in culturesList" :key="culture.name"
+            >
+              <h2 class="title">{{ culture.name }}</h2>
+              <div class="p-culture_cultureWrap_videoWrap">
+                <div class="p-culture_cultureWrap_videoWrap--video">
+                  <iframe :src="'https://www.youtube.com/embed/' + culture.youtubeVideoId"
+                          frameborder="0" allowfullscreen></iframe>
                 </div>
-              </li>
-            </ul>
-          </div>
-        </section>
+              </div>
+            </li>
+          </ul>
+        </div>
       </b-tab-item>
     </b-tabs>
   </div>
