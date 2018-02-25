@@ -39,19 +39,19 @@ export default {
       illustrations: [
         {
           title: 'コマとビート板が遊んでいるところ',
-          imagePath: '/logo.png',
+          imagePath: '/images/orenoe/bi-to_ban_to_koma.jpg',
         },
         {
           title: 'おばあちゃんの',
-          imagePath: '/logo.png',
+          imagePath: '/images/orenoe/obaachan_no.jpg',
         },
         {
           title: '当たり障りない騙し合い',
-          imagePath: '/logo.png',
+          imagePath: '/images/orenoe/atarisawari_nai_damashiai.jpg',
         },
         {
           title: 'おでかけ',
-          imagePath: '/logo.png',
+          imagePath: '/images/orenoe/odekake.jpg',
         },
       ],
     };
@@ -66,7 +66,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>
