@@ -9,12 +9,7 @@
                  v-for="culture in culturesList" :key="culture.name"
             >
               <h2 class="title">{{ culture.name }}</h2>
-              <div class="p-culture_cultureWrap_videoWrap">
-                <div class="p-culture_cultureWrap_videoWrap--video">
-                  <iframe :src="'https://www.youtube.com/embed/' + culture.youtubeVideoId"
-                          frameborder="0" allowfullscreen></iframe>
-                </div>
-              </div>
+              <youtube-embed :videoId="culture.youtubeVideoId"/>
             </li>
           </ul>
         </div>
@@ -30,6 +25,7 @@ export default {
   name: 'culture',
   components: {
     PageHeader,
+    YoutubeEmbed: () => import('../components/YoutubeEmbed.vue'),
   },
   data() {
     return {

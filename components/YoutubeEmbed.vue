@@ -1,0 +1,64 @@
+<template>
+  <div class="c-youtubeEmbed_videoWrap">
+    <div class="c-youtubeEmbed_videoWrap--video">
+      <button @click.once="play"
+              :style="{backgroundImage: `url(${thumbnailUrl})`}"
+              v-if="!isPlay"
+      >
+      </button>
+      <iframe :src="videoEmbedUrl"
+              allow="autoplay; encrypted-media"
+              frameborder="0" allowfullscreen
+              v-else
+      >
+      </iframe>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import _ from 'lodash';
+
+export default {
+  name: 'youtube-embed',
+  props: ['videoId'],
+  data() {
+    return {
+      isPlay: false,
+      thumbnailUrl: '',
+    };
+  },
+  computed: {
+    videoEmbedUrl() {
+      return `//www.youtube.com/embed/${this.videoId}?autoplay=1`;
+    },
+  },
+  methods: {
+    play() {
+      this.isPlay = true;
+    },
+  },
+  created() {
+    // YouTube Data API v3から最高画質のサムネイル取得
+    axios.get('https://www.googleapis.com/youtube/v3/videos', {
+      params: {
+        id: this.videoId,
+        key: process.env.googleApiKey,
+        fields: 'items(snippet(thumbnails))',
+        part: 'snippet',
+      },
+    }).then((res) => {
+      const qualities = ['maxres', 'standard', 'high', 'medium', 'default'];
+      _.each(qualities, (quality) => {
+        const thumbnail = res.data.items[0].snippet.thumbnails[quality];
+        if (thumbnail !== undefined) {
+          this.thumbnailUrl = thumbnail.url;
+          return false;
+        }
+        return true;
+      });
+    });
+  },
+};
+</script>
