@@ -3,14 +3,13 @@
     <div class="c-youtubeEmbed_videoWrap--video">
       <button @click.once="play"
               :style="{backgroundImage: `url(${thumbnailUrl})`}"
-              v-if="!isPlay"
-      >
+              v-if="!isPlay">
+        <span></span>
       </button>
       <iframe :src="videoEmbedUrl"
               allow="autoplay; encrypted-media"
               frameborder="0" allowfullscreen
-              v-else
-      >
+              v-else>
       </iframe>
     </div>
   </div>
@@ -31,7 +30,7 @@ export default {
   },
   computed: {
     videoEmbedUrl() {
-      return `//www.youtube.com/embed/${this.videoId}?autoplay=1`;
+      return `https://www.youtube.com/embed/${this.videoId}?autoplay=1`;
     },
   },
   methods: {

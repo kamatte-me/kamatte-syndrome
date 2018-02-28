@@ -26,6 +26,16 @@
         background-color: #cbcbcb;
         border: none;
         cursor: pointer;
+        padding: 0;
+        overflow: hidden;
+
+        span {
+          background: url('~assets/icons/play_circle_outline.svg') no-repeat center;
+          background-size: cover;
+          display: inline-block;
+          width: 70%;
+          height: 100%;
+        }
       }
     }
   }
