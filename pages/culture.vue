@@ -6,8 +6,7 @@
         <div class="container">
           <ul class="p-culture_cultureWrap">
             <li class="column has-text-centered"
-                 v-for="culture in culturesList" :key="culture.name"
-            >
+                 v-for="culture in culturesList" :key="culture.name">
               <h2 class="title">{{ culture.name }}</h2>
               <youtube-embed :videoId="culture.youtubeVideoId"/>
             </li>

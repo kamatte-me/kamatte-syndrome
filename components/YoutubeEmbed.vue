@@ -1,6 +1,6 @@
 <template>
   <div class="c-youtubeEmbed_videoWrap">
-    <div class="c-youtubeEmbed_videoWrap--video">
+    <div class="c-youtubeEmbed_videoWrap--video" v-if="thumbnailUrl !== null">
       <button @click.once="play"
               :style="{backgroundImage: `url(${thumbnailUrl})`}"
               v-if="!isPlay">
@@ -12,6 +12,7 @@
               v-else>
       </iframe>
     </div>
+    <div class="c-youtubeEmbed_videoWrap--novideo" v-else></div>
   </div>
 </template>
 
@@ -25,7 +26,7 @@ export default {
   data() {
     return {
       isPlay: false,
-      thumbnailUrl: '',
+      thumbnailUrl: null,
     };
   },
   computed: {
