@@ -61,7 +61,7 @@ export default {
           },
           {
             name: 'ふぇのたす',
-            youtubeVideoId: 'Vfav27BDlrs',
+            youtubeVideoId: 'u7Z4YbdEftw',
           },
           {
             name: '赤い公園',
