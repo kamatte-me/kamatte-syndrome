@@ -28,6 +28,12 @@ module.exports = {
   */
   loading: { color: '#00c69c' },
   /*
+  ** Environment variables
+  */
+  env: {
+    googleApiKey: 'AIzaSyBk1V2ERjxr8SnO-VjNRBJSyHT9oUx55ek',
+  },
+  /*
   ** Build configuration
   */
   build: {
@@ -49,6 +55,7 @@ module.exports = {
     'vue',
     'vuex',
     'buefy',
+    'axios',
     '@nuxtjs/component-cache',
     'lodash',
   ],
@@ -62,8 +69,10 @@ module.exports = {
     '@/assets/css/object/project/index.scss',
     '@/assets/css/object/project/biography.scss',
     '@/assets/css/object/project/portfolio.scss',
+    '@/assets/css/object/project/culture.scss',
     '@/assets/css/object/component/navbar.scss',
     '@/assets/css/object/component/pageHeader.scss',
     '@/assets/css/object/component/siteFooter.scss',
+    '@/assets/css/object/component/youtubeEmbed.scss',
   ],
 };

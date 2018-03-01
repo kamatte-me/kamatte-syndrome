@@ -1,0 +1,19 @@
+@import "../../foundation/variables";
+
+.p-culture {
+  &_tabs {
+    nav {
+      font-family: $family-designed;
+      font-weight: 300;
+    }
+  }
+
+  &_cultureWrap {
+    li {
+      padding-bottom: 4rem;
+    }
+    li:last-child {
+      padding-bottom: 0;
+    }
+  }
+}

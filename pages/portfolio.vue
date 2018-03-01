@@ -23,18 +23,18 @@
                 <div class="p-portfolio_worksWrap_workWrap--noimage" v-else></div>
               </div>
               <div class="column">
+                <div class="block has-text-centered-mobile">
+                  <h2 class="title">
+                    <a v-if="work.url !== undefined" :href="work.url" target="_blank">
+                      {{ work.title }}
+                    </a>
+                    <template v-else>
+                      {{ work.title }}
+                    </template>
+                  </h2>
+                  <p class="subtitle is-6 has-text-grey-light">{{ work.charge }}</p>
+                </div>
                 <div class="content">
-                  <div class="block has-text-centered-mobile">
-                    <h2 class="title">
-                      <a v-if="work.url !== undefined" :href="work.url" target="_blank">
-                        {{ work.title }}
-                      </a>
-                      <template v-else>
-                        {{ work.title }}
-                      </template>
-                    </h2>
-                    <p class="subtitle is-6 has-text-grey-light">{{ work.charge }}</p>
-                  </div>
                   <p v-html="work.description"></p>
                 </div>
                 <aside class="tags">
