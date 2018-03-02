@@ -1,0 +1,13 @@
+.l-error {
+  &_status {
+    font-family: $family-designed;
+
+    &--code {
+      font-weight: 300;
+    }
+
+    &--reason {
+      font-weight: 300;
+    }
+  }
+}
