@@ -50,6 +50,13 @@ module.exports = {
         });
       }
     },
+    postcss: {
+      plugins: {
+        'postcss-custom-properties': {
+          warnings: false,
+        },
+      },
+    },
   },
   vendor: [
     'vue',
@@ -65,14 +72,5 @@ module.exports = {
   css: [
     'buefy',
     '@/assets/css/main.scss',
-    '@/assets/css/foundation/_variables.scss',
-    '@/assets/css/object/project/index.scss',
-    '@/assets/css/object/project/biography.scss',
-    '@/assets/css/object/project/portfolio.scss',
-    '@/assets/css/object/project/culture.scss',
-    '@/assets/css/object/component/navbar.scss',
-    '@/assets/css/object/component/pageHeader.scss',
-    '@/assets/css/object/component/siteFooter.scss',
-    '@/assets/css/object/component/youtubeEmbed.scss',
   ],
 };

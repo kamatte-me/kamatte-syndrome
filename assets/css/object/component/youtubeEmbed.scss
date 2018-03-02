@@ -1,5 +1,3 @@
-@import "../../foundation/variables";
-
 .c-youtubeEmbed {
   &_videoWrap {
     width: 100%;
@@ -52,7 +50,7 @@
           font-weight: 300;
           font-size: 2rem;
           color: $green;
-          content: 'This video exists in the future.';
+          content: 'This video exists in the future!!!';
           width: 100%;
           position: absolute;
           top: 50%;
