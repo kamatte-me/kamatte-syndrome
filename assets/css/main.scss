@@ -41,3 +41,13 @@ $footer-background-color: $white;
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
+@import "foundation/_variables";
+@import "object/project/index";
+@import "object/project/biography";
+@import "object/project/portfolio";
+@import "object/project/culture";
+@import "object/component/navbar";
+@import "object/component/pageHeader";
+@import "object/component/siteFooter";
+@import "object/component/youtubeEmbed";
