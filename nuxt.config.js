@@ -65,11 +65,14 @@ module.exports = {
     'axios',
     '@nuxtjs/component-cache',
     'lodash',
+    'graphql-tag',
   ],
   plugins: [
     '~/plugins/buefy',
   ],
   modules: [
+    '@nuxtjs/apollo',
+    '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {
       id: 'UA-8322636-7',
     }],
@@ -78,4 +81,9 @@ module.exports = {
     'buefy',
     '@/assets/css/main.scss',
   ],
+  apollo: {
+    clientConfigs: {
+      default: '~/apollo/client-configs/default.js',
+    },
+  },
 };
