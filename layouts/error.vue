@@ -13,7 +13,7 @@
             {{ reasons[error.statusCode] }}
           </template>
         </h2>
-        <nuxt-link to="/" class="button is-outlined is-primary is-medium">
+        <nuxt-link to="/" class="button is-rounded is-outlined is-primary is-medium">
           TOP
         </nuxt-link>
       </div>
@@ -41,7 +41,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

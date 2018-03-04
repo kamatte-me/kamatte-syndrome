@@ -24,6 +24,7 @@
     "graphql": "^0.13.1",
     "graphql-tag": "^2.8.0",
     "lodash": "^4.17.5",
+    "moment": "^2.21.0",
     "nuxt": "^1.0.0",
     "vue": "^2.5.13",
     "vue-markdown": "^2.2.4",

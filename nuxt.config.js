@@ -67,6 +67,7 @@ module.exports = {
     '@nuxtjs/component-cache',
     'lodash',
     'graphql-tag',
+    'vue-markdown',
   ],
   plugins: [
     '~/plugins/buefy',

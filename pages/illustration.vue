@@ -4,7 +4,7 @@
     <section class="section">
       <div class="container">
         <div class="tile is-ancestor">
-          <div class="tile is-vertical" :class="'is' + columnSize"
+          <div class="tile is-vertical" :class="'is-' + columnSize"
                v-for="(illustrationsList, index) in divideIllustrationsList(columns)"
                :key="index"
           >
@@ -68,15 +68,15 @@ export default {
   },
   methods: {
     divideIllustrationsList(columns) {
-      const devidedList = [];
+      const dividedList = [];
       for (let column = 0; column < columns; column += 1) {
-        devidedList.push([]);
+        dividedList.push([]);
       }
       _.each(this.illustrations, (illustration, index) => {
         const column = Math.floor(index % columns);
-        devidedList[column].push(illustration);
+        dividedList[column].push(illustration);
       });
-      return devidedList;
+      return dividedList;
     },
   },
   created() {
