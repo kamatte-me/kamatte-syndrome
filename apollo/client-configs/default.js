@@ -1,10 +1,23 @@
+import { ApolloLink } from 'apollo-link';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-// Replace this with your project's endpoint
-const GRAPHCMS_API = 'https://api.graphcms.com/simple/v1/kamatte';
+export default () => {
+  const httpLink = new HttpLink({ uri: 'https://api.graphcms.com/simple/v1/kamatte' });
 
-export default () => ({
-  link: new HttpLink({ uri: GRAPHCMS_API }),
-  cache: new InMemoryCache(),
-});
+  // middleware
+  const middlewareLink = new ApolloLink((operation, forward) => {
+    const token = process.env.graphCmsToken;
+
+    operation.setContext({
+      headers: { authorization: `Bearer ${token}` },
+    });
+    return forward(operation);
+  });
+  const link = middlewareLink.concat(httpLink);
+
+  return {
+    link,
+    cache: new InMemoryCache(),
+  };
+};
