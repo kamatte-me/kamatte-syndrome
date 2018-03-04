@@ -26,9 +26,9 @@
         width: 100%;
         font-family: $family-designed;
         font-weight: 300;
-        font-size: 1.5rem;
-        color: $green;
-        background-color: $primary;
+        font-size: 1.8rem;
+        color: $primary;
+        background-color: $green;
         content: 'Comming soon!!!';
         display: inline-block;
         margin: auto auto;
@@ -37,7 +37,7 @@
     }
   }
 
-  &_supplement {
+  &_aside {
     padding-top: 2rem;
   }
 }
