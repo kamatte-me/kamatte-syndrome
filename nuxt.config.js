@@ -69,6 +69,11 @@ module.exports = {
   plugins: [
     '~/plugins/buefy',
   ],
+  modules: [
+    ['@nuxtjs/google-analytics', {
+      id: 'UA-8322636-7',
+    }],
+  ],
   css: [
     'buefy',
     '@/assets/css/main.scss',
