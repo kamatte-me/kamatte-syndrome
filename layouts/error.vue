@@ -6,10 +6,12 @@
           {{ error.statusCode }}
         </h1>
         <h2 class="subtitle is-4 has-text-primary l-error_status--reason">
-          <template v-if="error.statusCode === 404">
-            This page exists in the future!!!
+          <template v-if="reasons[error.statusCode] === undefined">
+            suman
           </template>
-          <template v-else>su ma n</template>
+          <template v-else>
+            {{ reasons[error.statusCode] }}
+          </template>
         </h2>
         <nuxt-link to="/" class="button is-outlined is-primary is-medium">
           TOP
@@ -27,6 +29,13 @@ export default {
     return {
       htmlAttrs: {
         class: '',
+      },
+    };
+  },
+  data() {
+    return {
+      reasons: {
+        404: 'This page exists in the future!!!',
       },
     };
   },
