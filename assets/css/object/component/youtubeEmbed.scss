@@ -43,13 +43,13 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: $primary;
+        background-color: $green;
 
         &:before {
           font-family: $family-designed;
           font-weight: 300;
           font-size: 2rem;
-          color: $green;
+          color: $primary;
           content: 'This video exists in the future!!!';
           width: 100%;
           position: absolute;
