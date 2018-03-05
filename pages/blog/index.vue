@@ -49,14 +49,14 @@
           <button
             v-if="postCount && postCount > allPosts.length"
             class="button is-rounded is-outlined is-primary is-medium"
-            :class="{ 'is-loading': loading }"
+            :class="{ 'is-loading': isLoading }"
             @click="loadMorePosts">
             More!!!
           </button>
         </div>
       </div>
     </section>
-    <b-loading :active.sync="loading" v-else></b-loading>
+    <b-loading :active.sync="isLoading" v-else></b-loading>
     <blog-powered-by/>
   </div>
 </template>
@@ -109,6 +109,11 @@ export default {
     postCount: {
       query: gql`{ _allPostsMeta { count } }`,
       update: ({ _allPostsMeta }) => _allPostsMeta.count,
+    },
+  },
+  computed: {
+    isLoading() {
+      return this.loading > 0;
     },
   },
   methods: {
