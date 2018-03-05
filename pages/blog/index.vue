@@ -57,6 +57,7 @@
       </div>
     </section>
     <b-loading :active.sync="loading" v-else></b-loading>
+    <blog-powered-by/>
   </div>
 </template>
 
@@ -86,6 +87,7 @@ export default {
   name: 'index',
   components: {
     PageHeader,
+    BlogPoweredBy: () => import('../../components/BlogPoweredBy.vue'),
   },
   data() {
     return {
