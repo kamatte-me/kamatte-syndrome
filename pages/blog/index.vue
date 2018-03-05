@@ -22,14 +22,17 @@
                   </figure>
                 </div>
                 <div class="media-content">
+                  <div>
+
+                  </div>
                   <h2 class="p-blog_list_postWrap--title">
                     <nuxt-link :to="`/blog/${post.slug}`">
                       {{ post.title }}
                     </nuxt-link>
                   </h2>
-                  <span class="p-blog_list_postWrap--date">
+                  <p class="p-blog_list_postWrap--date">
                     {{ formattedDatetime(post.dateAndTime) }}
-                  </span>
+                  </p>
                   <div class="tags p-blog_list_postWrap--tags"
                        v-if="post.tags.length > 0">
                     <span class="tag is-green"

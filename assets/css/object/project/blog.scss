@@ -12,9 +12,14 @@
       &--date {
         font-family: $family-designed;
         font-weight: 300;
+        color: $grey;
       }
       &--tags {
         padding-top: 1rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
