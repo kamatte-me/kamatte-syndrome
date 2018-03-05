@@ -56,9 +56,7 @@
         </div>
       </div>
     </section>
-    <h2 v-else>
-      Loading...
-    </h2>
+    <b-loading :active.sync="loading" v-else></b-loading>
   </div>
 </template>
 
@@ -67,7 +65,7 @@ import gql from 'graphql-tag';
 import moment from 'moment';
 import PageHeader from '../../components/PageHeader.vue';
 
-const POSTS_PER_PAGE = 1;
+const POSTS_PER_PAGE = 10;
 const allPostsQuery = gql`
     query allPosts($first: Int!, $skip: Int!) {
       allPosts(orderBy: dateAndTime_DESC, first: $first, skip: $skip) {
@@ -92,6 +90,7 @@ export default {
   data() {
     return {
       pageTitle: 'Blog',
+      loading: 0,
       allPosts: [],
       postCount: 0,
     };
