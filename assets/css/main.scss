@@ -43,6 +43,7 @@ $footer-background-color: $white;
 @import "~buefy/src/scss/buefy";
 
 @import "foundation/_variables";
+@import "foundation/reset";
 @import "object/layout/error";
 @import "object/project/index";
 @import "object/project/biography";
@@ -53,4 +54,5 @@ $footer-background-color: $white;
 @import "object/component/pageHeader";
 @import "object/component/siteFooter";
 @import "object/component/youtubeEmbed";
+@import "object/component/blogContent";
 @import "object/component/blogPoweredBy";

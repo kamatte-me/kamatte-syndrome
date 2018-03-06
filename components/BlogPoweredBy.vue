@@ -1,5 +1,5 @@
 <template>
-  <aside class="has-text-centered c-blogPoweredBy">
+  <aside class="c-blogPoweredBy">
     <a href="https://graphcms.com/" target="_blank">
       <img src="~assets/images/powered_by_graphcms.svg"/>
     </a>

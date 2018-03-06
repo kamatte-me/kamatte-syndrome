@@ -24,16 +24,13 @@
                   </figure>
                 </div>
                 <div class="media-content">
-                  <div>
-
-                  </div>
                   <h2 class="p-blog_list_postWrap--title">
                     <nuxt-link :to="`/blog/${post.slug}`">
                       {{ post.title }}
                     </nuxt-link>
                   </h2>
                   <p class="p-blog_list_postWrap--date">
-                    {{ formattedDatetime(post.dateAndTime) }}
+                    {{ publishDate(post.dateAndTime) }}
                   </p>
                   <div class="tags p-blog_list_postWrap--tags"
                        v-if="post.tags.length > 0">
@@ -137,7 +134,7 @@ export default {
     croppedCoverImageUrl(post, width, height) {
       return `https://media.graphcms.com/resize=w:${width},h:${height},fit:crop/${post.coverImage.handle}`;
     },
-    formattedDatetime(datetime) {
+    publishDate(datetime) {
       return moment(datetime).format('YYYY/M/D');
     },
   },
