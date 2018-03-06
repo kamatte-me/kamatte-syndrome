@@ -101,6 +101,7 @@ export default {
                 'JavaScript',
                 'Vue',
                 'Nuxt.js',
+                'GraphQL',
                 'HTML',
                 'SCSS',
                 'Bulma',

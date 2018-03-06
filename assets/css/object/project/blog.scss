@@ -1,0 +1,26 @@
+.p-blog {
+  &_list {
+    li + li {
+      padding-top: 2.5rem;
+    }
+
+    &_postWrap {
+      &--title {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+      &--date {
+        font-family: $family-designed;
+        font-weight: 300;
+        color: $grey;
+      }
+      &--tags {
+        padding-top: 1rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
