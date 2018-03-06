@@ -16,7 +16,9 @@
                     />
                     <img
                       :alt="post.title"
-                      :src="`https://media.graphcms.com/resize=w:100,h:100,fit:crop/${post.coverImage.handle}`"
+                      :src="croppedCoverImageUrl(post, 100, 100)"
+                      :srcset="croppedCoverImageUrl(post, 100, 100) + ' 1x,'
+                             + croppedCoverImageUrl(post, 200, 200) + ' 2x'"
                       v-else
                     />
                   </figure>
@@ -131,6 +133,9 @@ export default {
           });
         },
       });
+    },
+    croppedCoverImageUrl(post, width, height) {
+      return `https://media.graphcms.com/resize=w:${width},h:${height},fit:crop/${post.coverImage.handle}`;
     },
     formattedDatetime(datetime) {
       return moment(datetime).format('YYYY/M/D');
