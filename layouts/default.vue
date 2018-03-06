@@ -12,7 +12,7 @@
 
 <script>
 import Navbar from '../components/Navbar.vue';
-import siteFooter from '../components/siteFooter.vue';
+import siteFooter from '../components/SiteFooter.vue';
 
 const generateTitle = (pageTitle) => {
   const baseTitle = 'kamatte syndrome';
