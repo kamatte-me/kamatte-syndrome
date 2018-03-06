@@ -1,0 +1,20 @@
+.c-blogContent {
+  padding-top: 2rem;
+
+  &_publishDate {
+    padding-bottom: 0.4rem;
+  }
+
+  &_tags {
+    justify-content: center;
+  }
+
+  &_coverImage {
+    text-align: center;
+    margin-bottom: 1.6rem;
+
+    img {
+      max-width: 100%;
+    }
+  }
+}
