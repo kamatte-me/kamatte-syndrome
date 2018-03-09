@@ -61,26 +61,12 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+import allPostsQuery from '~/apollo/queries/allPosts';
+import _allPostsMetaQuery from '~/apollo/queries/_allPostsMeta';
 import moment from 'moment';
 import PageHeader from '../../components/PageHeader.vue';
 
 const POSTS_PER_PAGE = 10;
-const allPostsQuery = gql`
-    query allPosts($first: Int!, $skip: Int!) {
-      allPosts(orderBy: dateAndTime_DESC, first: $first, skip: $skip) {
-        id
-        slug
-        title
-        dateAndTime
-        coverImage {
-          handle
-        }
-        content
-        tags
-      }
-    }
-  `;
 
 export default {
   name: 'index',
@@ -106,7 +92,7 @@ export default {
       },
     },
     postCount: {
-      query: gql`{ _allPostsMeta { count } }`,
+      query: _allPostsMetaQuery,
       update: ({ _allPostsMeta }) => _allPostsMeta.count,
     },
   },

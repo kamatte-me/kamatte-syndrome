@@ -1,0 +1,13 @@
+query allPosts($first: Int!, $skip: Int!) {
+  allPosts(orderBy: dateAndTime_DESC, first: $first, skip: $skip) {
+    id
+    slug
+    title
+    dateAndTime
+    coverImage {
+      handle
+    }
+    content
+    tags
+  }
+}

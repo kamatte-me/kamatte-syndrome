@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import PageHeader from '../components/PageHeader.vue';
+import PageHeader from '~/components/PageHeader.vue';
 
 export default {
   name: 'culture',
   components: {
     PageHeader,
-    YoutubeEmbed: () => import('../components/YoutubeEmbed.vue'),
+    YoutubeEmbed: () => import('~/components/YoutubeEmbed.vue'),
   },
   data() {
     return {
