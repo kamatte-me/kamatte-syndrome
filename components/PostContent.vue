@@ -47,8 +47,5 @@ export default {
     FormattedDate,
     VueMarkdown,
   },
-  mounted() {
-    this.$store.commit('updatePageTitle', this.post.fields.title);
-  },
 };
 </script>

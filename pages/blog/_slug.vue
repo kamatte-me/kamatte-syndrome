@@ -34,5 +34,8 @@ export default {
       return {};
     });
   },
+  created() {
+    this.$store.commit('updatePageTitle', this.post.fields.title);
+  },
 };
 </script>
