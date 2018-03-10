@@ -33,6 +33,12 @@ export default {
           slug: this.$route.params.slug,
         };
       },
+      // TODO: レンダリング前に404リダイレクトするIssueあり。 https://github.com/nuxt-community/apollo-module/issues/42
+      result({ data }) {
+        if (!data.post) {
+          this.$root.$nuxt.error({ statusCode: 404 });
+        }
+      },
     },
   },
   computed: {
