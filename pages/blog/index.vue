@@ -43,7 +43,12 @@
             </li>
           </ul>
         </div>
-        <div class="column has-text-centered">
+        <div class="column has-text-centered" v-if="isMorePosts">
+          <button
+            class="button is-rounded is-outlined is-primary is-medium"
+            @click="loadMorePosts">
+            More!!!
+          </button>
         </div>
       </div>
     </section>
@@ -52,10 +57,12 @@
 </template>
 
 <script>
-import moment from 'moment';
 import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
 import FormattedDate from '~/components/FormattedDate.vue';
 import { createClient } from '~/plugins/contentful';
+
+const client = createClient();
+const POST_PER_PAGE = 1;
 
 export default {
   name: 'index',
@@ -66,27 +73,49 @@ export default {
   data() {
     return {
       pageTitle: 'Blog',
+      page: 0,
+      totalPosts: 0,
     };
   },
   asyncData() {
-    const client = createClient();
     return client.getEntries({
       content_type: process.env.CTF_BLOG_POST_TYPE_ID,
       order: '-sys.createdAt',
+      skip: 0,
+      limit: POST_PER_PAGE,
     }).then(entries => (
-      { posts: entries.items }
-    )).catch((e) => {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    });
+      {
+        posts: entries.items,
+        totalPosts: entries.total,
+      }
+    ));
   },
   methods: {
+    loadMorePosts() {
+      const self = this;
+      self.page += 1;
+      return client.getEntries({
+        content_type: process.env.CTF_BLOG_POST_TYPE_ID,
+        order: '-sys.createdAt',
+        skip: self.page,
+        limit: POST_PER_PAGE,
+      }).then((entries) => {
+        if (entries.items.length > 0) {
+          self.totalPosts = entries.total;
+          self.posts = self.posts.concat(entries.items);
+        }
+        // eslint-disable-next-line no-console
+        console.log(entries);
+      });
+    },
     croppedCoverImageUrl(post, width, height) {
       const imageUrl = post.fields.featuredImage.fields.file.url;
-      return `${imageUrl}?fit=scale&w=${width}&h=${height}`;
+      return `${imageUrl}?fit=fill&w=${width}&h=${height}`;
     },
-    publishDate(date) {
-      return moment(date).format('YYYY/M/D');
+  },
+  computed: {
+    isMorePosts() {
+      return (this.page + 1) * POST_PER_PAGE < this.totalPosts;
     },
   },
   created() {
