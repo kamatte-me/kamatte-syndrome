@@ -1,25 +1,38 @@
 <template>
   <div>
-    <template v-if="!isLoading">
-      <post-content :post="post"/>
-    </template>
+    <page-header/>
+    <post-content :post="post"/>
     <blog-powered-by/>
   </div>
 </template>
 
 <script>
+import PageHeader from '~/components/PageHeader.vue';
 import PostContent from '~/components/PostContent.vue';
+import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
+import { createClient } from '~/plugins/contentful';
 
 export default {
   name: 'slug',
   components: {
+    PageHeader,
     PostContent,
-    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
+    BlogPoweredBy,
   },
-  data() {
-    return {
-      post: {},
-    };
+  asyncData({ params, error }) {
+    const client = createClient();
+    return client.getEntries({
+      content_type: process.env.CTF_BLOG_POST_TYPE_ID,
+      'fields.slug': params.slug,
+    }).then((entries) => {
+      if (entries.items.length > 0) {
+        return {
+          post: entries.items[0],
+        };
+      }
+      error({ statusCode: 404 });
+      return {};
+    });
   },
 };
 </script>

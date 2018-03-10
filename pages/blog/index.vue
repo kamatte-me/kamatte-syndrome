@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header/>
     <section class="section">
       <div class="container">
         <div class="block">
@@ -54,25 +53,23 @@
 
 <script>
 import moment from 'moment';
-import PageHeader from '~/components/PageHeader.vue';
-import { createClient } from '../../plugins/contentful';
-
-const client = createClient();
+import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
+import { createClient } from '~/plugins/contentful';
 
 export default {
   name: 'index',
   components: {
-    PageHeader,
-    BlogPoweredBy: () => import('../../components/BlogPoweredBy.vue'),
+    BlogPoweredBy,
   },
   data() {
     return {
       pageTitle: 'Blog',
     };
   },
-  asyncData({ env }) {
+  asyncData() {
+    const client = createClient();
     return client.getEntries({
-      content_type: env.CTF_BLOG_POST_TYPE_ID,
+      content_type: process.env.CTF_BLOG_POST_TYPE_ID,
       order: '-sys.createdAt',
     }).then(entries => (
       { posts: entries.items }
@@ -86,8 +83,8 @@ export default {
       const imageUrl = post.fields.featuredImage.fields.file.url;
       return `${imageUrl}?fit=scale&w=${width}&h=${height}`;
     },
-    publishDate(datetime) {
-      return moment(datetime).format('YYYY/M/D');
+    publishDate(date) {
+      return moment(date).format('YYYY/M/D');
     },
   },
   created() {
