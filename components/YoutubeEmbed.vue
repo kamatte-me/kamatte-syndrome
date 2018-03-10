@@ -46,7 +46,7 @@ export default {
     axios.get('https://www.googleapis.com/youtube/v3/videos', {
       params: {
         id: this.videoId,
-        key: process.env.googleApiKey,
+        key: process.env.GOOGLE_API_KEY,
         fields: 'items(snippet(thumbnails))',
         part: 'snippet',
       },

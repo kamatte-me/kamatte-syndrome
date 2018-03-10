@@ -1,41 +1,41 @@
 <template>
   <div>
     <page-header/>
-    <section v-if="allPosts.length > 0" class="section">
+    <section class="section">
       <div class="container">
         <div class="block">
           <ul class="columns is-centered is-multiline p-blog_list">
-            <li class="column is-7" v-for="post in allPosts" :key="post.id">
+            <li class="column is-7" v-for="post in posts" :key="post.sys.id">
               <article class="media">
                 <div class="media-left">
                   <figure class="image is-96x96">
                     <img
-                      :alt="post.title"
-                      src="/avatar.png"
-                      v-if="post.coverImage === null"
-                    />
-                    <img
-                      :alt="post.title"
+                      :alt="post.fields.title"
                       :src="croppedCoverImageUrl(post, 100, 100)"
                       :srcset="croppedCoverImageUrl(post, 100, 100) + ' 1x,'
                              + croppedCoverImageUrl(post, 200, 200) + ' 2x'"
+                      v-if="post.fields.featuredImage"
+                    />
+                    <img
+                      :alt="post.fields.title"
+                      src="/avatar.png"
                       v-else
                     />
                   </figure>
                 </div>
                 <div class="media-content">
                   <h2 class="p-blog_list_postWrap--title">
-                    <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.slug }}">
-                      {{ post.title }}
+                    <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.fields.slug }}">
+                      {{ post.fields.title }}
                     </nuxt-link>
                   </h2>
                   <p class="p-blog_list_postWrap--date">
-                    {{ publishDate(post.dateAndTime) }}
+                    {{ publishDate(post.fields.date) }}
                   </p>
                   <div class="tags p-blog_list_postWrap--tags"
-                       v-if="post.tags.length > 0">
+                       v-if="post.fields.tags">
                     <span class="tag is-green"
-                          v-for="(tag, index) in post.tags" :key="index">
+                          v-for="(tag, index) in post.fields.tags" :key="index">
                       {{ tag }}
                     </span>
                   </div>
@@ -45,28 +45,19 @@
           </ul>
         </div>
         <div class="column has-text-centered">
-          <button
-            v-if="postCount && postCount > allPosts.length"
-            class="button is-rounded is-outlined is-primary is-medium"
-            :class="{ 'is-loading': isLoading }"
-            @click="loadMorePosts">
-            More!!!
-          </button>
         </div>
       </div>
     </section>
-    <b-loading :active.sync="isLoading" v-else></b-loading>
     <blog-powered-by/>
   </div>
 </template>
 
 <script>
-import allPostsQuery from '~/apollo/queries/allPosts';
-import _allPostsMetaQuery from '~/apollo/queries/_allPostsMeta';
 import moment from 'moment';
-import PageHeader from '../../components/PageHeader.vue';
+import PageHeader from '~/components/PageHeader.vue';
+import { createClient } from '../../plugins/contentful';
 
-const POSTS_PER_PAGE = 10;
+const client = createClient();
 
 export default {
   name: 'index',
@@ -77,48 +68,23 @@ export default {
   data() {
     return {
       pageTitle: 'Blog',
-      loading: 0,
-      allPosts: [],
-      postCount: 0,
     };
   },
-  apollo: {
-    $loadingKey: 'loading',
-    allPosts: {
-      query: allPostsQuery,
-      variables: {
-        skip: 0,
-        first: POSTS_PER_PAGE,
-      },
-    },
-    postCount: {
-      query: _allPostsMetaQuery,
-      update: ({ _allPostsMeta }) => _allPostsMeta.count,
-    },
-  },
-  computed: {
-    isLoading() {
-      return this.loading > 0;
-    },
+  asyncData({ env }) {
+    return client.getEntries({
+      content_type: env.CTF_BLOG_POST_TYPE_ID,
+      order: '-sys.createdAt',
+    }).then(entries => (
+      { posts: entries.items }
+    )).catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    });
   },
   methods: {
-    loadMorePosts() {
-      this.$apollo.queries.allPosts.fetchMore({
-        variables: {
-          skip: this.allPosts.length,
-        },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return previousResult;
-          }
-          return Object.assign({}, previousResult, {
-            allPosts: [...previousResult.allPosts, ...fetchMoreResult.allPosts],
-          });
-        },
-      });
-    },
     croppedCoverImageUrl(post, width, height) {
-      return `https://media.graphcms.com/resize=w:${width},h:${height},fit:crop/${post.coverImage.handle}`;
+      const imageUrl = post.fields.featuredImage.fields.file.url;
+      return `${imageUrl}?fit=scale&w=${width}&h=${height}`;
     },
     publishDate(datetime) {
       return moment(datetime).format('YYYY/M/D');
