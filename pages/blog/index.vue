@@ -25,7 +25,7 @@
                 </div>
                 <div class="media-content">
                   <h2 class="p-blog_list_postWrap--title">
-                    <nuxt-link :to="`/blog/${post.slug}`">
+                    <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.slug }}">
                       {{ post.title }}
                     </nuxt-link>
                   </h2>
