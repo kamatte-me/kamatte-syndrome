@@ -10,9 +10,9 @@
                   <figure class="image is-96x96">
                     <img
                       :alt="post.fields.title"
-                      :src="croppedCoverImageUrl(post, 100, 100)"
-                      :srcset="croppedCoverImageUrl(post, 100, 100) + ' 1x,'
-                             + croppedCoverImageUrl(post, 200, 200) + ' 2x'"
+                      :src="filledFeaturedImageUrl(post, 100, 100)"
+                      :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
+                             + filledFeaturedImageUrl(post, 200, 200) + ' 2x'"
                       v-if="post.fields.featuredImage"
                     />
                     <img
@@ -68,7 +68,7 @@ import FormattedDate from '~/components/FormattedDate.vue';
 import { createClient } from '~/plugins/contentful';
 
 const client = createClient();
-const POST_PER_PAGE = 1;
+const POST_PER_PAGE = 10;
 
 export default {
   name: 'index',
@@ -96,7 +96,7 @@ export default {
         this.posts = entries.items;
       });
     },
-    croppedCoverImageUrl(post, width, height) {
+    filledFeaturedImageUrl(post, width, height) {
       const imageUrl = post.fields.featuredImage.fields.file.url;
       return `${imageUrl}?fit=fill&w=${width}&h=${height}`;
     },
