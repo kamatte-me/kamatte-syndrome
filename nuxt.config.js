@@ -25,6 +25,7 @@ module.exports = {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   },
+  cache: true,
   /*
   ** Customize the progress bar color
   */
