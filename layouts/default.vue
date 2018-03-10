@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue';
-import siteFooter from '../components/SiteFooter.vue';
+import Navbar from '~/components/Navbar.vue';
+import siteFooter from '~/components/SiteFooter.vue';
 
 const generateTitle = (pageTitle) => {
   const baseTitle = 'kamatte syndrome';

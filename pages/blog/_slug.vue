@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="isFetchedPost">
+    <template v-if="!isLoading">
       <post-content :post="post"/>
     </template>
     <b-loading :active.sync="isLoading" v-else></b-loading>
@@ -9,24 +9,8 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
-import PostContent from '../../components/PostContent.vue';
-
-const postQuery = gql`
-    query post($slug: String!) {
-      post: Post(slug: $slug) {
-        id
-        slug
-        title
-        dateAndTime
-        coverImage {
-          handle
-        }
-        content
-        tags
-      }
-    }
-  `;
+import postQuery from '~/apollo/queries/post';
+import PostContent from '~/components/PostContent.vue';
 
 export default {
   name: 'slug',
@@ -54,9 +38,6 @@ export default {
   computed: {
     isLoading() {
       return this.loading > 0;
-    },
-    isFetchedPost() {
-      return Object.keys(this.post).length > 0;
     },
   },
 };

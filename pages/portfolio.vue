@@ -59,7 +59,7 @@
 
 <script>
 import _ from 'lodash';
-import PageHeader from '../components/PageHeader.vue';
+import PageHeader from '~/components/PageHeader.vue';
 
 export default {
   name: 'portfolio',

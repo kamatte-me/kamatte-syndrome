@@ -1,0 +1,13 @@
+query post($slug: String!) {
+  post: Post(slug: $slug) {
+    id
+    slug
+    title
+    dateAndTime
+    coverImage {
+      handle
+    }
+    content
+    tags
+  }
+}
