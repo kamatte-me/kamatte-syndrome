@@ -7,7 +7,7 @@
             <div class="block">
               <div>
                 <div class="has-text-grey has-text-centered c-blogContent_publishDate">
-                  {{ publishDate(post.fields.date) }}
+                  <formatted-date :date="post.fields.date"/>
                 </div>
                 <aside class="tags has-text-centered c-blogContent_tags"
                      v-if="post.fields.tags">
@@ -35,21 +35,17 @@
 </template>
 
 <script>
-import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
-import PageHeader from './PageHeader.vue';
+import PageHeader from '~/components/PageHeader.vue';
+import FormattedDate from '~/components/FormattedDate.vue';
 
 export default {
   name: 'post-content',
   props: ['post'],
   components: {
     PageHeader,
+    FormattedDate,
     VueMarkdown,
-  },
-  methods: {
-    publishDate(date) {
-      return moment(date).format('YYYY/MM/DD');
-    },
   },
   mounted() {
     this.$store.commit('updatePageTitle', this.post.fields.title);

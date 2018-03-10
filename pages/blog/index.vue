@@ -29,7 +29,7 @@
                     </nuxt-link>
                   </h2>
                   <p class="p-blog_list_postWrap--date">
-                    {{ publishDate(post.fields.date) }}
+                    <formatted-date :date="post.fields.date"/>
                   </p>
                   <div class="tags p-blog_list_postWrap--tags"
                        v-if="post.fields.tags">
@@ -54,11 +54,13 @@
 <script>
 import moment from 'moment';
 import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
+import FormattedDate from '~/components/FormattedDate.vue';
 import { createClient } from '~/plugins/contentful';
 
 export default {
   name: 'index',
   components: {
+    FormattedDate,
     BlogPoweredBy,
   },
   data() {
