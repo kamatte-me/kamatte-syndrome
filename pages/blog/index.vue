@@ -43,12 +43,18 @@
             </li>
           </ul>
         </div>
-        <div class="column has-text-centered" v-if="isMorePosts">
-          <button
-            class="button is-rounded is-outlined is-primary is-medium"
-            @click="loadMorePosts">
-            More!!!
-          </button>
+        <div class="columns is-centered is-multiline">
+          <div class="column is-7">
+            <b-pagination
+              class="p-blog_list_pagination"
+              :total="totalPosts"
+              :current.sync="$store.state.blogCurrentPage"
+              order="is-centered"
+              :rounded="true"
+              :per-page="postPerPage"
+              @change="currentPagePosts">
+            </b-pagination>
+          </div>
         </div>
       </div>
     </section>
@@ -73,39 +79,21 @@ export default {
   data() {
     return {
       pageTitle: 'Blog',
-      page: 0,
+      posts: [],
       totalPosts: 0,
+      postPerPage: POST_PER_PAGE,
     };
   },
-  asyncData() {
-    return client.getEntries({
-      content_type: process.env.CTF_BLOG_POST_TYPE_ID,
-      order: '-sys.createdAt',
-      skip: 0,
-      limit: POST_PER_PAGE,
-    }).then(entries => (
-      {
-        posts: entries.items,
-        totalPosts: entries.total,
-      }
-    ));
-  },
   methods: {
-    loadMorePosts() {
-      const self = this;
-      self.page += 1;
-      return client.getEntries({
+    currentPagePosts(page) {
+      client.getEntries({
         content_type: process.env.CTF_BLOG_POST_TYPE_ID,
         order: '-sys.createdAt',
-        skip: self.page,
+        skip: page - 1,
         limit: POST_PER_PAGE,
       }).then((entries) => {
-        if (entries.items.length > 0) {
-          self.totalPosts = entries.total;
-          self.posts = self.posts.concat(entries.items);
-        }
-        // eslint-disable-next-line no-console
-        console.log(entries);
+        this.totalPosts = entries.total;
+        this.posts = entries.items;
       });
     },
     croppedCoverImageUrl(post, width, height) {
@@ -113,13 +101,9 @@ export default {
       return `${imageUrl}?fit=fill&w=${width}&h=${height}`;
     },
   },
-  computed: {
-    isMorePosts() {
-      return (this.page + 1) * POST_PER_PAGE < this.totalPosts;
-    },
-  },
   created() {
     this.$store.commit('updatePageTitle', this.pageTitle);
+    this.currentPagePosts(this.$store.state.blogCurrentPage);
   },
 };
 </script>

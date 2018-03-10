@@ -15,6 +15,7 @@ const store = () => new Vuex.Store({
       Culture: '/culture',
       Blog: '/blog',
     },
+    blogCurrentPage: 1,
   },
   mutations: {
     /**
@@ -38,6 +39,14 @@ const store = () => new Vuex.Store({
      */
     updatePageTitle(state, pageTitle) {
       state.pageTitle = pageTitle;
+    },
+    /**
+     * ブログのページを更新する
+     * @param state
+     * @param currentPage
+     */
+    updateBlogCurrentPage(state, currentPage) {
+      state.blogCurrentPage = currentPage;
     },
   },
 });
