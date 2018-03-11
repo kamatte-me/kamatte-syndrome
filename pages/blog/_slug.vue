@@ -22,6 +22,9 @@ export default {
   head() {
     return {
       title: this.post.fields.title,
+      meta: [
+        { hid: 'og:type', property: 'og:type', content: 'article' },
+      ],
     };
   },
   asyncData({ params, error }) {

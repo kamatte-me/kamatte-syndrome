@@ -68,6 +68,9 @@ export default {
   head() {
     return {
       title: this.pageTitle,
+      meta: [
+        { hid: 'og:type', property: 'og:type', content: 'profile' },
+      ],
     };
   },
   data() {

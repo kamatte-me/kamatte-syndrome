@@ -19,13 +19,5 @@ export default {
     Navbar,
     siteFooter,
   },
-  head() {
-    return {
-      meta: [
-        { hid: 'og:title', property: 'og:title', content: 'kamatte syndrome' },
-        { hid: 'og:url', property: 'og:url', content: 'https://kamatte.me' },
-      ],
-    };
-  },
 };
 </script>
