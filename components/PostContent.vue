@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header/>
     <section class="section c-blogContent">
       <div class="container">
         <article class="columns is-centered is-multiline">
@@ -8,25 +7,25 @@
             <div class="block">
               <div>
                 <div class="has-text-grey has-text-centered c-blogContent_publishDate">
-                  {{ publishDate(post.dateAndTime) }}
+                  <formatted-date :date="post.fields.date"/>
                 </div>
                 <aside class="tags has-text-centered c-blogContent_tags"
-                     v-if="post.tags.length > 0">
+                     v-if="post.fields.tags">
                   <span class="tag is-green"
-                        v-for="(tag, index) in post.tags" :key="index">
+                        v-for="(tag, index) in post.fields.tags" :key="index">
                     {{ tag }}
                   </span>
                 </aside>
               </div>
             </div>
             <div class="content">
-              <div class="c-blogContent_coverImage" v-if="post.coverImage !== null">
+              <div class="c-blogContent_coverImage" v-if="post.fields.featuredImage">
                 <img
-                  :alt="post.title"
-                  :src="`https://media.graphcms.com/${post.coverImage.handle}`"
+                  :alt="post.fields.title"
+                  :src="post.fields.featuredImage.fields.file.url"
                 />
               </div>
-              <vue-markdown>{{ post.content }}</vue-markdown>
+              <vue-markdown>{{ post.fields.body }}</vue-markdown>
             </div>
           </div>
         </article>
@@ -36,24 +35,17 @@
 </template>
 
 <script>
-import moment from 'moment';
 import VueMarkdown from 'vue-markdown';
-import PageHeader from './PageHeader.vue';
+import PageHeader from '~/components/PageHeader.vue';
+import FormattedDate from '~/components/FormattedDate.vue';
 
 export default {
   name: 'post-content',
   props: ['post'],
   components: {
     PageHeader,
+    FormattedDate,
     VueMarkdown,
-  },
-  methods: {
-    publishDate(datetime) {
-      return moment(datetime).format('YYYY/MM/DD');
-    },
-  },
-  mounted() {
-    this.$store.commit('updatePageTitle', this.post.title);
   },
 };
 </script>

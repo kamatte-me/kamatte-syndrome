@@ -2,11 +2,11 @@
   &_status {
     font-family: $family-designed;
 
-    &--code {
+    &--statusCode {
       font-weight: 300;
     }
 
-    &--reason {
+    &--message {
       font-weight: 300;
     }
   }

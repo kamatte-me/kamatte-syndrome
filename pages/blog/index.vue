@@ -1,131 +1,107 @@
 <template>
   <div>
-    <page-header/>
-    <section v-if="allPosts.length > 0" class="section">
+    <section class="section">
       <div class="container">
-        <div class="block">
-          <ul class="columns is-centered is-multiline p-blog_list">
-            <li class="column is-7" v-for="post in allPosts" :key="post.id">
-              <article class="media">
-                <div class="media-left">
-                  <figure class="image is-96x96">
-                    <img
-                      :alt="post.title"
-                      src="/avatar.png"
-                      v-if="post.coverImage === null"
-                    />
-                    <img
-                      :alt="post.title"
-                      :src="croppedCoverImageUrl(post, 100, 100)"
-                      :srcset="croppedCoverImageUrl(post, 100, 100) + ' 1x,'
-                             + croppedCoverImageUrl(post, 200, 200) + ' 2x'"
-                      v-else
-                    />
-                  </figure>
+        <ul class="columns is-centered is-multiline p-blog_list">
+          <li class="column is-7" v-for="post in posts" :key="post.sys.id">
+            <article class="media">
+              <div class="media-left">
+                <figure class="image is-96x96">
+                  <img
+                    :alt="post.fields.title"
+                    :src="filledFeaturedImageUrl(post, 100, 100)"
+                    :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
+                           + filledFeaturedImageUrl(post, 200, 200) + ' 2x'"
+                    v-if="post.fields.featuredImage"
+                  />
+                  <img
+                    :alt="post.fields.title"
+                    src="/avatar.png"
+                    v-else
+                  />
+                </figure>
+              </div>
+              <div class="media-content">
+                <h2 class="p-blog_list_postWrap--title">
+                  <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.fields.slug }}">
+                    {{ post.fields.title }}
+                  </nuxt-link>
+                </h2>
+                <p class="p-blog_list_postWrap--date">
+                  <formatted-date :date="post.fields.date"/>
+                </p>
+                <div class="tags p-blog_list_postWrap--tags"
+                     v-if="post.fields.tags">
+                  <span class="tag is-green"
+                        v-for="(tag, index) in post.fields.tags" :key="index">
+                    {{ tag }}
+                  </span>
                 </div>
-                <div class="media-content">
-                  <h2 class="p-blog_list_postWrap--title">
-                    <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.slug }}">
-                      {{ post.title }}
-                    </nuxt-link>
-                  </h2>
-                  <p class="p-blog_list_postWrap--date">
-                    {{ publishDate(post.dateAndTime) }}
-                  </p>
-                  <div class="tags p-blog_list_postWrap--tags"
-                       v-if="post.tags.length > 0">
-                    <span class="tag is-green"
-                          v-for="(tag, index) in post.tags" :key="index">
-                      {{ tag }}
-                    </span>
-                  </div>
-                </div>
-              </article>
-            </li>
-          </ul>
-        </div>
-        <div class="column has-text-centered">
-          <button
-            v-if="postCount && postCount > allPosts.length"
-            class="button is-rounded is-outlined is-primary is-medium"
-            :class="{ 'is-loading': isLoading }"
-            @click="loadMorePosts">
-            More!!!
-          </button>
+              </div>
+            </article>
+          </li>
+        </ul>
+        <div class="columns is-centered is-multiline">
+          <div class="column is-7">
+            <b-pagination
+              class="p-blog_list_pagination"
+              :total="totalPosts"
+              :current.sync="$store.state.blogCurrentPage"
+              order="is-centered"
+              :rounded="true"
+              :per-page="postPerPage"
+              @change="currentPagePosts">
+            </b-pagination>
+          </div>
         </div>
       </div>
     </section>
-    <b-loading :active.sync="isLoading" v-else></b-loading>
     <blog-powered-by/>
   </div>
 </template>
 
 <script>
-import allPostsQuery from '~/apollo/queries/allPosts';
-import _allPostsMetaQuery from '~/apollo/queries/_allPostsMeta';
-import moment from 'moment';
-import PageHeader from '../../components/PageHeader.vue';
+import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
+import FormattedDate from '~/components/FormattedDate.vue';
+import { createClient } from '~/plugins/contentful';
 
-const POSTS_PER_PAGE = 10;
+const client = createClient();
+const POST_PER_PAGE = 10;
 
 export default {
   name: 'index',
   components: {
-    PageHeader,
-    BlogPoweredBy: () => import('../../components/BlogPoweredBy.vue'),
+    FormattedDate,
+    BlogPoweredBy,
   },
   data() {
     return {
       pageTitle: 'Blog',
-      loading: 0,
-      allPosts: [],
-      postCount: 0,
+      posts: [],
+      totalPosts: 0,
+      postPerPage: POST_PER_PAGE,
     };
   },
-  apollo: {
-    $loadingKey: 'loading',
-    allPosts: {
-      query: allPostsQuery,
-      variables: {
-        skip: 0,
-        first: POSTS_PER_PAGE,
-      },
-    },
-    postCount: {
-      query: _allPostsMetaQuery,
-      update: ({ _allPostsMeta }) => _allPostsMeta.count,
-    },
-  },
-  computed: {
-    isLoading() {
-      return this.loading > 0;
-    },
-  },
   methods: {
-    loadMorePosts() {
-      this.$apollo.queries.allPosts.fetchMore({
-        variables: {
-          skip: this.allPosts.length,
-        },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return previousResult;
-          }
-          return Object.assign({}, previousResult, {
-            allPosts: [...previousResult.allPosts, ...fetchMoreResult.allPosts],
-          });
-        },
+    currentPagePosts(page) {
+      client.getEntries({
+        content_type: process.env.CTF_BLOG_POST_TYPE_ID,
+        order: '-sys.createdAt',
+        skip: page - 1,
+        limit: POST_PER_PAGE,
+      }).then((entries) => {
+        this.totalPosts = entries.total;
+        this.posts = entries.items;
       });
     },
-    croppedCoverImageUrl(post, width, height) {
-      return `https://media.graphcms.com/resize=w:${width},h:${height},fit:crop/${post.coverImage.handle}`;
-    },
-    publishDate(datetime) {
-      return moment(datetime).format('YYYY/M/D');
+    filledFeaturedImageUrl(post, width, height) {
+      const imageUrl = post.fields.featuredImage.fields.file.url;
+      return `${imageUrl}?fit=fill&w=${width}&h=${height}`;
     },
   },
   created() {
     this.$store.commit('updatePageTitle', this.pageTitle);
+    this.currentPagePosts(this.$store.state.blogCurrentPage);
   },
 };
 </script>

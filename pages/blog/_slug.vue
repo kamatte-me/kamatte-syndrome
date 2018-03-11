@@ -1,50 +1,41 @@
 <template>
   <div>
-    <template v-if="!isLoading">
-      <post-content :post="post"/>
-    </template>
-    <b-loading :active.sync="isLoading" v-else></b-loading>
+    <page-header/>
+    <post-content :post="post"/>
     <blog-powered-by/>
   </div>
 </template>
 
 <script>
-import postQuery from '~/apollo/queries/post';
+import PageHeader from '~/components/PageHeader.vue';
 import PostContent from '~/components/PostContent.vue';
+import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
+import { createClient } from '~/plugins/contentful';
 
 export default {
   name: 'slug',
   components: {
+    PageHeader,
     PostContent,
-    BlogPoweredBy: () => import('../../components/BlogPoweredBy.vue'),
+    BlogPoweredBy,
   },
-  data() {
-    return {
-      loading: 0,
-      post: {},
-    };
-  },
-  apollo: {
-    $loadingKey: 'loading',
-    post: {
-      query: postQuery,
-      variables() {
+  asyncData({ params, error }) {
+    const client = createClient();
+    return client.getEntries({
+      content_type: process.env.CTF_BLOG_POST_TYPE_ID,
+      'fields.slug': params.slug,
+    }).then((entries) => {
+      if (entries.items.length > 0) {
         return {
-          slug: this.$route.params.slug,
+          post: entries.items[0],
         };
-      },
-      // TODO: レンダリング前に404リダイレクトするIssueあり。 https://github.com/nuxt-community/apollo-module/issues/42
-      result({ data }) {
-        if (!data.post) {
-          this.$root.$nuxt.error({ statusCode: 404 });
-        }
-      },
-    },
+      }
+      error({ statusCode: 404 });
+      return {};
+    });
   },
-  computed: {
-    isLoading() {
-      return this.loading > 0;
-    },
+  created() {
+    this.$store.commit('updatePageTitle', this.post.fields.title);
   },
 };
 </script>

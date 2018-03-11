@@ -1,3 +1,5 @@
+const contentfulConfig = require('./.contentful.json');
+
 module.exports = {
   /*
   ** Headers of the page
@@ -23,6 +25,7 @@ module.exports = {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   },
+  cache: true,
   /*
   ** Customize the progress bar color
   */
@@ -31,8 +34,10 @@ module.exports = {
   ** Environment variables
   */
   env: {
-    googleApiKey: 'AIzaSyBk1V2ERjxr8SnO-VjNRBJSyHT9oUx55ek',
-    graphCmsToken: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1MjAxNTkzNzksImNsaWVudElkIjoiY2l2Z29zNmNqMDE5MjAxODRucDAxZGRkMiIsInByb2plY3RJZCI6ImNqZWNrbGxsZjNjOHYwMTk0eG1yOTZ0dGQiLCJwZXJtYW5lbnRBdXRoVG9rZW5JZCI6ImNqZWNubjhmbzJ5aTkwMTY5enlpejl2dXYifQ.VZf-Y-F7t7u-_AWCqv4xbgnXa2A7VWNfW8uKQ50dcm4',
+    GOOGLE_API_KEY: 'AIzaSyBk1V2ERjxr8SnO-VjNRBJSyHT9oUx55ek',
+    CTF_SPACE_ID: contentfulConfig.CTF_SPACE_ID,
+    CTF_CDA_ACCESS_TOKEN: contentfulConfig.CTF_CDA_ACCESS_TOKEN,
+    CTF_BLOG_POST_TYPE_ID: contentfulConfig.CTF_BLOG_POST_TYPE_ID,
   },
   /*
   ** Build configuration
@@ -58,22 +63,24 @@ module.exports = {
         },
       },
     },
+    vendor: [
+      '@nuxtjs/component-cache',
+      '@nuxtjs/google-analytics',
+      'buefy',
+      'axios',
+      'moment',
+      'lodash',
+      'vue-markdown',
+      'contentful',
+      '~/plugins/buefy',
+      '~/plugins/contentful',
+    ],
   },
-  vendor: [
-    'vue',
-    'vuex',
-    'buefy',
-    'axios',
-    '@nuxtjs/component-cache',
-    'lodash',
-    'graphql-tag',
-    'vue-markdown',
-  ],
   plugins: [
     '~/plugins/buefy',
+    '~/plugins/contentful',
   ],
   modules: [
-    '@nuxtjs/apollo',
     '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {
       id: 'UA-8322636-7',
@@ -83,9 +90,4 @@ module.exports = {
     'buefy',
     '@/assets/css/main.scss',
   ],
-  apollo: {
-    clientConfigs: {
-      default: '~/apollo/client-configs/default.js',
-    },
-  },
 };
