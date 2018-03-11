@@ -5,11 +5,17 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'kamatte syndrome',
+    titleTemplate: '%s - kamatte syndrome',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'plz kamatte me!!!' },
+      { hid: 'og:site_name', property: 'og:site_name', content: 'kamatte syndrome' },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'og:image', property: 'og:image', content: 'https://kamatte.me/logo.png' },
+      { hid: 'og:locale', property: 'og:locale', content: 'ja_JP' },
+      { hid: 'fb:app_id', property: 'fb:app_id', content: '159097111464111' },
+      { hid: 'twitter:card', property: 'twitter:card', content: 'summary' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },

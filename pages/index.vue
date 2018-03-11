@@ -28,20 +28,13 @@
 
 <script>
 export default {
-  data() {
-    return {
-      pageTitle: '',
-    };
-  },
   head() {
     return {
+      titleTemplate: 'kamatte syndrome',
       htmlAttrs: {
         class: '',
       },
     };
-  },
-  created() {
-    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>

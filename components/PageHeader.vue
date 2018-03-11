@@ -2,7 +2,7 @@
   <section class="hero is-primary">
     <div class="hero-body">
       <div class="container is-fluid has-text-centered">
-        <h1 class="title c-pageHeader_title">{{ $store.state.pageTitle }}</h1>
+        <h1 class="title c-pageHeader_title">{{ title }}</h1>
       </div>
     </div>
   </section>
@@ -11,5 +11,6 @@
 <script>
 export default {
   name: 'page-header',
+  props: ['title'],
 };
 </script>

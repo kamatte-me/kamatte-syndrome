@@ -47,5 +47,19 @@ export default {
     FormattedDate,
     VueMarkdown,
   },
+  head() {
+    if (this.post.fields.featuredImage) {
+      return {
+        meta: [
+          {
+            hid: 'og:image',
+            property: 'og:image',
+            content: `https:${this.post.fields.featuredImage.fields.file.url}`,
+          },
+        ],
+      };
+    }
+    return {};
+  },
 };
 </script>

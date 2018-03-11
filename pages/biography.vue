@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header/>
+    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <div class="columns">
@@ -65,6 +65,14 @@ export default {
       return level >= 70;
     },
   },
+  head() {
+    return {
+      title: this.pageTitle,
+      meta: [
+        { hid: 'og:type', property: 'og:type', content: 'profile' },
+      ],
+    };
+  },
   data() {
     return {
       pageTitle: 'Biography',
@@ -114,9 +122,6 @@ export default {
         kawaii: 100,
       },
     };
-  },
-  created() {
-    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>
