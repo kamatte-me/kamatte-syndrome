@@ -73,8 +73,7 @@ export default {
      * @returns {boolean}
      */
     isCurrentPage(to) {
-      // eslint-disable-next-line prefer-template
-      return new RegExp('^\\/' + to.name).test(this.$route.path);
+      return new RegExp(`^${to.name}`).test(this.$route.name);
     },
   },
 };
