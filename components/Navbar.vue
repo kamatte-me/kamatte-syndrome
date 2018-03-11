@@ -6,14 +6,14 @@
     <div class="navbar-brand">
       <nuxt-link
         to="/"
-        v-on:click.native="$store.commit('closeNavbarDropdown')"
+        v-on:click.native="closeDropdown()"
         class="navbar-item"
       >
         <img src="/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
       <div class="navbar-burger"
-           v-bind:class="{'is-active': $store.state.isDropdownActive}"
-           v-on:click="$store.commit('toggleNavbarDropdown')"
+           v-bind:class="{'is-active': isDropdown}"
+           v-on:click="toggleDropdown()"
       >
         <span></span>
         <span></span>
@@ -22,14 +22,14 @@
     </div>
 
     <div class="navbar-menu"
-         v-bind:class="{'is-active': $store.state.isDropdownActive}"
+         v-bind:class="{'is-active': isDropdown}"
     >
       <div class="navbar-start">
         <nuxt-link class="navbar-item c-navbar_item"
-           v-on:click.native="$store.commit('closeNavbarDropdown')"
-           v-for="(path, pageTitle) in $store.state.pages"
-           :to="path"
-           v-bind:class="{'is-active': isCurrentPage(path)}"
+           v-on:click.native="toggleDropdown()"
+           v-for="(to, pageTitle) in pages"
+           :to="to"
+           v-bind:class="{'is-active': isCurrentPage(to)}"
            :key="pageTitle"
         >
           {{ pageTitle }}
@@ -42,15 +42,39 @@
 <script>
 export default {
   name: 'navbar',
+  data() {
+    return {
+      pages: {
+        Biography: { name: 'biography' },
+        Portfolio: { name: 'portfolio' },
+        Illustration: { name: 'illustration' },
+        Culture: { name: 'culture' },
+        Blog: { name: 'blog' },
+      },
+      isDropdown: false,
+    };
+  },
   methods: {
     /**
+     * ドロップダウンを開閉する
+     */
+    toggleDropdown() {
+      this.isDropdown = !this.isDropdown;
+    },
+    /**
+     * ドロップダウンを閉じる
+     */
+    closeDropdown() {
+      this.isDropdown = false;
+    },
+    /**
      * 渡されたパスが現在表示しているパスか前方一致で判別する
-     * @param path
+     * @param to
      * @returns {boolean}
      */
-    isCurrentPage(path) {
+    isCurrentPage(to) {
       // eslint-disable-next-line prefer-template
-      return new RegExp('^\\' + path).test(this.$route.path);
+      return new RegExp('^\\/' + to.name).test(this.$route.path);
     },
   },
 };

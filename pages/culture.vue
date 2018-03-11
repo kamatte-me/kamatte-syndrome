@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header/>
+    <page-header :title="pageTitle"/>
     <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
         <div class="container">
@@ -25,6 +25,11 @@ export default {
   components: {
     PageHeader,
     YoutubeEmbed: () => import('~/components/YoutubeEmbed.vue'),
+  },
+  head() {
+    return {
+      title: this.pageTitle,
+    };
   },
   data() {
     return {
@@ -132,9 +137,6 @@ export default {
         ],
       },
     };
-  },
-  created() {
-    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>

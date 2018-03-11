@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header/>
+    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <ul class="p-portfolio_worksWrap">
@@ -65,6 +65,11 @@ export default {
   name: 'portfolio',
   components: {
     PageHeader,
+  },
+  head() {
+    return {
+      title: this.pageTitle,
+    };
   },
   data() {
     return {
@@ -201,9 +206,6 @@ export default {
     sortedPortfolio() {
       return _.sortBy(this.portfolio, 'year').reverse();
     },
-  },
-  created() {
-    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>

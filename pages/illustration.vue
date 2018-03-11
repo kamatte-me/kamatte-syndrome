@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header/>
+    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <div class="tile is-ancestor">
@@ -36,6 +36,11 @@ export default {
   name: 'illustration',
   components: {
     PageHeader,
+  },
+  head() {
+    return {
+      title: this.pageTitle,
+    };
   },
   data() {
     return {
@@ -78,9 +83,6 @@ export default {
       });
       return dividedList;
     },
-  },
-  created() {
-    this.$store.commit('updatePageTitle', this.pageTitle);
   },
 };
 </script>

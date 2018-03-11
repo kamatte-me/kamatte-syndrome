@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header/>
+    <page-header :title="post.fields.title"/>
     <post-content :post="post"/>
     <blog-powered-by/>
   </div>
@@ -19,6 +19,11 @@ export default {
     PostContent,
     BlogPoweredBy,
   },
+  head() {
+    return {
+      title: this.post.fields.title,
+    };
+  },
   asyncData({ params, error }) {
     const client = createClient();
     return client.getEntries({
@@ -33,9 +38,6 @@ export default {
       error({ statusCode: 404 });
       return {};
     });
-  },
-  created() {
-    this.$store.commit('updatePageTitle', this.post.fields.title);
   },
 };
 </script>

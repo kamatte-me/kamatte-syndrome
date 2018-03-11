@@ -14,15 +14,6 @@
 import Navbar from '~/components/Navbar.vue';
 import siteFooter from '~/components/SiteFooter.vue';
 
-const generateTitle = (pageTitle) => {
-  const baseTitle = 'kamatte syndrome';
-  if (pageTitle.length === 0) {
-    return baseTitle;
-  }
-  // eslint-disable-next-line prefer-template
-  return pageTitle + ' - ' + baseTitle;
-};
-
 export default {
   components: {
     Navbar,
@@ -30,7 +21,10 @@ export default {
   },
   head() {
     return {
-      title: generateTitle(this.$store.state.pageTitle),
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'kamatte syndrome' },
+        { hid: 'og:url', property: 'og:url', content: 'https://kamatte.me' },
+      ],
     };
   },
 };

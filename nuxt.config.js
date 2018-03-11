@@ -5,19 +5,19 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'kamatte syndrome',
+    titleTemplate: '%s - kamatte syndrome',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'plz kamatte me!!!' },
-      { property: 'og:title', content: 'kamatte syndrome' },
-      { property: 'og:site_name', content: 'kamatte syndrome' },
-      { property: 'og:type', content: 'website' },
-      { property: 'og:url', content: 'https://kamatte.me' },
-      { property: 'og:image', content: 'https://kamatte.me/logo.png' },
-      { property: 'og:description', content: 'plz kamatte me!!!' },
-      { property: 'fb:app_id', content: '159097111464111' },
-      { property: 'twitter:card', content: 'summary' },
+      { hid: 'og:title', property: 'og:title', content: 'kamatte syndrome' },
+      { hid: 'og:site_name', property: 'og:site_name', content: 'kamatte syndrome' },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'og:url', property: 'og:url', content: 'https://kamatte.me' },
+      { hid: 'og:image', property: 'og:image', content: 'https://kamatte.me/logo.png' },
+      { hid: 'og:description', property: 'og:description', content: 'plz kamatte me!!!' },
+      { hid: 'fb:app_id', property: 'fb:app_id', content: '159097111464111' },
+      { hid: 'twitter:card', property: 'twitter:card', content: 'summary' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
