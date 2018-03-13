@@ -6,9 +6,14 @@ npm-debug.log
 
 # Nuxt build
 .nuxt
+public/client
+public/server/nuxt
 
 # Nuxt generate
 dist
 
 # JetBrains IDE Settings
 .idea
+
+# Firebase
+firebase-debug.log

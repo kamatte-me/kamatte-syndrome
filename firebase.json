@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "public/client",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [{
+      "source": "**",
+      "function": "ssrapp"
+    }]
+  },
+  "functions": {
+    "source": "public/server"
+  }
+}
