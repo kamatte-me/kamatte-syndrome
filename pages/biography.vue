@@ -12,8 +12,8 @@
               kamatte
             </div>
             <div class="block has-text-centered-mobile">
-              <a href="https://github.com/kamatte-me" target="_blank">
-                <b-icon icon="github-circle" size="is-medium" type="is-github"></b-icon>
+              <a href="https://github.com/kamatte-me" target="_blank" rel="nofollow">
+                <i class="fab fa-github fa-2x has-text-github"></i>
               </a>
             </div>
             <dl class="p-biography_profile_chronology is-clearfix">
