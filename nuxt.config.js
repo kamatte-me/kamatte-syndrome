@@ -48,7 +48,39 @@ module.exports = {
   /*
   ** Build configuration
   */
+  buildDir: './public/server/nuxt',
   build: {
+    publicPath: '/assets/',
+    babel: {
+      presets: [
+        'es2015',
+        'stage-0',
+      ],
+      plugins: [
+        ['transform-runtime', {
+          polyfill: true,
+          regenerator: true,
+        }],
+      ],
+    },
+    postcss: {
+      plugins: {
+        'postcss-custom-properties': {
+          warnings: false,
+        },
+      },
+    },
+    extractCSS: true,
+    vendor: [
+      'buefy',
+      'axios',
+      'moment',
+      'lodash',
+      'vue-markdown',
+      'contentful',
+      '~/plugins/buefy',
+      '~/plugins/contentful',
+    ],
     /*
     ** Run ESLint on save
     */
@@ -62,25 +94,6 @@ module.exports = {
         });
       }
     },
-    postcss: {
-      plugins: {
-        'postcss-custom-properties': {
-          warnings: false,
-        },
-      },
-    },
-    vendor: [
-      '@nuxtjs/component-cache',
-      '@nuxtjs/google-analytics',
-      'buefy',
-      'axios',
-      'moment',
-      'lodash',
-      'vue-markdown',
-      'contentful',
-      '~/plugins/buefy',
-      '~/plugins/contentful',
-    ],
   },
   plugins: [
     '~/plugins/buefy',
