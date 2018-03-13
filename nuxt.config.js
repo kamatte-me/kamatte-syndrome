@@ -20,7 +20,9 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:300,400' },
-      { rel: 'stylesheet', href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css' },
+    ],
+    script: [
+      { src: 'https://use.fontawesome.com/releases/v5.0.8/js/all.js', defer: true },
     ],
     htmlAttrs: {
       class: 'has-navbar-fixed-top',
