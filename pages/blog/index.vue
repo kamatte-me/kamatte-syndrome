@@ -7,20 +7,22 @@
           <li class="column is-7" v-for="post in posts" :key="post.sys.id">
             <article class="media">
               <div class="media-left">
-                <figure class="image is-96x96">
-                  <img
-                    :alt="post.fields.title"
-                    :src="filledFeaturedImageUrl(post, 100, 100)"
-                    :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
+                <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.fields.slug }}">
+                  <figure class="image is-96x96">
+                    <img
+                      :alt="post.fields.title"
+                      :src="filledFeaturedImageUrl(post, 100, 100)"
+                      :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
                            + filledFeaturedImageUrl(post, 200, 200) + ' 2x'"
-                    v-if="post.fields.featuredImage"
-                  />
-                  <img
-                    :alt="post.fields.title"
-                    src="/avatar.png"
-                    v-else
-                  />
-                </figure>
+                      v-if="post.fields.featuredImage"
+                    />
+                    <img
+                      :alt="post.fields.title"
+                      src="/avatar.png"
+                      v-else
+                    />
+                  </figure>
+                </nuxt-link>
               </div>
               <div class="media-content">
                 <h2 class="p-blog_list_postWrap--title">
