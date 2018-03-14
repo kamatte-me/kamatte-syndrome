@@ -21,7 +21,7 @@ function handleRequest(req, res) {
     })
     .catch((e) => {
       // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
       res.send(e);
     });
 }
