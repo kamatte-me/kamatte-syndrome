@@ -6,8 +6,8 @@ npm-debug.log
 
 # Nuxt build
 .nuxt
-public/client
-public/server/nuxt
+firebase/hosting
+firebase/functions/nuxt
 
 # Nuxt generate
 dist
