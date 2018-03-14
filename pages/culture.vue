@@ -3,15 +3,17 @@
     <page-header :title="pageTitle"/>
     <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
-        <div class="container">
-          <ul class="p-culture_cultureWrap">
-            <li class="column has-text-centered"
-                 v-for="culture in culturesList" :key="culture.name">
-              <h2 class="title">{{ culture.name }}</h2>
-              <youtube-embed :videoId="culture.youtubeVideoId"/>
-            </li>
-          </ul>
-        </div>
+        <section class="section">
+          <div class="container">
+            <ul class="p-culture_cultureWrap">
+              <li class="column has-text-centered"
+                  v-for="culture in culturesList" :key="culture.name">
+                <h2 class="title">{{ culture.name }}</h2>
+                <youtube-embed :videoId="culture.youtubeVideoId"/>
+              </li>
+            </ul>
+          </div>
+        </section>
       </b-tab-item>
     </b-tabs>
   </div>
