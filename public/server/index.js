@@ -15,17 +15,12 @@ const nuxt = new Nuxt(config);
 
 function handleRequest(req, res) {
   res.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
-  nuxt.renderRoute('/')
-    .then((result) => {
-      res.send(result.html);
-    })
-    .catch((e) => {
-      // eslint-disable-next-line no-console
-      console.error(e);
-      res.send(e);
+  return new Promise((resolve, reject) => {
+    nuxt.render(req, res, (promise) => {
+      promise.then(resolve).catch(reject);
     });
+  });
 }
 
-app.get('*', handleRequest);
-
+app.use(handleRequest);
 exports.ssrapp = functions.https.onRequest(app);
