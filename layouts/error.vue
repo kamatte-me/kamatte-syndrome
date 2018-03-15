@@ -31,7 +31,7 @@
 
 <script>
 import Navbar from '~/components/Navbar.vue';
-import siteFooter from '~/components/SiteFooter.vue';
+import SiteFooter from '~/components/SiteFooter.vue';
 
 export default {
   name: 'error',
@@ -46,7 +46,7 @@ export default {
   },
   components: {
     Navbar,
-    siteFooter,
+    SiteFooter,
   },
   data() {
     return {

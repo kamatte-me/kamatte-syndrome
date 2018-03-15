@@ -21,12 +21,13 @@
 
 <script>
 import PageHeader from '~/components/PageHeader.vue';
+import YoutubeEmbed from '~/components/YoutubeEmbed.vue';
 
 export default {
   name: 'culture',
   components: {
     PageHeader,
-    YoutubeEmbed: () => import('~/components/YoutubeEmbed.vue'),
+    YoutubeEmbed,
   },
   head() {
     return {

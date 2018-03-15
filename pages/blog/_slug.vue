@@ -9,7 +9,6 @@
 <script>
 import PageHeader from '~/components/PageHeader.vue';
 import PostContent from '~/components/PostContent.vue';
-import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
 import { createClient } from '~/plugins/contentful';
 
 export default {
@@ -17,7 +16,7 @@ export default {
   components: {
     PageHeader,
     PostContent,
-    BlogPoweredBy,
+    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
   },
   head() {
     return {

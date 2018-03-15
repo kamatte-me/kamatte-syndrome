@@ -49,11 +49,11 @@
             <b-pagination
               class="p-blog_list_pagination"
               :total="totalPosts"
-              :current.sync="$store.state.blogCurrentPage"
+              :current="currentPage"
               order="is-centered"
               :rounded="true"
               :per-page="postPerPage"
-              @change="currentPagePosts">
+              @change="transPage">
             </b-pagination>
           </div>
         </div>
@@ -65,11 +65,9 @@
 
 <script>
 import PageHeader from '~/components/PageHeader.vue';
-import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
 import FormattedDate from '~/components/FormattedDate.vue';
 import { createClient } from '~/plugins/contentful';
 
-const client = createClient();
 const POST_PER_PAGE = 10;
 
 export default {
@@ -77,12 +75,34 @@ export default {
   components: {
     PageHeader,
     FormattedDate,
-    BlogPoweredBy,
+    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
   },
   head() {
     return {
       title: this.pageTitle,
     };
+  },
+  validate({ query }) {
+    return query.page === undefined || /^\d+$/.test(query.page);
+  },
+  asyncData({ query, error }) {
+    const client = createClient();
+    const currentPage = query.page === undefined ? 1 : Number(query.page);
+    return client.getEntries({
+      content_type: process.env.CTF_BLOG_POST_TYPE_ID,
+      order: '-sys.createdAt',
+      skip: (currentPage - 1) * POST_PER_PAGE,
+      limit: POST_PER_PAGE,
+    }).then((entries) => {
+      if (entries.items.length > 0) {
+        return {
+          posts: entries.items,
+          totalPosts: entries.total,
+        };
+      }
+      error({ statusCode: 404 });
+      return {};
+    });
   },
   data() {
     return {
@@ -92,25 +112,19 @@ export default {
       postPerPage: POST_PER_PAGE,
     };
   },
+  computed: {
+    currentPage() {
+      return this.$route.query.page === undefined ? 1 : Number(this.$route.query.page);
+    },
+  },
   methods: {
-    currentPagePosts(page) {
-      client.getEntries({
-        content_type: process.env.CTF_BLOG_POST_TYPE_ID,
-        order: '-sys.createdAt',
-        skip: page - 1,
-        limit: POST_PER_PAGE,
-      }).then((entries) => {
-        this.totalPosts = entries.total;
-        this.posts = entries.items;
-      });
+    transPage(page) {
+      return this.$router.push({ query: { page } });
     },
     filledFeaturedImageUrl(post, width, height) {
       const imageUrl = post.fields.featuredImage.fields.file.url;
       return `${imageUrl}?fit=fill&w=${width}&h=${height}`;
     },
-  },
-  created() {
-    this.currentPagePosts(this.$store.state.blogCurrentPage);
   },
 };
 </script>
