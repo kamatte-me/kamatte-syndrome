@@ -23,12 +23,6 @@ module.exports = {
       { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.0.8/css/all.css' },
     ],
   },
-  render: {
-    static: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-  },
-  cache: true,
   /*
   ** Customize the progress bar color
   */
