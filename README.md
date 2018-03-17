@@ -1,6 +1,16 @@
 # kamatte syndrome
 
-> Next kamatte syndrome
+> kamatte syndrome
+https://kamatte.me
+
+## Feature
+
+* SPA (Single Page Application)
+* SSR (Sever Side Rendering)
+* PWA (Progressive Web Apps)
+* Serverless (Cloud Functions for Firebase + Firebase Hosting)
+
+## Technologies
 
 * [Node.js](https://github.com/nodejs/node) v6.11.5
 * [Nuxt.js](https://github.com/nuxt/nuxt.js)
