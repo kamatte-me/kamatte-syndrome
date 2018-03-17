@@ -4,7 +4,6 @@
       <navbar/>
     </header>
     <main>
-      <page-header/>
       <nuxt/>
     </main>
     <site-footer/>
@@ -13,22 +12,22 @@
 
 <script>
 import Navbar from '~/components/Navbar.vue';
-import PageHeader from '~/components/PageHeader.vue';
 import SiteFooter from '~/components/SiteFooter.vue';
 
 export default {
+  name: 'top',
   components: {
     Navbar,
-    PageHeader,
     SiteFooter,
   },
   head() {
     return {
-      title: this.$store.state.pageTitle,
-      htmlAttrs: {
-        class: 'has-navbar-fixed-top',
-      },
+      titleTemplate: 'kamatte syndrome',
     };
   },
 };
 </script>
+
+<style scoped>
+
+</style>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <ul class="p-portfolio_worksWrap">
@@ -59,21 +58,14 @@
 
 <script>
 import _ from 'lodash';
-import PageHeader from '~/components/PageHeader.vue';
 
 export default {
   name: 'portfolio',
-  components: {
-    PageHeader,
-  },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', 'Portfolio');
   },
   data() {
     return {
-      pageTitle: 'Portfolio',
       portfolio: [
         {
           year: 2018,

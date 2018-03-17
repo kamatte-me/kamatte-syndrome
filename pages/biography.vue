@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <div class="columns">
@@ -12,7 +11,7 @@
               kamatte
             </div>
             <div class="block has-text-centered-mobile">
-              <a href="https://github.com/kamatte-me" target="_blank" rel="nofollow">
+              <a href="https://github.com/kamatte-me" target="_blank">
                 <i class="fab fa-github fa-2x has-text-github"></i>
               </a>
             </div>
@@ -53,29 +52,20 @@
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader.vue';
-
 export default {
   name: 'biography',
-  components: {
-    PageHeader,
-  },
-  methods: {
-    isHighLevel(level) {
-      return level >= 70;
-    },
-  },
   head() {
     return {
-      title: this.pageTitle,
       meta: [
         { hid: 'og:type', property: 'og:type', content: 'profile' },
       ],
     };
   },
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', 'Biography');
+  },
   data() {
     return {
-      pageTitle: 'Biography',
       chronology: {
         1994: '富山生まれ',
         2012: '金沢に移住',
@@ -122,6 +112,11 @@ export default {
         kawaii: 100,
       },
     };
+  },
+  methods: {
+    isHighLevel(level) {
+      return level >= 70;
+    },
   },
 };
 </script>

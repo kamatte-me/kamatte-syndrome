@@ -1,31 +1,29 @@
 <template>
   <div>
-    <page-header :title="post.fields.title"/>
     <post-content :post="post"/>
     <blog-powered-by/>
   </div>
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader.vue';
 import PostContent from '~/components/PostContent.vue';
-import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
 import { createClient } from '~/plugins/contentful';
 
 export default {
   name: 'slug',
   components: {
-    PageHeader,
     PostContent,
-    BlogPoweredBy,
+    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
   },
   head() {
     return {
-      title: this.post.fields.title,
       meta: [
         { hid: 'og:type', property: 'og:type', content: 'article' },
       ],
     };
+  },
+  created() {
+    this.$store.commit('updatePageTitle', this.post.fields.title);
   },
   asyncData({ params, error }) {
     const client = createClient();

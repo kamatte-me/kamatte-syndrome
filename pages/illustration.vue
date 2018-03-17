@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <div class="tile is-ancestor">
@@ -30,17 +29,11 @@
 
 <script>
 import _ from 'lodash';
-import PageHeader from '~/components/PageHeader.vue';
 
 export default {
   name: 'illustration',
-  components: {
-    PageHeader,
-  },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', '俺の絵');
   },
   data() {
     return {

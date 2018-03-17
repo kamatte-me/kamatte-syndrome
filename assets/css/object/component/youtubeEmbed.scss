@@ -48,7 +48,8 @@
         &:before {
           font-family: $family-designed;
           font-weight: 300;
-          font-size: 2rem;
+          padding: 0 1rem;
+          font-size: 1.8rem;
           color: $primary;
           content: 'This video exists in the future!!!';
           width: 100%;

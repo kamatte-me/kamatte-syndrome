@@ -1,17 +1,18 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
-        <div class="container">
-          <ul class="p-culture_cultureWrap">
-            <li class="column has-text-centered"
-                 v-for="culture in culturesList" :key="culture.name">
-              <h2 class="title">{{ culture.name }}</h2>
-              <youtube-embed :videoId="culture.youtubeVideoId"/>
-            </li>
-          </ul>
-        </div>
+        <section class="section">
+          <div class="container">
+            <ul class="p-culture_cultureWrap">
+              <li class="column has-text-centered"
+                  v-for="culture in culturesList" :key="culture.name">
+                <h2 class="title">{{ culture.name }}</h2>
+                <youtube-embed :videoId="culture.youtubeVideoId"/>
+              </li>
+            </ul>
+          </div>
+        </section>
       </b-tab-item>
     </b-tabs>
   </div>
@@ -19,21 +20,19 @@
 
 <script>
 import PageHeader from '~/components/PageHeader.vue';
+import YoutubeEmbed from '~/components/YoutubeEmbed.vue';
 
 export default {
   name: 'culture',
   components: {
     PageHeader,
-    YoutubeEmbed: () => import('~/components/YoutubeEmbed.vue'),
+    YoutubeEmbed,
   },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', 'Culture');
   },
   data() {
     return {
-      pageTitle: 'Culture',
       cultures: {
         Music: [
           {

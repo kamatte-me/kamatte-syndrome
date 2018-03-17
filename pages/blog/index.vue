@@ -1,26 +1,27 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <ul class="columns is-centered is-multiline p-blog_list">
           <li class="column is-7" v-for="post in posts" :key="post.sys.id">
             <article class="media">
               <div class="media-left">
-                <figure class="image is-96x96">
-                  <img
-                    :alt="post.fields.title"
-                    :src="filledFeaturedImageUrl(post, 100, 100)"
-                    :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
+                <nuxt-link :to="{ name: 'blog-slug', params: { slug: post.fields.slug }}">
+                  <figure class="image is-96x96">
+                    <img
+                      :alt="post.fields.title"
+                      :src="filledFeaturedImageUrl(post, 100, 100)"
+                      :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
                            + filledFeaturedImageUrl(post, 200, 200) + ' 2x'"
-                    v-if="post.fields.featuredImage"
-                  />
-                  <img
-                    :alt="post.fields.title"
-                    src="/avatar.png"
-                    v-else
-                  />
-                </figure>
+                      v-if="post.fields.featuredImage"
+                    />
+                    <img
+                      :alt="post.fields.title"
+                      src="/avatar.png"
+                      v-else
+                    />
+                  </figure>
+                </nuxt-link>
               </div>
               <div class="media-content">
                 <h2 class="p-blog_list_postWrap--title">
@@ -47,11 +48,11 @@
             <b-pagination
               class="p-blog_list_pagination"
               :total="totalPosts"
-              :current.sync="$store.state.blogCurrentPage"
+              :current="currentPage"
               order="is-centered"
               :rounded="true"
               :per-page="postPerPage"
-              @change="currentPagePosts">
+              @change="transPage">
             </b-pagination>
           </div>
         </div>
@@ -62,25 +63,41 @@
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader.vue';
-import BlogPoweredBy from '~/components/BlogPoweredBy.vue';
 import FormattedDate from '~/components/FormattedDate.vue';
 import { createClient } from '~/plugins/contentful';
 
-const client = createClient();
 const POST_PER_PAGE = 10;
 
 export default {
   name: 'index',
-  components: {
-    PageHeader,
-    FormattedDate,
-    BlogPoweredBy,
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', 'Blog');
   },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
+  components: {
+    FormattedDate,
+    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
+  },
+  validate({ query }) {
+    return query.page === undefined || /^\d+$/.test(query.page);
+  },
+  asyncData({ query, error }) {
+    const client = createClient();
+    const currentPage = query.page === undefined ? 1 : Number(query.page);
+    return client.getEntries({
+      content_type: process.env.CTF_BLOG_POST_TYPE_ID,
+      order: '-sys.createdAt',
+      skip: (currentPage - 1) * POST_PER_PAGE,
+      limit: POST_PER_PAGE,
+    }).then((entries) => {
+      if (entries.items.length > 0) {
+        return {
+          posts: entries.items,
+          totalPosts: entries.total,
+        };
+      }
+      error({ statusCode: 404 });
+      return {};
+    });
   },
   data() {
     return {
@@ -90,25 +107,19 @@ export default {
       postPerPage: POST_PER_PAGE,
     };
   },
+  computed: {
+    currentPage() {
+      return this.$route.query.page === undefined ? 1 : Number(this.$route.query.page);
+    },
+  },
   methods: {
-    currentPagePosts(page) {
-      client.getEntries({
-        content_type: process.env.CTF_BLOG_POST_TYPE_ID,
-        order: '-sys.createdAt',
-        skip: page - 1,
-        limit: POST_PER_PAGE,
-      }).then((entries) => {
-        this.totalPosts = entries.total;
-        this.posts = entries.items;
-      });
+    transPage(page) {
+      return this.$router.push({ query: { page } });
     },
     filledFeaturedImageUrl(post, width, height) {
       const imageUrl = post.fields.featuredImage.fields.file.url;
       return `${imageUrl}?fit=fill&w=${width}&h=${height}`;
     },
-  },
-  created() {
-    this.currentPagePosts(this.$store.state.blogCurrentPage);
   },
 };
 </script>
