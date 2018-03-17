@@ -1,6 +1,6 @@
 {
-  "name": "kamatte-syndrome",
-  "description": "kamatte syndrome",
+  "name": "kamatte-syndrome-project",
+  "description": "kamatte syndrome project",
   "private": true,
   "scripts": {
     "serve": "firebase serve --only functions,hosting"

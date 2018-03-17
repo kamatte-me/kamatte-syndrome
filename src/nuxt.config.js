@@ -1,3 +1,4 @@
+const contentful = require('contentful');
 const contentfulConfig = require('./.contentful.json');
 
 module.exports = {
@@ -103,9 +104,36 @@ module.exports = {
       id: 'UA-8322636-7',
     }],
     '@nuxtjs/pwa',
+    '@nuxtjs/sitemap',
   ],
   manifest: {
     name: 'kamatte syndrome',
     lang: 'ja',
+  },
+  sitemap: {
+    hostname: 'https://kamatte.me',
+    cacheTime: 1000 * 60 * 15,
+    routes() {
+      const client = contentful.createClient({
+        space: contentfulConfig.CTF_SPACE_ID,
+        accessToken: contentfulConfig.CTF_CDA_ACCESS_TOKEN,
+      });
+      return client.getEntries({
+        content_type: contentfulConfig.CTF_BLOG_POST_TYPE_ID,
+        order: '-sys.createdAt',
+        limit: 1000,
+      }).then((entries) => {
+        const routes = [
+          '/biography',
+          '/portfolio',
+          '/illustration',
+          '/culture',
+          '/blog',
+        ];
+        const postRoutes = entries.items.map(entry => `/blog/${entry.fields.slug}`);
+        Array.prototype.push.apply(routes, postRoutes);
+        return routes;
+      });
+    },
   },
 };
