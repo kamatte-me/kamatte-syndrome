@@ -45,7 +45,7 @@ module.exports = {
   /*
   ** Build configuration
   */
-  buildDir: './firebase/functions/nuxt',
+  buildDir: '../functions/nuxt',
   build: {
     publicPath: '/assets/',
     babel: {

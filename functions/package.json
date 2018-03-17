@@ -1,6 +1,7 @@
 {
   "name": "functions",
   "description": "Cloud Functions for Firebase",
+  "private": true,
   "dependencies": {
     "ajv": "^6.0.0",
     "axios": "^0.18.0",
@@ -24,7 +25,6 @@
     "vue-markdown": "^2.2.4",
     "vue-meta": "^1.2.0",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.0"
-  },
-  "private": true
+    "vuex": "^3.0.1"
+  }
 }
