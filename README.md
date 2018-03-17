@@ -10,6 +10,8 @@
 ## Build Setup
 
 ``` bash
+$ cd src
+
 # install dependencies
 $ npm install # Or yarn install
 
@@ -30,21 +32,23 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 ## Build and Deploy to Firebase
 
 ``` bash
-# Setup firebase tools
+# Install firebase tools
 $ npm i -g firebase-tools
 
 # npm install at source and server
-$ npm install
-$ cd public/server && npm install
+$ cd src && npm install
+$ cd functions && npm install
 
-# Build and Setup
-$ npm run build
-$ rm -rf public/client/*
-$ cp -R public/server/nuxt/dist/ public/client/assets
-$ cp -R static/ public/client
+# Build
+$ cd src && npm run build
 
-# Simulate Firebase on local
-$ firebase serve --only functions,hosting
+# Setup
+$ rm -rf public/*
+$ cp -R functions/nuxt/dist/ public/assets
+$ cp -R src/static/ public
+
+# Firebase serve on local
+$ npm run serve
 
 # Deploy!
 $ firebase deploy

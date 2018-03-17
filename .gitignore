@@ -1,19 +1,12 @@
 # dependencies
 node_modules
 
+# public
+public
+
 # logs
 npm-debug.log
-
-# Nuxt build
-.nuxt
-firebase/hosting
-firebase/functions/nuxt
-
-# Nuxt generate
-dist
+firebase-debug.log
 
 # JetBrains IDE Settings
 .idea
-
-# Firebase
-firebase-debug.log
