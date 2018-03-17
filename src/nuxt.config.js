@@ -1,5 +1,5 @@
 const contentful = require('contentful');
-const contentfulConfig = require('./.contentful.json');
+const apiKeys = require('./.apikeys.json');
 
 module.exports = {
   /*
@@ -32,10 +32,10 @@ module.exports = {
   ** Environment variables
   */
   env: {
-    GOOGLE_API_KEY: 'AIzaSyBk1V2ERjxr8SnO-VjNRBJSyHT9oUx55ek',
-    CTF_SPACE_ID: contentfulConfig.CTF_SPACE_ID,
-    CTF_CDA_ACCESS_TOKEN: contentfulConfig.CTF_CDA_ACCESS_TOKEN,
-    CTF_BLOG_POST_TYPE_ID: contentfulConfig.CTF_BLOG_POST_TYPE_ID,
+    GCP_API_KEY: apiKeys.GCP_API_KEY,
+    CTF_SPACE_ID: apiKeys.CTF_SPACE_ID,
+    CTF_CDA_ACCESS_TOKEN: apiKeys.CTF_CDA_ACCESS_TOKEN,
+    CTF_BLOG_POST_TYPE_ID: apiKeys.CTF_BLOG_POST_TYPE_ID,
   },
   /**
    * CSS
@@ -101,7 +101,7 @@ module.exports = {
   modules: [
     '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {
-      id: 'UA-8322636-7',
+      id: apiKeys.GA_TRACKING_ID,
     }],
     '@nuxtjs/pwa',
     '@nuxtjs/sitemap',
@@ -115,11 +115,11 @@ module.exports = {
     cacheTime: 1000 * 60 * 15,
     routes() {
       const client = contentful.createClient({
-        space: contentfulConfig.CTF_SPACE_ID,
-        accessToken: contentfulConfig.CTF_CDA_ACCESS_TOKEN,
+        space: apiKeys.CTF_SPACE_ID,
+        accessToken: apiKeys.CTF_CDA_ACCESS_TOKEN,
       });
       return client.getEntries({
-        content_type: contentfulConfig.CTF_BLOG_POST_TYPE_ID,
+        content_type: apiKeys.CTF_BLOG_POST_TYPE_ID,
         order: '-sys.createdAt',
         limit: 1000,
       }).then((entries) => {

@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const { Nuxt } = require('nuxt');
 const express = require('express');
 const contentful = require('contentful');
-const contentfulConfig = require('./.contentful.json');
+const apiKeys = require('./.apikeys.json');
 
 const app = express();
 
@@ -21,11 +21,11 @@ const config = {
     cacheTime: 1000 * 60 * 15,
     routes() {
       const client = contentful.createClient({
-        space: contentfulConfig.CTF_SPACE_ID,
-        accessToken: contentfulConfig.CTF_CDA_ACCESS_TOKEN,
+        space: apiKeys.CTF_SPACE_ID,
+        accessToken: apiKeys.CTF_CDA_ACCESS_TOKEN,
       });
       return client.getEntries({
-        content_type: contentfulConfig.CTF_BLOG_POST_TYPE_ID,
+        content_type: apiKeys.CTF_BLOG_POST_TYPE_ID,
         order: '-sys.createdAt',
         limit: 1000,
       }).then((entries) => {
