@@ -122,18 +122,7 @@ module.exports = {
         content_type: apiKeys.CTF_BLOG_POST_TYPE_ID,
         order: '-sys.createdAt',
         limit: 1000,
-      }).then((entries) => {
-        const routes = [
-          '/biography',
-          '/portfolio',
-          '/illustration',
-          '/culture',
-          '/blog',
-        ];
-        const postRoutes = entries.items.map(entry => `/blog/${entry.fields.slug}`);
-        Array.prototype.push.apply(routes, postRoutes);
-        return routes;
-      });
+      }).then(entries => entries.items.map(entry => `/blog/${entry.fields.slug}`));
     },
   },
 };
