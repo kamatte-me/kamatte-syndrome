@@ -36,6 +36,13 @@ module.exports = {
     CTF_CDA_ACCESS_TOKEN: contentfulConfig.CTF_CDA_ACCESS_TOKEN,
     CTF_BLOG_POST_TYPE_ID: contentfulConfig.CTF_BLOG_POST_TYPE_ID,
   },
+  /**
+   * CSS
+   */
+  css: [
+    'buefy',
+    '@/assets/css/main.scss',
+  ],
   /*
   ** Build configuration
   */
@@ -95,9 +102,10 @@ module.exports = {
     ['@nuxtjs/google-analytics', {
       id: 'UA-8322636-7',
     }],
+    '@nuxtjs/pwa',
   ],
-  css: [
-    'buefy',
-    '@/assets/css/main.scss',
-  ],
+  manifest: {
+    name: 'kamatte syndrome',
+    lang: 'ja',
+  },
 };
