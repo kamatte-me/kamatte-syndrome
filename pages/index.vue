@@ -28,13 +28,9 @@
 
 <script>
 export default {
-  head() {
-    return {
-      titleTemplate: 'kamatte syndrome',
-      htmlAttrs: {
-        class: '',
-      },
-    };
+  layout: 'top',
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', '');
   },
 };
 </script>

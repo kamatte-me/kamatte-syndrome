@@ -6,16 +6,16 @@ Vue.use(Vuex);
 
 const store = () => new Vuex.Store({
   state: {
-    blogCurrentPage: 1,
+    pageTitle: '',
   },
   mutations: {
     /**
-     * ブログのページを更新する
+     * タイトルを更新する
      * @param state
-     * @param currentPage
+     * @param pageTitle
      */
-    updateBlogCurrentPage(state, currentPage) {
-      state.blogCurrentPage = currentPage;
+    updatePageTitle(state, pageTitle) {
+      state.pageTitle = pageTitle;
     },
   },
 });

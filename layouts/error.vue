@@ -39,9 +39,6 @@ export default {
   head() {
     return {
       title: this.error.statusCode,
-      htmlAttrs: {
-        class: '',
-      },
     };
   },
   components: {

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
         <section class="section">
@@ -29,14 +28,11 @@ export default {
     PageHeader,
     YoutubeEmbed,
   },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', 'Culture');
   },
   data() {
     return {
-      pageTitle: 'Culture',
       cultures: {
         Music: [
           {

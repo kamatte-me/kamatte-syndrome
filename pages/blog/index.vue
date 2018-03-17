@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header :title="pageTitle"/>
     <section class="section">
       <div class="container">
         <ul class="columns is-centered is-multiline p-blog_list">
@@ -64,7 +63,6 @@
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader.vue';
 import FormattedDate from '~/components/FormattedDate.vue';
 import { createClient } from '~/plugins/contentful';
 
@@ -72,15 +70,12 @@ const POST_PER_PAGE = 10;
 
 export default {
   name: 'index',
+  beforeCreate() {
+    this.$store.commit('updatePageTitle', 'Blog');
+  },
   components: {
-    PageHeader,
     FormattedDate,
     BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
-  },
-  head() {
-    return {
-      title: this.pageTitle,
-    };
   },
   validate({ query }) {
     return query.page === undefined || /^\d+$/.test(query.page);

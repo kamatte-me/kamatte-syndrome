@@ -22,9 +22,6 @@ module.exports = {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:300,400' },
       { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.0.8/css/all.css' },
     ],
-    htmlAttrs: {
-      class: 'has-navbar-fixed-top',
-    },
   },
   render: {
     static: {
