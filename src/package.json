@@ -1,6 +1,6 @@
 {
-  "name": "source",
-  "description": "kamatte syndrome source",
+  "name": "kamatte-syndrome",
+  "description": "plz kamatte me!!!",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxtjs/component-cache": "^1.1.1",
     "@nuxtjs/google-analytics": "^2.0.2",
+    "@nuxtjs/sitemap": "0.0.3",
     "ajv": "^6.0.0",
     "axios": "^0.18.0",
     "babel-plugin-transform-runtime": "^6.23.0",
