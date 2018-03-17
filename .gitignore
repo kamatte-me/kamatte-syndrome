@@ -1,5 +1,11 @@
+# dependencies
 node_modules
+
+# public
 public
+
+# logs
+npm-debug.log
 firebase-debug.log
 
 # JetBrains IDE Settings
