@@ -1,0 +1,61 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6.13
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+        name: Change directory ~/src
+        command: cd src
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+        name: Install dependencies
+        command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # Build
+      - run:
+        name: Build nuxt app
+        command: npm run build
+
+      # Setup
+      - run:
+        name: Change directory ~/
+        command: cd ../
+
+      - run:
+        name: Copy assets
+        command: cp -R functions/nuxt/dist/ public/assets
+
+      - run:
+        name: Copy static
+        command: cp -R src/static/ public
+
+      # Deploy!!!
+      - run:
+        name: Install firebase CLI
+        command: npm install -g firebase-tools
+
+      - run:
+        name: Deploy to Firebase
+        command: firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
