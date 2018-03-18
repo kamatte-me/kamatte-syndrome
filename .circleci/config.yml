@@ -1,0 +1,71 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.9.4
+    working_directory: ~/project
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - restore_cache:
+          keys:
+          - v1-src-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-src-dependencies-
+      - restore_cache:
+          keys:
+          - v1-functions-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-functions-dependencies-
+      - run:
+          name: Install project Dependencies
+          command: npm install
+      - run:
+          name: Install source dependencies
+          command: cd src && npm install
+      - run:
+          name: Install functions dependencies
+          command: cd functions && npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - src/node_modules
+          key: v1-src-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - functions/node_modules
+          key: v1-functions-dependencies-{{ checksum "package.json" }}
+
+      # Build
+      - run:
+          name: Nuxt bulid
+          command: cd src && npm run build
+
+      # Setup
+      - run:
+          name: Make /public directory
+          command: mkdir public
+      - run:
+          name: Copy assets
+          command: cp -R functions/nuxt/dist/ public/assets
+      - run:
+          name: Copy static
+          command: cp -R src/static/* public
+
+      # Deploy!!!
+      - run:
+          name: Deploy to Firebase
+          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
