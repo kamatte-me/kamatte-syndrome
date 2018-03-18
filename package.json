@@ -3,7 +3,8 @@
   "description": "kamatte syndrome project",
   "private": true,
   "scripts": {
-    "serve": "firebase serve --only functions,hosting"
+    "serve": "firebase serve --only functions,hosting",
+    "deploy": "firebase deploy"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
