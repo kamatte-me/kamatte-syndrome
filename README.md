@@ -42,9 +42,6 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 ## Build and Deploy to Firebase
 
 ``` bash
-# Install firebase tools
-$ npm i -g firebase-tools
-
 # npm install at source and server
 $ cd src && npm install
 $ cd functions && npm install
@@ -55,11 +52,11 @@ $ cd src && npm run build
 # Setup
 $ rm -rf public/*
 $ cp -R functions/nuxt/dist/ public/assets
-$ cp -R src/static/ public
+$ cp -R src/static/* public
 
 # Firebase serve on local
 $ npm run serve
 
-# Deploy!
-$ firebase deploy
+# Deploy!!!
+$ npm run deploy
 ```
