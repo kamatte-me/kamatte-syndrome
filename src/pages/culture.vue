@@ -110,12 +110,8 @@ export default {
             youtubeVideoId: 'M1EXYQvAIvw',
           },
           {
-            name: '伊藤万理華',
-            youtubeVideoId: 'V_M9uJ75_Zg',
-          },
-          {
-            name: '生ハムと焼うどん',
-            youtubeVideoId: 'Uw2XLLPy2EE',
+            name: 'まねきケチャ',
+            youtubeVideoId: 'I1oEf1hGsfA',
           },
           {
             name: 'バンドじゃないもん！',
@@ -126,12 +122,20 @@ export default {
             youtubeVideoId: 'xuNHdqNbvH4',
           },
           {
-            name: '水野しず',
-            youtubeVideoId: 'eonSr75DQb0',
+            name: '伊藤万理華',
+            youtubeVideoId: 'V_M9uJ75_Zg',
+          },
+          {
+            name: '生ハムと焼うどん',
+            youtubeVideoId: 'Uw2XLLPy2EE',
           },
           {
             name: 'ベッド・イン',
             youtubeVideoId: 'ahmgp5DyW64',
+          },
+          {
+            name: '水野しず',
+            youtubeVideoId: 'eonSr75DQb0',
           },
         ],
       },
