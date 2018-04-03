@@ -1,5 +1,6 @@
 {
   "name": "kamatte-syndrome-project",
+  "version": "1.0.0",
   "description": "kamatte syndrome project",
   "private": true,
   "scripts": {
