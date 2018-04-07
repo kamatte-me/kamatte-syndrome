@@ -31,13 +31,6 @@ export default {
   beforeCreate() {
     this.$store.commit('updatePageTitle', 'Culture');
   },
-  head() {
-    return {
-      meta: [
-        { hid: 'description', name: 'description', content: 'Culture' },
-      ],
-    };
-  },
   data() {
     return {
       cultures: {
