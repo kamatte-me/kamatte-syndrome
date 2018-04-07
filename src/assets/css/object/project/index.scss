@@ -12,19 +12,22 @@
       margin: auto 10px;
       animation: fadeIn 3s ease 0s 1 normal;
     }
+  }
+
+  &_speech {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &-avatar {
       display: inline-block;
       margin-right: 16px;
     }
-  }
 
-  &_speech {
-    font-family: $family-designed;
-    font-weight: 300;
-    font-size: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    &-txt {
+      font-family: $family-designed;
+      font-weight: 300;
+      font-size: 3rem;
+    }
   }
 }

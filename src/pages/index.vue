@@ -14,16 +14,20 @@
     <section class="hero is-fullheight">
       <div class="hero-body">
         <div class="container is-fluid has-text-centered">
-          <nuxt-link to="/biography">
-            <p class="title is-1 has-text-green p-index_speech">
-              <img class="p-index_eyecatch-avatar"
+          <div class="p-index_speech">
+            <nuxt-link to="/biography">
+              <img class="p-index_speech-avatar"
                    src="/avatar.png"
                    width="130"
                    height="130"
                    alt="kamatte"/>
-              plz kamatte me!!!
-            </p>
-          </nuxt-link>
+            </nuxt-link>
+            <nuxt-link to="/biography">
+              <p class="title is-1 has-text-green p-index_speech-txt">
+                plz kamatte me!!!
+              </p>
+            </nuxt-link>
+          </div>
         </div>
       </div>
     </section>
