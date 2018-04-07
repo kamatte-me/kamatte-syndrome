@@ -16,10 +16,20 @@ export default {
     BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
   },
   head() {
+    const meta = [
+      { hid: 'description', name: 'description', content: this.post.fields.body },
+      { hid: 'og:description', property: 'og:description', content: this.post.fields.body },
+      { hid: 'og:type', property: 'og:type', content: 'article' },
+    ];
+    if (this.post.fields.featuredImage) {
+      meta.push({
+        hid: 'og:image',
+        property: 'og:image',
+        content: `https:${this.post.fields.featuredImage.fields.file.url}`,
+      });
+    }
     return {
-      meta: [
-        { hid: 'og:type', property: 'og:type', content: 'article' },
-      ],
+      meta,
     };
   },
   created() {

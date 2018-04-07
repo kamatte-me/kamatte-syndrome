@@ -37,7 +37,6 @@ export default {
   },
   data() {
     return {
-      pageTitle: '俺の絵',
       columns: 2,
       illustrations: [
         {

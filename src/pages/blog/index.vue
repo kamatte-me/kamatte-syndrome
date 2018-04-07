@@ -101,7 +101,6 @@ export default {
   },
   data() {
     return {
-      pageTitle: 'Blog',
       posts: [],
       totalPosts: 0,
       postPerPage: POST_PER_PAGE,
