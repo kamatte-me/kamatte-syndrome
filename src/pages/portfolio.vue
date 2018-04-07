@@ -64,6 +64,13 @@ export default {
   beforeCreate() {
     this.$store.commit('updatePageTitle', 'Portfolio');
   },
+  head() {
+    return {
+      meta: [
+        { hid: 'description', name: 'description', content: 'Portfolio' },
+      ],
+    };
+  },
   data() {
     return {
       portfolio: [

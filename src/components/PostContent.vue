@@ -52,6 +52,11 @@ export default {
       return {
         meta: [
           {
+            hid: 'description',
+            name: 'description',
+            content: this.post.fields.body,
+          },
+          {
             hid: 'og:image',
             property: 'og:image',
             content: `https:${this.post.fields.featuredImage.fields.file.url}`,

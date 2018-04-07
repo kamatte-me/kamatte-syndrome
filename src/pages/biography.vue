@@ -57,6 +57,7 @@ export default {
   head() {
     return {
       meta: [
+        { hid: 'description', name: 'description', content: 'Biography' },
         { hid: 'og:type', property: 'og:type', content: 'profile' },
       ],
     };

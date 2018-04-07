@@ -35,6 +35,13 @@ export default {
   beforeCreate() {
     this.$store.commit('updatePageTitle', '俺の絵');
   },
+  head() {
+    return {
+      meta: [
+        { hid: 'description', name: 'description', content: 'Illustration' },
+      ],
+    };
+  },
   data() {
     return {
       pageTitle: '俺の絵',

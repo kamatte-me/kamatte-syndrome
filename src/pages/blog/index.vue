@@ -80,6 +80,13 @@ export default {
   validate({ query }) {
     return query.page === undefined || /^\d+$/.test(query.page);
   },
+  head() {
+    return {
+      meta: [
+        { hid: 'description', name: 'description', content: 'Blog' },
+      ],
+    };
+  },
   asyncData({ query, error }) {
     const client = createClient();
     const currentPage = query.page === undefined ? 1 : Number(query.page);
