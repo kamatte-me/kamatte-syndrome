@@ -4,6 +4,10 @@
   "description": "kamatte syndrome project",
   "private": true,
   "scripts": {
+    "setup": "npm run clean && npm run copyassets && npm run copystatic",
+    "clean": "mkdir -p public && rm -rf public/*",
+    "copyassets": "cp -R functions/nuxt/dist/ public/assets",
+    "copystatic": "cp -R src/static/* public",
     "serve": "firebase serve --only functions,hosting",
     "deploy": "firebase deploy"
   },
