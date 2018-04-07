@@ -13,10 +13,14 @@
               <div class="column is-one-third has-text-centered">
                 <figure v-if="work.imagePath !== undefined">
                   <a v-if="work.url !== undefined" :href="work.url" target="_blank">
-                    <img :src="work.imagePath" class="p-portfolio_worksWrap_workWrap--image"/>
+                    <img :src="work.imagePath"
+                         class="p-portfolio_worksWrap_workWrap--image"
+                         :alt="work.title"/>
                   </a>
                   <template v-else>
-                    <img :src="work.imagePath" class="p-portfolio_worksWrap_workWrap--image"/>
+                    <img :src="work.imagePath"
+                         class="p-portfolio_worksWrap_workWrap--image"
+                         :alt="work.title"/>
                   </template>
                 </figure>
                 <div class="p-portfolio_worksWrap_workWrap--noimage" v-else></div>

@@ -15,7 +15,7 @@
                 <div class="box">
                   <h2 class="title is-4 has-text-centered">{{ illustration.title }}</h2>
                   <figure class="has-text-centered">
-                    <img :src="illustration.imagePath"/>
+                    <img :src="illustration.imagePath" :alt="illustration.title"/>
                   </figure>
                 </div>
               </article>
