@@ -8,7 +8,7 @@ references:
   container_config: &container_config
     docker:
       - image: circleci/node:8.9.4
-    working_directory: ~/kamatte-syndrome
+    working_directory: ~/project
 
   workspace_root: &workspace_root
       /tmp/workspace
@@ -22,7 +22,7 @@ references:
       name: load code from workspace
       command: |
           # Move all files and dotfiles to current directory
-          mv /tmp/workspace/kamatte-syndrome/* /tmp/workspace/kamatte-syndrome/.[!.]* .
+          mv /tmp/workspace/project/* /tmp/workspace/project/.[!.]* .
 
 jobs:
   build:
@@ -83,12 +83,12 @@ jobs:
       # Persist to workspace
       - run:
           command: |
-              mkdir -p /tmp/workspace/kamatte-syndrome
-              mv * .[!.]* /tmp/workspace/kamatte-syndrome/
+              mkdir -p /tmp/workspace/project
+              mv * .[!.]* /tmp/workspace/project/
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - kamatte-syndrome
+            - project
 
   deploy:
     <<: *container_config
