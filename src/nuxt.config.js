@@ -13,7 +13,7 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'plz kamatte me!!!' },
       { hid: 'og:site_name', property: 'og:site_name', content: 'kamatte syndrome' },
       { hid: 'og:type', property: 'og:type', content: 'website' },
-      { hid: 'og:image', property: 'og:image', content: 'https://kamatte.me/logo.png' },
+      { hid: 'og:image', property: 'og:image', content: 'https://kamatte.me/apple-touch-icon.png' },
       { hid: 'og:locale', property: 'og:locale', content: 'ja_JP' },
       { hid: 'fb:app_id', property: 'fb:app_id', content: '159097111464111' },
       { hid: 'twitter:card', property: 'twitter:card', content: 'summary' },
