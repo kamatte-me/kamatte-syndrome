@@ -22,18 +22,18 @@ https://kamatte.me
 ``` bash
 $ cd src
 
-# install dependencies
-$ npm install # Or yarn install
+# Install dependencies
+$ yarn install
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+# Serve with hot reload at localhost:3000
+$ yarn run dev
 
-# build for production and launch server
-$ npm run build
-$ npm start
+# Build for production and launch server
+$ yarn run build
+$ yarn start
 
-# generate static project
-$ npm run generate
+# Generate static project
+$ yarn run generate
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
@@ -42,21 +42,19 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 ## Build and Deploy to Firebase
 
 ``` bash
-# npm install at source and server
-$ cd src && npm install
-$ cd functions && npm install
+# Install dependencies at source and server
+$ cd src && yarn install
+$ cd functions && yarn install
 
 # Build
-$ cd src && npm run build
+$ cd src && yarn run build
 
 # Setup
-$ rm -rf public/*
-$ cp -R functions/nuxt/dist/ public/assets
-$ cp -R src/static/* public
+$ yarn run setup
 
 # Firebase serve on local
-$ npm run serve
+$ yarn run serve
 
 # Deploy!!!
-$ npm run deploy
+$ yarn run deploy
 ```
