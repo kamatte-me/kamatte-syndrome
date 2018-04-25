@@ -47,13 +47,13 @@ jobs:
           - v1-functions-dependencies-
       - run:
           name: Install project Dependencies
-          command: npm install
+          command: yarn install
       - run:
           name: Install source dependencies
-          command: cd src && npm install
+          command: cd src && yarn install
       - run:
           name: Install functions dependencies
-          command: cd functions && npm install
+          command: cd functions && yarn install
       - save_cache:
           paths:
             - node_modules
@@ -69,7 +69,7 @@ jobs:
       # Build
       - run:
           name: Nuxt bulid
-          command: cd src && npm run build
+          command: cd src && yarn run build
       # Setup
       - run:
           name: Make /public directory
@@ -104,10 +104,7 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master
+      - build
       - deploy:
           requires:
             - build
