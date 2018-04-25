@@ -30,7 +30,7 @@ $ yarn run dev
 
 # Build for production and launch server
 $ yarn run build
-$ yarn start
+$ yarn run start
 
 # Generate static project
 $ yarn run generate
