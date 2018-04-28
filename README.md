@@ -12,7 +12,7 @@ https://kamatte.me
 
 ## Technologies
 
-* [Node.js](https://github.com/nodejs/node) v6.11.5
+* [Node.js](https://github.com/nodejs/node) v6.14.0
 * [Nuxt.js](https://github.com/nuxt/nuxt.js)
 * [Buefy](https://buefy.github.io/#/)
 * Sass ([FLOCCS](https://github.com/hiloki/flocss) style)
