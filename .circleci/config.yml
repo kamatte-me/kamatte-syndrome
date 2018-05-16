@@ -19,7 +19,7 @@ references:
 
   load_code: &load_code
     run:
-      name: load code from workspace
+      name: Load build from Workspace
       command: |
           # Move all files and dotfiles to current directory
           mv /tmp/workspace/project/* /tmp/workspace/project/.[!.]* .
