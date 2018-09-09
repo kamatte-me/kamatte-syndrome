@@ -48,21 +48,7 @@ module.exports = {
   /*
   ** Build configuration
   */
-  buildDir: '../functions/nuxt',
   build: {
-    publicPath: '/assets/',
-    babel: {
-      presets: [
-        'es2015',
-        'stage-0',
-      ],
-      plugins: [
-        ['transform-runtime', {
-          polyfill: true,
-          regenerator: true,
-        }],
-      ],
-    },
     postcss: {
       plugins: {
         'postcss-custom-properties': {

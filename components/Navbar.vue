@@ -1,20 +1,17 @@
 <template>
   <nav class="navbar is-primary is-fixed-top"
        role="navigation"
-       aria-label="main navigation"
-  >
+       aria-label="main navigation">
     <div class="navbar-brand">
       <nuxt-link
         to="/"
         v-on:click.native="closeDropdown()"
-        class="navbar-item"
-      >
+        class="navbar-item">
         <img src="/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
       <div class="navbar-burger"
            v-bind:class="{'is-active': isDropdown}"
-           v-on:click="toggleDropdown()"
-      >
+           v-on:click="toggleDropdown()">
         <span></span>
         <span></span>
         <span></span>
@@ -22,16 +19,14 @@
     </div>
 
     <div class="navbar-menu"
-         v-bind:class="{'is-active': isDropdown}"
-    >
+         v-bind:class="{'is-active': isDropdown}">
       <div class="navbar-start">
         <nuxt-link class="navbar-item c-navbar_item"
            v-on:click.native="toggleDropdown()"
            v-for="(to, pageTitle) in pages"
            :to="to"
            v-bind:class="{'is-active': isCurrentPage(to)}"
-           :key="pageTitle"
-        >
+           :key="pageTitle">
           {{ pageTitle }}
         </nuxt-link>
       </div>

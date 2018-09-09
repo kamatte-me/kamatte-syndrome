@@ -22,6 +22,11 @@ export default {
     PageHeader,
     SiteFooter,
   },
+  computed: {
+    pageTitle() {
+      return this.$store.state.pageTitle;
+    },
+  },
   head() {
     return {
       title: this.$store.state.pageTitle,
