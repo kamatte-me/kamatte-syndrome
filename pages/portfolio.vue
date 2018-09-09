@@ -8,8 +8,7 @@
               {{ portfolio.year }}
             </h1>
             <div class="columns p-portfolio_worksWrap_workWrap"
-                 v-for="(work, index) in portfolio.works" :key="index"
-            >
+                 v-for="(work, index) in portfolio.works" :key="index">
               <div class="column is-one-third has-text-centered">
                 <figure v-if="work.imagePath !== undefined">
                   <a v-if="work.url !== undefined" :href="work.url" target="_blank">

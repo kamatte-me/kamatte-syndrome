@@ -18,8 +18,5 @@ module.exports = {
     'vue',
   ],
   // add your custom rules here
-  rules: {
-    'import/no-unresolved': false,
-    'import/extensions': false,
-  },
+  rules: {},
 };

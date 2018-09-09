@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar.vue';
-import SiteFooter from '~/components/SiteFooter.vue';
+import Navbar from '~/components/Navbar';
+import SiteFooter from '~/components/SiteFooter';
 
 export default {
   name: 'error',

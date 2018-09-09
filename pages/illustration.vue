@@ -5,13 +5,11 @@
         <div class="tile is-ancestor">
           <div class="tile is-vertical" :class="'is-' + columnSize"
                v-for="(illustrationsList, index) in divideIllustrationsList(columns)"
-               :key="index"
-          >
+               :key="index">
             <div class="tile is-parent is-vertical">
               <article class="tile is-child"
                        v-for="illustration in illustrationsList"
-                       :key="illustration.title"
-              >
+                       :key="illustration.title">
                 <div class="box">
                   <h2 class="title is-4 has-text-centered">{{ illustration.title }}</h2>
                   <figure class="has-text-centered">
