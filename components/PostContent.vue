@@ -35,14 +35,12 @@
 
 <script>
 import VueMarkdown from 'vue-markdown';
-import PageHeader from '~/components/PageHeader';
 import FormattedDate from '~/components/FormattedDate';
 
 export default {
   name: 'post-content',
   props: ['post'],
   components: {
-    PageHeader,
     FormattedDate,
     VueMarkdown,
   },

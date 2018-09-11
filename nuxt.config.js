@@ -58,14 +58,7 @@ module.exports = {
     },
     extractCSS: true,
     vendor: [
-      'buefy',
-      'axios',
-      'moment',
       'lodash',
-      'vue-markdown',
-      'contentful',
-      '~/plugins/buefy',
-      '~/plugins/contentful',
     ],
     /*
     ** Run ESLint on save
