@@ -21,3 +21,9 @@ node_modules/
 
 # IntelliJ Settings
 .idea/
+
+# README
+README.md
+
+# Others
+.DS_Store
