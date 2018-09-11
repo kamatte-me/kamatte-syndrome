@@ -5,13 +5,18 @@
 version: 2
 
 references:
-  container_config: &container_config
+  node_container_config: &node_container_config
     docker:
-      - image: circleci/node:8.9.4
+      - image: circleci/node:8.11.1
+    working_directory: ~/project
+
+  gcloud_container_config: &gcloud_container_config
+    docker:
+      - image: google/cloud-sdk
     working_directory: ~/project
 
   workspace_root: &workspace_root
-      /tmp/workspace
+    /tmp/workspace
 
   attach_workspace: &attach_workspace
     attach_workspace:
@@ -20,85 +25,57 @@ references:
   load_code: &load_code
     run:
       name: Load build from Workspace
-      command: |
-          # Move all files and dotfiles to current directory
-          mv /tmp/workspace/project/* /tmp/workspace/project/.[!.]* .
+      # Move all files and dotfiles to current directory
+      command: mv /tmp/workspace/project/* /tmp/workspace/project/.[!.]* .
 
 jobs:
   build:
-    <<: *container_config
+    <<: *node_container_config
     steps:
       - checkout
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "yarn.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - restore_cache:
-          keys:
-          - v1-src-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-src-dependencies-
-      - restore_cache:
-          keys:
-          - v1-functions-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-functions-dependencies-
       - run:
-          name: Install project Dependencies
+          name: Install Dependencies
           command: yarn install
-      - run:
-          name: Install source dependencies
-          command: cd src && yarn install
-      - run:
-          name: Install functions dependencies
-          command: cd functions && yarn install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - save_cache:
-          paths:
-            - src/node_modules
-          key: v1-src-dependencies-{{ checksum "package.json" }}
-      - save_cache:
-          paths:
-            - functions/node_modules
-          key: v1-functions-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
       # Build
       - run:
           name: Nuxt bulid
-          command: cd src && yarn run build
-      # Setup
-      - run:
-          name: Make /public directory
-          command: mkdir public
-      - run:
-          name: Copy assets
-          command: cp -R functions/nuxt/dist/ public/assets
-      - run:
-          name: Copy static
-          command: cp -R src/static/* public
+          command: yarn run build
       # Persist to workspace
       - run:
           command: |
-              mkdir -p /tmp/workspace/project
-              mv * .[!.]* /tmp/workspace/project/
+            mkdir -p /tmp/workspace/project
+            mv * .[!.]* /tmp/workspace/project/
       - persist_to_workspace:
           root: *workspace_root
           paths:
             - project
 
   deploy:
-    <<: *container_config
+    <<: *gcloud_container_config
     steps:
       - *attach_workspace
       - *load_code
-      # Deploy!!!
       - run:
-          name: Deploy to Firebase
-          command: ./node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
+          name: Store GCP Service Account
+          command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Initialize Google Cloud SDK
+          command: |
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud config set project ${GOOGLE_PROJECT_ID}
+      - run:
+          name: Deploy to Google App Engine
+          command: gcloud app deploy
 
 workflows:
   version: 2
