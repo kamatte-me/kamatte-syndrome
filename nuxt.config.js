@@ -57,9 +57,6 @@ module.exports = {
       },
     },
     extractCSS: true,
-    vendor: [
-      'lodash',
-    ],
     /*
     ** Run ESLint on save
     */

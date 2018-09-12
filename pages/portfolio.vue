@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 export default {
   name: 'portfolio',
@@ -199,7 +199,7 @@ export default {
   },
   computed: {
     sortedPortfolio() {
-      return _.sortBy(this.portfolio, 'year').reverse();
+      return sortBy(this.portfolio, 'year').reverse();
     },
   },
 };

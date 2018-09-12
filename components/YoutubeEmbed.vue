@@ -20,7 +20,6 @@
 
 <script>
 import axios from 'axios';
-import _ from 'lodash';
 
 export default {
   name: 'youtube-embed',
@@ -52,14 +51,13 @@ export default {
       },
     }).then((res) => {
       const qualities = ['maxres', 'standard', 'high', 'medium', 'default'];
-      _.each(qualities, (quality) => {
+      for (const quality of qualities) {
         const thumbnail = res.data.items[0].snippet.thumbnails[quality];
         if (thumbnail !== undefined) {
           this.thumbnailUrl = thumbnail.url;
-          return false;
+          break;
         }
-        return true;
-      });
+      }
       if (this.thumbnailUrl === '') {
         this.thumbnailUrl = null;
       }

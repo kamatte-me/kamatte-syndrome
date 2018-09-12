@@ -4,7 +4,7 @@
       <div class="container">
         <div class="tile is-ancestor">
           <div class="tile is-vertical" :class="'is-' + columnSize"
-               v-for="(illustrationsList, index) in divideIllustrationsList(columns)"
+               v-for="(illustrationsList, index) in divideIllustrationsList"
                :key="index">
             <div class="tile is-parent is-vertical">
               <article class="tile is-child"
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import each from 'lodash/each';
 
 export default {
   name: 'illustration',
@@ -60,15 +60,13 @@ export default {
     columnSize() {
       return Math.floor(12 / this.columns);
     },
-  },
-  methods: {
-    divideIllustrationsList(columns) {
+    divideIllustrationsList() {
       const dividedList = [];
-      for (let column = 0; column < columns; column += 1) {
+      for (let column = 0; column < this.columns; column += 1) {
         dividedList.push([]);
       }
-      _.each(this.illustrations, (illustration, index) => {
-        const column = Math.floor(index % columns);
+      each(this.illustrations, (illustration, index) => {
+        const column = Math.floor(index % this.columns);
         dividedList[column].push(illustration);
       });
       return dividedList;
