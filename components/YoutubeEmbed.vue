@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'youtube-embed',
   props: ['videoId'],
@@ -39,31 +37,37 @@ export default {
     play() {
       this.isPlay = true;
     },
+    /**
+     * YouTube Data API v3から最高画質のサムネイル取得
+     * @returns {Promise<void>}
+     */
+    async fetchYouTubeThumbs() {
+      await this.$axios.$get('https://www.googleapis.com/youtube/v3/videos', {
+        params: {
+          id: this.videoId,
+          key: process.env.YOUTUBE_API_KEY,
+          fields: 'items(snippet(thumbnails))',
+          part: 'snippet',
+        },
+      }).then((res) => {
+        const qualities = ['maxres', 'standard', 'high', 'medium', 'default'];
+        for (const quality of qualities) {
+          const thumbnail = res.items[0].snippet.thumbnails[quality];
+          if (thumbnail !== undefined) {
+            this.thumbnailUrl = thumbnail.url;
+            break;
+          }
+        }
+        if (this.thumbnailUrl === '') {
+          this.thumbnailUrl = null;
+        }
+      }).catch(() => {
+        this.thumbnailUrl = null;
+      });
+    },
   },
   created() {
-    // YouTube Data API v3から最高画質のサムネイル取得
-    axios.get('https://www.googleapis.com/youtube/v3/videos', {
-      params: {
-        id: this.videoId,
-        key: process.env.YOUTUBE_API_KEY,
-        fields: 'items(snippet(thumbnails))',
-        part: 'snippet',
-      },
-    }).then((res) => {
-      const qualities = ['maxres', 'standard', 'high', 'medium', 'default'];
-      for (const quality of qualities) {
-        const thumbnail = res.data.items[0].snippet.thumbnails[quality];
-        if (thumbnail !== undefined) {
-          this.thumbnailUrl = thumbnail.url;
-          break;
-        }
-      }
-      if (this.thumbnailUrl === '') {
-        this.thumbnailUrl = null;
-      }
-    }).catch(() => {
-      this.thumbnailUrl = null;
-    });
+    this.fetchYouTubeThumbs();
   },
 };
 </script>

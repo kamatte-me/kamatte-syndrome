@@ -76,6 +76,7 @@ module.exports = {
     '~/plugins/contentful',
   ],
   modules: [
+    '@nuxtjs/axios',
     '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {
       id: apiKeys.GA_TRACKING_ID,
