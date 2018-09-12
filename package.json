@@ -21,12 +21,12 @@
     "@nuxtjs/pwa": "^2.5.0",
     "@nuxtjs/sitemap": "^0.1.1",
     "ajv": "^6.0.0",
-    "buefy": "^0.6.7",
     "contentful": "^7.0.3",
     "koa": "^2.5.2",
     "lodash": "^4.17.10",
     "marked": "^0.5.0",
-    "nuxt": "^1.0.0"
+    "nuxt": "^1.0.0",
+    "nuxt-buefy": "^0.2.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

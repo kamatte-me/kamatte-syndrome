@@ -1205,7 +1205,7 @@ browserslist@^3.2.6:
     caniuse-lite "^1.0.30000844"
     electron-to-chromium "^1.3.47"
 
-buefy@^0.6.7:
+buefy@0.6.7:
   version "0.6.7"
   resolved "https://registry.yarnpkg.com/buefy/-/buefy-0.6.7.tgz#739045a3e2437c3abe0a3bcf3694da45f12ee24e"
   dependencies:
@@ -4423,6 +4423,12 @@ num2fraction@^1.2.2:
 number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
+
+nuxt-buefy@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/nuxt-buefy/-/nuxt-buefy-0.2.3.tgz#b1f32fa18b992d1f0af98788553e379a5d284fb2"
+  dependencies:
+    buefy "0.6.7"
 
 nuxt@^1.0.0:
   version "1.4.2"

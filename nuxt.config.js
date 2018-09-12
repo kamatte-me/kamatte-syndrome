@@ -76,6 +76,7 @@ module.exports = {
     '~/plugins/contentful',
   ],
   modules: [
+    ['nuxt-buefy', { css: false, materialDesignIcons: false }],
     '@nuxtjs/axios',
     '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {
