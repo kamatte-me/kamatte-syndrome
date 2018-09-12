@@ -1,19 +1,11 @@
 const Koa = require('koa');
-const { Nuxt, Builder } = require('nuxt');
-
-const config = require('./nuxt.config.js');
+const { Nuxt } = require('nuxt');
 
 async function start() {
   const app = new Koa();
 
-  config.dev = !(app.env === 'production');
+  const config = require('./nuxt.config.js');
   const nuxt = new Nuxt(config);
-
-  // Build in development
-  if (config.dev) {
-    const builder = new Builder(nuxt);
-    await builder.build();
-  }
 
   app.use(async (ctx, next) => {
     try {
@@ -41,9 +33,6 @@ async function start() {
 
   const port = process.env.PORT || 3000;
   app.listen(port);
-  if (config.dev) {
-    console.log(`Server listening on http://localhost:${port}`);
-  }
 }
 
 start();
