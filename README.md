@@ -1,27 +1,37 @@
 # kamatte syndrome
 
-> kamatte syndrome
+> kamatte syndrome<br>
 https://kamatte.me
+
 
 ## Feature
 
 * SPA (Single Page Application)
 * SSR (Sever Side Rendering)
 * PWA (Progressive Web Apps)
-* Serverless (Cloud Functions for Firebase + Firebase Hosting)
+* Serverless (Node.js / Google App Engine Standard Environment)
+
 
 ## Technologies
 
-* [Node.js](https://github.com/nodejs/node) v6.14.0
-* [Nuxt.js](https://github.com/nuxt/nuxt.js)
+* [Node.js](https://github.com/nodejs/node) v8.11.1
+* [Nuxt.js](https://github.com/nuxt/nuxt.js) v1.x
 * [Buefy](https://buefy.github.io/#/)
 * Sass ([FLOCCS](https://github.com/hiloki/flocss) style)
+
+
+## Requires
+
+* Node.js v8.11.1
+* [Yarn](https://yarnpkg.com/)
+* Google Cloud SDK
+
+Please read [Quickstart for Node.js in the App Engine Standard Environment](https://cloud.google.com/appengine/docs/standard/nodejs/quickstart) and setup.
+
 
 ## Build Setup
 
 ``` bash
-$ cd src
-
 # Install dependencies
 $ yarn install
 
@@ -32,29 +42,8 @@ $ yarn run dev
 $ yarn run build
 $ yarn run start
 
-# Generate static project
-$ yarn run generate
+# Build and Deploy to GAE/SE
+$ yarn run deploy
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
-
-
-## Build and Deploy to Firebase
-
-``` bash
-# Install dependencies at source and server
-$ cd src && yarn install
-$ cd functions && yarn install
-
-# Build
-$ cd src && yarn run build
-
-# Setup
-$ yarn run setup
-
-# Firebase serve on local
-$ yarn run serve
-
-# Deploy!!!
-$ yarn run deploy
-```

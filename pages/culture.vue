@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader.vue';
-import YoutubeEmbed from '~/components/YoutubeEmbed.vue';
+import PageHeader from '~/components/PageHeader';
+import YoutubeEmbed from '~/components/YoutubeEmbed';
 
 export default {
   name: 'culture',

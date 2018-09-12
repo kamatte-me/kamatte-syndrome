@@ -8,8 +8,7 @@
               {{ portfolio.year }}
             </h1>
             <div class="columns p-portfolio_worksWrap_workWrap"
-                 v-for="(work, index) in portfolio.works" :key="index"
-            >
+                 v-for="(work, index) in portfolio.works" :key="index">
               <div class="column is-one-third has-text-centered">
                 <figure v-if="work.imagePath !== undefined">
                   <a v-if="work.url !== undefined" :href="work.url" target="_blank">
@@ -137,9 +136,9 @@ export default {
               title: 'レビューサイトにおけるレビュアーの信頼度評価システムの研究',
               imagePath: '/images/rihh.png',
               charge: '卒業研究',
-              description: 'レビュー関係を二部グラフでモデル化し、' +
-              '機械学習でレビュアーの信頼度を評価するアルゴリズムをつくりました。<br>' +
-              '中間発表会では学科最優秀賞を頂きました。副賞はUSB2.0メモリ（4GB）でした。',
+              description: 'レビュー関係を二部グラフでモデル化し、'
+                + '機械学習でレビュアーの信頼度を評価するアルゴリズムをつくりました。<br>'
+                + '中間発表会では学科最優秀賞を頂きました。副賞はUSB2.0メモリ（4GB）でした。',
               tags: [
                 'Python',
                 'Big Data',
@@ -157,10 +156,10 @@ export default {
               title: 'Onbu',
               imagePath: '/images/onbu.jpg',
               charge: 'ハッカソン',
-              description: '「KITハッカソン vol.4」にて、小学生が自治的にケンカを仲裁するためのシステムをつくりました。<br>' +
-              '審査員（小学生）賞を受賞しました。副賞はありませんでした。<br>' +
-              '<a href="http://www.huffingtonpost.jp/2016/04/11/kit-hackathon_n_9631618.html" target="_blank">' +
-              '近未来の小学校を創造せよ 〜金沢工業大学の「ハッカソン×地域密着」が示す、巻き込み型のまちづくり</a>',
+              description: '「KITハッカソン vol.4」にて、小学生が自治的にケンカを仲裁するためのシステムをつくりました。<br>'
+              + '審査員（小学生）賞を受賞しました。副賞はありませんでした。<br>'
+              + '<a href="http://www.huffingtonpost.jp/2016/04/11/kit-hackathon_n_9631618.html" target="_blank">'
+              + '近未来の小学校を創造せよ 〜金沢工業大学の「ハッカソン×地域密着」が示す、巻き込み型のまちづくり</a>',
               tags: [
                 'IoT',
                 'Ruby',
@@ -180,10 +179,10 @@ export default {
               title: 'どっち派論争',
               imagePath: '/images/docchiha_ronsou.png',
               charge: 'ハッカソン',
-              description: '「DMMハッカソン」にて、２つの派閥に分かれて口喧嘩するWebアプリをつくりました。<br>' +
-              '3位入賞、そしてMVP賞を受賞しました。副賞はいっぱい貰えました。<br>' +
-              '<a href="https://www.jobweb.jp/blog/student/2049689/18992" target="_blank">' +
-              'DMMハッカソンDAY3 最終日レポート その４</a>',
+              description: '「DMMハッカソン」にて、２つの派閥に分かれて口喧嘩するWebアプリをつくりました。<br>'
+              + '3位入賞、そしてMVP賞を受賞しました。副賞はいっぱい貰えました。<br>'
+              + '<a href="https://www.jobweb.jp/blog/student/2049689/18992" target="_blank">'
+              + 'DMMハッカソンDAY3 最終日レポート その４</a>',
               tags: [
                 'PHP',
                 'HTML',

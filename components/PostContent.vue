@@ -22,8 +22,7 @@
               <div class="c-blogContent_coverImage" v-if="post.fields.featuredImage">
                 <img
                   :alt="post.fields.title"
-                  :src="post.fields.featuredImage.fields.file.url"
-                />
+                  :src="post.fields.featuredImage.fields.file.url"/>
               </div>
               <vue-markdown>{{ post.fields.body }}</vue-markdown>
             </div>
@@ -36,14 +35,12 @@
 
 <script>
 import VueMarkdown from 'vue-markdown';
-import PageHeader from '~/components/PageHeader.vue';
-import FormattedDate from '~/components/FormattedDate.vue';
+import FormattedDate from '~/components/FormattedDate';
 
 export default {
   name: 'post-content',
   props: ['post'],
   components: {
-    PageHeader,
     FormattedDate,
     VueMarkdown,
   },

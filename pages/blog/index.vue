@@ -13,13 +13,11 @@
                       :src="filledFeaturedImageUrl(post, 100, 100)"
                       :srcset="filledFeaturedImageUrl(post, 100, 100) + ' 1x,'
                            + filledFeaturedImageUrl(post, 200, 200) + ' 2x'"
-                      v-if="post.fields.featuredImage"
-                    />
+                      v-if="post.fields.featuredImage"/>
                     <img
                       :alt="post.fields.title"
                       src="/avatar.png"
-                      v-else
-                    />
+                      v-else/>
                   </figure>
                 </nuxt-link>
               </div>
@@ -63,7 +61,7 @@
 </template>
 
 <script>
-import FormattedDate from '~/components/FormattedDate.vue';
+import FormattedDate from '~/components/FormattedDate';
 import { createClient } from '~/plugins/contentful';
 
 const POST_PER_PAGE = 10;
@@ -75,7 +73,7 @@ export default {
   },
   components: {
     FormattedDate,
-    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
+    BlogPoweredBy: () => import('~/components/BlogPoweredBy'),
   },
   validate({ query }) {
     return query.page === undefined || /^\d+$/.test(query.page);

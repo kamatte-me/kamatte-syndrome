@@ -1,29 +1,40 @@
 {
-  "name": "kamatte-syndrome-project",
-  "version": "1.0.0",
-  "description": "kamatte syndrome project",
+  "name": "kamatte-syndrome",
+  "description": "plz kamatte me!!!",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
-    "setup": "yarn run clean && yarn run copyassets && yarn run copystatic",
-    "clean": "mkdir -p public && rm -rf public/*",
-    "copyassets": "cp -R functions/nuxt/dist/ public/assets",
-    "copystatic": "cp -R src/static/* public",
-    "serve": "firebase serve --only functions,hosting",
-    "deploy": "firebase deploy"
+    "dev": "node server.js",
+    "build": "nuxt build",
+    "start": "NODE_ENV=production node server.js",
+    "deploy": "gcloud app deploy",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "yarn run lint"
+  },
+  "dependencies": {
+    "@nuxtjs/component-cache": "^1.1.2",
+    "@nuxtjs/google-adsense": "^1.1.3",
+    "@nuxtjs/google-analytics": "^2.0.2",
+    "@nuxtjs/pwa": "^2.5.0",
+    "@nuxtjs/sitemap": "^0.1.1",
+    "ajv": "^6.0.0",
+    "axios": "^0.18.0",
+    "buefy": "^0.6.7",
+    "contentful": "^7.0.3",
+    "koa": "^2.5.2",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2",
+    "nuxt": "^1.0.0",
+    "vue-markdown": "^2.2.4"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
-    "eslint": "^4.18.0",
-    "eslint-config-airbnb": "^16.1.0",
+    "eslint": "^4.15.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.1",
-    "eslint-plugin-html": "^4.0.2",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-node": "^6.0.0",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-react": "^7.6.1",
-    "eslint-plugin-vue": "^4.2.2",
-    "firebase-tools": "^3.17.6"
+    "eslint-plugin-vue": "^4.0.0",
+    "node-sass": "^4.9.3",
+    "sass-loader": "^7.1.0"
   }
 }

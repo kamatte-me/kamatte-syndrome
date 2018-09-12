@@ -12,15 +12,20 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar.vue';
-import PageHeader from '~/components/PageHeader.vue';
-import SiteFooter from '~/components/SiteFooter.vue';
+import Navbar from '~/components/Navbar';
+import PageHeader from '~/components/PageHeader';
+import SiteFooter from '~/components/SiteFooter';
 
 export default {
   components: {
     Navbar,
     PageHeader,
     SiteFooter,
+  },
+  computed: {
+    pageTitle() {
+      return this.$store.state.pageTitle;
+    },
   },
   head() {
     return {

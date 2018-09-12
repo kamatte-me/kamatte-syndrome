@@ -6,14 +6,14 @@
 </template>
 
 <script>
-import PostContent from '~/components/PostContent.vue';
+import PostContent from '~/components/PostContent';
 import { createClient } from '~/plugins/contentful';
 
 export default {
   name: 'slug',
   components: {
     PostContent,
-    BlogPoweredBy: () => import('~/components/BlogPoweredBy.vue'),
+    BlogPoweredBy: () => import('~/components/BlogPoweredBy'),
   },
   head() {
     const meta = [
