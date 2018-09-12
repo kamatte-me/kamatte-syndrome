@@ -33,7 +33,7 @@ module.exports = {
   ** Environment variables
   */
   env: {
-    GCP_API_KEY: apiKeys.GCP_API_KEY,
+    YOUTUBE_API_KEY: apiKeys.YOUTUBE_API_KEY,
     CTF_SPACE_ID: apiKeys.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: apiKeys.CTF_CDA_ACCESS_TOKEN,
     CTF_BLOG_POST_TYPE_ID: apiKeys.CTF_BLOG_POST_TYPE_ID,
