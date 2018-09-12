@@ -24,7 +24,6 @@
     "contentful": "^7.0.3",
     "koa": "^2.5.2",
     "lodash": "^4.17.10",
-    "moment": "^2.22.2",
     "nuxt": "^1.0.0",
     "vue-markdown": "^2.2.4"
   },
