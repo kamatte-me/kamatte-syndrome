@@ -42,7 +42,6 @@ module.exports = {
    * CSS
    */
   css: [
-    'buefy',
     '@/assets/css/main.scss',
   ],
   /*
