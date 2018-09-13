@@ -16,7 +16,7 @@
                       v-if="post.fields.featuredImage"/>
                     <img
                       :alt="post.fields.title"
-                      src="/avatar.png"
+                      src="~/assets/images/avatar.png"
                       v-else/>
                   </figure>
                 </nuxt-link>

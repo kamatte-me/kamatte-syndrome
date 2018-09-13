@@ -39,19 +39,19 @@ export default {
       illustrations: [
         {
           title: 'ビート板とコマが遊んでいるところ',
-          imagePath: '/images/orenoe/bi-to_ban_to_koma.jpg',
+          imagePath: require('~/assets/images/orenoe/bi-to_ban_to_koma.jpg'),
         },
         {
           title: '当たり障りない騙し合い',
-          imagePath: '/images/orenoe/atarisawari_nai_damashiai.jpg',
+          imagePath: require('~/assets/images/orenoe/atarisawari_nai_damashiai.jpg'),
         },
         {
           title: 'おばあちゃんの',
-          imagePath: '/images/orenoe/obaachan_no.jpg',
+          imagePath: require('~/assets/images/orenoe/obaachan_no.jpg'),
         },
         {
           title: 'おでかけ',
-          imagePath: '/images/orenoe/odekake.jpg',
+          imagePath: require('~/assets/images/orenoe/odekake.jpg'),
         },
       ],
     };
