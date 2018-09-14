@@ -79,10 +79,6 @@ module.exports = {
     ['@nuxtjs/google-analytics', {
       id: apiKeys.GA_TRACKING_ID,
     }],
-    ['@nuxtjs/google-adsense', {
-      id: 'ca-pub-6468254257303340',
-      pageLevelAds: true,
-    }],
     '@nuxtjs/pwa',
     '@nuxtjs/sitemap',
   ],
