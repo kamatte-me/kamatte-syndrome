@@ -4,7 +4,7 @@
       <div class="container">
         <div class="columns">
           <div class="column is-two-fifths has-text-centered">
-            <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
+            <img src="~/assets/images/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
           <div class="column">
             <div class="has-text-centered-mobile has-text-green p-biography_profile_name">
@@ -12,7 +12,11 @@
             </div>
             <div class="block has-text-centered-mobile">
               <a href="https://github.com/kamatte-me" target="_blank">
-                <i class="fab fa-github fa-2x has-text-github"></i>
+                <b-icon
+                  icon="github-circle"
+                  type="is-github"
+                  size="is-medium">
+                </b-icon>
               </a>
             </div>
             <dl class="p-biography_profile_chronology is-clearfix">
@@ -76,10 +80,10 @@ export default {
       },
       skills: {
         Python: 100,
-        'Ruby(Ruby on Rails)': 80,
-        JavaScript: 75,
+        'Ruby (Ruby on Rails)': 80,
+        'JavaScript': 75,
         jQuery: 80,
-        'Vue.js(Nuxt.js)': 90,
+        'Vue.js (Nuxt.js)': 90,
         React: 55,
         Angular: 30,
         Golang: 60,
@@ -93,22 +97,24 @@ export default {
         'Android Java': 70,
         R: 10,
         HTML: 75,
-        'CSS/SCSS': 65,
+        'CSS/SCSS': 70,
         MySQL: 75,
         MongoDB: 30,
         Neo4j: 70,
         Realm: 65,
+        Redis: 40,
         Nginx: 70,
+        Apache: 30,
         Git: 90,
         Vagrant: 65,
-        Docker: 20,
-        Ansible: 70,
-        'Circle CI': 50,
+        Docker: 40,
+        Ansible: 80,
+        'Circle CI': 60,
         Jenkins: 30,
         Zabbix: 80,
-        'Linux(Ubuntu/CentOS)': 80,
-        AWS: 45,
-        GCP: 50,
+        'Linux (Ubuntu/CentOS)': 80,
+        'GCP/Firebase': 55,
+        AWS: 50,
         'Graph Theory': 75,
         'Machine Learning/Big Data': 70,
         Photoshop: 40,

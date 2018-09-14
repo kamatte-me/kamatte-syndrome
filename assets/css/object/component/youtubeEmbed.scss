@@ -27,14 +27,7 @@
         cursor: pointer;
         padding: 0;
         overflow: hidden;
-
-        span {
-          background: url('~assets/icons/play-circle.svg') no-repeat center;
-          background-size: contain;
-          display: inline-block;
-          width: 80px;
-          height: 80px;
-        }
+        font-size: 80px;
       }
 
       &-none {

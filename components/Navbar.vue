@@ -7,7 +7,7 @@
         to="/"
         v-on:click.native="closeDropdown()"
         class="navbar-item">
-        <img src="/logo.png" alt="kamatte syndrome"/>
+        <img src="~/assets/images/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
       <div class="navbar-burger"
            v-bind:class="{'is-active': isDropdown}"

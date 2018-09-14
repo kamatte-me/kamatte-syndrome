@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 export default {
   name: 'portfolio',
@@ -93,8 +93,25 @@ export default {
               ],
             },
             {
+              title: 'Nuxt.jsとFirebaseでSPA×SSR×PWA×サーバーレスを実現する - DMM inside',
+              url: 'https://inside.dmm.com/entry/2018/04/10/nuxt-firebase',
+              imagePath: require('~/assets/images/portfolio/dmm-inside_nuxt-firebase.png'),
+              charge: '技術記事執筆',
+              description: 'お仕事している会社のオウンドメディアに技術記事を寄稿しました。<br>'
+                + 'モダンなフロントエンドフレームワーク×サーバーレスは良さみが深いの。<br>'
+                + 'はてなブックマークをいっぱい貰ったり、<a href="https://techfeed.io" target="_blank">TechFeed</a>でSランクに評価されたりしました。',
+              tags: [
+                'JavaScript',
+                'Vue',
+                'Nuxt.js',
+                'GCP',
+                'Firebase',
+                'Progressive Web Apps',
+              ],
+            },
+            {
               title: 'kamatte syndrome',
-              imagePath: '/logo.png',
+              imagePath: require('~/assets/images/logo.png'),
               charge: 'ソロプロジェクト',
               description: 'いま、あなたといる、ここ。',
               tags: [
@@ -116,7 +133,7 @@ export default {
             {
               title: '集団活動',
               url: 'https://syudan.me',
-              imagePath: '/images/syudan_katsudou.png',
+              imagePath: require('~/assets/images/portfolio/syudan_katsudou.png'),
               charge: 'ソロプロジェクト',
               description: 'バンド「<a href="https://www.syudan.com" target="_blank">集団行動</a>」の非公式ファンサイトです。',
               tags: [
@@ -134,7 +151,7 @@ export default {
             },
             {
               title: 'レビューサイトにおけるレビュアーの信頼度評価システムの研究',
-              imagePath: '/images/rihh.png',
+              imagePath: require('~/assets/images/portfolio/rihh.png'),
               charge: '卒業研究',
               description: 'レビュー関係を二部グラフでモデル化し、'
                 + '機械学習でレビュアーの信頼度を評価するアルゴリズムをつくりました。<br>'
@@ -154,7 +171,7 @@ export default {
           works: [
             {
               title: 'Onbu',
-              imagePath: '/images/onbu.jpg',
+              imagePath: require('~/assets/images/portfolio/onbu.jpg'),
               charge: 'ハッカソン',
               description: '「KITハッカソン vol.4」にて、小学生が自治的にケンカを仲裁するためのシステムをつくりました。<br>'
               + '審査員（小学生）賞を受賞しました。副賞はありませんでした。<br>'
@@ -177,7 +194,7 @@ export default {
           works: [
             {
               title: 'どっち派論争',
-              imagePath: '/images/docchiha_ronsou.png',
+              imagePath: require('~/assets/images/portfolio/docchiha_ronsou.png'),
               charge: 'ハッカソン',
               description: '「DMMハッカソン」にて、２つの派閥に分かれて口喧嘩するWebアプリをつくりました。<br>'
               + '3位入賞、そしてMVP賞を受賞しました。副賞はいっぱい貰えました。<br>'
@@ -199,7 +216,7 @@ export default {
   },
   computed: {
     sortedPortfolio() {
-      return _.sortBy(this.portfolio, 'year').reverse();
+      return sortBy(this.portfolio, 'year').reverse();
     },
   },
 };

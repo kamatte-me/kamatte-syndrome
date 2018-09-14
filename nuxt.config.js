@@ -13,16 +13,15 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'plz kamatte me!!!' },
       { hid: 'og:site_name', property: 'og:site_name', content: 'kamatte syndrome' },
       { hid: 'og:type', property: 'og:type', content: 'website' },
-      { hid: 'og:image', property: 'og:image', content: 'https://kamatte.me/apple-touch-icon.png' },
+      { hid: 'og:image', property: 'og:image', content: 'https://kamatte.me/icon.png' },
       { hid: 'og:locale', property: 'og:locale', content: 'ja_JP' },
       { hid: 'fb:app_id', property: 'fb:app_id', content: '159097111464111' },
       { hid: 'twitter:card', property: 'twitter:card', content: 'summary' },
     ],
     link: [
-      { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:300,400' },
-      { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.0.8/css/all.css' },
     ],
   },
   /*
@@ -33,7 +32,7 @@ module.exports = {
   ** Environment variables
   */
   env: {
-    YOUTUBE_API_KEY: apiKeys.YOUTUBE_API_KEY,
+    GCP_API_KEY: apiKeys.GCP_API_KEY,
     CTF_SPACE_ID: apiKeys.CTF_SPACE_ID,
     CTF_CDA_ACCESS_TOKEN: apiKeys.CTF_CDA_ACCESS_TOKEN,
     CTF_BLOG_POST_TYPE_ID: apiKeys.CTF_BLOG_POST_TYPE_ID,
@@ -42,7 +41,6 @@ module.exports = {
    * CSS
    */
   css: [
-    'buefy',
     '@/assets/css/main.scss',
   ],
   /*
@@ -57,9 +55,6 @@ module.exports = {
       },
     },
     extractCSS: true,
-    vendor: [
-      'lodash',
-    ],
     /*
     ** Run ESLint on save
     */
@@ -75,24 +70,25 @@ module.exports = {
     },
   },
   plugins: [
-    '~/plugins/buefy',
     '~/plugins/contentful',
   ],
   modules: [
+    ['nuxt-buefy', { css: false }],
+    '@nuxtjs/axios',
     '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {
       id: apiKeys.GA_TRACKING_ID,
-    }],
-    ['@nuxtjs/google-adsense', {
-      id: 'ca-pub-6468254257303340',
-      pageLevelAds: true,
     }],
     '@nuxtjs/pwa',
     '@nuxtjs/sitemap',
   ],
   manifest: {
     name: 'kamatte syndrome',
+    short_name: 'kama syn',
     lang: 'ja',
+  },
+  workbox: {
+    dev: false,
   },
   sitemap: {
     hostname: 'https://kamatte.me',

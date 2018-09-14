@@ -2,17 +2,18 @@
   <div>
     <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
-        <section class="section">
-          <div class="container">
-            <ul class="p-culture_cultureWrap">
-              <li class="column has-text-centered"
-                  v-for="culture in culturesList" :key="culture.name">
-                <h2 class="title">{{ culture.name }}</h2>
+        <div class="container">
+          <dl class="p-culture_cultureWrap">
+            <template v-for="culture in culturesList">
+              <dt class="column has-text-centered" :key="culture.name">
+                <h2 class="title is-4">{{ culture.name }}</h2>
+              </dt>
+              <dd :key="culture.name">
                 <youtube-embed :videoId="culture.youtubeVideoId"/>
-              </li>
-            </ul>
-          </div>
-        </section>
+              </dd>
+            </template>
+          </dl>
+        </div>
       </b-tab-item>
     </b-tabs>
   </div>
@@ -40,6 +41,10 @@ export default {
             youtubeVideoId: 'kcqomAJ17fk',
           },
           {
+            name: 'ドアノブロック',
+            youtubeVideoId: 'jQGliz3mfL0',
+          },
+          {
             name: '古都の夕べ',
             youtubeVideoId: 'g-85w1133Hc',
           },
@@ -52,8 +57,16 @@ export default {
             youtubeVideoId: '_2ShdLz4cz0',
           },
           {
-            name: 'ドアノブロック',
-            youtubeVideoId: 'hsiTBd4PGdk',
+            name: 'クリトリック・リス',
+            youtubeVideoId: 'RXjV3bYdE_8',
+          },
+          {
+            name: 'ニガミ17才',
+            youtubeVideoId: 'lZJnkNUX6nI',
+          },
+          {
+            name: 'ネクライトーキー',
+            youtubeVideoId: 'Aw1Awul1818',
           },
           {
             name: 'Awesome City Club',
@@ -84,6 +97,10 @@ export default {
             youtubeVideoId: 'gq5DPSPP47g',
           },
           {
+            name: 'ポップしなないで',
+            youtubeVideoId: 'HTlsHDVH-2A',
+          },
+          {
             name: 'ヤバイTシャツ屋さん',
             youtubeVideoId: 'J5oytYDMWHA',
           },
@@ -109,6 +126,10 @@ export default {
           },
         ],
         Idol: [
+          {
+            name: 'フィロソフィーのダンス',
+            youtubeVideoId: 'm7SFHf-32nk',
+          },
           {
             name: '寺嶋由芙',
             youtubeVideoId: 'MrW1nfC4r_U',

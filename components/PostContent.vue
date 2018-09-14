@@ -24,7 +24,7 @@
                   :alt="post.fields.title"
                   :src="post.fields.featuredImage.fields.file.url"/>
               </div>
-              <vue-markdown>{{ post.fields.body }}</vue-markdown>
+              <div v-html="compiledPostBody"></div>
             </div>
           </div>
         </article>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown';
+import marked from 'marked';
 import FormattedDate from '~/components/FormattedDate';
 
 export default {
@@ -42,7 +42,11 @@ export default {
   props: ['post'],
   components: {
     FormattedDate,
-    VueMarkdown,
   },
+  computed: {
+    compiledPostBody() {
+      return marked(this.post.fields.body, { breaks: true });
+    },
+  }
 };
 </script>
