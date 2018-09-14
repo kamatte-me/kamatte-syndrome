@@ -22,7 +22,6 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans:300,400' },
-      { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.0.8/css/all.css' },
     ],
   },
   /*
@@ -71,11 +70,10 @@ module.exports = {
     },
   },
   plugins: [
-    '~/plugins/buefy',
     '~/plugins/contentful',
   ],
   modules: [
-    ['nuxt-buefy', { css: false, materialDesignIcons: false }],
+    ['nuxt-buefy', { css: false }],
     '@nuxtjs/axios',
     '@nuxtjs/component-cache',
     ['@nuxtjs/google-analytics', {

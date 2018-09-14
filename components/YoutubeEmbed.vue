@@ -6,7 +6,11 @@
         <button @click.once="play"
                 :style="{backgroundImage: `url(${thumbnailUrl})`}"
                 v-if="!isPlay">
-          <span></span>
+          <b-icon
+            icon="play-circle-outline"
+            type="is-white"
+            custom-size="null">
+          </b-icon>
         </button>
         <iframe :src="videoEmbedUrl"
                 allow="autoplay; encrypted-media"
@@ -30,7 +34,7 @@ export default {
   },
   computed: {
     videoEmbedUrl() {
-      return `https://www.youtube.com/embed/${this.videoId}?autoplay=1`;
+      return `https://www.youtube.com/embed/${this.videoId}?autoplay=1&controls=2&rel=0&showinfo=0&iv_load_policy=3`;
     },
   },
   methods: {
