@@ -93,6 +93,23 @@ export default {
               ],
             },
             {
+              title: 'Nuxt.jsとFirebaseでSPA×SSR×PWA×サーバーレスを実現する - DMM inside',
+              url: 'https://inside.dmm.com/entry/2018/04/10/nuxt-firebase',
+              imagePath: require('~/assets/images/portfolio/dmm-inside_nuxt-firebase.png'),
+              charge: '技術記事執筆',
+              description: 'お仕事している会社のオウンドメディアに技術記事を寄稿しました。<br>'
+                + 'モダンなフロントエンドフレームワーク×サーバーレスは良さみが深いの。<br>'
+                + 'はてなブックマークをいっぱい貰ったり、<a href="https://techfeed.io" target="_blank">TechFeed</a>でSランクに評価されたりしました。',
+              tags: [
+                'JavaScript',
+                'Vue',
+                'Nuxt.js',
+                'GCP',
+                'Firebase',
+                'Progressive Web Apps',
+              ],
+            },
+            {
               title: 'kamatte syndrome',
               imagePath: require('~/assets/images/logo.png'),
               charge: 'ソロプロジェクト',
