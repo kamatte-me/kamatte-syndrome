@@ -90,7 +90,11 @@ module.exports = {
   ],
   manifest: {
     name: 'kamatte syndrome',
+    short_name: 'kama syn',
     lang: 'ja',
+  },
+  workbox: {
+    dev: false,
   },
   sitemap: {
     hostname: 'https://kamatte.me',
