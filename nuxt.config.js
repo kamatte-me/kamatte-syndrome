@@ -1,5 +1,13 @@
 const contentful = require('contentful');
-const apiKeys = require('./.apikeys.json');
+require('dotenv').config();
+
+const env = {
+  GCP_API_KEY: process.env.GCP_API_KEY,
+  CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
+  CTF_SPACE_ID: 'ky376v5x3o44',
+  CTF_BLOG_POST_TYPE_ID: '2wKn6yEnZewu2SCCkus4as',
+  GA_TRACKING_ID: 'UA-8322636-7',
+};
 
 module.exports = {
   /*
@@ -31,12 +39,7 @@ module.exports = {
   /*
   ** Environment variables
   */
-  env: {
-    GCP_API_KEY: apiKeys.GCP_API_KEY,
-    CTF_SPACE_ID: apiKeys.CTF_SPACE_ID,
-    CTF_CDA_ACCESS_TOKEN: apiKeys.CTF_CDA_ACCESS_TOKEN,
-    CTF_BLOG_POST_TYPE_ID: apiKeys.CTF_BLOG_POST_TYPE_ID,
-  },
+  env,
   /**
    * CSS
    */
@@ -76,8 +79,9 @@ module.exports = {
     ['nuxt-buefy', { css: false }],
     '@nuxtjs/axios',
     '@nuxtjs/component-cache',
+    '@nuxtjs/dotenv',
     ['@nuxtjs/google-analytics', {
-      id: apiKeys.GA_TRACKING_ID,
+      id: env.GA_TRACKING_ID,
     }],
     '@nuxtjs/pwa',
     '@nuxtjs/sitemap',
@@ -95,11 +99,11 @@ module.exports = {
     cacheTime: 1000 * 60 * 15,
     routes() {
       const client = contentful.createClient({
-        space: apiKeys.CTF_SPACE_ID,
-        accessToken: apiKeys.CTF_CDA_ACCESS_TOKEN,
+        space: env.CTF_SPACE_ID,
+        accessToken: env.CTF_CDA_ACCESS_TOKEN,
       });
       return client.getEntries({
-        content_type: apiKeys.CTF_BLOG_POST_TYPE_ID,
+        content_type: env.CTF_BLOG_POST_TYPE_ID,
         order: '-sys.createdAt',
         limit: 1000,
       }).then(entries => entries.items.map(entry => `/blog/${entry.fields.slug}`));

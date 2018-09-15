@@ -16,6 +16,9 @@
 # Node.js dependencies:
 node_modules/
 
+# dotenv
+.env
+
 # Circle CI:
 .circleci/
 

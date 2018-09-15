@@ -1,6 +1,9 @@
 # dependencies
 node_modules
 
+# dotenv
+.env
+
 # logs
 npm-debug.log
 
