@@ -88,11 +88,33 @@ module.exports = {
   ],
   manifest: {
     name: 'kamatte syndrome',
-    short_name: 'kama syn',
+    short_name: 'kamatte syndrome',
     lang: 'ja',
   },
   workbox: {
-    dev: false,
+    dev: true,
+    runtimeCaching: [
+      {
+        urlPattern: '(http|https)://images.ctfassets.net/*',
+        handler: 'cacheFirst',
+        method: 'GET',
+      },
+      {
+        urlPattern: '(http|https)://cdn.contentful.com/*',
+        handler: 'networkFirst',
+        method: 'GET',
+      },
+      {
+        urlPattern: '(http|https)://www.googleapis.com/youtube/v3/*',
+        handler: 'cacheFirst',
+        method: 'GET',
+      },
+      {
+        urlPattern: '(http|https)://i.ytimg.com/*',
+        handler: 'cacheFirst',
+        method: 'GET',
+      },
+    ],
   },
   sitemap: {
     hostname: 'https://kamatte.me',

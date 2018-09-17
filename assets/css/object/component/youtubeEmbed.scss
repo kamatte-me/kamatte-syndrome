@@ -28,6 +28,10 @@
         padding: 0;
         overflow: hidden;
         font-size: 80px;
+
+        &:active, &:focus {
+          outline: none;
+        }
       }
 
       &-none {

@@ -31,7 +31,7 @@ async function start() {
     console.error(err);
   });
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 8080;
   app.listen(port);
 }
 

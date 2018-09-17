@@ -4,14 +4,14 @@
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
         <div class="container">
           <dl class="p-culture_cultureWrap">
-            <template v-for="culture in culturesList">
-              <dt class="column has-text-centered" :key="culture.name">
+            <div v-for="culture in culturesList" :key="culture.name">
+              <dt class="column has-text-centered">
                 <h2 class="title is-4">{{ culture.name }}</h2>
               </dt>
-              <dd :key="culture.name">
+              <dd>
                 <youtube-embed :videoId="culture.youtubeVideoId"/>
               </dd>
-            </template>
+            </div>
           </dl>
         </div>
       </b-tab-item>
