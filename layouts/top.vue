@@ -13,6 +13,7 @@
 <script>
 import Navbar from '~/components/Navbar';
 import SiteFooter from '~/components/SiteFooter';
+import firebase from '~/plugins/firebase';
 
 export default {
   name: 'top',
@@ -27,7 +28,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

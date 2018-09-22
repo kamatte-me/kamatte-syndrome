@@ -31,12 +31,22 @@
         </nuxt-link>
       </div>
     </div>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <notification></notification>
+      </div>
+    </div>
   </nav>
 </template>
 
 <script>
+import Notification from '~/components/Notification';
+
 export default {
   name: 'navbar',
+  components: {
+    Notification
+  },
   data() {
     return {
       pages: {
