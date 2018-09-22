@@ -1,0 +1,10 @@
+# dependencies
+node_modules
+
+# dotenv
+.env
+
+# Firebase
+.firebase
+firebase-debug.log
+serviceAccountKey.json

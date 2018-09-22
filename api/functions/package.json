@@ -6,10 +6,10 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "serve": "firebase serve --only functions",
+    "serve": "firebase serve --only functions,hosting",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy": "firebase deploy",
     "logs": "firebase functions:log"
   },
   "dependencies": {
@@ -17,8 +17,8 @@
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
-    "firebase-admin": "~6.0.0",
-    "firebase-functions": "^2.0.3",
+    "firebase-admin": "latest",
+    "firebase-functions": "latest",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
@@ -26,7 +26,6 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.11.1"
   },
   "private": true

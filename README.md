@@ -9,7 +9,7 @@ https://kamatte.me
 * SPA (Single Page Application)
 * SSR (Sever Side Rendering)
 * PWA (Progressive Web Apps)
-* Serverless (Node.js / Google App Engine Standard Environment)
+* Serverless (Node.js / Google App Engine Standard Environment, Cloud Functions for Firebase)
 
 
 ## Technologies
@@ -29,7 +29,20 @@ https://kamatte.me
 Please read [Quickstart for Node.js in the App Engine Standard Environment](https://cloud.google.com/appengine/docs/standard/nodejs/quickstart) and setup.
 
 
+## Monorepo
+
+### `/web`
+
+Web site (Nuxt.js) on Google App Engine
+
+### `/api`
+
+API server (Express.js) on Cloud Functions for Firebase
+
+
 ## Build Setup
+
+### `/web`
 
 ``` bash
 # Install dependencies
@@ -47,3 +60,16 @@ $ yarn run deploy
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+
+### `/api`
+
+``` bash
+# Install dependencies
+$ yarn install
+
+# Serve with hot reload at localhost:5000
+$ yarn run serve
+
+# Build and Deploy to GAE/SE
+$ yarn run deploy
+```

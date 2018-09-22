@@ -7,12 +7,15 @@ const _ = require('lodash');
 require('dotenv').config();
 
 const serviceAccount = require('./serviceAccountKey.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+adminConfig.credential = admin.credential.cert(serviceAccount);
+admin.initializeApp(adminConfig);
 
 const app = express();
+app.use((req, res, next) => {
+  res.header('Cache-Control', 'private, no-store, no-cache, must-revalidate, proxy-revalidate');
+  next();
+});
 app.use(cors({
   origin: app.get('env') === 'production' ? 'https://kamatte.me' : '*',
   methods: 'GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS',
@@ -20,7 +23,7 @@ app.use(cors({
 
 const TOPIC = 'general';
 
-app.get('/fetch/:token', (req, res) => {
+app.get('/notification/fetch/:token', (req, res) => {
   axios.get(`https://iid.googleapis.com/iid/info/${req.params.token}`, {
     params: {
       details: true,
@@ -35,11 +38,11 @@ app.get('/fetch/:token', (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      res.status(500);
+      res.status(500).send();
     });
 });
 
-app.put('/subscribe', (req, res) => {
+app.put('/notification/subscribe', (req, res) => {
   admin.messaging().subscribeToTopic(req.body.token, TOPIC)
     .then((response) => {
       console.log('Successfully subscribed to topic:', response);
@@ -47,11 +50,11 @@ app.put('/subscribe', (req, res) => {
     })
     .catch((error) => {
       console.error('Error subscribing to topic:', error);
-      res.status(500);
+      res.status(500).send();
     });
 });
 
-app.put('/unsubscribe', (req, res) => {
+app.put('/notification/unsubscribe', (req, res) => {
   admin.messaging().unsubscribeFromTopic(req.body.token, TOPIC)
     .then((response) => {
       console.log('Successfully unsubscribed from topic:', response);
@@ -59,11 +62,11 @@ app.put('/unsubscribe', (req, res) => {
     })
     .catch((error) => {
       console.error('Error subscribing to topic:', error);
-      res.status(500);
+      res.status(500).send();
     });
 });
 
-app.get('/notice', (req, res) => {
+app.get('/notification/notice', (req, res) => {
   const message = {
     notification: {
       title: 'kamatte syndrome',
@@ -83,5 +86,5 @@ app.get('/notice', (req, res) => {
     });
 });
 
-const notification = functions.https.onRequest(app);
-module.exports = { notification };
+const api = functions.region('asia-northeast1').https.onRequest(app);
+module.exports = { api };
