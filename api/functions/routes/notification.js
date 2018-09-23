@@ -14,6 +14,9 @@ module.exports = (admin) => {
 
   const router = express.Router();
 
+  /**
+   * 通知登録状況取得
+   */
   router.get('/subscription/:token', (req, res) => {
     axios.get(`https://iid.googleapis.com/iid/info/${req.params.token}`, {
       params: {
@@ -28,16 +31,17 @@ module.exports = (admin) => {
         res.json({ isSubscribed });
       })
       .catch((error) => {
-        console.error(error);
+        console.error('Error get token info: ', error);
         res.status(500).send();
       });
   });
 
+  /**
+   * 通知登録
+   */
   router.put('/subscribe', (req, res) => {
-    const token = req.body.token;
-    admin.messaging().subscribeToTopic(token, TOPIC)
-      .then((response) => {
-        console.log('Successfully subscribed to topic:', response);
+    admin.messaging().subscribeToTopic(req.body.token, TOPIC)
+      .then(() => {
         res.status(204).send();
 
         // ウェルカム通知を送信
@@ -49,34 +53,39 @@ module.exports = (admin) => {
               icon: '/logo.png',
             },
           },
-          token: token,
+          token: req.body.token,
         };
         admin.messaging().send(message)
-          .then((res) => {
-            console.log('Successfully sent Welcome message:', res);
-          })
-          .catch((err) => {
-            console.log('Error sending Welcome message:', err);
+          .then(() => {})
+          .catch((error) => {
+            console.error('Error sending Welcome message: ', error);
           });
       })
       .catch((error) => {
-        console.error('Error subscribing to topic:', error);
+        console.error('Error subscribing to topic: ', error);
         res.status(500).send();
       });
   });
 
+  /**
+   * 通知登録解除
+   */
   router.put('/unsubscribe', (req, res) => {
     admin.messaging().unsubscribeFromTopic(req.body.token, TOPIC)
-      .then((response) => {
-        console.log('Successfully unsubscribed from topic:', response);
+      .then(() => {
         res.status(204).send();
       })
       .catch((error) => {
-        console.error('Error subscribing to topic:', error);
+        console.error('Error unsubscribing to topic: ', error);
         res.status(500).send();
       });
   });
 
+  /**
+   * 通知実行（テスト用）
+   * TODO: ContentfulのWebHookを実装
+   * TODO: 通知実行用の管理画面
+   */
   router.get('/notice', (req, res) => {
     const message = {
       webpush: {
@@ -90,12 +99,11 @@ module.exports = (admin) => {
     };
 
     admin.messaging().send(message)
-      .then((response) => {
-        console.log('Successfully sent message:', response);
+      .then(() => {
         res.status(200).send();
       })
       .catch((error) => {
-        console.log('Error sending message:', error);
+        console.error('Error sending message: ', error);
         res.status(500).send();
       });
   });
