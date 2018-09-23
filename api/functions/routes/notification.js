@@ -46,16 +46,18 @@ module.exports = (admin) => {
 
         // ウェルカム通知を送信
         const message = {
-          webpush: {
-            notification: {
-              title: 'とうろく、ありがぽ。',
-              body: 'ずっと、かまって。',
-              icon: '/logo.png',
-            },
+          notification: {
+            title: 'とうろく、ありがぽ。',
+            body: 'ずっと、かまって。',
+            icon: '/logo.png',
           },
-          token: req.body.token,
+          to: req.body.token,
         };
-        admin.messaging().send(message)
+        axios.post('https://fcm.googleapis.com/fcm/send', message, {
+          headers: {
+            Authorization: `key=${fcmServerKey}`,
+          },
+        })
           .then(() => {})
           .catch((error) => {
             console.error('Error sending Welcome message: ', error);
@@ -83,22 +85,26 @@ module.exports = (admin) => {
 
   /**
    * 通知実行（テスト用）
+   * https://firebase.google.com/docs/cloud-messaging/js/receive?hl=ja#setting_notification_options_in_the_send_request
    * TODO: ContentfulのWebHookを実装
    * TODO: 通知実行用の管理画面
    */
   router.get('/notice', (req, res) => {
     const message = {
-      webpush: {
-        notification: {
-          title: 'kamatte syndrome',
-          body: 'hogehoge',
-          icon: '/logo.png',
-        },
+      notification: {
+        title: 'かましん、こーしん。',
+        body: 'hoge',
+        icon: '/logo.png',
+        click_action: 'https://kamatte.me',
       },
-      topic: TOPIC,
+      to: `/topics/${TOPIC}`,
     };
 
-    admin.messaging().send(message)
+    axios.post('https://fcm.googleapis.com/fcm/send', message, {
+      headers: {
+        Authorization: `key=${fcmServerKey}`,
+      },
+    })
       .then(() => {
         res.status(200).send();
       })

@@ -131,13 +131,21 @@ export default {
      * プッシュ通知取得時
      */
     this.$store.state.notification.messaging.onMessage((payload) => {
-      const message = payload.notification;
-      const title = message.title;
+      const notification = payload.notification;
+      const title = notification.title || 'kamatte syndrome';
       const options = {
-        body: message.body,
-        icon: message.icon,
+        body: notification.body || '何かしらアップデートしますた。',
+        icon: notification.icon || '/logo.png',
       };
-      new Notification(title, options);
+      const notify = new Notification(title, options);
+
+      // 通知クリック時リンク
+      if (notification.click_action !== undefined) {
+        const link = notification.click_action;
+        notify.addEventListener('click', () => {
+          open(link);
+        });
+      }
     });
   },
 };
