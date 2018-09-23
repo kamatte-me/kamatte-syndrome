@@ -3,8 +3,10 @@
 > kamatte syndrome<br>
 https://kamatte.me
 
+plz kamatte me!!!
 
-## Feature
+
+## Features
 
 * SPA (Single Page Application)
 * SSR (Sever Side Rendering)
@@ -25,6 +27,7 @@ https://kamatte.me
 * Node.js v8.11.1
 * [Yarn](https://yarnpkg.com/)
 * Google Cloud SDK
+* [Firebase CLI](https://firebase.google.com/docs/cli)
 
 Please read [Quickstart for Node.js in the App Engine Standard Environment](https://cloud.google.com/appengine/docs/standard/nodejs/quickstart) and setup.
 
@@ -48,7 +51,7 @@ API server (Express.js) on Cloud Functions for Firebase
 # Install dependencies
 $ yarn install
 
-# Serve with hot reload at localhost:3000
+# Serve with hot reload at http://localhost:3000
 $ yarn run dev
 
 # Build for production and launch server
@@ -67,9 +70,9 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 # Install dependencies
 $ yarn install
 
-# Serve with hot reload at localhost:5000
+# Serve with hot reload at http://localhost:5000
 $ yarn run serve
 
-# Build and Deploy to GAE/SE
+# Build and Deploy to Cloud Functions for Firebase
 $ yarn run deploy
 ```
