@@ -43,10 +43,30 @@ app.get('/notification/subscription/:token', (req, res) => {
 });
 
 app.put('/notification/subscribe', (req, res) => {
-  admin.messaging().subscribeToTopic(req.body.token, TOPIC)
+  const token = req.body.token;
+  admin.messaging().subscribeToTopic(token, TOPIC)
     .then((response) => {
       console.log('Successfully subscribed to topic:', response);
       res.status(204).send();
+
+      // ウェルカム通知を送信
+      const message = {
+        webpush: {
+          notification: {
+            title: 'とうろく、ありがぽ。',
+            body: 'ずっと、かまって。',
+            icon: '/logo.png'
+          },
+        },
+        token: token,
+      };
+      admin.messaging().send(message)
+        .then((res) => {
+          console.log('Successfully sent Welcome message:', res);
+        })
+        .catch((err) => {
+          console.log('Error sending Welcome message:', err);
+        });
     })
     .catch((error) => {
       console.error('Error subscribing to topic:', error);

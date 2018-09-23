@@ -87,15 +87,7 @@ export default {
               axios.put(`${process.env.API_HOST}/notification/subscribe`, {
                 token: this.token,
               })
-                .then((res) => {
-                  // ウェルカム通知
-                  const title = 'とうろく、ありがぽ。';
-                  const options = {
-                    body: 'ずっと、かまって。',
-                    icon: '/logo.png'
-                  };
-                  new Notification(title, options);
-                })
+                .then((res) => {})
                 .catch((err) => {
                   this.isSubscribed = false;
                   this.failedSubscribeToast()
@@ -133,6 +125,19 @@ export default {
     // トークン更新時のイベント
     this.messaging.onTokenRefresh(() => {
       this.getToken();
+    });
+
+    /**
+     * プッシュ通知取得時
+     */
+    this.messaging.onMessage(function(payload) {
+      const message = payload.notification;
+      const title = message.title;
+      const options = {
+        body: message.body,
+        icon: message.icon,
+      };
+      new Notification(title, options);
     });
   },
 };
