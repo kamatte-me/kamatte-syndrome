@@ -1,25 +1,15 @@
 <template>
-  <div>
-    <header>
-      <navbar/>
-    </header>
-    <main>
-      <nuxt/>
-    </main>
-    <site-footer/>
-  </div>
+  <base-layout>
+    <nuxt/>
+  </base-layout>
 </template>
 
 <script>
-import Navbar from '~/components/Navbar';
-import SiteFooter from '~/components/SiteFooter';
-import firebase from '~/plugins/firebase';
+import BaseLayout from '~/components/BaseLayout';
 
 export default {
-  name: 'top',
   components: {
-    Navbar,
-    SiteFooter,
+    BaseLayout,
   },
   head() {
     return {

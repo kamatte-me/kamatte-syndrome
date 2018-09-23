@@ -1,27 +1,18 @@
 <template>
-  <button @click="isSubscribed ? unsubscribe() : subscribe()"
+  <button @click="$store.state.notification.isSubscribed ? unsubscribe() : subscribe()"
           class="button is-rounded is-primary"
-          :class="{ 'is-loading': isLoading }">
+          :class="{ 'is-loading': $store.state.notification.isLoading }">
     <b-icon
-      :icon="isSubscribed ? 'bell' : 'bell-off'">
+      :icon="$store.state.notification.isSubscribed ? 'bell' : 'bell-off'">
     </b-icon>
   </button>
 </template>
 
 <script>
-import firebase from '~/plugins/firebase';
 import axios from 'axios';
 
 export default {
-  name: 'notification',
-  data() {
-    return {
-      isLoading: true,
-      messaging: null,
-      token: null,
-      isSubscribed: false,
-    };
-  },
+  name: 'notification-button',
   methods: {
     /**
      * ブラウザの通知パーミッション取得失敗トースト
@@ -51,45 +42,24 @@ export default {
       })
     },
     /**
-     * トークン取得
-     */
-    getToken() {
-      this.messaging.getToken()
-        .then((currentToken) => {
-          this.token = currentToken;
-          // トークンの通知登録状況取得
-          axios.get(`${process.env.API_HOST}/notification/subscription/${this.token}`)
-            .then((res) => {
-              this.isSubscribed = res.data.isSubscribed;
-            })
-            .catch((err) => {})
-            .finally(() => {
-              this.isLoading = false;
-            });
-        })
-        .catch((err) => {
-          this.isLoading = false;
-        });
-    },
-    /**
      * 通知登録
      */
     subscribe() {
       // ブラウザの通知パーミッション取得リクエスト
-      this.messaging.requestPermission()
+      this.$store.state.notification.messaging.requestPermission()
         .then(() => {
           // トークン取得
-          this.messaging.getToken()
+          this.$store.state.notification.messaging.getToken()
             .then((currentToken) => {
-              this.isSubscribed = true;
-              this.token = currentToken;
+              this.$store.commit('notification/setIsSubscribed', true);
+              this.$store.commit('notification/setToken', currentToken);
               // 通知登録
               axios.put(`${process.env.API_HOST}/notification/subscribe`, {
-                token: this.token,
+                token: currentToken,
               })
                 .then((res) => {})
                 .catch((err) => {
-                  this.isSubscribed = false;
+                  this.$store.commit('notification/setIsSubscribed', false);
                   this.failedSubscribeToast()
                 });
             })
@@ -98,6 +68,7 @@ export default {
             });
         })
         .catch((err) => {
+          console.log(err);
           this.failedPermissionToast();
         });
     },
@@ -105,40 +76,16 @@ export default {
      * 通知登録解除
      */
     unsubscribe() {
-      this.isSubscribed = false;
+      this.$store.commit('notification/setIsSubscribed', false);
       axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
-        token: this.token,
+        token: this.$store.state.notification.token,
       })
         .then((res) => {})
         .catch((err) => {
-          this.isSubscribed = true;
+          this.$store.commit('notification/setIsSubscribed', true);
           this.failedUnsubscribeToast()
         });
     },
-  },
-  beforeMount() {
-    this.messaging = firebase.messaging();
-
-    // トークン取得
-    this.getToken();
-
-    // トークン更新時のイベント
-    this.messaging.onTokenRefresh(() => {
-      this.getToken();
-    });
-
-    /**
-     * プッシュ通知取得時
-     */
-    this.messaging.onMessage(function(payload) {
-      const message = payload.notification;
-      const title = message.title;
-      const options = {
-        body: message.body,
-        icon: message.icon,
-      };
-      new Notification(title, options);
-    });
   },
 };
 </script>

@@ -11,7 +11,7 @@
       </nuxt-link>
       <div class="navbar-end is-block-touch is-hidden-desktop" style="margin-left: auto">
         <div class="navbar-item">
-          <notification/>
+          <notification-button/>
         </div>
       </div>
       <div class="navbar-burger" style="margin-left: 0"
@@ -37,7 +37,7 @@
       </div>
       <div class="navbar-end is-hidden-touch">
         <div class="navbar-item">
-          <notification/>
+          <notification-button/>
         </div>
       </div>
     </div>
@@ -45,12 +45,13 @@
 </template>
 
 <script>
-import Notification from '~/components/Notification';
+import axios from 'axios';
+import NotificationButton from '~/components/NotificationButton';
 
 export default {
   name: 'navbar',
   components: {
-    Notification
+    NotificationButton
   },
   data() {
     return {
@@ -85,6 +86,59 @@ export default {
     isCurrentPage(to) {
       return new RegExp(`^${to.name}`).test(this.$route.name);
     },
+    /**
+     * Firebase Cloud Messagingトークン取得
+     */
+    getFcmToken() {
+      this.$store.state.notification.messaging.getToken()
+        .then((currentToken) => {
+          if (currentToken) {
+            this.$store.commit('notification/setToken', currentToken);
+            // トークンの通知登録状況取得
+            axios.get(`${process.env.API_HOST}/notification/subscription/${currentToken}`)
+              .then((res) => {
+                this.$store.commit('notification/setIsSubscribed', res.data.isSubscribed);
+              })
+              .catch((err) => {})
+              .finally(() => {
+                this.$store.commit('notification/setIsLoading', false);
+              });
+          } else {
+            this.$store.commit('notification/setIsLoading', false);
+          }
+        })
+        .catch((err) => {
+          this.$store.commit('notification/setIsLoading', false);
+        });
+    },
+  },
+  beforeMount() {
+    if (this.$store.state.notification.messaging === null) {
+      this.$store.commit('notification/initMessaging');
+    }
+
+    // トークン取得
+    if (this.$store.state.notification.token === null) {
+      this.getFcmToken();
+    }
+
+    // トークン更新時のイベント
+    this.$store.state.notification.messaging.onTokenRefresh(() => {
+      this.getFcmToken();
+    });
+
+    /**
+     * プッシュ通知取得時
+     */
+    this.$store.state.notification.messaging.onMessage((payload) => {
+      const message = payload.notification;
+      const title = message.title;
+      const options = {
+        body: message.body,
+        icon: message.icon,
+      };
+      new Notification(title, options);
+    });
   },
 };
 </script>

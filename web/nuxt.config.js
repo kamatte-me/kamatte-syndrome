@@ -53,6 +53,9 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    vendor: [
+      'axios'
+    ],
     postcss: {
       plugins: {
         'postcss-custom-properties': {

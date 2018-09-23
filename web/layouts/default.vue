@@ -1,26 +1,18 @@
 <template>
-  <div>
-    <header>
-      <navbar/>
-    </header>
-    <main>
-      <page-header/>
-      <nuxt/>
-    </main>
-    <site-footer/>
-  </div>
+  <base-layout>
+    <page-header/>
+    <nuxt/>
+  </base-layout>
 </template>
 
 <script>
-import Navbar from '~/components/Navbar';
+import BaseLayout from '~/components/BaseLayout';
 import PageHeader from '~/components/PageHeader';
-import SiteFooter from '~/components/SiteFooter';
 
 export default {
   components: {
-    Navbar,
+    BaseLayout,
     PageHeader,
-    SiteFooter,
   },
   computed: {
     pageTitle() {

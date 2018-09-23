@@ -1,19 +1,16 @@
-import Vuex from 'vuex';
+export const strict = false;
 
-const store = () => new Vuex.Store({
-  state: {
-    pageTitle: '',
-  },
-  mutations: {
-    /**
-     * タイトルを更新する
-     * @param state
-     * @param pageTitle
-     */
-    updatePageTitle(state, pageTitle) {
-      state.pageTitle = pageTitle;
-    },
-  },
+export const state = () => ({
+  pageTitle: '',
 });
 
-export default store;
+export const mutations = {
+  /**
+   * タイトルを更新する
+   * @param state
+   * @param pageTitle
+   */
+  updatePageTitle(state, pageTitle) {
+    state.pageTitle = pageTitle;
+  },
+};
