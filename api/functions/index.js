@@ -23,7 +23,7 @@ app.use(cors({
 
 const TOPIC = 'general';
 
-app.get('/notification/fetch/:token', (req, res) => {
+app.get('/notification/subscription/:token', (req, res) => {
   axios.get(`https://iid.googleapis.com/iid/info/${req.params.token}`, {
     params: {
       details: true,

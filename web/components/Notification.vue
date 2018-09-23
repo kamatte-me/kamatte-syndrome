@@ -1,16 +1,18 @@
 <template>
-  <button v-if="isSubscribed" v-on:click="unSubscribe">
+  <button v-if="isSubscribed"
+          v-on:click="unSubscribe"
+          class="button is-rounded is-outlined is-primary is-inverted"
+          :class="{ 'is-loading': isLoading }">
     <b-icon
-      icon="bell"
-      type="is-github"
-      size="is-medium">
+      icon="bell">
     </b-icon>
   </button>
-  <button v-else v-on:click="subscribe">
+  <button v-else
+          v-on:click="subscribe"
+          class="button is-rounded is-outlined is-primary is-inverted"
+          :class="{ 'is-loading': isLoading }">
     <b-icon
-      icon="bell-off"
-      type="is-github"
-      size="is-medium">
+      icon="bell-off">
     </b-icon>
   </button>
 </template>
@@ -23,6 +25,7 @@ export default {
   name: 'notification',
   data() {
     return {
+      isLoading: true,
       messaging: null,
       token: null,
       isSubscribed: false,
@@ -30,12 +33,27 @@ export default {
   },
   methods: {
     /**
-     * 通知登録状況取得
+     * トークンの通知登録状況取得
      */
-    fetch() {
-      axios.get(`${process.env.API_HOST}/notification/fetch/${this.token}`)
+    fetchSubscription() {
+      axios.get(`${process.env.API_HOST}/notification/subscription/${this.token}`)
         .then((res) => {
-          this.isSubscribed = res.data.isSubscribed;
+            this.isSubscribed = res.data.isSubscribed;
+        })
+        .catch((err) => {});
+    },
+    /**
+     * トークン取得
+     */
+    getToken() {
+      this.messaging.getToken()
+        .then((currentToken) => {
+          this.token = currentToken;
+          this.fetchSubscription();
+        })
+        .catch((err) => {})
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     /**
@@ -44,15 +62,15 @@ export default {
     subscribe() {
       this.messaging.requestPermission().then(() => {
         this.messaging.getToken().then((currentToken) => {
+          this.isSubscribed = true;
           this.token = currentToken;
           axios.put(`${process.env.API_HOST}/notification/subscribe`, {
             token: this.token,
           })
-            .then((res) => {
-              this.isSubscribed = true;
-            })
+            .then((res) => {})
             .catch((err) => {
-              console.error('登録エラー: ', err)
+              console.error('登録エラー: ', err);
+              this.isSubscribed = false;
             });
         }).catch((err) => {
           console.error('Unable to retrieve newed token ', err);
@@ -65,14 +83,14 @@ export default {
      * 通知登録解除
      */
     unSubscribe() {
+      this.isSubscribed = false;
       axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
         token: this.token,
       })
-        .then((res) => {
-          this.isSubscribed = false;
-        })
+        .then((res) => {})
         .catch((err) => {
-          console.error('登録解除エラー: ', err)
+          console.error('登録解除エラー: ', err);
+          this.isSubscribed = true;
         });
     },
   },
@@ -80,18 +98,18 @@ export default {
     this.messaging = firebase.messaging();
 
     // トークン取得
-    this.messaging.getToken().then((currentToken) => {
-      this.token = currentToken;
-      this.fetch();
-    });
+    this.getToken();
 
     // トークン更新時のイベント
     this.messaging.onTokenRefresh(() => {
-      this.messaging.getToken().then((refreshedToken) => {
-        this.token = refreshedToken;
-        this.fetch();
-      });
+      this.getToken();
     });
   },
 };
 </script>
+
+<style scoped>
+  .button.is-primary.is-outlined.is-loading::after {
+    border-color: transparent transparent #fff #fff !important;
+  }
+</style>
