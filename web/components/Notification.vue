@@ -1,7 +1,7 @@
 <template>
   <button v-if="isSubscribed"
           v-on:click="unSubscribe"
-          class="button is-rounded is-outlined is-primary is-inverted"
+          class="button is-rounded is-primary"
           :class="{ 'is-loading': isLoading }">
     <b-icon
       icon="bell">
@@ -9,7 +9,7 @@
   </button>
   <button v-else
           v-on:click="subscribe"
-          class="button is-rounded is-outlined is-primary is-inverted"
+          class="button is-rounded is-primary"
           :class="{ 'is-loading': isLoading }">
     <b-icon
       icon="bell-off">
@@ -107,9 +107,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-  .button.is-primary.is-outlined.is-loading::after {
-    border-color: transparent transparent #fff #fff !important;
-  }
-</style>

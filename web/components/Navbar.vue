@@ -9,12 +9,17 @@
         class="navbar-item">
         <img src="~/assets/images/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
-      <div class="navbar-burger"
+      <div class="navbar-end is-block-touch is-hidden-desktop" style="margin-left: auto">
+        <div class="navbar-item">
+          <notification/>
+        </div>
+      </div>
+      <div class="navbar-burger" style="margin-left: 0"
            v-bind:class="{'is-active': isDropdown}"
            v-on:click="toggleDropdown()">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
       </div>
     </div>
 
@@ -30,10 +35,10 @@
           {{ pageTitle }}
         </nuxt-link>
       </div>
-    </div>
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <notification></notification>
+      <div class="navbar-end is-hidden-touch">
+        <div class="navbar-item">
+          <notification/>
+        </div>
       </div>
     </div>
   </nav>
