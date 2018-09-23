@@ -1,18 +1,9 @@
 <template>
-  <button v-if="isSubscribed"
-          v-on:click="unSubscribe"
+  <button @click="isSubscribed ? unsubscribe() : subscribe()"
           class="button is-rounded is-primary"
           :class="{ 'is-loading': isLoading }">
     <b-icon
-      icon="bell">
-    </b-icon>
-  </button>
-  <button v-else
-          v-on:click="subscribe"
-          class="button is-rounded is-primary"
-          :class="{ 'is-loading': isLoading }">
-    <b-icon
-      icon="bell-off">
+      :icon="isSubscribed ? 'bell' : 'bell-off'">
     </b-icon>
   </button>
 </template>
@@ -33,14 +24,31 @@ export default {
   },
   methods: {
     /**
-     * トークンの通知登録状況取得
+     * ブラウザの通知パーミッション取得失敗トースト
      */
-    fetchSubscription() {
-      axios.get(`${process.env.API_HOST}/notification/subscription/${this.token}`)
-        .then((res) => {
-            this.isSubscribed = res.data.isSubscribed;
-        })
-        .catch((err) => {});
+    failedPermissionToast() {
+      this.$toast.open({
+        message: 'ブラウザの通知設定を「許可」にしてください。',
+        type: 'is-green'
+      })
+    },
+    /**
+     * 通知登録失敗トースト
+     */
+    failedSubscribeToast() {
+      this.$toast.open({
+        message: '通知登録に失敗しました。もう一度お試しください。',
+        type: 'is-green'
+      })
+    },
+    /**
+     * 通知登録解除失敗トースト
+     */
+    failedUnsubscribeToast() {
+      this.$toast.open({
+        message: '通知登録解除に失敗しました。もう一度お試しください。',
+        type: 'is-green'
+      })
     },
     /**
      * トークン取得
@@ -49,10 +57,17 @@ export default {
       this.messaging.getToken()
         .then((currentToken) => {
           this.token = currentToken;
-          this.fetchSubscription();
+          // トークンの通知登録状況取得
+          axios.get(`${process.env.API_HOST}/notification/subscription/${this.token}`)
+            .then((res) => {
+              this.isSubscribed = res.data.isSubscribed;
+            })
+            .catch((err) => {})
+            .finally(() => {
+              this.isLoading = false;
+            });
         })
-        .catch((err) => {})
-        .finally(() => {
+        .catch((err) => {
           this.isLoading = false;
         });
     },
@@ -60,37 +75,42 @@ export default {
      * 通知登録
      */
     subscribe() {
-      this.messaging.requestPermission().then(() => {
-        this.messaging.getToken().then((currentToken) => {
-          this.isSubscribed = true;
-          this.token = currentToken;
-          axios.put(`${process.env.API_HOST}/notification/subscribe`, {
-            token: this.token,
-          })
-            .then((res) => {})
+      // ブラウザの通知パーミッション取得リクエスト
+      this.messaging.requestPermission()
+        .then(() => {
+          this.messaging.getToken()
+            .then((currentToken) => {
+              this.isSubscribed = true;
+              this.token = currentToken;
+              axios.put(`${process.env.API_HOST}/notification/subscribe`, {
+                token: this.token,
+              })
+                .then((res) => {})
+                .catch((err) => {
+                  this.isSubscribed = false;
+                  this.failedSubscribeToast()
+                });
+            })
             .catch((err) => {
-              console.error('登録エラー: ', err);
-              this.isSubscribed = false;
+              this.failedSubscribeToast()
             });
-        }).catch((err) => {
-          console.error('Unable to retrieve newed token ', err);
+        })
+        .catch((err) => {
+          this.failedPermissionToast();
         });
-      }).catch((err) => {
-        console.error('Unable to get permission to notify.', err);
-      });
     },
     /**
      * 通知登録解除
      */
-    unSubscribe() {
+    unsubscribe() {
       this.isSubscribed = false;
       axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
         token: this.token,
       })
         .then((res) => {})
         .catch((err) => {
-          console.error('登録解除エラー: ', err);
           this.isSubscribed = true;
+          this.failedUnsubscribeToast()
         });
     },
   },
