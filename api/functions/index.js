@@ -2,15 +2,16 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
-const _ = require('lodash');
 const serviceAccount = require('./serviceAccountKey.json');
-const fcmServerKey = functions.config().fcm.serverkey;
 
+const notification = require('./routes/notification');
+
+// Firebase Admin
 const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 adminConfig.credential = admin.credential.cert(serviceAccount);
 admin.initializeApp(adminConfig);
 
+// Express Settings
 const app = express();
 app.use((req, res, next) => {
   res.header('Cache-Control', 'private, no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -21,93 +22,8 @@ app.use(cors({
   methods: 'GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS',
 }));
 
-const TOPIC = 'general';
-
-app.get('/notification/subscription/:token', (req, res) => {
-  axios.get(`https://iid.googleapis.com/iid/info/${req.params.token}`, {
-    params: {
-      details: true,
-    },
-    headers: {
-      Authorization: `key=${fcmServerKey}`,
-    },
-  })
-    .then((response) => {
-      const isSubscribed = _.has(response.data, ['rel', 'topics', TOPIC]);
-      res.json({ isSubscribed });
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send();
-    });
-});
-
-app.put('/notification/subscribe', (req, res) => {
-  const token = req.body.token;
-  admin.messaging().subscribeToTopic(token, TOPIC)
-    .then((response) => {
-      console.log('Successfully subscribed to topic:', response);
-      res.status(204).send();
-
-      // ウェルカム通知を送信
-      const message = {
-        webpush: {
-          notification: {
-            title: 'とうろく、ありがぽ。',
-            body: 'ずっと、かまって。',
-            icon: '/logo.png'
-          },
-        },
-        token: token,
-      };
-      admin.messaging().send(message)
-        .then((res) => {
-          console.log('Successfully sent Welcome message:', res);
-        })
-        .catch((err) => {
-          console.log('Error sending Welcome message:', err);
-        });
-    })
-    .catch((error) => {
-      console.error('Error subscribing to topic:', error);
-      res.status(500).send();
-    });
-});
-
-app.put('/notification/unsubscribe', (req, res) => {
-  admin.messaging().unsubscribeFromTopic(req.body.token, TOPIC)
-    .then((response) => {
-      console.log('Successfully unsubscribed from topic:', response);
-      res.status(204).send();
-    })
-    .catch((error) => {
-      console.error('Error subscribing to topic:', error);
-      res.status(500).send();
-    });
-});
-
-app.get('/notification/notice', (req, res) => {
-  const message = {
-    webpush: {
-      notification: {
-        title: 'kamatte syndrome',
-        body: 'hogehoge',
-        icon: '/logo.png'
-      },
-    },
-    topic: TOPIC,
-  };
-
-  admin.messaging().send(message)
-    .then((response) => {
-      console.log('Successfully sent message:', response);
-      res.status(200).send();
-    })
-    .catch((error) => {
-      console.log('Error sending message:', error);
-      res.status(500).send();
-    });
-});
+// Routes
+app.use('/notification', notification(admin));
 
 const api = functions.region('asia-northeast1').https.onRequest(app);
 module.exports = { api };
