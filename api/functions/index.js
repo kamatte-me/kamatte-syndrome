@@ -68,9 +68,12 @@ app.put('/notification/unsubscribe', (req, res) => {
 
 app.get('/notification/notice', (req, res) => {
   const message = {
-    notification: {
-      title: 'kamatte syndrome',
-      body: 'hogehoge',
+    webpush: {
+      notification: {
+        title: 'kamatte syndrome',
+        body: 'hogehoge',
+        icon: '/logo.png'
+      },
     },
     topic: TOPIC,
   };

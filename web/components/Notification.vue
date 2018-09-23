@@ -78,14 +78,24 @@ export default {
       // ブラウザの通知パーミッション取得リクエスト
       this.messaging.requestPermission()
         .then(() => {
+          // トークン取得
           this.messaging.getToken()
             .then((currentToken) => {
               this.isSubscribed = true;
               this.token = currentToken;
+              // 通知登録
               axios.put(`${process.env.API_HOST}/notification/subscribe`, {
                 token: this.token,
               })
-                .then((res) => {})
+                .then((res) => {
+                  // ウェルカム通知
+                  const title = 'とうろく、ありがぽ。';
+                  const options = {
+                    body: 'ずっと、かまって。',
+                    icon: '/logo.png'
+                  };
+                  new Notification(title, options);
+                })
                 .catch((err) => {
                   this.isSubscribed = false;
                   this.failedSubscribeToast()
