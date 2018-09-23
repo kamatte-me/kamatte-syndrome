@@ -4,9 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const _ = require('lodash');
-require('dotenv').config();
-
 const serviceAccount = require('./serviceAccountKey.json');
+const fcmServerKey = functions.config().fcm.serverkey;
+
 const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
 adminConfig.credential = admin.credential.cert(serviceAccount);
 admin.initializeApp(adminConfig);
@@ -29,7 +29,7 @@ app.get('/notification/fetch/:token', (req, res) => {
       details: true,
     },
     headers: {
-      Authorization: `key=${process.env.FIREBASE_SERVER_KEY}`,
+      Authorization: `key=${fcmServerKey}`,
     },
   })
     .then((response) => {

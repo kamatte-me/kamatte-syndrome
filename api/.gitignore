@@ -7,4 +7,5 @@ node_modules
 # Firebase
 .firebase
 firebase-debug.log
-serviceAccountKey.json
+functions/serviceAccountKey.json
+functions/.runtimeconfig.json

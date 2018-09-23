@@ -29,38 +29,40 @@ references:
       command: mv /tmp/workspace/project/* /tmp/workspace/project/.[!.]* .
 
 jobs:
-  build:
+  web-build:
     <<: *node_container_config
     steps:
       - checkout
-      # Download and cache dependencies
+      # Install and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "yarn.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - v1-web-dependencies-{{ checksum "web/yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-web-dependencies-
       - run:
           name: Install Dependencies
           command: yarn install
+          working_directory: web
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
+          key: v1-web-dependencies-{{ checksum "web/yarn.lock" }}
       # Build
       - run:
           name: Nuxt bulid
           command: yarn run build
+          working_directory: web
       # Persist to workspace
       - run:
           command: |
-            mkdir -p /tmp/workspace/project
-            mv * .[!.]* /tmp/workspace/project/
+            mkdir -p /tmp/workspace/project/web
+            mv * .[!.]* /tmp/workspace/project/web/
       - persist_to_workspace:
           root: *workspace_root
           paths:
             - project
 
-  deploy:
+  web-deploy:
     <<: *gcloud_container_config
     steps:
       - *attach_workspace
@@ -72,19 +74,63 @@ jobs:
           name: Initialize Google Cloud SDK
           command: |
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            gcloud config set project ${GCP_PROJECT_ID}
+            gcloud config set project ${GCLOUD_PROJECT}
       - run:
           name: Deploy to Google App Engine
           command: gcloud app deploy
+          working_directory: web
+
+  api-deploy:
+    <<: *node_container_config
+    steps:
+      - checkout
+      # Install and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-api-dependencies-{{ checksum "api/functions/yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-api-dependencies-
+      - run:
+          name: Install Dependencies
+          command: yarn install
+          working_directory: api/functions
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-api-dependencies-{{ checksum "api/functions/yarn.lock" }}
+      - run:
+          name: Install Firebase CLI
+          command: yarn add -D firebase-tools@latest
+          working_directory: api/functions
+      - run:
+          name: Store Firebase Service key
+          command: echo $FIREBASE_SERVICE_KEY > serviceAccountKey.json
+          working_directory: api/functions
+      - run:
+          name: Set Firebase Sever key
+          command: ./node_modules/.bin/firebase functions:config:set fcm.serverkey=$FCM_SERVER_KEY
+          working_directory: api/functions
+      - run:
+          name: Make Empty public directory
+          command: mkdir public
+          working_directory: api
+      - run:
+          name: Deploy to Cloud Functions for Firebase
+          command: ./node_modules/.bin/firebase deploy --project "$GCLOUD_PROJECT" --token "$FIREBASE_TOKEN"
+          working_directory: api/functions
 
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
-      - deploy:
+      - web-build
+      - web-deploy:
           requires:
-            - build
+            - web-build
+          filters:
+            branches:
+              only: master
+      - api-deploy:
           filters:
             branches:
               only: master
