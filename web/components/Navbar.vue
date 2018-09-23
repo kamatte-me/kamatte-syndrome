@@ -5,18 +5,18 @@
     <div class="navbar-brand">
       <nuxt-link
         to="/"
-        v-on:click.native="closeDropdown()"
+        @click.native="closeDropdown()"
         class="navbar-item">
         <img src="~/assets/images/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
-      <div class="navbar-end is-block-touch is-hidden-desktop" style="margin-left: auto">
-        <div class="navbar-item">
-          <notification-button/>
-        </div>
+      <div class="navbar-item is-block-touch is-hidden-desktop"
+           style="margin-left: auto">
+        <notification-button/>
       </div>
-      <div class="navbar-burger" style="margin-left: 0"
-           v-bind:class="{'is-active': isDropdown}"
-           v-on:click="toggleDropdown()">
+      <div class="navbar-burger"
+           style="margin-left: 0"
+           :class="{'is-active': isDropdown}"
+           @click="toggleDropdown()">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -24,13 +24,13 @@
     </div>
 
     <div class="navbar-menu"
-         v-bind:class="{'is-active': isDropdown}">
+         :class="{'is-active': isDropdown}">
       <div class="navbar-start">
         <nuxt-link class="navbar-item c-navbar_item"
-           v-on:click.native="toggleDropdown()"
+           @click.native="toggleDropdown()"
            v-for="(to, pageTitle) in pages"
            :to="to"
-           v-bind:class="{'is-active': isCurrentPage(to)}"
+           :class="{'is-active': isCurrentPage(to)}"
            :key="pageTitle">
           {{ pageTitle }}
         </nuxt-link>
