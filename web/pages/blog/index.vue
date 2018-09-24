@@ -78,9 +78,10 @@ export default {
   validate({ query }) {
     return query.page === undefined || /^\d+$/.test(query.page);
   },
+  watchQuery: ['page'],
   asyncData({ query, error }) {
     const client = createClient();
-    const currentPage = query.page === undefined ? 1 : Number(query.page);
+    const currentPage = Number(query.page) || 1;
     return client.getEntries({
       content_type: process.env.CTF_BLOG_POST_TYPE_ID,
       order: '-sys.createdAt',
@@ -106,7 +107,7 @@ export default {
   },
   computed: {
     currentPage() {
-      return this.$route.query.page === undefined ? 1 : Number(this.$route.query.page);
+      return Number(this.$route.query.page) || 1;
     },
   },
   methods: {

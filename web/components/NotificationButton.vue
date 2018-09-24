@@ -3,7 +3,7 @@
           class="button is-rounded is-primary"
           :class="{ 'is-loading': $store.state.notification.isLoading }">
     <b-icon
-      :icon="$store.state.notification.isSubscribed ? 'bell' : 'bell-off'">
+      :icon="$store.state.notification.isSubscribed ? 'bell-ring-outline' : 'bell-outline'">
     </b-icon>
   </button>
 </template>
