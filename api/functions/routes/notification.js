@@ -16,6 +16,7 @@ module.exports = (admin) => {
 
   /**
    * 通知登録状況取得
+   * Google Instance ID API: https://developers.google.com/instance-id/reference/server
    */
   router.get('/subscription/:token', (req, res) => {
     axios.get(`https://iid.googleapis.com/iid/info/${req.params.token}`, {
@@ -49,15 +50,16 @@ module.exports = (admin) => {
           notification: {
             title: 'とうろく、ありがぽ。',
             body: 'ずっと、かまって。',
-            icon: '/logo.png',
           },
-          to: req.body.token,
+          webpush: {
+            notification: {
+              icon: '/logo.png',
+            },
+          },
+          token: req.body.token,
         };
-        axios.post('https://fcm.googleapis.com/fcm/send', message, {
-          headers: {
-            Authorization: `key=${fcmServerKey}`,
-          },
-        })
+
+        admin.messaging().send(message)
           .then(() => {})
           .catch((error) => {
             console.error('Error sending Welcome message: ', error);
@@ -90,21 +92,22 @@ module.exports = (admin) => {
    * TODO: 通知実行用の管理画面
    */
   router.get('/notice', (req, res) => {
+    // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
     const message = {
       notification: {
         title: 'かましん、こーしん。',
         body: 'hoge',
-        icon: '/logo.png',
-        click_action: 'https://kamatte.me',
       },
-      to: `/topics/${TOPIC}`,
+      webpush: {
+        notification: {
+          icon: '/logo.png',
+          click_action: 'https://kamatte.me',
+        },
+      },
+      topic: TOPIC,
     };
 
-    axios.post('https://fcm.googleapis.com/fcm/send', message, {
-      headers: {
-        Authorization: `key=${fcmServerKey}`,
-      },
-    })
+    admin.messaging().send(message)
       .then(() => {
         res.status(200).send();
       })
