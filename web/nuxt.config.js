@@ -119,6 +119,7 @@ module.exports = {
     name: 'kamatte syndrome',
     short_name: 'kamatte syndrome',
     lang: 'ja',
+    gcm_sender_id: "103953800507",
   },
   workbox: {
     dev: true,
