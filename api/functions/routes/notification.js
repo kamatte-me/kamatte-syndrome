@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const axios = require('axios');
 const _ = require('lodash');
+const contentful = require('contentful');
 
 /**
  * 通知ルーター
@@ -10,7 +11,13 @@ const _ = require('lodash');
  */
 module.exports = (admin) => {
   const fcmServerKey = functions.config().fcm.serverkey;
-  const TOPIC = 'general';
+  const TOPIC = process.env.NODE_ENV === 'production' ? 'general' : 'test';
+  const LANG = 'ja-JP';
+
+  const contentfulClient = contentful.createClient({
+    space: 'ky376v5x3o44',
+    accessToken: functions.config().contentful.cdaaccesstoken,
+  });
 
   const router = express.Router();
 
@@ -32,7 +39,7 @@ module.exports = (admin) => {
         res.json({ isSubscribed });
       })
       .catch((error) => {
-        console.error('Error get token info: ', error);
+        console.error('Error get token info:', error);
         res.status(500).send();
       });
   });
@@ -60,13 +67,13 @@ module.exports = (admin) => {
         };
 
         admin.messaging().send(message)
-          .then(() => {})
+          .then(() => { })
           .catch((error) => {
-            console.error('Error sending Welcome message: ', error);
+            console.error('Error sending Welcome message:', error);
           });
       })
       .catch((error) => {
-        console.error('Error subscribing to topic: ', error);
+        console.error('Error subscribing to topic:', error);
         res.status(500).send();
       });
   });
@@ -80,7 +87,7 @@ module.exports = (admin) => {
         res.status(204).send();
       })
       .catch((error) => {
-        console.error('Error unsubscribing to topic: ', error);
+        console.error('Error unsubscribing to topic:', error);
         res.status(500).send();
       });
   });
@@ -112,7 +119,78 @@ module.exports = (admin) => {
         res.status(200).send();
       })
       .catch((error) => {
-        console.error('Error sending message: ', error);
+        console.error('Error sending message:', error);
+        res.status(500).send();
+      });
+  });
+
+  /**
+   * ブログ更新通知実行WebHooksエンドポイント
+   * TODO: ContentfulのWebHookを実装
+   */
+  router.post('/webhook/blog', (req, res) => {
+    // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
+    const fields = req.body.fields;
+    const post = {
+      title: fields.title[LANG],
+      slug: fields.slug[LANG],
+      icon: '/logo.png',
+    };
+
+    // ブログ初回公開時（revision: 1）のみ通知
+    if (req.body.sys.revision !== 1) {
+      const resBody = 'Not notified because of existing post update.';
+      console.log(`${resBody}:`, post.title);
+      res.status(200).send(resBody);
+      return;
+    }
+
+    // 同期処理で画像取得
+    new Promise(((resolve, reject) => {
+      if (_.has(req.body, ['fields', 'featuredImage'])) {
+        contentfulClient.getEntries({
+          'sys.id': req.body.sys.id,
+        })
+          .then((entries) => {
+            post.icon = `https:${entries.items[0].fields.featuredImage.fields.file.url}`;
+            resolve();
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        resolve();
+      }
+    }))
+      .then(() => {
+        const message = {
+          notification: {
+            title: 'かましん、こーしん。',
+            body: post.title,
+          },
+          webpush: {
+            notification: {
+              icon: post.icon,
+              click_action: `https://kamatte.me/blog/${post.slug}`,
+            },
+          },
+          topic: TOPIC,
+        };
+
+        admin.messaging().send(message)
+          .then(() => {
+            console.log('Notify completed:', post.title);
+            res.status(200).send('Notified');
+          })
+          .catch((error) => {
+            console.error('Notify failed:', post.title);
+            console.error('Error sending message:', error);
+            res.status(500).send();
+          });
+      })
+      .catch((error) => {
+        console.error('Notify failed:', post.title);
+        console.error('Error sending message:', error);
         res.status(500).send();
       });
   });

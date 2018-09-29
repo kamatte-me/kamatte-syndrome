@@ -104,11 +104,13 @@ jobs:
           working_directory: api/functions
       - run:
           name: Store Firebase Service key
-          command: echo $FIREBASE_SERVICE_KEY > serviceAccountKey.json
+          command: echo $GCLOUD_SERVICE_KEY > serviceAccountKey.json
           working_directory: api/functions
       - run:
-          name: Set Firebase Sever key
-          command: ./node_modules/.bin/firebase functions:config:set fcm.serverkey=$FCM_SERVER_KEY
+          name: Set Firebase Functions Environment variabeles
+          command: |
+            ./node_modules/.bin/firebase functions:config:set fcm.serverkey=$FCM_SERVER_KEY
+            ./node_modules/.bin/firebase functions:config:set contentful.cdaaccesstoken=$CTF_CDA_ACCESS_TOKEN
           working_directory: api/functions
       - run:
           name: Make Empty public directory
