@@ -1,7 +1,6 @@
 <template>
   <div>
     <post-content :post="post"/>
-    <blog-powered-by/>
   </div>
 </template>
 
@@ -13,7 +12,6 @@ export default {
   name: 'slug',
   components: {
     PostContent,
-    BlogPoweredBy: () => import('~/components/BlogPoweredBy'),
   },
   head() {
     const meta = [

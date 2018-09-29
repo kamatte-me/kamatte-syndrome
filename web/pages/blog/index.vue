@@ -56,7 +56,6 @@
         </div>
       </div>
     </section>
-    <blog-powered-by/>
   </div>
 </template>
 
@@ -73,7 +72,6 @@ export default {
   },
   components: {
     FormattedDate,
-    BlogPoweredBy: () => import('~/components/BlogPoweredBy'),
   },
   validate({ query }) {
     return query.page === undefined || /^\d+$/.test(query.page);

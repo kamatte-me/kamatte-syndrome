@@ -1,8 +1,14 @@
 .p-culture {
   &_tabs {
+    padding-bottom: 2rem;
+
     nav {
       font-family: $family-designed;
       font-weight: 300;
+    }
+
+    .tab-content {
+      padding: 1rem 1.5rem 1rem !important;
     }
   }
 

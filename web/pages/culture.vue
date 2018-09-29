@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-tabs position="is-centered" class="block p-culture_tabs" size="is-medium">
+    <b-tabs position="is-centered" class="p-culture_tabs" size="is-medium">
       <b-tab-item v-for="(culturesList, name) in cultures" :key="name" :label="name">
         <div class="container">
           <dl class="p-culture_cultureWrap">
