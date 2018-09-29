@@ -51,15 +51,17 @@ export default {
           // トークン取得
           this.$store.state.notification.messaging.getToken()
             .then((currentToken) => {
-              this.$store.commit('notification/setIsSubscribed', true);
+              this.$store.commit('notification/setIsLoading', true);
               this.$store.commit('notification/setToken', currentToken);
               // 通知登録
               axios.put(`${process.env.API_HOST}/notification/subscribe`, {
                 token: currentToken,
               })
-                .then((res) => {})
+                .then((res) => {
+                  this.$store.commit('notification/setIsSubscribed', true);
+                  this.$store.commit('notification/setIsLoading', false);
+                })
                 .catch((err) => {
-                  this.$store.commit('notification/setIsSubscribed', false);
                   this.failedSubscribeToast()
                 });
             })
@@ -80,13 +82,15 @@ export default {
         title: 'もっと、かまって。',
         message: '通知止めるって、まじんこ？',
         onConfirm: () => {
-          this.$store.commit('notification/setIsSubscribed', false);
+          this.$store.commit('notification/setIsLoading', true);
           axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
             token: this.$store.state.notification.token,
           })
-            .then((res) => {})
+            .then((res) => {
+              this.$store.commit('notification/setIsSubscribed', false);
+              this.$store.commit('notification/setIsLoading', false);
+            })
             .catch((err) => {
-              this.$store.commit('notification/setIsSubscribed', true);
               this.failedUnsubscribeToast()
             });
         },
