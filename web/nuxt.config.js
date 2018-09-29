@@ -125,22 +125,37 @@ module.exports = {
     dev: true,
     runtimeCaching: [
       {
-        urlPattern: '(http|https)://images.ctfassets.net/*',
+        urlPattern: 'https://cdn.materialdesignicons.com/*',
         handler: 'cacheFirst',
         method: 'GET',
       },
       {
-        urlPattern: '(http|https)://cdn.contentful.com/*',
+        urlPattern: 'https://fonts.gstatic.com/*',
+        handler: 'cacheFirst',
+        method: 'GET',
+      },
+      {
+        urlPattern: 'https://fonts.googleapis.com/*',
+        handler: 'cacheFirst',
+        method: 'GET',
+      },
+      {
+        urlPattern: 'https://images.ctfassets.net/*',
+        handler: 'cacheFirst',
+        method: 'GET',
+      },
+      {
+        urlPattern: 'https://cdn.contentful.com/*',
         handler: 'networkFirst',
         method: 'GET',
       },
       {
-        urlPattern: '(http|https)://www.googleapis.com/youtube/v3/*',
+        urlPattern: 'https://www.googleapis.com/youtube/v3/*',
         handler: 'cacheFirst',
         method: 'GET',
       },
       {
-        urlPattern: '(http|https)://i.ytimg.com/*',
+        urlPattern: 'https://i.ytimg.com/*',
         handler: 'cacheFirst',
         method: 'GET',
       },
