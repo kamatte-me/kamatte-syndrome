@@ -93,40 +93,7 @@ module.exports = (admin) => {
   });
 
   /**
-   * 通知実行（テスト用）
-   * https://firebase.google.com/docs/cloud-messaging/js/receive?hl=ja#setting_notification_options_in_the_send_request
-   * TODO: ContentfulのWebHookを実装
-   * TODO: 通知実行用の管理画面
-   */
-  router.get('/notice', (req, res) => {
-    // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
-    const message = {
-      notification: {
-        title: 'かましん、こーしん。',
-        body: 'hoge',
-      },
-      webpush: {
-        notification: {
-          icon: '/logo.png',
-          click_action: 'https://kamatte.me',
-        },
-      },
-      topic: TOPIC,
-    };
-
-    admin.messaging().send(message)
-      .then(() => {
-        res.status(200).send();
-      })
-      .catch((error) => {
-        console.error('Error sending message:', error);
-        res.status(500).send();
-      });
-  });
-
-  /**
    * ブログ更新通知実行WebHooksエンドポイント
-   * TODO: ContentfulのWebHookを実装
    */
   router.post('/webhook/blog', (req, res) => {
     // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
@@ -134,12 +101,12 @@ module.exports = (admin) => {
     const post = {
       title: fields.title[LANG],
       slug: fields.slug[LANG],
-      icon: '/logo.png',
+      featuredImage: '/logo.png',
     };
 
     // ブログ初回公開時（revision: 1）のみ通知
     if (req.body.sys.revision !== 1) {
-      const resBody = 'Not notified because of existing post update.';
+      const resBody = 'Not notified because of existing entry update.';
       console.log(`${resBody}:`, post.title);
       res.status(200).send(resBody);
       return;
@@ -152,7 +119,7 @@ module.exports = (admin) => {
           'sys.id': req.body.sys.id,
         })
           .then((entries) => {
-            post.icon = `https:${entries.items[0].fields.featuredImage.fields.file.url}`;
+            post.featuredImage = `https:${entries.items[0].fields.featuredImage.fields.file.url}`;
             resolve();
           })
           .catch((error) => {
@@ -170,7 +137,7 @@ module.exports = (admin) => {
           },
           webpush: {
             notification: {
-              icon: post.icon,
+              icon: post.featuredImage,
               click_action: `https://kamatte.me/blog/${post.slug}`,
             },
           },
@@ -190,6 +157,77 @@ module.exports = (admin) => {
       })
       .catch((error) => {
         console.error('Notify failed:', post.title);
+        console.error('Error sending message:', error);
+        res.status(500).send();
+      });
+  });
+
+  /**
+   * ニュース通知実行WebHooksエンドポイント
+   */
+  router.post('/webhook/news', (req, res) => {
+    // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
+    const fields = req.body.fields;
+    const news = {
+      title: fields.title[LANG],
+      body: fields.body[LANG],
+      url: fields.url === undefined ? null : fields.url[LANG],
+      image: '/logo.png',
+    };
+
+    // ブログ初回公開時（revision: 1）のみ通知
+    if (req.body.sys.revision !== 1) {
+      const resBody = 'Not notified because of existing entry update.';
+      console.log(`${resBody}:`, news.title);
+      res.status(200).send(resBody);
+      return;
+    }
+
+    // 同期処理で画像取得
+    new Promise(((resolve, reject) => {
+      if (_.has(req.body, ['fields', 'image'])) {
+        contentfulClient.getEntries({
+          'sys.id': req.body.sys.id,
+        })
+          .then((entries) => {
+            news.image = `https:${entries.items[0].fields.image.fields.file.url}`;
+            resolve();
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        resolve();
+      }
+    }))
+      .then(() => {
+        const message = {
+          notification: {
+            title: news.title,
+            body: news.body,
+          },
+          webpush: {
+            notification: {
+              icon: news.image,
+              click_action: news.url,
+            },
+          },
+          topic: TOPIC,
+        };
+
+        admin.messaging().send(message)
+          .then(() => {
+            console.log('Notify completed:', news.title);
+            res.status(200).send('Notified');
+          })
+          .catch((error) => {
+            console.error('Notify failed:', news.title);
+            console.error('Error sending message:', error);
+            res.status(500).send();
+          });
+      })
+      .catch((error) => {
+        console.error('Notify failed:', news.title);
         console.error('Error sending message:', error);
         res.status(500).send();
       });
