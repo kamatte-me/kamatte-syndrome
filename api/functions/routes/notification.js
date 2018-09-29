@@ -119,7 +119,7 @@ module.exports = (admin) => {
     if (req.body.sys.revision !== 1) {
       const resBody = 'Not notified because of existing entry update.';
       console.log(`${resBody}:`, post.title);
-      res.status(200).end(resBody);
+      res.status(208).end(resBody);
       return;
     }
 
@@ -158,7 +158,7 @@ module.exports = (admin) => {
         admin.messaging().send(message)
           .then(() => {
             console.log('Notify completed:', post.title);
-            res.status(200).end('Notified');
+            res.status(200).end('Notify completed.');
           })
           .catch((error) => {
             console.error('Notify failed:', post.title);
@@ -168,7 +168,7 @@ module.exports = (admin) => {
       })
       .catch((error) => {
         console.error('Notify failed:', post.title);
-        console.error('Error sending message:', error);
+        console.error('Error get entries:', error);
         res.status(500).end();
       });
   });
@@ -189,7 +189,7 @@ module.exports = (admin) => {
     if (req.body.sys.revision !== 1) {
       const resBody = 'Not notified because of existing entry update.';
       console.log(`${resBody}:`, news.title);
-      res.status(200).end(resBody);
+      res.status(208).end(resBody);
       return;
     }
 
@@ -228,7 +228,7 @@ module.exports = (admin) => {
         admin.messaging().send(message)
           .then(() => {
             console.log('Notify completed:', news.title);
-            res.status(200).end('Notified');
+            res.status(200).end('Notify completed.');
           })
           .catch((error) => {
             console.error('Notify failed:', news.title);
@@ -238,7 +238,7 @@ module.exports = (admin) => {
       })
       .catch((error) => {
         console.error('Notify failed:', news.title);
-        console.error('Error sending message:', error);
+        console.error('Error get entries:', error);
         res.status(500).end();
       });
   });
