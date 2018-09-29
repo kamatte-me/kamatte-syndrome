@@ -76,15 +76,25 @@ export default {
      * 通知登録解除
      */
     unsubscribe() {
-      this.$store.commit('notification/setIsSubscribed', false);
-      axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
-        token: this.$store.state.notification.token,
-      })
-        .then((res) => {})
-        .catch((err) => {
-          this.$store.commit('notification/setIsSubscribed', true);
-          this.failedUnsubscribeToast()
-        });
+      this.$dialog.confirm({
+        title: 'もっと、かまって。',
+        message: '通知止めるって、まじんこ？',
+        onConfirm: () => {
+          this.$store.commit('notification/setIsSubscribed', false);
+          axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
+            token: this.$store.state.notification.token,
+          })
+            .then((res) => {})
+            .catch((err) => {
+              this.$store.commit('notification/setIsSubscribed', true);
+              this.failedUnsubscribeToast()
+            });
+        },
+        confirmText: 'まじんこ',
+        cancelText: '虚言',
+        focusOn: 'cancel',
+        type: 'is-danger',
+      });
     },
   },
 };
