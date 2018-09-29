@@ -111,6 +111,8 @@ jobs:
           command: |
             ./node_modules/.bin/firebase functions:config:set fcm.serverkey=$FCM_SERVER_KEY
             ./node_modules/.bin/firebase functions:config:set contentful.cdaaccesstoken=$CTF_CDA_ACCESS_TOKEN
+            ./node_modules/.bin/firebase functions:config:set basicauth.user=$BASIC_AUTH_USER
+            ./node_modules/.bin/firebase functions:config:set basicauth.password=$BASIC_AUTH_PASSWORD
           working_directory: api/functions
       - run:
           name: Make Empty public directory

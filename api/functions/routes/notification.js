@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const express = require('express');
+const basicAuth = require('basic-auth-connect');
 const axios = require('axios');
 const _ = require('lodash');
 const contentful = require('contentful');
@@ -21,6 +22,17 @@ module.exports = (admin) => {
 
   const router = express.Router();
 
+  // 本番環境ではWebHooksエンドポイントでBasic認証を実施
+  if (process.env.NODE_ENV === 'production') {
+    router.all('/webhook/*', basicAuth((user, password) => {
+      const actual = {
+        user: functions.config().basicauth.user,
+        password: functions.config().basicauth.password,
+      };
+      return user === actual.user && password === actual.password;
+    }));
+  }
+
   /**
    * 通知登録状況取得
    * Google Instance ID API: https://developers.google.com/instance-id/reference/server
@@ -40,7 +52,7 @@ module.exports = (admin) => {
       })
       .catch((error) => {
         console.error('Error get token info:', error);
-        res.status(500).send();
+        res.status(500).end();
       });
   });
 
@@ -50,7 +62,7 @@ module.exports = (admin) => {
   router.put('/subscribe', (req, res) => {
     admin.messaging().subscribeToTopic(req.body.token, TOPIC)
       .then(() => {
-        res.status(204).send();
+        res.status(204).end();
 
         // ウェルカム通知を送信
         const message = {
@@ -74,7 +86,7 @@ module.exports = (admin) => {
       })
       .catch((error) => {
         console.error('Error subscribing to topic:', error);
-        res.status(500).send();
+        res.status(500).end();
       });
   });
 
@@ -84,11 +96,11 @@ module.exports = (admin) => {
   router.put('/unsubscribe', (req, res) => {
     admin.messaging().unsubscribeFromTopic(req.body.token, TOPIC)
       .then(() => {
-        res.status(204).send();
+        res.status(204).end();
       })
       .catch((error) => {
         console.error('Error unsubscribing to topic:', error);
-        res.status(500).send();
+        res.status(500).end();
       });
   });
 
@@ -96,7 +108,6 @@ module.exports = (admin) => {
    * ブログ更新通知実行WebHooksエンドポイント
    */
   router.post('/webhook/blog', (req, res) => {
-    // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
     const fields = req.body.fields;
     const post = {
       title: fields.title[LANG],
@@ -104,11 +115,11 @@ module.exports = (admin) => {
       featuredImage: '/logo.png',
     };
 
-    // ブログ初回公開時（revision: 1）のみ通知
+    // 初回公開時（revision: 1）のみ通知
     if (req.body.sys.revision !== 1) {
       const resBody = 'Not notified because of existing entry update.';
       console.log(`${resBody}:`, post.title);
-      res.status(200).send(resBody);
+      res.status(200).end(resBody);
       return;
     }
 
@@ -147,18 +158,18 @@ module.exports = (admin) => {
         admin.messaging().send(message)
           .then(() => {
             console.log('Notify completed:', post.title);
-            res.status(200).send('Notified');
+            res.status(200).end('Notified');
           })
           .catch((error) => {
             console.error('Notify failed:', post.title);
             console.error('Error sending message:', error);
-            res.status(500).send();
+            res.status(500).end();
           });
       })
       .catch((error) => {
         console.error('Notify failed:', post.title);
         console.error('Error sending message:', error);
-        res.status(500).send();
+        res.status(500).end();
       });
   });
 
@@ -166,7 +177,6 @@ module.exports = (admin) => {
    * ニュース通知実行WebHooksエンドポイント
    */
   router.post('/webhook/news', (req, res) => {
-    // TODO: Basic認証 https://github.com/jshttp/basic-auth#readme
     const fields = req.body.fields;
     const news = {
       title: fields.title[LANG],
@@ -175,11 +185,11 @@ module.exports = (admin) => {
       image: '/logo.png',
     };
 
-    // ブログ初回公開時（revision: 1）のみ通知
+    // 初回公開時（revision: 1）のみ通知
     if (req.body.sys.revision !== 1) {
       const resBody = 'Not notified because of existing entry update.';
       console.log(`${resBody}:`, news.title);
-      res.status(200).send(resBody);
+      res.status(200).end(resBody);
       return;
     }
 
@@ -218,18 +228,18 @@ module.exports = (admin) => {
         admin.messaging().send(message)
           .then(() => {
             console.log('Notify completed:', news.title);
-            res.status(200).send('Notified');
+            res.status(200).end('Notified');
           })
           .catch((error) => {
             console.error('Notify failed:', news.title);
             console.error('Error sending message:', error);
-            res.status(500).send();
+            res.status(500).end();
           });
       })
       .catch((error) => {
         console.error('Notify failed:', news.title);
         console.error('Error sending message:', error);
-        res.status(500).send();
+        res.status(500).end();
       });
   });
 
