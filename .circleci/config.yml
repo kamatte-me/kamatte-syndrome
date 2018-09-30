@@ -8,25 +8,12 @@ references:
   node_container_config: &node_container_config
     docker:
       - image: circleci/node:8.11.1
-    working_directory: ~/project
+    working_directory: ~/workspace
 
   gcloud_container_config: &gcloud_container_config
     docker:
       - image: google/cloud-sdk
-    working_directory: ~/project
-
-  workspace_root: &workspace_root
-    /tmp/workspace
-
-  attach_workspace: &attach_workspace
-    attach_workspace:
-      at: *workspace_root
-
-  load_code: &load_code
-    run:
-      name: Load build from Workspace
-      # Move all files and dotfiles to current directory
-      command: mv /tmp/workspace/project/* /tmp/workspace/project/.[!.]* .
+    working_directory: ~/workspace
 
 jobs:
   web-build:
@@ -53,20 +40,16 @@ jobs:
           command: yarn run build
           working_directory: web
       # Persist to workspace
-      - run:
-          command: |
-            mkdir -p /tmp/workspace/project/web
-            mv * .[!.]* /tmp/workspace/project/web/
       - persist_to_workspace:
-          root: *workspace_root
+          root: .
           paths:
-            - project
+            - web
 
   web-deploy:
     <<: *gcloud_container_config
     steps:
-      - *attach_workspace
-      - *load_code
+      - attach_workspace:
+            at: .
       - run:
           name: Store GCP Service Account
           command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
