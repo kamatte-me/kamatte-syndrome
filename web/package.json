@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "build": "nuxt build",
-    "build-analize": "nuxt build --analyze",
+    "build": "NODE_ENV=production nuxt build",
+    "build-analize": "NODE_ENV=production nuxt build --analyze",
     "start": "NODE_ENV=production node server.js",
     "deploy": "gcloud app deploy",
     "generate": "nuxt generate",

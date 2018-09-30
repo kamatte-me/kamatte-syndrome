@@ -4,7 +4,9 @@ require('dotenv').config();
 const env = {
   API_HOST: process.env.NODE_ENV === 'production' ?
       'https://asia-northeast1-kamatte-syndrome-215913.cloudfunctions.net/api' : 'http://localhost:5000',
+  GCLOUD_PROJECT: process.env.GCLOUD_PROJECT,
   GCP_API_KEY: process.env.GCP_API_KEY,
+  FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
   MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
   CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
   CTF_SPACE_ID: 'ky376v5x3o44',

@@ -59,10 +59,12 @@ export default {
               })
                 .then((res) => {
                   this.$store.commit('notification/setIsSubscribed', true);
-                  this.$store.commit('notification/setIsLoading', false);
                 })
                 .catch((err) => {
                   this.failedSubscribeToast()
+                })
+                .finally(() => {
+                  this.$store.commit('notification/setIsLoading', false);
                 });
             })
             .catch((err) => {
@@ -88,10 +90,11 @@ export default {
           })
             .then((res) => {
               this.$store.commit('notification/setIsSubscribed', false);
-              this.$store.commit('notification/setIsLoading', false);
             })
             .catch((err) => {
               this.failedUnsubscribeToast()
+            }).finally(() => {
+              this.$store.commit('notification/setIsLoading', false);
             });
         },
         confirmText: 'まじんこ',
