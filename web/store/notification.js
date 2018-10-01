@@ -9,7 +9,9 @@ export const state = () => ({
 
 export const mutations = {
   initMessaging(state) {
-    state.messaging = firebase.messaging();
+    if (firebase.messaging.isSupported()) {
+      state.messaging = firebase.messaging();
+    }
   },
   setIsLoading(state, isLoading) {
     state.isLoading = isLoading;

@@ -3,23 +3,22 @@
        role="navigation"
        aria-label="main navigation">
     <div class="navbar-brand">
-      <nuxt-link
-        to="/"
-        @click.native="closeDropdown()"
-        class="navbar-item">
+      <nuxt-link to="/"
+                 @click.native="closeDropdown()"
+                 class="navbar-item">
         <img src="~/assets/images/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
-      <div class="navbar-item is-block-touch is-hidden-desktop"
-           style="margin-left: auto">
-        <notification-button/>
-      </div>
-      <div class="navbar-burger"
-           style="margin-left: 0"
-           :class="{'is-active': isDropdown}"
-           @click="toggleDropdown()">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
+      <div class="c-navbar_menuWrap-mobile">
+        <div v-show="isShowNotificationButton" class="navbar-item is-hidden-desktop">
+          <notification-button/>
+        </div>
+        <div class="navbar-burger"
+             :class="{'is-active': isDropdown}"
+             @click="toggleDropdown()">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </div>
       </div>
     </div>
 
@@ -35,7 +34,7 @@
           {{ pageTitle }}
         </nuxt-link>
       </div>
-      <div class="navbar-end is-hidden-touch">
+      <div v-show="isShowNotificationButton" class="navbar-end is-hidden-touch">
         <div class="navbar-item">
           <notification-button/>
         </div>
@@ -64,6 +63,11 @@ export default {
       },
       isDropdown: false,
     };
+  },
+  computed: {
+    isShowNotificationButton() {
+      return this.$store.state.notification.messaging !== null;
+    }
   },
   methods: {
     /**
@@ -115,6 +119,11 @@ export default {
   beforeMount() {
     if (this.$store.state.notification.messaging === null) {
       this.$store.commit('notification/initMessaging');
+    }
+
+    // ブラウザが通知をサポートしていない場合は移行の処理をスキップ
+    if (this.$store.state.notification.messaging === null) {
+      return;
     }
 
     // トークン取得
