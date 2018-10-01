@@ -3,4 +3,13 @@
     font-family: $family-designed;
     font-weight: 400;
   }
+
+  &_menuWrap-mobile {
+    margin-left: auto;
+    display: flex;
+
+    .navbar-burger {
+      margin-left: 0;
+    }
+  }
 }

@@ -8,12 +8,11 @@
                  class="navbar-item">
         <img src="~/assets/images/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
-      <div style="margin-left: auto; display: flex">
-        <div v-show="isShowNotificationButton" class="navbar-item is-block-touch is-hidden-desktop">
+      <div class="c-navbar_menuWrap-mobile">
+        <div v-show="isShowNotificationButton" class="navbar-item is-hidden-desktop">
           <notification-button/>
         </div>
         <div class="navbar-burger"
-             style="margin-left: 0"
              :class="{'is-active': isDropdown}"
              @click="toggleDropdown()">
           <span aria-hidden="true"></span>
