@@ -1,19 +1,6 @@
 const contentful = require('contentful');
 require('dotenv').config();
 
-const env = {
-  API_HOST: process.env.NODE_ENV === 'production' ?
-      'https://asia-northeast1-kamatte-syndrome-215913.cloudfunctions.net/api' : 'http://localhost:5000',
-  GCLOUD_PROJECT: process.env.GCLOUD_PROJECT,
-  GCP_API_KEY: process.env.GCP_API_KEY,
-  FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
-  MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
-  CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
-  CTF_SPACE_ID: 'ky376v5x3o44',
-  CTF_BLOG_POST_TYPE_ID: 'post',
-  GA_TRACKING_ID: 'UA-8322636-7',
-};
-
 module.exports = {
   mode: 'universal',
 
@@ -46,7 +33,17 @@ module.exports = {
   /*
   ** Environment variables
   */
-  env,
+  env: {
+    API_HOST: process.env.NODE_ENV === 'production' ?
+      'https://asia-northeast1-kamatte-syndrome-215913.cloudfunctions.net/api' : 'http://localhost:5000',
+    GCLOUD_PROJECT: process.env.GCLOUD_PROJECT,
+    GCP_API_KEY: process.env.GCP_API_KEY,
+    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
+    CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
+    CTF_SPACE_ID: 'ky376v5x3o44',
+    CTF_BLOG_POST_TYPE_ID: 'post',
+  },
   /**
    * CSS
    */
@@ -112,7 +109,7 @@ module.exports = {
     '@nuxtjs/component-cache',
     '@nuxtjs/dotenv',
     ['@nuxtjs/google-analytics', {
-      id: env.GA_TRACKING_ID,
+      id: 'UA-8322636-7',
     }],
     '@nuxtjs/pwa',
     '@nuxtjs/sitemap',
@@ -124,7 +121,6 @@ module.exports = {
     gcm_sender_id: "103953800507",
   },
   workbox: {
-    dev: true,
     runtimeCaching: [
       {
         urlPattern: 'https://cdn.materialdesignicons.com/*',
@@ -164,18 +160,31 @@ module.exports = {
     ],
   },
   sitemap: {
-    hostname: 'https://kamatte.me',
-    cacheTime: 1000 * 60 * 15,
-    routes() {
+    async routes() {
       const client = contentful.createClient({
-        space: env.CTF_SPACE_ID,
-        accessToken: env.CTF_CDA_ACCESS_TOKEN,
+        space: 'ky376v5x3o44',
+        accessToken: process.env.CTF_CDA_ACCESS_TOKEN,
       });
-      return client.getEntries({
-        content_type: env.CTF_BLOG_POST_TYPE_ID,
-        order: '-sys.createdAt',
-        limit: 1000,
-      }).then(entries => entries.items.map(entry => `/blog/${entry.fields.slug}`));
+
+      const allRoutes = [];
+      let totalEntries;
+      let count = 1;
+      const limit = 1000;
+      do {
+        const entries = await client.getEntries({
+          content_type: 'post',
+          order: '-sys.createdAt',
+          skip: (count - 1) * limit,
+          limit,
+        });
+        const routes = entries.items.map(entry => `/blog/${entry.fields.slug}`);
+        Array.prototype.push.apply(allRoutes, routes);
+
+        totalEntries = entries.total;
+        count += 1;
+      } while (allRoutes.length < totalEntries);
+
+      return allRoutes;
     },
   },
 };

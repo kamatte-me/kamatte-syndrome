@@ -39,6 +39,11 @@ jobs:
           name: Nuxt bulid
           command: yarn run build
           working_directory: web
+      # Set .env for Contentful CDA Access Token
+      - run:
+          name: Set .env
+          command: echo CTF_CDA_ACCESS_TOKEN = $CTF_CDA_ACCESS_TOKEN > .env
+          working_directory: web
       # Persist to workspace
       - persist_to_workspace:
           root: .
