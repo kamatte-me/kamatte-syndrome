@@ -17,7 +17,6 @@ async function start() {
     }
 
     ctx.status = 200;
-    ctx.set('Cache-Control', 'public, max-age=10800');
     return new Promise((resolve, reject) => {
       ctx.res.on('close', resolve);
       ctx.res.on('finish', resolve);
