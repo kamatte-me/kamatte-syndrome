@@ -1,4 +1,4 @@
 User-Agent: *
 Disallow:
 
-Sitemap: http://kamatte.me/sitemap.xml
+Sitemap: https://kamatte.me/sitemap.xml

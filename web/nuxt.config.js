@@ -15,6 +15,8 @@ const env = {
 };
 
 module.exports = {
+  mode: 'universal',
+
   /*
   ** Headers of the page
   */
@@ -79,9 +81,6 @@ module.exports = {
   ** Build configuration
   */
   build: {
-    vendor: [
-      'axios'
-    ],
     postcss: {
       plugins: {
         'postcss-custom-properties': {
@@ -93,16 +92,17 @@ module.exports = {
     /*
     ** Run ESLint on save
     */
-    extend(config, { isDev, isClient }) {
-      if (isDev && isClient) {
+    extend(config, ctx) {
+      // Run ESLint on save
+      if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules)/,
-        });
+          exclude: /(node_modules)/
+        })
       }
-    },
+    }
   },
   plugins: [
     '~/plugins/contentful',

@@ -6,20 +6,29 @@ automatic_scaling:
   min_instances: 0
 
 handlers:
-  - url: /_nuxt
-    static_dir: .nuxt/dist
-    secure: always
+- url: /_nuxt
+  static_dir: .nuxt/dist/client
+  secure: always
 
-  - url: /(.*\.(gif|png|jpg|ico|txt))$
-    static_files: static/\1
-    upload: static/.*\.(gif|png|jpg|ico|txt)$
-    secure: always
+- url: /(.*\.(gif|png|jpg|ico|txt))$
+  static_files: static/\1
+  upload: static/.*\.(gif|png|jpg|ico|txt)$
+  secure: always
 
-  - url: /sw.js
-    static_files: static/sw.js
-    upload: static/sw.js
-    secure: always
+- url: /sw.js
+  static_files: static/sw.js
+  upload: static/sw.js
+  secure: always
 
-  - url: /.*
-    script: auto
-    secure: always
+- url: /firebase-messaging-sw.js
+  static_files: static/sw.js
+  upload: static/sw.js
+  secure: always
+
+- url: /.*
+  script: auto
+  secure: always
+
+env_variables:
+  NUXT_HOST: '0.0.0.0'
+  NUXT_PORT: '8080'
