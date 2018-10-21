@@ -8,14 +8,17 @@ automatic_scaling:
 handlers:
   - url: /_nuxt
     static_dir: .nuxt/dist
+    secure: always
 
   - url: /(.*\.(gif|png|jpg|ico|txt))$
     static_files: static/\1
     upload: static/.*\.(gif|png|jpg|ico|txt)$
+    secure: always
 
   - url: /sw.js
     static_files: static/sw.js
     upload: static/sw.js
+    secure: always
 
   - url: /.*
     script: auto
