@@ -167,12 +167,26 @@ module.exports = {
         space: 'ky376v5x3o44',
         accessToken: process.env.CTF_CDA_ACCESS_TOKEN,
       });
-      const entries = await client.getEntries({
-        content_type: 'post',
-        order: '-sys.createdAt',
-        limit: 1000,
-      });
-      return entries.items.map(entry => `/blog/${entry.fields.slug}`)
+
+      const allRoutes = [];
+      let totalEntries;
+      let count = 1;
+      const limit = 1000;
+      do {
+        const entries = await client.getEntries({
+          content_type: 'post',
+          order: '-sys.createdAt',
+          skip: (count - 1) * limit,
+          limit,
+        });
+        const routes = entries.items.map(entry => `/blog/${entry.fields.slug}`);
+        Array.prototype.push.apply(allRoutes, routes);
+
+        totalEntries = entries.total;
+        count += 1;
+      } while (allRoutes.length < totalEntries);
+
+      return allRoutes;
     },
   },
 };
