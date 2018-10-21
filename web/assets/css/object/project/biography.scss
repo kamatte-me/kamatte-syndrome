@@ -9,15 +9,20 @@
     }
 
     &_chronology {
-      dt {
-        float: left;
-        clear: left;
-        margin-right: 0.5rem;
+      &-item {
+        dt {
+          width: 80px;
+          float: left;
+          clear: left;
+        }
+
+        dd {
+          margin-left: 80px;
+        }
       }
 
-      dd {
-        float: left;
-        margin-left: 1rem;
+      &-item:not(:last-child) {
+        margin-bottom: 2px;
       }
     }
   }

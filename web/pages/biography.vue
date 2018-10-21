@@ -20,10 +20,11 @@
               </a>
             </div>
             <dl class="p-biography_profile_chronology is-clearfix">
-              <template v-for="(event, year) in chronology">
-                <dt :key="year">{{ year }}年</dt>
-                <dd :key="event">{{ event }}</dd>
-              </template>
+              <div v-for="(event, year) in chronology" :key="year"
+                   class="p-biography_profile_chronology-item">
+                <dt>{{ year }}年</dt>
+                <dd>{{ event }}</dd>
+              </div>
             </dl>
           </div>
         </div>
@@ -71,12 +72,13 @@ export default {
   data() {
     return {
       chronology: {
-        1994: '富山生まれ',
-        2012: '金沢に移住',
-        2013: 'IT革命児になる',
-        2014: '20歳になる',
-        2016: 'Web蜃気楼になる',
-        2017: '妖精の国に移住　6さいになる',
+        1994: '富山生まれ。',
+        2012: '金沢に移住。',
+        2013: 'IT革命児になる。',
+        2014: '20歳になる。',
+        2016: 'Web蜃気楼になる。',
+        2017: '妖精の国に移住。6さいになる',
+        2018: '21世紀のWebシンデレラになる。6さいになる。',
       },
       skills: {
         Python: 100,
