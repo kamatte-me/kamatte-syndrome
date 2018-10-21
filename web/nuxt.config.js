@@ -160,8 +160,6 @@ module.exports = {
     ],
   },
   sitemap: {
-    hostname: 'https://kamatte.me',
-    cacheTime: 1000 * 60 * 15,
     async routes() {
       const client = contentful.createClient({
         space: 'ky376v5x3o44',
