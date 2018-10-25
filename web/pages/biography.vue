@@ -4,7 +4,7 @@
       <div class="container">
         <div class="columns">
           <div class="column is-two-fifths has-text-centered">
-            <img src="~/assets/images/avatar.png" alt="kamatte" width="300" height="300"/>
+            <img src="/avatar.png" alt="kamatte" width="300" height="300"/>
           </div>
           <div class="column">
             <div class="has-text-centered-mobile has-text-green p-biography_profile_name">
