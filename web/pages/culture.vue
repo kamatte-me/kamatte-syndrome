@@ -73,6 +73,18 @@ export default {
             youtubeVideoId: '3M6_LJG7si0',
           },
           {
+            name: 'ポップしなないで',
+            youtubeVideoId: 'HTlsHDVH-2A',
+          },
+          {
+            name: 'SUKISHA',
+            youtubeVideoId: 'KLr9egOEgBw',
+          },
+          {
+            name: 'sympathy',
+            youtubeVideoId: '0e4aHM0uKRY',
+          },
+          {
             name: 'ハナエ',
             youtubeVideoId: 'iYDTN0zMv4w',
           },
@@ -95,10 +107,6 @@ export default {
           {
             name: 'Shiggy Jr.',
             youtubeVideoId: 'gq5DPSPP47g',
-          },
-          {
-            name: 'ポップしなないで',
-            youtubeVideoId: 'HTlsHDVH-2A',
           },
           {
             name: 'ヤバイTシャツ屋さん',

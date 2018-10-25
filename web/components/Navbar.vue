@@ -6,7 +6,7 @@
       <nuxt-link to="/"
                  @click.native="closeDropdown()"
                  class="navbar-item">
-        <img src="~/assets/images/logo.png" alt="kamatte syndrome"/>
+        <img src="/logo.png" alt="kamatte syndrome"/>
       </nuxt-link>
       <div class="c-navbar_menuWrap-mobile">
         <div v-show="isShowNotificationButton" class="navbar-item is-hidden-desktop">

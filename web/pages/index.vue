@@ -5,7 +5,7 @@
         <div class="container is-fluid has-text-centered">
           <h1 class="title p-index_eyecatch">
             kamatte
-            <img class="p-index_eyecatch-logo" src="~/assets/images/logo.png" width="60px" height="60px" alt=""/>
+            <img class="p-index_eyecatch-logo" src="/logo.png" width="60px" height="60px" alt=""/>
             syndrome
           </h1>
         </div>
@@ -17,7 +17,7 @@
           <div class="p-index_speech">
             <nuxt-link to="/biography">
               <img class="p-index_speech-avatar"
-                   src="~/assets/images/avatar.png"
+                   src="/avatar.png"
                    width="130"
                    height="130"
                    alt="kamatte"/>
