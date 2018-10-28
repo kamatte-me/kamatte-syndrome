@@ -21,8 +21,8 @@ handlers:
   secure: always
 
 - url: /firebase-messaging-sw.js
-  static_files: static/sw.js
-  upload: static/sw.js
+  static_files: static/firebase-messaging-sw.js
+  upload: static/firebase-messaging-sw.js
   secure: always
 
 - url: /.*

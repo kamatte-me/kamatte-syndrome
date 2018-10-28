@@ -181,7 +181,7 @@ module.exports = (admin) => {
     const news = {
       title: fields.title[LANG],
       body: fields.body[LANG],
-      url: fields.url === undefined ? null : fields.url[LANG],
+      url: fields.url === undefined ? 'https://kamatte.me' : fields.url[LANG],
       image: '/logo.png',
     };
 
