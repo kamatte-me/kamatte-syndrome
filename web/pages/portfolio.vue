@@ -113,7 +113,7 @@ export default {
             },
             {
               title: 'kamatte syndrome',
-              imagePath: '/logo.png',
+              imagePath: require('~/assets/images/logo.png'),
               charge: 'ソロプロジェクト',
               description: 'いま、あなたといる、ここ。',
               tags: [
