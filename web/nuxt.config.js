@@ -80,8 +80,8 @@ module.exports = {
   build: {
     extractCSS: true,
     filenames: {
-      img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[name]_[hash:7].[ext]',
-      video: ({ isDev }) => isDev ? '[path][name].[ext]' : 'videos/[name]_[hash:7].[ext]',
+      img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[name].[hash:7].[ext]',
+      video: ({ isDev }) => isDev ? '[path][name].[ext]' : 'videos/[name].[hash:7].[ext]',
     },
     /*
     ** Run ESLint on save
