@@ -76,7 +76,7 @@ export default {
             {
               title: 'T*****c',
               charge: 'ソロプロジェクト',
-              description: 'カァミングスゥーーーン',
+              description: 'いつかつくるよ、いつか。',
               tags: [
                 'Golang',
                 'JavaScript',
