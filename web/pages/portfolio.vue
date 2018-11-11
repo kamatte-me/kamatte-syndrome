@@ -94,6 +94,24 @@ export default {
               ],
             },
             {
+              title: 'Nuxt.js v2とGAE/SE Node.jsでSPA×SSR×PWA×サーバーレスを実現する - DMM inside',
+              url: 'https://inside.dmm.com/entry/2018/11/06/nuxt2-pwa-gae-se',
+              imagePath: require('~/assets/images/portfolio/dmm-inside_nuxt2-pwa-gae-se.png'),
+              charge: '技術記事執筆',
+              description: 'お仕事している会社のオウンドメディアに、まーた技術記事を寄稿しました。<br>'
+                + 'あにゅーなNuxt.js v2とGAE/SEって、とってもステキ。<br>'
+                + 'まーたはてなブックマークをいっぱい貰ったり、<a href="https://techfeed.io" target="_blank">TechFeed</a>でSランクに評価されたりしました。',
+              tags: [
+                'JavaScript',
+                'Vue.js',
+                'Nuxt.js',
+                'PWA',
+                'Serverless',
+                'GCP',
+                'GAE/SE',
+              ],
+            },
+            {
               title: 'Nuxt.jsとFirebaseでSPA×SSR×PWA×サーバーレスを実現する - DMM inside',
               url: 'https://inside.dmm.com/entry/2018/04/10/nuxt-firebase',
               imagePath: require('~/assets/images/portfolio/dmm-inside_nuxt-firebase.png'),
@@ -136,7 +154,6 @@ export default {
           works: [
             {
               title: '集団活動',
-              url: 'https://syudan.me',
               imagePath: require('~/assets/images/portfolio/syudan_katsudou.png'),
               charge: 'ソロプロジェクト',
               description: 'バンド「<a href="https://www.syudan.com" target="_blank">集団行動</a>」の非公式ファンサイトです。',
