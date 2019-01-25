@@ -8,7 +8,7 @@
     "dev": "nuxt",
     "build": "NODE_ENV=production nuxt build --modern",
     "build-analize": "NODE_ENV=production nuxt build --modern --analyze",
-    "start": "NODE_ENV=production nuxt start --modern",
+    "start": "NODE_ENV=production NUXT_PORT=8080 nuxt start --modern",
     "deploy": "gcloud app deploy",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",

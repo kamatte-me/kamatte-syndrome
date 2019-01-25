@@ -80,8 +80,8 @@ module.exports = {
   build: {
     extractCSS: true,
     filenames: {
-      img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[name].[hash:7].[ext]',
-      video: ({ isDev }) => isDev ? '[path][name].[ext]' : 'videos/[name].[hash:7].[ext]',
+      img: ({ isDev }) => isDev ? '[path][name].[ext]' : '[path][name].[hash:7].[ext]',
+      video: ({ isDev }) => isDev ? '[path][name].[ext]' : '[path][name].[hash:7].[ext]',
     },
     /*
     ** Run ESLint on save
@@ -100,6 +100,7 @@ module.exports = {
   },
   plugins: [
     '~/plugins/contentful',
+    { src: '~/plugins/firebase', ssr: false }
   ],
   modules: [
     ['nuxt-buefy', { css: false }],
