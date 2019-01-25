@@ -83,7 +83,7 @@ export default {
         message: '通知止めるって、まじんこ？',
         onConfirm: () => {
           this.$store.commit('notification/setIsLoading', true);
-          axios.put(`${process.env.API_HOST}/notification/unsubscribe`, {
+          this.$axios.$put(`${process.env.API_HOST}/notification/unsubscribe`, {
             token: this.$store.state.notification.token,
           })
             .then((res) => {

@@ -56,7 +56,7 @@ export default {
       }).then((res) => {
         const qualities = ['maxres', 'standard', 'high', 'medium', 'default'];
         for (const quality of qualities) {
-          const thumbnail = res.data.items[0].snippet.thumbnails[quality];
+          const thumbnail = res.items[0].snippet.thumbnails[quality];
           if (thumbnail !== undefined) {
             this.thumbnailUrl = thumbnail.url;
             break;
