@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'notification-button',
   methods: {
@@ -54,7 +52,7 @@ export default {
               this.$store.commit('notification/setIsLoading', true);
               this.$store.commit('notification/setToken', currentToken);
               // 通知登録
-              axios.put(`${process.env.API_HOST}/notification/subscribe`, {
+              this.$axios.$put(`${process.env.API_HOST}/notification/subscribe`, {
                 token: currentToken,
               })
                 .then((res) => {
@@ -72,7 +70,7 @@ export default {
             });
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           this.failedPermissionToast();
         });
     },

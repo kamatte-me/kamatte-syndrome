@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'youtube-embed',
   props: ['videoId'],
@@ -48,7 +46,7 @@ export default {
      * @returns {Promise<void>}
      */
     async fetchYouTubeThumbs() {
-      await axios.get('https://www.googleapis.com/youtube/v3/videos', {
+      await this.$axios.$get('https://www.googleapis.com/youtube/v3/videos', {
         params: {
           id: this.videoId,
           key: process.env.GCP_API_KEY,

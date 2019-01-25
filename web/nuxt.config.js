@@ -104,6 +104,7 @@ module.exports = {
   ],
   modules: [
     ['nuxt-buefy', { css: false }],
+    '@nuxtjs/axios',
     '@nuxtjs/component-cache',
     '@nuxtjs/dotenv',
     ['@nuxtjs/google-analytics', {

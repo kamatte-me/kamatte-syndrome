@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import NotificationButton from '~/components/NotificationButton';
 
 export default {
@@ -99,7 +98,7 @@ export default {
           if (currentToken) {
             this.$store.commit('notification/setToken', currentToken);
             // トークンの通知登録状況取得
-            axios.get(`${process.env.API_HOST}/notification/subscription/${currentToken}`)
+            this.$axios.$get(`${process.env.API_HOST}/notification/subscription/${currentToken}`)
               .then((res) => {
                 this.$store.commit('notification/setIsSubscribed', res.data.isSubscribed);
               })
