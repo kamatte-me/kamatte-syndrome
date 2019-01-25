@@ -14,3 +14,12 @@ export const mutations = {
     state.pageTitle = pageTitle;
   },
 };
+
+export const actions = {
+  async nuxtClientInit({ commit, dispatch }, context) {
+    commit('notification/initMessaging');
+    await dispatch('notification/getFcmToken');
+    await dispatch('notification/setOnMessageEvent');
+    await dispatch('notification/setOnTokenRefreshEvent');
+  }
+};

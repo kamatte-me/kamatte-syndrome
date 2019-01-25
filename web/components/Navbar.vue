@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import NotificationButton from '~/components/NotificationButton';
 
 export default {
@@ -66,7 +65,7 @@ export default {
   },
   computed: {
     isShowNotificationButton() {
-      return this.$store.state.notification.messaging !== null;
+      return this.$store.getters['notification/isSupported'];
     }
   },
   methods: {
@@ -90,72 +89,6 @@ export default {
     isCurrentPage(to) {
       return new RegExp(`^${to.name}`).test(this.$route.name);
     },
-    /**
-     * Firebase Cloud Messagingトークン取得
-     */
-    getFcmToken() {
-      this.$store.state.notification.messaging.getToken()
-        .then((currentToken) => {
-          if (currentToken) {
-            this.$store.commit('notification/setToken', currentToken);
-            // トークンの通知登録状況取得
-            axios.get(`${process.env.API_HOST}/notification/subscription/${currentToken}`)
-              .then((res) => {
-                this.$store.commit('notification/setIsSubscribed', res.data.isSubscribed);
-              })
-              .catch((err) => {})
-              .finally(() => {
-                this.$store.commit('notification/setIsLoading', false);
-              });
-          } else {
-            this.$store.commit('notification/setIsLoading', false);
-          }
-        })
-        .catch((err) => {
-          this.$store.commit('notification/setIsLoading', false);
-        });
-    },
-  },
-  beforeMount() {
-    if (this.$store.state.notification.messaging === null) {
-      this.$store.commit('notification/initMessaging');
-    }
-
-    // ブラウザが通知をサポートしていない場合は移行の処理をスキップ
-    if (this.$store.state.notification.messaging === null) {
-      return;
-    }
-
-    // トークン取得
-    if (this.$store.state.notification.token === null) {
-      this.getFcmToken();
-    }
-
-    // トークン更新時のイベント
-    this.$store.state.notification.messaging.onTokenRefresh(() => {
-      this.getFcmToken();
-    });
-
-    /**
-     * プッシュ通知取得時
-     */
-    this.$store.state.notification.messaging.onMessage((payload) => {
-      const notification = payload.notification;
-      const title = notification.title || 'kamatte syndrome';
-      const options = {
-        body: notification.body || '何かしらアップデートしますた。',
-        icon: notification.icon || '/logo.png',
-      };
-      const notify = new Notification(title, options);
-
-      // 通知クリック時リンク
-      if (notification.click_action !== undefined) {
-        const link = notification.click_action;
-        notify.addEventListener('click', () => {
-          open(link);
-        });
-      }
-    });
   },
 };
 </script>
