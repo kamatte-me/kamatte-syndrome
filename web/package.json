@@ -27,7 +27,8 @@
     "lodash": "^4.17.11",
     "marked": "^0.6.0",
     "nuxt": "^2.3.4",
-    "nuxt-buefy": "^0.3.3"
+    "nuxt-buefy": "^0.3.3",
+    "nuxt-client-init-module": "^0.1.4"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

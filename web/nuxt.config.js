@@ -112,6 +112,7 @@ module.exports = {
     }],
     '@nuxtjs/pwa',
     '@nuxtjs/sitemap',
+    'nuxt-client-init-module',
   ],
   manifest: {
     name: 'kamatte syndrome',

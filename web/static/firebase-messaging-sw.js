@@ -15,19 +15,16 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message: ', payload);
-
   const notification = payload.notification;
   const title = notification.title || 'kamatte syndrome';
   const options = {
     body: notification.body || '何かしらアップデートしますた。',
     icon: notification.icon || '/logo.png',
   };
-
   self.registration.showNotification(title, options);
+
   self.addEventListener('notificationclick', event => {
     event.notification.close();
-
     const url = notification.click_action;
     event.waitUntil(self.clients.openWindow(url));
   });
