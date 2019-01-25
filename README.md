@@ -25,7 +25,6 @@ plz kamatte me!!!
 ## Requires
 
 * Node.js v8.11.1
-* [Yarn](https://yarnpkg.com/)
 * Google Cloud SDK
 * [Firebase CLI](https://firebase.google.com/docs/cli)
 
@@ -49,17 +48,17 @@ API server (Express.js) on Cloud Functions for Firebase
 
 ``` bash
 # Install dependencies
-$ yarn install
+$ npm install
 
 # Serve with hot reload at http://localhost:3000
-$ yarn run dev
+$ npm run dev
 
 # Build for production and launch server
-$ yarn run build
-$ yarn run start
+$ npm run build
+$ npm run start
 
 # Build and Deploy to GAE/SE
-$ yarn run deploy
+$ npm run deploy
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
@@ -68,11 +67,11 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 
 ``` bash
 # Install dependencies
-$ yarn install
+$ npm install
 
 # Serve with hot reload at http://localhost:5000
-$ yarn run serve
+$ npm run serve
 
 # Build and Deploy to Cloud Functions for Firebase
-$ yarn run deploy
+$ npm run deploy
 ```

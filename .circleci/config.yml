@@ -23,21 +23,21 @@ jobs:
       # Install and cache dependencies
       - restore_cache:
           keys:
-            - v1-web-dependencies-{{ checksum "web/yarn.lock" }}
+            - v1-web-dependencies-{{ checksum "web/package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-web-dependencies-
       - run:
           name: Install Dependencies
-          command: yarn install
+          command: npm install
           working_directory: web
       - save_cache:
           paths:
             - node_modules
-          key: v1-web-dependencies-{{ checksum "web/yarn.lock" }}
+          key: v1-web-dependencies-{{ checksum "web/package-lock.json" }}
       # Build
       - run:
           name: Nuxt bulid
-          command: yarn run build
+          command: npm run build
           working_directory: web
       # Set .env for Contentful CDA Access Token
       - run:
@@ -75,20 +75,20 @@ jobs:
       # Install and cache dependencies
       - restore_cache:
           keys:
-            - v1-api-dependencies-{{ checksum "api/functions/yarn.lock" }}
+            - v1-api-dependencies-{{ checksum "api/functions/package-lock.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-api-dependencies-
       - run:
           name: Install Dependencies
-          command: yarn install
+          command: npm install
           working_directory: api/functions
       - save_cache:
           paths:
             - node_modules
-          key: v1-api-dependencies-{{ checksum "api/functions/yarn.lock" }}
+          key: v1-api-dependencies-{{ checksum "api/functions/package-lock.json" }}
       - run:
           name: Install Firebase CLI
-          command: yarn add -D firebase-tools@latest
+          command: npm add -D firebase-tools@latest
           working_directory: api/functions
       - run:
           name: Store Firebase Service key

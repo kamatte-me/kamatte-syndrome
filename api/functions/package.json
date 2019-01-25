@@ -10,7 +10,7 @@
   "scripts": {
     "lint": "eslint .",
     "get-config": "firebase functions:config:get > .runtimeconfig.json",
-    "serve": "yarn run get-config && firebase serve --only functions,hosting",
+    "serve": "npm run get-config && firebase serve --only functions,hosting",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy",
