@@ -37,9 +37,7 @@ export default {
     const client = createClient();
     return client.getEntries({
       content_type: process.env.CTF_BLOG_POST_TYPE_ID,
-      fields: {
-        slug: params.slug
-      },
+      'fields.slug': params.slug,
     }).then((entries) => {
       if (entries.items.length > 0) {
         return {
