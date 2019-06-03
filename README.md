@@ -14,9 +14,8 @@ plz kamatte me!!!
 * Serverless (Node.js / Google App Engine Standard Environment, Cloud Functions for Firebase)
 
 
-## Technologies
+## Frameworks
 
-* [Node.js](https://github.com/nodejs/node) v8.11.1
 * [Nuxt.js](https://github.com/nuxt/nuxt.js) v2.x
 * [Buefy](https://buefy.github.io/#/)
 * Sass ([FLOCCS](https://github.com/hiloki/flocss) style)
@@ -24,7 +23,7 @@ plz kamatte me!!!
 
 ## Requires
 
-* Node.js v8.11.1
+* Node.js v10.15.3
 * Google Cloud SDK
 * [Firebase CLI](https://firebase.google.com/docs/cli)
 
