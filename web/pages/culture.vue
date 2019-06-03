@@ -20,13 +20,11 @@
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader';
 import YoutubeEmbed from '~/components/YoutubeEmbed';
 
 export default {
   name: 'culture',
   components: {
-    PageHeader,
     YoutubeEmbed,
   },
   beforeCreate() {

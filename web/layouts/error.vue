@@ -22,9 +22,6 @@
 </template>
 
 <script>
-import Navbar from '~/components/Navbar';
-import SiteFooter from '~/components/SiteFooter';
-
 export default {
   name: 'error',
   props: ['error'],
@@ -33,10 +30,6 @@ export default {
     return {
       title: this.error.statusCode,
     };
-  },
-  components: {
-    Navbar,
-    SiteFooter,
   },
   data() {
     return {
