@@ -15,6 +15,7 @@ references:
       - image: google/cloud-sdk
     working_directory: ~/workspace
 
+
 jobs:
   web-build:
     <<: *node_container_config
@@ -111,8 +112,17 @@ jobs:
           command: ./node_modules/.bin/firebase deploy --project "$GCLOUD_PROJECT" --token "$FIREBASE_TOKEN"
           working_directory: api/functions
 
+
 workflows:
   version: 2
+
+  test:
+    jobs:
+      - web-build:
+          filters:
+            branches:
+              only: master
+
   build-deploy:
     jobs:
       - web-build
