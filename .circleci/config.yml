@@ -125,13 +125,13 @@ workflows:
 
   build-deploy:
     jobs:
-      - web-build
-      - web-deploy:
-          requires:
-            - web-build
+      - web-build:
           filters:
             branches:
               only: master
+      - web-deploy:
+          requires:
+            - web-build
       - api-deploy:
           filters:
             branches:
