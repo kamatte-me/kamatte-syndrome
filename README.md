@@ -23,7 +23,7 @@ plz kamatte me!!!
 
 ## Requires
 
-* Node.js v10.15.3
+* Node.js v10.16.3
 * Google Cloud SDK
 * [Firebase CLI](https://firebase.google.com/docs/cli)
 
@@ -69,7 +69,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 $ npm install
 
 # Serve with hot reload at http://localhost:5000
-$ npm run serve
+$ npm run dev
 
 # Build and Deploy to Cloud Functions for Firebase
 $ npm run deploy

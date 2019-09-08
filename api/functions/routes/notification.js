@@ -62,8 +62,6 @@ module.exports = (admin) => {
   router.put('/subscribe', (req, res) => {
     admin.messaging().subscribeToTopic(req.body.token, TOPIC)
       .then(() => {
-        res.status(204).end();
-
         // ウェルカム通知を送信
         const message = {
           notification: {
@@ -79,7 +77,9 @@ module.exports = (admin) => {
         };
 
         admin.messaging().send(message)
-          .then(() => { })
+          .then(() => {
+            res.status(204).end();
+          })
           .catch((error) => {
             console.error('Error sending Welcome message:', error);
           });

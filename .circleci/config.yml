@@ -7,13 +7,14 @@ version: 2
 references:
   node_container_config: &node_container_config
     docker:
-      - image: circleci/node:10.15.3
+      - image: circleci/node:10.16.3
     working_directory: ~/workspace
 
   gcloud_container_config: &gcloud_container_config
     docker:
       - image: google/cloud-sdk
     working_directory: ~/workspace
+
 
 jobs:
   web-build:
@@ -111,8 +112,17 @@ jobs:
           command: ./node_modules/.bin/firebase deploy --project "$GCLOUD_PROJECT" --token "$FIREBASE_TOKEN"
           working_directory: api/functions
 
+
 workflows:
   version: 2
+
+  test:
+    jobs:
+      - web-build:
+          filters:
+            branches:
+              only: master
+
   build-deploy:
     jobs:
       - web-build

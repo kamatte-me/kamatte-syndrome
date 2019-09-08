@@ -16,7 +16,7 @@ export default {
      * ブラウザの通知パーミッション取得失敗トースト
      */
     failedPermissionToast() {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: 'ブラウザの通知設定を「許可」にしてください。',
         type: 'is-green'
       })
@@ -25,7 +25,7 @@ export default {
      * 通知登録失敗トースト
      */
     failedSubscribeToast() {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: '通知登録に失敗しました。もう一度お試しください。',
         type: 'is-green'
       })
@@ -34,7 +34,7 @@ export default {
      * 通知登録解除失敗トースト
      */
     failedUnsubscribeToast() {
-      this.$toast.open({
+      this.$buefy.toast.open({
         message: '通知登録解除に失敗しました。もう一度お試しください。',
         type: 'is-green'
       })
@@ -78,7 +78,7 @@ export default {
      * 通知登録解除
      */
     unsubscribe() {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         title: 'もっと、かまって。',
         message: '通知止めるって、まじんこ？',
         onConfirm: () => {
