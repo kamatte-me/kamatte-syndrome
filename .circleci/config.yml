@@ -121,7 +121,7 @@ workflows:
       - web-build:
           filters:
             branches:
-              only: master
+              ignore: master
 
   build-deploy:
     jobs:
