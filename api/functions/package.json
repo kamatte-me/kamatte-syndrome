@@ -17,7 +17,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "basic-auth-connect": "^1.0.0",
     "contentful": "^7.9.1",
     "cors": "^2.8.5",
