@@ -4,6 +4,7 @@ export default (): GatsbyConfig => {
   return {
     siteMetadata: { title: 'kamatte syndrome' },
     plugins: [
+      'gatsby-plugin-theme-ui',
       {
         resolve: `gatsby-plugin-alias-imports`,
         options: {
