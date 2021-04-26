@@ -9,8 +9,9 @@ const theme: Theme = merge(base as Theme, {
     secondary: '#ff6272',
   },
   fonts: {
-    body:
-      'Hiragino Mincho ProN,ヒラギノ明朝 Pro W6,Hiragino Mincho Pro,HGS明朝E,Yu Mincho,YuMincho,ＭＳ Ｐ明朝,serif',
+    hand: `'Caveat', sans-serif`,
+    heading: `'Josefin Sans', sans-serif`,
+    body: `Hiragino Mincho ProN, ヒラギノ明朝 Pro W6, Hiragino Mincho Pro, HGS明朝E, Yu Mincho, YuMincho, serif`,
   },
   styles: {
     root: {
@@ -22,8 +23,7 @@ const theme: Theme = merge(base as Theme, {
   links: {
     nav: {
       display: 'block',
-      px: 2,
-      py: 2,
+      p: 2,
       color: 'black',
       textDecoration: 'none',
       fontFamily: base.fonts.body,

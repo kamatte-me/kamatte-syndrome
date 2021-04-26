@@ -1,16 +1,17 @@
 /* @jsx jsx */
+import '@fontsource/caveat/500.css';
+import '@fontsource/josefin-sans/500.css';
+
 import React from 'react';
-import { Container, jsx, Themed } from 'theme-ui';
+import { Container, jsx } from 'theme-ui';
 
 import Footer, { FooterHeight } from '@/layout/footer';
 import Head from '@/layout/head';
 import Header, { HeaderHeight } from '@/layout/header';
 
-const negativeHeight = HeaderHeight + FooterHeight;
-
 const Layout: React.FC = ({ children }) => {
   return (
-    <Themed.root>
+    <React.Fragment>
       <Head />
       <Header />
       <Container
@@ -24,7 +25,7 @@ const Layout: React.FC = ({ children }) => {
         {children}
       </Container>
       <Footer />
-    </Themed.root>
+    </React.Fragment>
   );
 };
 

@@ -1,7 +1,7 @@
 import { Link } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
-import { Flex, Heading } from 'theme-ui';
+import { Flex, get, Heading } from 'theme-ui';
 
 import Layout from '@/layout';
 import { FooterHeight } from '@/layout/footer';
@@ -31,7 +31,7 @@ const IndexPage: React.FC = () => {
               <StaticImage
                 src="../images/avatar.png"
                 alt="me"
-                width={440}
+                width={380}
                 placeholder="none"
                 formats={['png']}
               />
@@ -39,7 +39,8 @@ const IndexPage: React.FC = () => {
             <Flex>
               <Heading
                 sx={{
-                  fontSize: 5,
+                  fontFamily: t => get(t, 'fonts.hand'),
+                  fontSize: 6,
                   color: 'black',
                   textDecoration: 'none',
                 }}

@@ -13,6 +13,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@fontsource/caveat": "^4.2.2",
+    "@fontsource/josefin-sans": "^4.2.2",
     "@theme-ui/presets": "^0.7.3",
     "gatsby": "^3.3.1",
     "gatsby-plugin-alias-imports": "^1.0.5",

@@ -14,7 +14,7 @@ const IndexPage: React.FC = () => {
     2014: '20歳になる。',
     2016: 'Web蜃気楼になる。',
     2017: 'シティーボーイになる',
-    2018: '21世紀のWebシンデレラになる。6さいになる。',
+    2018: '21世紀のWebシンデレラになる。',
     2021: 'スマホを買い換える。',
   };
 
@@ -28,7 +28,8 @@ const IndexPage: React.FC = () => {
         <Flex
           sx={{
             flexDirection: ['column', 'row'],
-            alignItems: 'center',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
           }}
         >
           <Flex
@@ -50,7 +51,6 @@ const IndexPage: React.FC = () => {
               as="h1"
               sx={{
                 color: 'primary',
-                mt: [0, 4],
                 mb: 2,
                 textAlign: ['center', 'left'],
               }}
@@ -68,7 +68,14 @@ const IndexPage: React.FC = () => {
             </Box>
             <dl>
               {Object.entries(chronology).map(([year, value]) => (
-                <div key={year}>
+                <div
+                  key={year}
+                  sx={{
+                    ':not(:last-child)': {
+                      marginBottom: '2px',
+                    },
+                  }}
+                >
                   <dt
                     sx={{
                       width: 72,
