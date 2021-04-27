@@ -7,7 +7,7 @@ import Layout from '@/layout';
 import { FooterHeight } from '@/layout/footer';
 import { HeaderHeight } from '@/layout/header';
 
-const negativeHeight = HeaderHeight + FooterHeight;
+const negativeHeight = HeaderHeight + FooterHeight + 80;
 
 const IndexPage: React.FC = () => {
   return (

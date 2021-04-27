@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Flex, Text } from 'theme-ui';
 
-export const FooterHeight = 100;
+export const FooterHeight = 60;
 
 const Footer: React.FC = () => {
   const [year] = useState<number>(new Date().getFullYear());
@@ -14,8 +14,6 @@ const Footer: React.FC = () => {
         bottom: 0,
         height: FooterHeight,
         width: '100%',
-        pt: 5,
-        pb: 2,
         alignItems: 'center',
         justifyContent: 'center',
       }}

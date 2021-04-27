@@ -28,7 +28,7 @@ const IndexPage: React.FC = () => {
         <Flex
           sx={{
             flexDirection: ['column', 'row'],
-            alignItems: 'flex-start',
+            alignItems: ['center', 'flex-start'],
             justifyContent: 'center',
           }}
         >

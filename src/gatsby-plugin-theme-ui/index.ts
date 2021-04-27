@@ -29,9 +29,6 @@ const theme: Theme = merge(base as Theme, {
       fontFamily: base.fonts.body,
       fontSize: 2,
       fontWeight: 'bold',
-      transitionProperty: 'color',
-      transitionTimingFunction: 'ease-out',
-      transitionDuration: '.2s',
       borderRadius: 2,
       '&.active, &:hover': {
         color: 'primary',

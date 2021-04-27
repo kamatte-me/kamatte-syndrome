@@ -5,7 +5,7 @@ import '@fontsource/josefin-sans/500.css';
 import React from 'react';
 import { Container, jsx } from 'theme-ui';
 
-import Footer, { FooterHeight } from '@/layout/footer';
+import Footer from '@/layout/footer';
 import Head from '@/layout/head';
 import Header, { HeaderHeight } from '@/layout/header';
 
@@ -14,16 +14,21 @@ const Layout: React.FC = ({ children }) => {
     <React.Fragment>
       <Head />
       <Header />
-      <Container
-        as="main"
+      <div
         sx={{
           paddingTop: HeaderHeight,
-          paddingBottom: FooterHeight,
-          px: 3,
         }}
       >
-        {children}
-      </Container>
+        <Container
+          as="main"
+          sx={{
+            py: 4,
+            px: 3,
+          }}
+        >
+          {children}
+        </Container>
+      </div>
       <Footer />
     </React.Fragment>
   );
