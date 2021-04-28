@@ -15,6 +15,7 @@
   "dependencies": {
     "@fontsource/caveat": "^4.2.2",
     "@fontsource/josefin-sans": "^4.2.2",
+    "@theme-ui/css": "^0.7.3",
     "@theme-ui/presets": "^0.7.3",
     "@theme-ui/sidenav": "^0.7.3",
     "gatsby": "^3.3.1",
