@@ -10,7 +10,7 @@ import { NavLink } from '@/layout/header/NavLink';
 
 export const HeaderHeight = 64;
 
-const Index: React.FC = () => {
+const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   const links: {
@@ -109,27 +109,6 @@ const Index: React.FC = () => {
           >
             かまって☆しんどろ〜む
           </Link>
-          <style>
-            {`
-              @keyframes gradient {
-                0% {
-                  background-position: 0% 0%
-                }
-                25% {
-                  background-position: 100% 0%
-                }
-                50% {
-                  background-position: 100% 100%
-                }
-                75% {
-                  background-position: 0% 100%
-                }
-                100% {
-                  background-position: 0% 0%
-                }
-              }
-            `}
-          </style>
           <Flex sx={gradationStyles}>
             {links.map(link => (
               <NavLink
@@ -201,8 +180,29 @@ const Index: React.FC = () => {
           ))}
         </ul>
       </Sidenav>
+      <style>
+        {`
+          @keyframes gradient {
+            0% {
+              background-position: 0% 0%
+            }
+            25% {
+              background-position: 100% 0%
+            }
+            50% {
+              background-position: 100% 100%
+            }
+            75% {
+              background-position: 0% 100%
+            }
+            100% {
+              background-position: 0% 0%
+            }
+          }
+        `}
+      </style>
     </Flex>
   );
 };
 
-export default Index;
+export default Header;

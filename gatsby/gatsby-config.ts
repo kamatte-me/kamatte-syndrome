@@ -1,4 +1,42 @@
+import 'gatsby-source-contentful';
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+import dotenv from 'dotenv';
 import { GatsbyConfig } from 'gatsby';
+
+dotenv.config();
+
+/**
+ * Contentful config
+ * https://www.gatsbyjs.com/plugins/gatsby-source-contentful/
+ */
+type ContentfulConfig = {
+  spaceId: string;
+  accessToken: string;
+  host?: string;
+};
+
+const contentfulConfig: ContentfulConfig = (() => {
+  const config: ContentfulConfig = {
+    spaceId: process.env.CONTENTFUL_SPACE_ID,
+    accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
+  };
+  if (
+    process.env.CONTENTFUL_HOST &&
+    process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
+  ) {
+    config.host = process.env.CONTENTFUL_HOST;
+    config.accessToken = process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
+  }
+
+  if (!config.spaceId || !config.accessToken) {
+    throw new Error(
+      'Contentful spaceId and the access token need to be provided.',
+    );
+  }
+
+  return config;
+})();
 
 export default (): GatsbyConfig => {
   return {
@@ -16,11 +54,7 @@ export default (): GatsbyConfig => {
       },
       {
         resolve: 'gatsby-source-contentful',
-        options: {
-          accessToken:
-            '4136515a9706d0158d4da16e0ceb555d6395fee658b5925a19b417cddce7ba11',
-          spaceId: 'ky376v5x3o44',
-        },
+        options: contentfulConfig,
       },
       'gatsby-plugin-image',
       'gatsby-plugin-react-helmet',
@@ -42,7 +76,17 @@ export default (): GatsbyConfig => {
         // @ts-ignore
         __key: 'images',
       },
-      'gatsby-plugin-typegen',
+      {
+        resolve: `gatsby-plugin-typegen`,
+        options: {
+          emitSchema: {
+            'src/__generated__/gatsby-introspection.json': true,
+          },
+          emitPluginDocuments: {
+            'src/__generated__/gatsby-plugin-documents.graphql': true,
+          },
+        },
+      },
     ],
   };
 };

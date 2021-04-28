@@ -21,6 +21,7 @@ module.exports = {
       plugins: ['prettier', 'simple-import-sort', 'unused-imports'],
       rules: {
         'react/prop-types': 0,
+        'react/destructuring-assignment': 0,
         'import/prefer-default-export': 0,
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',

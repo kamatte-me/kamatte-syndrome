@@ -1,4 +1,5 @@
 /* @jsx jsx */
+import { graphql, PageProps } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
 import { GoMarkGithub } from 'react-icons/go';
@@ -6,17 +7,21 @@ import { Box, Donut, Flex, Grid, Heading, jsx, Link, Text } from 'theme-ui';
 
 import Layout from '@/layout';
 
-const IndexPage: React.FC = () => {
-  const chronology = {
-    1994: '富山生まれ。',
-    2012: '金沢に移住。',
-    2013: 'IT革命児になる。',
-    2014: '20歳になる。',
-    2016: 'Web蜃気楼になる。',
-    2017: 'シティーボーイになる',
-    2018: '21世紀のWebシンデレラになる。',
-    2021: 'スマホを買い換える。',
-  };
+export const pageQuery = graphql`
+  query BioQuery {
+    allContentfulChronology(sort: { fields: [year], order: ASC }) {
+      edges {
+        node {
+          year
+          body
+        }
+      }
+    }
+  }
+`;
+
+const IndexPage: React.FC<PageProps<GatsbyTypes.BioQueryQuery>> = props => {
+  const chronology = props.data.allContentfulChronology.edges;
 
   return (
     <Layout>
@@ -60,6 +65,10 @@ const IndexPage: React.FC = () => {
             <Box
               sx={{
                 textAlign: ['center', 'left'],
+                transition: 'opacity .2s ease-in',
+                '&:hover': {
+                  opacity: 0.7,
+                },
               }}
             >
               <Link href="https://github.com/kamatte-me" target="_blank">
@@ -67,15 +76,8 @@ const IndexPage: React.FC = () => {
               </Link>
             </Box>
             <dl>
-              {Object.entries(chronology).map(([year, value]) => (
-                <div
-                  key={year}
-                  sx={{
-                    ':not(:last-child)': {
-                      marginBottom: '2px',
-                    },
-                  }}
-                >
+              {chronology.map(({ node }) => (
+                <div key={node.year}>
                   <dt
                     sx={{
                       width: 72,
@@ -83,9 +85,9 @@ const IndexPage: React.FC = () => {
                       clear: 'left',
                     }}
                   >
-                    <Text>{year}年</Text>
+                    <Text>{node.year}年</Text>
                   </dt>
-                  <dd sx={{ marginLeft: 72 }}>{value}</dd>
+                  <dd sx={{ marginLeft: 72 }}>{node.body}</dd>
                 </div>
               ))}
             </dl>
