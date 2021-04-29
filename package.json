@@ -13,11 +13,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@fontsource/caveat": "^4.2.2",
-    "@fontsource/josefin-sans": "^4.2.2",
     "@theme-ui/css": "^0.7.4",
     "@theme-ui/presets": "^0.7.4",
     "@theme-ui/sidenav": "^0.7.4",
+    "destyle.css": "^2.0.2",
     "gatsby": "^3.4.0",
     "gatsby-plugin-alias-imports": "^1.0.5",
     "gatsby-plugin-gatsby-cloud": "^2.4.1",
@@ -29,6 +28,7 @@
     "gatsby-plugin-theme-ui": "^0.7.4",
     "gatsby-plugin-ts-config": "^1.1.5",
     "gatsby-plugin-typegen": "^2.2.4",
+    "gatsby-plugin-web-font-loader": "^1.0.4",
     "gatsby-source-contentful": "^5.4.0",
     "gatsby-source-filesystem": "^3.4.0",
     "gatsby-transformer-sharp": "^3.4.0",

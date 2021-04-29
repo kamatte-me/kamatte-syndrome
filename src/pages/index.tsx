@@ -1,7 +1,8 @@
+/* @jsx jsx */
 import { Link } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
-import { Flex, get, Heading } from 'theme-ui';
+import { Flex, get, Heading, jsx } from 'theme-ui';
 
 import Layout from '@/layout';
 import { FooterHeight } from '@/layout/footer';
@@ -42,7 +43,6 @@ const IndexPage: React.FC = () => {
                   fontFamily: t => get(t, 'fonts.hand'),
                   fontSize: 6,
                   color: 'black',
-                  textDecoration: 'none',
                 }}
               >
                 plz kamatte me!!!

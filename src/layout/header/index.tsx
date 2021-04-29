@@ -2,7 +2,7 @@
 import { ThemeUIStyleObject } from '@theme-ui/css';
 import { Sidenav } from '@theme-ui/sidenav';
 import { Link } from 'gatsby';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { HiOutlineBell } from 'react-icons/hi';
 import { Flex, IconButton, jsx, MenuButton } from 'theme-ui';
 
@@ -12,6 +12,9 @@ export const HeaderHeight = 64;
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const toggleMenuOpen = useCallback(() => {
+    setMenuOpen(prevState => !prevState);
+  }, []);
 
   const links: {
     title: string;
@@ -57,98 +60,124 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <Flex
-      as="header"
-      sx={{
-        position: 'fixed',
-        zIndex: 10,
-        width: '100%',
-      }}
-    >
+    <React.Fragment>
+      <style>
+        {`
+          @keyframes gradient {
+            0% {
+              background-position: 0% 0%
+            }
+            25% {
+              background-position: 100% 0%
+            }
+            50% {
+              background-position: 100% 100%
+            }
+            75% {
+              background-position: 0% 100%
+            }
+            100% {
+              background-position: 0% 0%
+            }
+          }
+        `}
+      </style>
+
       <Flex
+        as="header"
         sx={{
+          position: 'fixed',
+          zIndex: 2,
           width: '100%',
-          height: HeaderHeight,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 3,
-          background:
-            'linear-gradient(180deg, rgba(255,255,255,1) 85%, rgba(255,255,255,0) 100%)',
         }}
       >
         <Flex
           sx={{
+            width: '100%',
+            height: HeaderHeight,
             alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 3,
+            background:
+              'linear-gradient(180deg, rgba(255,255,255,1) 85%, rgba(255,255,255,0) 100%)',
           }}
         >
           <Flex
             sx={{
-              variant: 'links.nav',
               alignItems: 'center',
-              justifyContent: 'center',
-              display: ['block', 'none'],
             }}
           >
-            <MenuButton
-              aria-label="Toggle Menu"
+            <Flex
               sx={{
-                cursor: 'pointer',
-              }}
-              onClick={() => setMenuOpen(true)}
-            />
-          </Flex>
-          <Link
-            to="/"
-            sx={{
-              variant: 'links.nav',
-              mr: [0, 3],
-              '&.active, &:hover': {
-                color: 'black',
-              },
-            }}
-          >
-            かまって☆しんどろ〜む
-          </Link>
-          <Flex sx={gradationStyles}>
-            {links.map(link => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                sx={{ display: ['none', 'block'] }}
-              >
-                {link.title}
-              </NavLink>
-            ))}
-          </Flex>
-        </Flex>
-
-        <Flex
-          sx={{
-            alignItems: 'center',
-          }}
-        >
-          <Flex
-            sx={{
-              variant: 'links.nav',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <IconButton
-              sx={{
-                cursor: 'pointer',
+                variant: 'links.nav',
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: ['block', 'none'],
               }}
             >
-              <HiOutlineBell size={24} />
-            </IconButton>
+              <MenuButton
+                aria-label="Toggle Menu"
+                sx={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => toggleMenuOpen()}
+              />
+            </Flex>
+            <Link
+              to="/"
+              sx={{
+                variant: 'links.nav',
+                mr: [0, 3],
+                textBaseline: 'bottom',
+                '&.active, &:hover': {
+                  color: 'black',
+                },
+              }}
+            >
+              かまって☆しんどろ〜む
+            </Link>
+            <Flex sx={gradationStyles}>
+              {links.map(link => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  sx={{ display: ['none', 'block'] }}
+                >
+                  {link.title}
+                </NavLink>
+              ))}
+            </Flex>
+          </Flex>
+
+          <Flex
+            sx={{
+              alignItems: 'center',
+            }}
+          >
+            <Flex
+              sx={{
+                variant: 'links.nav',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <IconButton
+                sx={{
+                  cursor: 'pointer',
+                }}
+              >
+                <HiOutlineBell size={24} />
+              </IconButton>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
+
       <Sidenav
         open={menuOpen}
         // @ts-ignore
         sx={{
-          top: HeaderHeight,
+          paddingTop: HeaderHeight,
           display: ['block', 'none'],
         }}
         onFocus={() => {
@@ -180,28 +209,7 @@ const Header: React.FC = () => {
           ))}
         </ul>
       </Sidenav>
-      <style>
-        {`
-          @keyframes gradient {
-            0% {
-              background-position: 0% 0%
-            }
-            25% {
-              background-position: 100% 0%
-            }
-            50% {
-              background-position: 100% 100%
-            }
-            75% {
-              background-position: 0% 100%
-            }
-            100% {
-              background-position: 0% 0%
-            }
-          }
-        `}
-      </style>
-    </Flex>
+    </React.Fragment>
   );
 };
 

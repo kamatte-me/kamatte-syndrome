@@ -42,20 +42,6 @@ export default (): GatsbyConfig => {
   return {
     siteMetadata: { title: 'kamatte syndrome' },
     plugins: [
-      'gatsby-plugin-theme-ui',
-      {
-        resolve: `gatsby-plugin-alias-imports`,
-        options: {
-          alias: {
-            '@': 'src',
-          },
-          extensions: ['js'],
-        },
-      },
-      {
-        resolve: 'gatsby-source-contentful',
-        options: contentfulConfig,
-      },
       'gatsby-plugin-image',
       'gatsby-plugin-react-helmet',
       'gatsby-plugin-sitemap',
@@ -75,6 +61,39 @@ export default (): GatsbyConfig => {
         },
         // @ts-ignore
         __key: 'images',
+      },
+      'gatsby-plugin-theme-ui',
+      {
+        resolve: `gatsby-plugin-alias-imports`,
+        options: {
+          alias: {
+            '@': 'src',
+          },
+          extensions: ['js'],
+        },
+      },
+      {
+        resolve: 'gatsby-source-contentful',
+        options: contentfulConfig,
+      },
+      {
+        resolve: 'gatsby-plugin-web-font-loader',
+        options: {
+          google: {
+            families: ['Josefin Sans:700'],
+            timeout: 2000,
+          },
+        },
+      },
+      {
+        resolve: 'gatsby-plugin-web-font-loader',
+        options: {
+          google: {
+            families: ['Caveat:700'],
+            text: 'plzkamte!',
+            timeout: 2000,
+          },
+        },
       },
       {
         resolve: `gatsby-plugin-typegen`,

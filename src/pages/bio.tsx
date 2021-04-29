@@ -3,7 +3,7 @@ import { graphql, PageProps } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
 import { GoMarkGithub } from 'react-icons/go';
-import { Box, Donut, Flex, Grid, Heading, jsx, Link, Text } from 'theme-ui';
+import { Box, Donut, Flex, Grid, jsx, Link, Styled, Text } from 'theme-ui';
 
 import Layout from '@/layout';
 
@@ -25,75 +25,71 @@ const IndexPage: React.FC<PageProps<GatsbyTypes.BioQueryQuery>> = props => {
 
   return (
     <Layout>
-      <Box
+      <Flex
         sx={{
-          mb: 4,
+          flexDirection: ['column', 'row'],
+          alignItems: ['center', 'flex-start'],
+          justifyContent: 'center',
+          mb: 5,
         }}
       >
         <Flex
           sx={{
-            flexDirection: ['column', 'row'],
-            alignItems: ['center', 'flex-start'],
             justifyContent: 'center',
+            mr: [0, 4],
           }}
         >
-          <Flex
+          <StaticImage
+            src="../images/avatar.png"
+            alt="me"
+            width={300}
+            placeholder="none"
+            formats={['png']}
+          />
+        </Flex>
+        <Box>
+          <Styled.h1
             sx={{
-              justifyContent: 'center',
-              mr: [0, 4],
+              color: 'primary',
+              mb: 1,
+              textAlign: ['center', 'left'],
             }}
           >
-            <StaticImage
-              src="../images/avatar.png"
-              alt="me"
-              width={300}
-              placeholder="none"
-              formats={['png']}
-            />
-          </Flex>
-          <Box>
-            <Heading
-              as="h1"
-              sx={{
-                color: 'primary',
-                mb: 2,
-                textAlign: ['center', 'left'],
-              }}
-            >
-              kamatte
-            </Heading>
-            <Box
-              sx={{
-                textAlign: ['center', 'left'],
-                transition: 'opacity .2s ease-in',
-                '&:hover': {
-                  opacity: 0.7,
-                },
-              }}
-            >
-              <Link href="https://github.com/kamatte-me" target="_blank">
-                <GoMarkGithub size={32} color="#24292e" />
-              </Link>
-            </Box>
-            <dl>
-              {chronology.map(({ node }) => (
-                <div key={node.year}>
-                  <dt
-                    sx={{
-                      width: 72,
-                      float: 'left',
-                      clear: 'left',
-                    }}
-                  >
-                    <Text>{node.year}年</Text>
-                  </dt>
-                  <dd sx={{ marginLeft: 72 }}>{node.body}</dd>
-                </div>
-              ))}
-            </dl>
+            kamatte
+          </Styled.h1>
+          <Box
+            sx={{
+              textAlign: ['center', 'left'],
+              transition: 'opacity .2s ease-in',
+              '&:hover': {
+                opacity: 0.7,
+              },
+              mb: 2,
+            }}
+          >
+            <Link href="https://github.com/kamatte-me" target="_blank">
+              <GoMarkGithub size={32} color="#24292e" />
+            </Link>
           </Box>
-        </Flex>
-      </Box>
+          <dl>
+            {chronology.map(({ node }) => (
+              <div key={node.year}>
+                <dt
+                  sx={{
+                    width: 72,
+                    float: 'left',
+                    clear: 'left',
+                    fontWeight: 'normal',
+                  }}
+                >
+                  <Text>{node.year}年</Text>
+                </dt>
+                <dd sx={{ marginLeft: 72 }}>{node.body}</dd>
+              </div>
+            ))}
+          </dl>
+        </Box>
+      </Flex>
 
       <Box>
         <Flex
@@ -102,7 +98,7 @@ const IndexPage: React.FC<PageProps<GatsbyTypes.BioQueryQuery>> = props => {
             mb: 3,
           }}
         >
-          <Heading as="h2">Skills</Heading>
+          <Styled.h2>Skills</Styled.h2>
         </Flex>
         <Grid gap={2} columns={[2, 3, 4, 5]}>
           <Box>

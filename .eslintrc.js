@@ -22,6 +22,7 @@ module.exports = {
       rules: {
         'react/prop-types': 0,
         'react/destructuring-assignment': 0,
+        'react/jsx-pascal-case': 0,
         'import/prefer-default-export': 0,
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',

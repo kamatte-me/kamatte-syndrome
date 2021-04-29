@@ -1,6 +1,5 @@
 /* @jsx jsx */
-import '@fontsource/caveat/500.css';
-import '@fontsource/josefin-sans/500.css';
+import 'destyle.css';
 
 import React from 'react';
 import { Container, jsx } from 'theme-ui';

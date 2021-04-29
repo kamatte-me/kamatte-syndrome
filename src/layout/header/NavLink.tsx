@@ -20,21 +20,19 @@ export const NavLink: React.FC<NavLinkProps> = ({
   }, [window.location.pathname]);
 
   return (
-    <React.Fragment>
-      <Link
-        to={to}
-        className={className}
-        sx={{
-          variant: 'links.nav',
-          color: isActive ? 'primary' : 'black',
-          '-webkit-text-fill-color': isActive ? 'transparent' : undefined,
-          '&:hover': {
-            '-webkit-text-fill-color': 'transparent',
-          },
-        }}
-      >
-        {children}
-      </Link>
-    </React.Fragment>
+    <Link
+      to={to}
+      className={className}
+      sx={{
+        variant: 'links.nav',
+        color: isActive ? 'primary' : 'black',
+        '-webkit-text-fill-color': isActive ? 'transparent' : undefined,
+        '&:hover': {
+          '-webkit-text-fill-color': 'transparent',
+        },
+      }}
+    >
+      {children}
+    </Link>
   );
 };
