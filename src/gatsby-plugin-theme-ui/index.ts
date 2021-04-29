@@ -13,53 +13,10 @@ const theme: Theme = merge(base as Theme, {
     heading: `"Josefin Sans", sans-serif`,
     body: `"Hiragino Mincho ProN", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "Yu Mincho", YuMincho, serif`,
   },
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
   styles: {
     root: {
       position: 'relative',
       minHeight: '100vh',
-    },
-    h1: {
-      color: 'text',
-      fontFamily: 'heading',
-      lineHeight: 'heading',
-      fontWeight: 'heading',
-      fontSize: 5,
-    },
-    h2: {
-      color: 'text',
-      fontFamily: 'heading',
-      lineHeight: 'heading',
-      fontWeight: 'heading',
-      fontSize: 4,
-    },
-    h3: {
-      color: 'text',
-      fontFamily: 'heading',
-      lineHeight: 'heading',
-      fontWeight: 'heading',
-      fontSize: 3,
-    },
-    h4: {
-      color: 'text',
-      fontFamily: 'heading',
-      lineHeight: 'heading',
-      fontWeight: 'heading',
-      fontSize: 2,
-    },
-    h5: {
-      color: 'text',
-      fontFamily: 'heading',
-      lineHeight: 'heading',
-      fontWeight: 'heading',
-      fontSize: 1,
-    },
-    h6: {
-      color: 'text',
-      fontFamily: 'heading',
-      lineHeight: 'heading',
-      fontWeight: 'heading',
-      fontSize: 0,
     },
   },
   links: {

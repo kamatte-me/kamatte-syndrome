@@ -13,6 +13,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@emotion/react": "^11.1.5",
     "@theme-ui/css": "^0.7.4",
     "@theme-ui/presets": "^0.7.4",
     "@theme-ui/sidenav": "^0.7.4",
