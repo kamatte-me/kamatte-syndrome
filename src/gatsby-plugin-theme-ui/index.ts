@@ -10,8 +10,8 @@ const theme: Theme = merge(base as Theme, {
   },
   fonts: {
     hand: `"Caveat", sans-serif`,
-    heading: `"Josefin Sans", sans-serif`,
-    body: `"Hiragino Mincho ProN", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "Yu Mincho", YuMincho, serif`,
+    heading: `"Josefin Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
+    body: `"Hiragino Mincho ProN", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "BIZ UDPMincho", "Yu Mincho", YuMincho, serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
   },
   styles: {
     root: {

@@ -5,11 +5,11 @@ import { Global } from '@emotion/react';
 import React from 'react';
 import { Container, jsx } from 'theme-ui';
 
-import Footer from '@/layout/footer';
-import Head from '@/layout/head';
-import Header, { HeaderHeight } from '@/layout/header';
+import { Footer } from '@/layout/footer';
+import { Head } from '@/layout/head';
+import { Header, HeaderHeight } from '@/layout/header';
 
-const Layout: React.FC = ({ children }) => {
+export const Layout: React.FC = ({ children }) => {
   return (
     <React.Fragment>
       <Head />
@@ -43,5 +43,3 @@ const Layout: React.FC = ({ children }) => {
     </React.Fragment>
   );
 };
-
-export default Layout;

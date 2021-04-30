@@ -3,7 +3,7 @@ import { Flex, Text } from 'theme-ui';
 
 export const FooterHeight = 60;
 
-const Footer: React.FC = () => {
+export const Footer: React.FC = () => {
   const [year] = useState<number>(new Date().getFullYear());
 
   return (
@@ -24,5 +24,3 @@ const Footer: React.FC = () => {
     </Flex>
   );
 };
-
-export default Footer;

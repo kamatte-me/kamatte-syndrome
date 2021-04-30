@@ -10,7 +10,7 @@ import { NavLink } from '@/layout/header/NavLink';
 
 export const HeaderHeight = 64;
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const toggleMenuOpen = useCallback(() => {
     setMenuOpen(prevState => !prevState);
@@ -212,5 +212,3 @@ const Header: React.FC = () => {
     </React.Fragment>
   );
 };
-
-export default Header;

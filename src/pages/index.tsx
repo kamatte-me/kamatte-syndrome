@@ -1,10 +1,10 @@
 /* @jsx jsx */
 import { Link } from 'gatsby';
-import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
-import { Flex, get, Heading, jsx } from 'theme-ui';
+import { Flex, jsx } from 'theme-ui';
 
-import Layout from '@/layout';
+import { MainVisual } from '@/components/index/main-visual';
+import { Layout } from '@/layout';
 import { FooterHeight } from '@/layout/footer';
 import { HeaderHeight } from '@/layout/header';
 
@@ -21,34 +21,7 @@ const IndexPage: React.FC = () => {
         }}
       >
         <Link to="/bio" style={{ textDecoration: 'none' }}>
-          <Flex
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-            }}
-          >
-            <Flex>
-              <StaticImage
-                src="../images/avatar.png"
-                alt="me"
-                width={380}
-                placeholder="none"
-                formats={['png']}
-              />
-            </Flex>
-            <Flex>
-              <Heading
-                sx={{
-                  fontFamily: t => get(t, 'fonts.hand'),
-                  fontSize: 6,
-                  color: 'black',
-                }}
-              >
-                plz kamatte me!!!
-              </Heading>
-            </Flex>
-          </Flex>
+          <MainVisual />
         </Link>
       </Flex>
     </Layout>

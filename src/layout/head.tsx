@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-const Head: React.FC = () => {
+export const Head: React.FC = () => {
   return (
     <Helmet htmlAttributes={{ lang: 'ja-JP' }}>
       <meta charSet="utf-8" />
@@ -23,5 +23,3 @@ const Head: React.FC = () => {
     </Helmet>
   );
 };
-
-export default Head;
