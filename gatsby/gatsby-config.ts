@@ -14,12 +14,14 @@ type ContentfulConfig = {
   spaceId: string;
   accessToken: string;
   host?: string;
+  useNameForId: boolean;
 };
 
 const contentfulConfig: ContentfulConfig = (() => {
   const config: ContentfulConfig = {
     spaceId: process.env.CONTENTFUL_SPACE_ID,
     accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
+    useNameForId: false,
   };
   if (
     process.env.CONTENTFUL_HOST &&
