@@ -1,44 +1,7 @@
-import 'gatsby-source-contentful';
-
-// eslint-disable-next-line import/no-extraneous-dependencies
 import dotenv from 'dotenv';
 import { GatsbyConfig } from 'gatsby';
 
 dotenv.config();
-
-/**
- * Contentful config
- * https://www.gatsbyjs.com/plugins/gatsby-source-contentful/
- */
-type ContentfulConfig = {
-  spaceId: string;
-  accessToken: string;
-  host?: string;
-  useNameForId: boolean;
-};
-
-const contentfulConfig: ContentfulConfig = (() => {
-  const config: ContentfulConfig = {
-    spaceId: process.env.CONTENTFUL_SPACE_ID,
-    accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
-    useNameForId: false,
-  };
-  if (
-    process.env.CONTENTFUL_HOST &&
-    process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
-  ) {
-    config.host = process.env.CONTENTFUL_HOST;
-    config.accessToken = process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
-  }
-
-  if (!config.spaceId || !config.accessToken) {
-    throw new Error(
-      'Contentful spaceId and the access token need to be provided.',
-    );
-  }
-
-  return config;
-})();
 
 export default (): GatsbyConfig => {
   return {
@@ -75,8 +38,31 @@ export default (): GatsbyConfig => {
         },
       },
       {
-        resolve: 'gatsby-source-contentful',
-        options: contentfulConfig,
+        resolve: 'gatsby-source-microcms',
+        options: {
+          apiKey: process.env.MICROCMS_API_KEY,
+          serviceId: process.env.MICROCMS_SERVICE_ID,
+          apis: [
+            {
+              endpoint: 'blog',
+            },
+            {
+              endpoint: 'history',
+            },
+            {
+              endpoint: 'skill',
+            },
+            {
+              endpoint: 'portfolio',
+            },
+            {
+              endpoint: 'illustration',
+            },
+            {
+              endpoint: 'culture',
+            },
+          ],
+        },
       },
       {
         resolve: 'gatsby-plugin-web-font-loader',

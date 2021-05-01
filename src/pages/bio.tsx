@@ -4,14 +4,14 @@ import { StaticImage } from 'gatsby-plugin-image';
 import React from 'react';
 import { Box, Flex, Grid, jsx, Styled } from 'theme-ui';
 
-import { Chronology, ChronologyItem } from '@/components/bio/chronology';
+import { History, HistoryContainer } from '@/components/bio/history';
 import { Skill } from '@/components/bio/skill';
 import { Sns } from '@/components/bio/sns';
 import { Layout } from '@/layout';
 
 export const pageQuery = graphql`
   query BioQuery {
-    allContentfulChronology(sort: { fields: [year], order: ASC }) {
+    allMicrocmsHistory(sort: { fields: [year], order: ASC }) {
       edges {
         node {
           year
@@ -19,7 +19,7 @@ export const pageQuery = graphql`
         }
       }
     }
-    allContentfulSkill(sort: { fields: [priority], order: ASC }) {
+    allMicrocmsSkill {
       edges {
         node {
           name
@@ -31,8 +31,8 @@ export const pageQuery = graphql`
 `;
 
 const BioPage: React.FC<PageProps<GatsbyTypes.BioQueryQuery>> = props => {
-  const chronology = props.data.allContentfulChronology.edges;
-  const skills = props.data.allContentfulSkill.edges;
+  const chronology = props.data.allMicrocmsHistory.edges;
+  const skills = props.data.allMicrocmsSkill.edges;
 
   return (
     <Layout>
@@ -75,15 +75,11 @@ const BioPage: React.FC<PageProps<GatsbyTypes.BioQueryQuery>> = props => {
           >
             <Sns />
           </Box>
-          <Chronology>
+          <HistoryContainer>
             {chronology.map(({ node }) => (
-              <ChronologyItem
-                key={node.year}
-                year={node.year!}
-                body={node.body!}
-              />
+              <History key={node.year} year={node.year!} body={node.body!} />
             ))}
-          </Chronology>
+          </HistoryContainer>
         </Box>
       </Flex>
 
@@ -100,6 +96,7 @@ const BioPage: React.FC<PageProps<GatsbyTypes.BioQueryQuery>> = props => {
           {skills.map(({ node }) => (
             <Skill key={node.name} name={node.name!} level={node.level!} />
           ))}
+          <Skill name="kawaii" level={100} />
         </Grid>
       </Box>
     </Layout>

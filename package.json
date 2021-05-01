@@ -30,20 +30,20 @@
     "gatsby-plugin-ts-config": "^1.1.5",
     "gatsby-plugin-typegen": "^2.2.4",
     "gatsby-plugin-web-font-loader": "^1.0.4",
-    "gatsby-source-contentful": "^5.4.0",
     "gatsby-source-filesystem": "^3.4.0",
+    "gatsby-source-microcms": "^1.1.0",
     "gatsby-transformer-sharp": "^3.4.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-helmet": "^6.1.0",
     "react-icons": "^4.2.0",
-    "theme-ui": "^0.7.4"
+    "theme-ui": "^0.7.4",
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {
     "@types/react-helmet": "^6.1.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
-    "dotenv": "^8.2.0",
     "eslint": "^7.25.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",

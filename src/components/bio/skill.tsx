@@ -25,13 +25,13 @@ export const Skill: React.FC<SkillProps> = ({ name, level }) => {
             textAlign: 'center',
           }}
           dangerouslySetInnerHTML={{
-            __html: name!,
+            __html: name.replace('\n', '<br>'),
           }}
         />
         <Donut
           title="JavaScript"
-          value={level! / 100}
-          color={level! >= 90 ? 'secondary' : 'primary'}
+          value={level / 100}
+          color={level >= 90 ? 'secondary' : 'primary'}
         />
       </Flex>
     </Box>

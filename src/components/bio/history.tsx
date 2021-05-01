@@ -2,7 +2,7 @@
 import React from 'react';
 import { jsx, Text } from 'theme-ui';
 
-export const Chronology: React.FC = ({ children }) => {
+export const HistoryContainer: React.FC = ({ children }) => {
   return <ul>{children}</ul>;
 };
 
@@ -11,10 +11,7 @@ interface ChronologyItemProps {
   body: string;
 }
 
-export const ChronologyItem: React.FC<ChronologyItemProps> = ({
-  year,
-  body,
-}) => {
+export const History: React.FC<ChronologyItemProps> = ({ year, body }) => {
   return (
     <div>
       <dt
