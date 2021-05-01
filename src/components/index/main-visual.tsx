@@ -13,7 +13,7 @@ export const MainVisual: React.FC = () => {
     >
       <Flex>
         <StaticImage
-          src="../images/avatar.png"
+          src="../../images/avatar.png"
           alt="me"
           width={380}
           placeholder="none"
