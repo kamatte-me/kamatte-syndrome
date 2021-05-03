@@ -92,7 +92,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
             textAlign: ['center', 'left'],
           }}
         >
-          <Themed.h3>
+          <Themed.h2>
             {item.url ? (
               <Link href={item.url} target="_blank">
                 {item.title}
@@ -100,7 +100,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
             ) : (
               item.title
             )}
-          </Themed.h3>
+          </Themed.h2>
           <Text
             sx={{
               fontSize: 1,

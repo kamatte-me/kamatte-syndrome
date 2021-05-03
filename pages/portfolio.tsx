@@ -67,9 +67,9 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({ portfolio }) => {
               },
             }}
           >
-            <Themed.h2 sx={{ fontSize: 5, mb: 4, textAlign: 'center' }}>
+            <Themed.h1 sx={{ fontSize: 5, mb: 4, textAlign: 'center' }}>
               {year}
-            </Themed.h2>
+            </Themed.h1>
             {portfolio[Number(year)].map(item => (
               <Box
                 key={item.id}

@@ -43,6 +43,17 @@ export const theme: Theme = merge(base as Theme, {
       px: 2,
     },
   },
+  cards: {
+    primary: {
+      padding: 2,
+    },
+    compact: {
+      padding: 1,
+      borderRadius: 2,
+      border: '1px solid',
+      borderColor: 'muted',
+    },
+  },
   sizes: {
     container: '1024px',
   },
