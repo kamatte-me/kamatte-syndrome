@@ -1,4 +1,4 @@
-import { StaticImage } from 'gatsby-plugin-image';
+import Image from 'next/image';
 import React from 'react';
 import { Flex, get, Heading } from 'theme-ui';
 
@@ -12,12 +12,13 @@ export const MainVisual: React.FC = () => {
       }}
     >
       <Flex>
-        <StaticImage
-          src="../../images/avatar.png"
+        <Image
+          src="/avatar.png"
           alt="me"
+          objectFit="contain"
           width={380}
-          placeholder="none"
-          formats={['png']}
+          height={380}
+          unoptimized
         />
       </Flex>
       <Flex>

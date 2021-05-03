@@ -1,9 +1,23 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
+import NextHead from 'next/head';
+import React, { useEffect } from 'react';
 
 export const Head: React.FC = () => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line global-require
+      const WebFontLoader = require('webfontloader');
+
+      WebFontLoader.load({
+        google: {
+          families: ['Caveat:700', 'Josefin Sans:400,700'],
+          timeout: 2000,
+        },
+      });
+    }
+  }, []);
+
   return (
-    <Helmet htmlAttributes={{ lang: 'ja-JP' }}>
+    <NextHead>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>かまって☆しんどろ〜む</title>
@@ -16,10 +30,6 @@ export const Head: React.FC = () => {
       <meta property="fb:app_id" content="159097111464111" />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400"
-      />
-    </Helmet>
+    </NextHead>
   );
 };

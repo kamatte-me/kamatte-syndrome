@@ -23,6 +23,12 @@ module.exports = {
         'react/prop-types': 0,
         'react/destructuring-assignment': 0,
         'react/jsx-pascal-case': 0,
+        'react/react-in-jsx-scope': 0,
+        'jsx-a11y/anchor-is-valid': 0,
+        'react/jsx-filename-extension': [
+          1,
+          { extensions: ['.js', '.ts', '.tsx', '.jsx'] },
+        ],
         'import/prefer-default-export': 0,
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',

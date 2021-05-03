@@ -1,17 +1,18 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx */
 import 'destyle.css';
 
 import { Global } from '@emotion/react';
 import React from 'react';
 import { Container, jsx } from 'theme-ui';
 
-import { Footer } from '@/layout/footer';
+import { Footer, FooterHeight } from '@/layout/footer';
 import { Head } from '@/layout/head';
 import { Header, HeaderHeight } from '@/layout/header';
 
 export const Layout: React.FC = ({ children }) => {
   return (
-    <React.Fragment>
+    <>
       <Head />
       <Global
         styles={() => ({
@@ -27,12 +28,13 @@ export const Layout: React.FC = ({ children }) => {
       <div
         sx={{
           paddingTop: HeaderHeight,
+          paddingBottom: FooterHeight,
         }}
       >
         <Container
           as="main"
           sx={{
-            py: 4,
+            py: [3, 4],
             px: 3,
           }}
         >
@@ -40,6 +42,6 @@ export const Layout: React.FC = ({ children }) => {
         </Container>
       </div>
       <Footer />
-    </React.Fragment>
+    </>
   );
 };

@@ -1,17 +1,18 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx * */
 import React from 'react';
-import { jsx, Text } from 'theme-ui';
+import { jsx } from 'theme-ui';
 
 export const HistoryContainer: React.FC = ({ children }) => {
   return <ul>{children}</ul>;
 };
 
-interface ChronologyItemProps {
+interface HistoryItemProps {
   year: number;
   body: string;
 }
 
-export const History: React.FC<ChronologyItemProps> = ({ year, body }) => {
+export const HistoryItem: React.FC<HistoryItemProps> = ({ year, body }) => {
   return (
     <div>
       <dt
@@ -22,7 +23,7 @@ export const History: React.FC<ChronologyItemProps> = ({ year, body }) => {
           fontWeight: 'normal',
         }}
       >
-        <Text>{year}年</Text>
+        <>{year}年</>
       </dt>
       <dd sx={{ marginLeft: 72 }}>{body}</dd>
     </div>

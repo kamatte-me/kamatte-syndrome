@@ -1,12 +1,13 @@
-/* @jsx jsx */
+/** @jsxRuntime classic */
+/** @jsx jsx * */
 import { Box, Donut, Flex, jsx, Text } from 'theme-ui';
 
-interface SkillProps {
+interface SkillItemProps {
   name: string;
   level: number;
 }
 
-export const Skill: React.FC<SkillProps> = ({ name, level }) => {
+export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
   return (
     <Box>
       <Flex
@@ -32,6 +33,7 @@ export const Skill: React.FC<SkillProps> = ({ name, level }) => {
           title="JavaScript"
           value={level / 100}
           color={level >= 90 ? 'secondary' : 'primary'}
+          strokeWidth={3}
         />
       </Flex>
     </Box>
