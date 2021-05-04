@@ -1,6 +1,7 @@
 import React from 'react';
-import { GoMarkGithub } from 'react-icons/go';
 import { Box, Link } from 'theme-ui';
+
+import { GitHubIcon } from '@/components/elements/Icon';
 
 export const Sns: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ export const Sns: React.FC = () => {
       }}
     >
       <Link href="https://github.com/kamatte-me" target="_blank">
-        <GoMarkGithub size={32} color="#24292e" />
+        <GitHubIcon size={32} color="#24292e" />
       </Link>
     </Box>
   );

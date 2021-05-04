@@ -34,15 +34,14 @@ const BlogPostPage: React.FC<
       <Box sx={{ mb: 4 }}>
         <Themed.h1
           sx={{
-            fontFamily: 'body',
             mb: 2,
           }}
         >
           {post.title}
         </Themed.h1>
-        <span sx={{ display: 'block', fontSize: 1, color: 'gray' }}>
+        <Text as="span" sx={{ fontSize: 1, color: 'gray' }}>
           {formatDate(post.publishedAt)}
-        </span>
+        </Text>
       </Box>
       <Box
         sx={{

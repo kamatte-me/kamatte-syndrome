@@ -30,7 +30,7 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
           }}
         />
         <Donut
-          title="JavaScript"
+          title={name}
           value={level / 100}
           color={level >= 90 ? 'secondary' : 'primary'}
           strokeWidth={3}

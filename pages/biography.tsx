@@ -65,6 +65,7 @@ const BiographyPage: React.FC<
         <Box>
           <Themed.h1
             sx={{
+              variant: 'text.display',
               color: 'primary',
               mb: 1,
               textAlign: ['center', 'left'],
@@ -94,7 +95,13 @@ const BiographyPage: React.FC<
             mb: 3,
           }}
         >
-          <Themed.h2>Skills</Themed.h2>
+          <Themed.h2
+            sx={{
+              variant: 'text.display',
+            }}
+          >
+            Skills
+          </Themed.h2>
         </Flex>
         <Grid gap={3} columns={[2, 3, 4, 5]}>
           {skills.map(item => (

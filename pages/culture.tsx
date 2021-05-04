@@ -2,7 +2,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Grid } from 'theme-ui';
 
-import { Item } from '@/components/pages/culture/Item';
+import { CultureItem } from '@/components/pages/culture/CultureItem';
 import { getAllContents } from '@/lib/microcms';
 import { Culture } from '@/lib/microcms/model';
 
@@ -26,7 +26,7 @@ const CulturePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <Grid as="dl" gap={3} columns={[2, 3, 4, 5]}>
       {cultures.map(item => (
-        <Item key={item.id} item={item} />
+        <CultureItem key={item.id} item={item} />
       ))}
     </Grid>
   );

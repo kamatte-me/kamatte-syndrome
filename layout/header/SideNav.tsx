@@ -1,8 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React from 'react';
-import { Close, jsx } from 'theme-ui';
+import { jsx } from 'theme-ui';
 
+import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
 import { HeaderHeight } from '@/layout/header/index';
 
@@ -18,7 +19,7 @@ export const SideNav: React.FC<SideNavProps> = ({
 }) => {
   return (
     <>
-      {open && <Overlay handleClose={() => handleClose()} />}
+      {open && <Overlay bgColor="primary" handleClose={() => handleClose()} />}
       <div
         sx={{
           position: 'fixed',
@@ -39,15 +40,19 @@ export const SideNav: React.FC<SideNavProps> = ({
           WebkitOverflowScrolling: 'touch',
         }}
       >
-        <div
+        <CloseIcon
+          onClick={() => handleClose()}
           sx={{
-            position: 'absolute',
+            position: 'fixed',
             top: 3,
             right: 3,
+            color: 'black',
+            height: 32,
+            width: 32,
+            cursor: 'pointer',
+            zIndex: 102,
           }}
-        >
-          <Close onClick={() => handleClose()} />
-        </div>
+        />
         {children}
       </div>
     </>

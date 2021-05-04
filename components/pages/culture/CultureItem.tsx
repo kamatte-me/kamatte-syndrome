@@ -2,9 +2,9 @@
 /** @jsx jsx * */
 import Image, { ImageLoader } from 'next/image';
 import React, { useState } from 'react';
-import { IoPlayCircleOutline } from 'react-icons/io5';
 import { Card, Flex, jsx } from 'theme-ui';
 
+import { PlayIcon } from '@/components/elements/Icon';
 import { YouTubeModal } from '@/components/pages/culture/YouTubeModal';
 import { Culture } from '@/lib/microcms/model';
 
@@ -12,14 +12,14 @@ const youtubeThumbnailLoader: ImageLoader = ({ src }) => {
   return `https://img.youtube.com/vi/${src}/hqdefault.jpg`;
 };
 
-export const Item: React.FC<{
+export const CultureItem: React.FC<{
   item: Culture;
 }> = ({ item }) => {
   const [play, setPlay] = useState<boolean>(false);
 
   return (
     <Card>
-      <dl sx={{ mb: 1 }}>
+      <dd sx={{ mb: 1 }}>
         <Flex
           onClick={() => setPlay(true)}
           sx={{
@@ -50,7 +50,7 @@ export const Item: React.FC<{
               },
             }}
           >
-            <IoPlayCircleOutline
+            <PlayIcon
               color="#fff"
               size={64}
               sx={{
@@ -59,7 +59,7 @@ export const Item: React.FC<{
             />
           </Flex>
         </Flex>
-      </dl>
+      </dd>
       <dt sx={{ fontWeight: 'normal' }}>{item.name}</dt>
       <YouTubeModal
         open={play}

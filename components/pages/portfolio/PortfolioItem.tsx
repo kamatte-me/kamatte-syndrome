@@ -6,28 +6,20 @@ import { Badge, Box, Flex, jsx, Link, Text, Themed } from 'theme-ui';
 
 import { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
 
-const featuredImageSize = 120;
-
 const FeaturedImage: React.FC<{
   url?: string | null;
 }> = ({ url }) => {
   if (url) {
     return (
-      <Image
-        src={url}
-        alt="me"
-        objectFit="contain"
-        width={featuredImageSize}
-        height={featuredImageSize}
-      />
+      <Image src={url} alt="me" objectFit="contain" width={200} height={200} />
     );
   }
 
   return (
     <Flex
       sx={{
-        width: featuredImageSize,
-        height: featuredImageSize,
+        width: 120,
+        height: 120,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
@@ -57,7 +49,7 @@ interface PortfolioItemProps {
   item: PortfolioItemType;
 }
 
-export const Item: React.FC<PortfolioItemProps> = ({ item }) => {
+export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
   return (
     <Flex
       sx={{
@@ -70,8 +62,8 @@ export const Item: React.FC<PortfolioItemProps> = ({ item }) => {
       <Flex
         sx={{
           justifyContent: 'center',
-          width: featuredImageSize,
-          height: featuredImageSize,
+          width: ['100%', 120],
+          height: 120,
           mr: [0, 4],
           mb: [4, 0],
         }}

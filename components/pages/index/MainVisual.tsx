@@ -24,9 +24,8 @@ export const MainVisual: React.FC = () => {
       <Flex>
         <Heading
           sx={{
-            fontFamily: 'hand',
+            variant: 'text.hand',
             fontSize: 6,
-            color: 'black',
           }}
         >
           plz kamatte me!!!

@@ -6,7 +6,7 @@ import { jsx } from 'theme-ui';
 
 export const Overlay: React.FC<{
   handleClose: () => void;
-  bgColor?: string;
+  bgColor: string;
 }> = ({ handleClose, bgColor }) => {
   return (
     <>
@@ -19,7 +19,7 @@ export const Overlay: React.FC<{
           right: 0,
           bottom: 0,
           left: 0,
-          bg: bgColor || 'primary',
+          bg: bgColor,
           zIndex: 100,
         }}
       />

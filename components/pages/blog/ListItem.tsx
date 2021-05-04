@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { Box, Flex, jsx, Themed } from 'theme-ui';
+import { Box, Flex, jsx, Text, Themed } from 'theme-ui';
 
 import { formatDate } from '@/lib/date';
 import { Blog } from '@/lib/microcms/model';
@@ -42,9 +42,9 @@ export const ListItem: React.FC<{
         <Themed.h2 sx={{ fontFamily: 'body', fontSize: [3, 4], mb: 2 }}>
           <Link href={`/blog/${post.id}`}>{post.title}</Link>
         </Themed.h2>
-        <span sx={{ display: 'block', color: 'gray', fontSize: 1 }}>
+        <Text as="span" sx={{ color: 'gray', fontSize: 1 }}>
           {formatDate(post.publishedAt)}
-        </span>
+        </Text>
       </Box>
     </Flex>
   );

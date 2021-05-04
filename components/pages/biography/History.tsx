@@ -23,7 +23,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ year, body }) => {
           fontWeight: 'normal',
         }}
       >
-        <>{year}年</>
+        {year}年
       </dt>
       <dd sx={{ marginLeft: 72 }}>{body}</dd>
     </div>

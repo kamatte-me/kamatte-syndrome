@@ -4,7 +4,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Box, jsx, Themed } from 'theme-ui';
 
-import { Item as PortfolioItemComponent } from '@/components/pages/portfolio/Item';
+import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
 import { getAllContents } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
@@ -67,7 +67,13 @@ const PortfolioPage: React.FC<
               },
             }}
           >
-            <Themed.h1 sx={{ fontSize: 5, mb: 4, textAlign: 'center' }}>
+            <Themed.h1
+              sx={{
+                variant: 'text.display',
+                mb: 4,
+                textAlign: 'center',
+              }}
+            >
               {year}
             </Themed.h1>
             {portfolio[Number(year)].map(item => (

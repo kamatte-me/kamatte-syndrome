@@ -3,9 +3,9 @@
 import { ThemeUIStyleObject } from '@theme-ui/css';
 import Link from 'next/link';
 import React, { useCallback, useState } from 'react';
-import { HiOutlineBell } from 'react-icons/hi';
 import { Flex, IconButton, jsx, MenuButton } from 'theme-ui';
 
+import { BellIcon } from '@/components/elements/Icon';
 import { SideNav } from '@/layout/header/SideNav';
 
 import { NavLink } from './NavLink';
@@ -142,7 +142,7 @@ export const Header: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                <HiOutlineBell size={24} />
+                <BellIcon size={24} />
               </IconButton>
             </Flex>
             <Flex

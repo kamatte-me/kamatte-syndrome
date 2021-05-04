@@ -1,9 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
 import React from 'react';
-import { Box, Embed, Flex, jsx, Text, Themed } from 'theme-ui';
+import { Box, Container, Embed, Flex, jsx, Themed } from 'theme-ui';
 
-import { Close } from '@/components/elements/Icon';
+import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
 import { Culture } from '@/lib/microcms/model';
 
@@ -18,8 +18,8 @@ export const YouTubeModal: React.FC<{
 
   return (
     <Box>
-      <Overlay handleClose={handleClose} bgColor="#000" />
-      <Close
+      <Overlay handleClose={handleClose} bgColor="black" />
+      <CloseIcon
         onClick={() => handleClose()}
         sx={{
           position: 'fixed',
@@ -33,23 +33,19 @@ export const YouTubeModal: React.FC<{
         }}
       />
 
-      <Box
+      <Container
+        variant="layout.youtubeModalContainer"
         sx={{
           position: 'fixed',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: ['100vw', 600, 600, 800],
-          maxHeight: '100vh',
-          p: 4,
           zIndex: 101,
-          overflowY: 'auto',
         }}
       >
         <Themed.h1
           sx={{
             color: 'white',
-            fontFamily: 'body',
             mb: 3,
           }}
         >
@@ -63,15 +59,14 @@ export const YouTubeModal: React.FC<{
             }}
           />
         </Flex>
-        <Box sx={{ mt: 4 }}>
-          <Text
-            sx={{ color: 'white' }}
+        <Box sx={{ mt: 4, color: 'white' }}>
+          <Themed.div
             dangerouslySetInnerHTML={{
               __html: cultureItem.description,
             }}
           />
         </Box>
-      </Box>
+      </Container>
     </Box>
   );
 };
