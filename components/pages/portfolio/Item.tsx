@@ -57,10 +57,9 @@ interface PortfolioItemProps {
   item: PortfolioItemType;
 }
 
-export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
+export const Item: React.FC<PortfolioItemProps> = ({ item }) => {
   return (
     <Flex
-      key={item.id}
       sx={{
         flexDirection: ['column', 'row'],
         justifyContent: 'center',
@@ -92,7 +91,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
             textAlign: ['center', 'left'],
           }}
         >
-          <Themed.h2>
+          <Themed.h2 sx={{ fontFamily: 'body' }}>
             {item.url ? (
               <Link href={item.url} target="_blank">
                 {item.title}

@@ -12,7 +12,7 @@ const youtubeThumbnailLoader: ImageLoader = ({ src }) => {
   return `https://img.youtube.com/vi/${src}/hqdefault.jpg`;
 };
 
-export const CultureItem: React.FC<{
+export const Item: React.FC<{
   item: Culture;
 }> = ({ item }) => {
   const [play, setPlay] = useState<boolean>(false);

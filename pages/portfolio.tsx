@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
-import { InferGetStaticPropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Box, jsx, Themed } from 'theme-ui';
 
-import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
+import { Item as PortfolioItemComponent } from '@/components/pages/portfolio/Item';
 import { getAllContents } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
@@ -18,7 +18,9 @@ type PortfolioDict = {
   [year: number]: PortfolioItem[];
 };
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps<{
+  portfolio: PortfolioDict;
+}> = async () => {
   const portfolio = await getAllContents<Portfolio>('portfolio', {
     limit: 50,
   });
@@ -28,14 +30,10 @@ export const getStaticProps = async () => {
 
       const key: number = current.year;
       const item: PortfolioItem = {
-        id: current.id,
-        title: current.title,
-        url: current.url || null,
+        ...current,
         featuredImageUrl: current.featuredImage
           ? current.featuredImage.url!
           : null,
-        category: current.category,
-        description: current.description,
         technologies: current.technologies
           ? current.technologies.trim().split('\n')
           : [],
@@ -53,9 +51,9 @@ export const getStaticProps = async () => {
   };
 };
 
-type PortfolioPageProps = InferGetStaticPropsType<typeof getStaticProps>;
-
-const PortfolioPage: React.FC<PortfolioPageProps> = ({ portfolio }) => {
+const PortfolioPage: React.FC<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ portfolio }) => {
   return (
     <>
       {Object.keys(portfolio)

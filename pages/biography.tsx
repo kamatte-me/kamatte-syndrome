@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
-import { InferGetStaticPropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from 'next/image';
 import React from 'react';
 import { Box, Flex, Grid, jsx, Themed } from 'theme-ui';
@@ -14,7 +14,10 @@ import { Sns } from '@/components/pages/biography/Sns';
 import { getAllContents } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps<{
+  histories: History[];
+  skills: Skill[];
+}> = async () => {
   const histories = await getAllContents<History>('history', {
     orders: 'year',
     limit: 100,
@@ -31,9 +34,9 @@ export const getStaticProps = async () => {
   };
 };
 
-type BiographyPageProps = InferGetStaticPropsType<typeof getStaticProps>;
-
-const BiographyPage: React.FC<BiographyPageProps> = ({ histories, skills }) => {
+const BiographyPage: React.FC<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ histories, skills }) => {
   return (
     <>
       <Flex

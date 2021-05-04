@@ -42,7 +42,7 @@ interface GetContentsResponse<T> {
   limit: 10;
 }
 
-export const getContents = async <T>(
+const fetchContents = async <T>(
   endpoint: Endpoint,
   query: GetContentsQuery = {},
 ): Promise<GetContentsResponse<T>> => {
@@ -50,6 +50,14 @@ export const getContents = async <T>(
     `${BASE_URL}/${endpoint}${makeQueryString(query)}`,
     HTTP_OPTION,
   ).then(res => res.json() as Promise<GetContentsResponse<T>>);
+};
+
+export const getContents = async <T>(
+  endpoint: Endpoint,
+  query: GetContentsQuery = {},
+): Promise<T[]> => {
+  const data = await fetchContents<T>(endpoint, query);
+  return data.contents;
 };
 
 export const getAllContents = async <T>(
@@ -61,7 +69,7 @@ export const getAllContents = async <T>(
   let offset = 0;
   while (true) {
     // eslint-disable-next-line no-await-in-loop
-    const data = await getContents<T>(endpoint, {
+    const data = await fetchContents<T>(endpoint, {
       limit: GET_ALL_CONTENTS_LIMIT,
       ...query,
       offset,
@@ -79,7 +87,7 @@ export const getAllContents = async <T>(
 export const getContent = async <T>(
   endpoint: Endpoint,
   id: string,
-  query: GetContentQuery,
+  query: GetContentQuery = {},
 ): Promise<T> => {
   return fetch(
     `${BASE_URL}/${endpoint}/${id}${makeQueryString(query)}`,

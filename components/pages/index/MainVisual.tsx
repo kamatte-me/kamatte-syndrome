@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
-import { Flex, get, Heading } from 'theme-ui';
+import { Flex, Heading } from 'theme-ui';
 
 export const MainVisual: React.FC = () => {
   return (
@@ -24,7 +24,7 @@ export const MainVisual: React.FC = () => {
       <Flex>
         <Heading
           sx={{
-            fontFamily: t => get(t, 'fonts.hand'),
+            fontFamily: 'hand',
             fontSize: 6,
             color: 'black',
           }}
