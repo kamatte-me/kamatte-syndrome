@@ -12,12 +12,7 @@ export const ListItem: React.FC<{
   post: Blog;
 }> = ({ post }) => {
   return (
-    <Flex
-      sx={{
-        justifyContent: 'center',
-        mb: 4,
-      }}
-    >
+    <Flex>
       <Link href={`/blog/${post.id}`}>
         <Flex
           sx={{

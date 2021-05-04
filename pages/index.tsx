@@ -8,7 +8,7 @@ import { MainVisual } from '@/components/pages/index/MainVisual';
 import { FooterHeight } from '@/layout/Footer';
 import { HeaderHeight } from '@/layout/header';
 
-const negativeHeight = HeaderHeight + FooterHeight + 80;
+const negativeHeight = HeaderHeight + FooterHeight + 100;
 
 const IndexPage: React.FC = () => {
   return (

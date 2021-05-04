@@ -7,11 +7,17 @@ import { Badge, Box, Flex, jsx, Link, Text, Themed } from 'theme-ui';
 import { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
 
 const FeaturedImage: React.FC<{
-  url?: string | null;
-}> = ({ url }) => {
-  if (url) {
+  item: PortfolioItemType;
+}> = ({ item }) => {
+  if (item.featuredImage) {
     return (
-      <Image src={url} alt="me" objectFit="contain" width={200} height={200} />
+      <Image
+        src={item.featuredImage.url}
+        alt="me"
+        objectFit="contain"
+        width={item.featuredImage.width}
+        height={item.featuredImage.height}
+      />
     );
   }
 
@@ -70,10 +76,10 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
       >
         {item.url ? (
           <Link href={item.url} target="_blank">
-            <FeaturedImage url={item.featuredImageUrl} />
+            <FeaturedImage item={item} />
           </Link>
         ) : (
-          <FeaturedImage url={item.featuredImageUrl} />
+          <FeaturedImage item={item} />
         )}
       </Flex>
       <Box sx={{ flex: 1, width: '100%' }}>

@@ -7,13 +7,13 @@ import React from 'react';
 import { Container, jsx } from 'theme-ui';
 
 import { Footer, FooterHeight } from '@/layout/Footer';
-import { Head } from '@/layout/Head';
+import { GlobalHead } from '@/layout/GlobalHead';
 import { Header, HeaderHeight } from '@/layout/header';
 
 export const Layout: React.FC = ({ children }) => {
   return (
     <>
-      <Head />
+      <GlobalHead />
       <Global
         styles={() => ({
           html: {
@@ -34,7 +34,8 @@ export const Layout: React.FC = ({ children }) => {
         <Container
           as="main"
           sx={{
-            py: [3, 4],
+            pt: [3, 4],
+            pb: 5,
             px: 3,
           }}
         >

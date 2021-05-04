@@ -4,13 +4,13 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Box, jsx, Themed } from 'theme-ui';
 
+import { Seo } from '@/components/elements/Seo';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
 import { getAllContents } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
 export interface PortfolioItem
-  extends Omit<Portfolio, 'year' | 'featuredImage' | 'technologies'> {
-  featuredImageUrl?: string | null;
+  extends Omit<Portfolio, 'year' | 'technologies'> {
   technologies: string[];
 }
 
@@ -31,9 +31,6 @@ export const getStaticProps: GetStaticProps<{
       const key: number = current.year;
       const item: PortfolioItem = {
         ...current,
-        featuredImageUrl: current.featuredImage
-          ? current.featuredImage.url!
-          : null,
         technologies: current.technologies
           ? current.technologies.trim().split('\n')
           : [],
@@ -56,6 +53,7 @@ const PortfolioPage: React.FC<
 > = ({ portfolio }) => {
   return (
     <>
+      <Seo title="Portfolio" description="kamatteの戦歴に刮目せよ！！" />
       {Object.keys(portfolio)
         .reverse()
         .map(year => (

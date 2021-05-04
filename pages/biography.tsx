@@ -5,6 +5,7 @@ import Image from 'next/image';
 import React from 'react';
 import { Box, Flex, Grid, jsx, Themed } from 'theme-ui';
 
+import { Seo } from '@/components/elements/Seo';
 import {
   HistoryContainer,
   HistoryItem,
@@ -39,6 +40,7 @@ const BiographyPage: React.FC<
 > = ({ histories, skills }) => {
   return (
     <>
+      <Seo title="Biography" description="kamatteのすべて" />
       <Flex
         sx={{
           flexDirection: ['column', 'row'],

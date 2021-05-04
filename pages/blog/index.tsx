@@ -2,8 +2,9 @@
 /** @jsx jsx * */
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
-import { Container, jsx } from 'theme-ui';
+import { Box, Container, jsx } from 'theme-ui';
 
+import { Seo } from '@/components/elements/Seo';
 import { ListItem } from '@/components/pages/blog/ListItem';
 import { getContents } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
@@ -27,11 +28,22 @@ const BlogPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   posts,
 }) => {
   return (
-    <Container variant="layout.blogContainer">
-      {posts.map(post => (
-        <ListItem post={post} />
-      ))}
-    </Container>
+    <>
+      <Seo title="Blog" description="局所的な人気があるらしい。" />
+      <Container variant="layout.blogContainer">
+        {posts.map(post => (
+          <Box
+            sx={{
+              ':not(:last-child)': {
+                mb: 4,
+              },
+            }}
+          >
+            <ListItem post={post} />
+          </Box>
+        ))}
+      </Container>
+    </>
   );
 };
 

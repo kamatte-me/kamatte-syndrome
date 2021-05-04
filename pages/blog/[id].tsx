@@ -1,9 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import Image from 'next/image';
 import React from 'react';
-import { Box, Container, jsx, Text, Themed } from 'theme-ui';
+import { Box, Container, Flex, jsx, Text, Themed } from 'theme-ui';
 
+import { Seo } from '@/components/elements/Seo';
 import { formatDate } from '@/lib/date';
 import { getAllContents, getContent } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
@@ -30,27 +32,50 @@ const BlogPostPage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ post }) => {
   return (
-    <Container variant="layout.blogContainer">
-      <Box sx={{ mb: 4 }}>
-        <Themed.h1
+    <>
+      <Seo
+        title={post.title}
+        ogImageUrl={post.featuredImage && post.featuredImage.url}
+      />
+      <Container variant="layout.blogContainer">
+        <Box sx={{ mb: 4 }}>
+          <Themed.h1
+            sx={{
+              mb: 2,
+            }}
+          >
+            {post.title}
+          </Themed.h1>
+          <Text as="span" sx={{ fontSize: 1, color: 'gray' }}>
+            {formatDate(post.publishedAt)}
+          </Text>
+          {post.featuredImage && (
+            <Flex
+              sx={{
+                width: '100%',
+                height: 200,
+                justifyContent: 'center',
+                mt: 2,
+              }}
+            >
+              <Image
+                src={post.featuredImage.url}
+                objectFit="contain"
+                width={post.featuredImage.width}
+                height={post.featuredImage.height}
+              />
+            </Flex>
+          )}
+        </Box>
+        <Box
           sx={{
-            mb: 2,
+            overflowX: 'hidden',
           }}
         >
-          {post.title}
-        </Themed.h1>
-        <Text as="span" sx={{ fontSize: 1, color: 'gray' }}>
-          {formatDate(post.publishedAt)}
-        </Text>
-      </Box>
-      <Box
-        sx={{
-          overflowX: 'hidden',
-        }}
-      >
-        <Text dangerouslySetInnerHTML={{ __html: post.body }} />
-      </Box>
-    </Container>
+          <Text dangerouslySetInnerHTML={{ __html: post.body }} />
+        </Box>
+      </Container>
+    </>
   );
 };
 
