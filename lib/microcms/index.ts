@@ -6,13 +6,7 @@ const HTTP_OPTION = {
 
 const GET_ALL_CONTENTS_LIMIT = 10;
 
-type Endpoint =
-  | 'blog'
-  | 'history'
-  | 'skill'
-  | 'portfolio'
-  | 'illustration'
-  | 'culture';
+type Endpoint = 'blog' | 'history' | 'skill' | 'portfolio' | 'culture';
 
 export interface GetContentQuery {
   draftKey?: string;

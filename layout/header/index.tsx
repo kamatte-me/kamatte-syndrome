@@ -34,10 +34,6 @@ const links: {
     to: '/portfolio',
   },
   {
-    title: 'Illustration',
-    to: '/illustration',
-  },
-  {
     title: 'Culture',
     to: '/culture',
   },

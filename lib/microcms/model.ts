@@ -34,11 +34,6 @@ export interface Portfolio extends Model {
   technologies?: string | null;
 }
 
-export interface Illustration extends Model {
-  title: string;
-  image: Image;
-}
-
 export interface Culture extends Model {
   name: string;
   youtubeVideoId: string;
