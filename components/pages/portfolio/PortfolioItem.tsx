@@ -2,8 +2,9 @@
 /** @jsx jsx */
 import Image from 'next/image';
 import React from 'react';
-import { Badge, Box, Flex, jsx, Link, Text, Themed } from 'theme-ui';
+import { Badge, Box, Flex, Heading, jsx, Link, Text } from 'theme-ui';
 
+import { htmlToThemed } from '@/lib/htmlToThemed';
 import { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
 
 const FeaturedImage: React.FC<{
@@ -58,6 +59,7 @@ interface PortfolioItemProps {
 export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
   return (
     <Flex
+      as="li"
       sx={{
         flexDirection: ['column', 'row'],
         justifyContent: 'center',
@@ -74,13 +76,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
           mb: [4, 0],
         }}
       >
-        {item.url ? (
-          <Link href={item.url} target="_blank">
-            <FeaturedImage item={item} />
-          </Link>
-        ) : (
-          <FeaturedImage item={item} />
-        )}
+        <FeaturedImage item={item} />
       </Flex>
       <Box sx={{ flex: 1, width: '100%' }}>
         <Box
@@ -89,7 +85,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
             textAlign: ['center', 'left'],
           }}
         >
-          <Themed.h2 sx={{ fontFamily: 'body' }}>
+          <Heading as="h2" sx={{ variant: 'text.headingSerif', fontSize: 4 }}>
             {item.url ? (
               <Link href={item.url} target="_blank">
                 {item.title}
@@ -97,7 +93,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
             ) : (
               item.title
             )}
-          </Themed.h2>
+          </Heading>
           <Text
             sx={{
               fontSize: 1,
@@ -107,11 +103,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
             {item.category}
           </Text>
         </Box>
-        <Text
-          dangerouslySetInnerHTML={{
-            __html: item.description,
-          }}
-        />
+        <Box>{htmlToThemed(item.description)}</Box>
         <Box sx={{ mt: 3 }}>
           {item.technologies.map(tech => (
             <Badge

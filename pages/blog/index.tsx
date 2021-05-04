@@ -5,7 +5,7 @@ import React from 'react';
 import { Box, Container, jsx } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
-import { ListItem } from '@/components/pages/blog/ListItem';
+import { BlogListItem } from '@/components/pages/blog/BlogListItem';
 import { getContents } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
@@ -30,16 +30,17 @@ const BlogPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <Seo title="Blog" description="局所的な人気があるらしい。" />
-      <Container variant="layout.blogContainer">
+      <Container as="ul" variant="layout.blogContainer">
         {posts.map(post => (
           <Box
+            as="li"
             sx={{
               ':not(:last-child)': {
                 mb: 4,
               },
             }}
           >
-            <ListItem post={post} />
+            <BlogListItem post={post} />
           </Box>
         ))}
       </Container>

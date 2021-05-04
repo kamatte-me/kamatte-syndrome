@@ -2,7 +2,7 @@
 /** @jsx jsx * */
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
-import { Box, jsx, Themed } from 'theme-ui';
+import { Box, Heading, jsx } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
@@ -65,18 +65,20 @@ const PortfolioPage: React.FC<
               },
             }}
           >
-            <Themed.h1
+            <Heading
+              as="h1"
               sx={{
-                variant: 'text.display',
+                fontSize: 5,
                 mb: 4,
                 textAlign: 'center',
               }}
             >
               {year}
-            </Themed.h1>
+            </Heading>
             {portfolio[Number(year)].map(item => (
               <Box
                 key={item.id}
+                as="ul"
                 sx={{
                   ':not(:last-child)': {
                     mb: 5,

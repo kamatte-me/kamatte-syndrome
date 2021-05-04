@@ -3,10 +3,11 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from 'next/image';
 import React from 'react';
-import { Box, Container, Flex, jsx, Text, Themed } from 'theme-ui';
+import { Box, Container, Flex, Heading, jsx, Text } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
 import { formatDate } from '@/lib/date';
+import { htmlToThemed } from '@/lib/htmlToThemed';
 import { getAllContents, getContent } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
@@ -39,13 +40,15 @@ const BlogPostPage: React.FC<
       />
       <Container variant="layout.blogContainer">
         <Box sx={{ mb: 4 }}>
-          <Themed.h1
+          <Heading
             sx={{
+              variant: 'text.headingSerif',
+              fontSize: 5,
               mb: 2,
             }}
           >
             {post.title}
-          </Themed.h1>
+          </Heading>
           <Text as="span" sx={{ fontSize: 1, color: 'gray' }}>
             {formatDate(post.publishedAt)}
           </Text>
@@ -72,7 +75,7 @@ const BlogPostPage: React.FC<
             overflowX: 'hidden',
           }}
         >
-          <Text dangerouslySetInnerHTML={{ __html: post.body }} />
+          {htmlToThemed(post.body)}
         </Box>
       </Container>
     </>

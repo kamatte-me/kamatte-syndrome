@@ -3,7 +3,7 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from 'next/image';
 import React from 'react';
-import { Box, Flex, Grid, jsx, Themed } from 'theme-ui';
+import { Box, Flex, Grid, Heading, jsx } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
 import {
@@ -65,16 +65,18 @@ const BiographyPage: React.FC<
           />
         </Flex>
         <Box>
-          <Themed.h1
+          <Heading
+            as="h1"
             sx={{
               variant: 'text.display',
               color: 'primary',
               mb: 1,
+              fontSize: 5,
               textAlign: ['center', 'left'],
             }}
           >
             kamatte
-          </Themed.h1>
+          </Heading>
           <Box
             sx={{
               mb: 2,
@@ -97,15 +99,16 @@ const BiographyPage: React.FC<
             mb: 3,
           }}
         >
-          <Themed.h2
+          <Heading
+            as="h2"
             sx={{
-              variant: 'text.display',
+              fontSize: 5,
             }}
           >
             Skills
-          </Themed.h2>
+          </Heading>
         </Flex>
-        <Grid gap={3} columns={[2, 3, 4, 5]}>
+        <Grid as="ul" gap={3} columns={[2, 3, 4, 5]}>
           {skills.map(item => (
             <SkillItem key={item.id} name={item.name} level={item.level} />
           ))}

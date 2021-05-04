@@ -1,10 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
 import React from 'react';
-import { Box, Container, Embed, Flex, jsx, Themed } from 'theme-ui';
+import { Box, Container, Embed, Flex, Heading, jsx } from 'theme-ui';
 
 import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
+import { htmlToThemed } from '@/lib/htmlToThemed';
 import { Culture } from '@/lib/microcms/model';
 
 export const YouTubeModal: React.FC<{
@@ -43,14 +44,17 @@ export const YouTubeModal: React.FC<{
           zIndex: 101,
         }}
       >
-        <Themed.h1
+        <Heading
+          as="h1"
           sx={{
+            variant: 'text.headingSerif',
+            fontSize: 5,
             color: 'white',
             mb: 3,
           }}
         >
           {cultureItem.name}
-        </Themed.h1>
+        </Heading>
         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
           <Embed
             src={`https://www.youtube.com/embed/${cultureItem.youtubeVideoId}?autoplay=1`}
@@ -60,11 +64,7 @@ export const YouTubeModal: React.FC<{
           />
         </Flex>
         <Box sx={{ mt: 4, color: 'white' }}>
-          <Themed.div
-            dangerouslySetInnerHTML={{
-              __html: cultureItem.description,
-            }}
-          />
+          {htmlToThemed(cultureItem.description)}
         </Box>
       </Container>
     </Box>

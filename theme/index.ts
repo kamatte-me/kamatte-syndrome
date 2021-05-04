@@ -5,9 +5,9 @@ export const theme: Theme = {
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fonts: {
     body: `"Hiragino Mincho ProN", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "BIZ UDPMincho", "Yu Mincho", YuMincho, serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
-    display: `"Josefin Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK JP", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
+    heading: `"Josefin Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK JP", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
     hand: `Caveat, sans-serif`,
-    monospace: 'Menlo, monospace',
+    monospace: 'SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace',
   },
   fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
   fontWeights: {
@@ -26,19 +26,19 @@ export const theme: Theme = {
     secondary: '#ff6272',
     white: '#fff',
     black: '#000',
-    gray: '#808080',
-    lightgray: '#dbdbdb',
+    gray: '#dbdbdb',
+    lightgray: '#f0f0f0',
     darkgray: '#a0a0a0',
   },
   text: {
     heading: {
-      fontFamily: 'body',
+      fontFamily: 'heading',
       lineHeight: 'heading',
       fontWeight: 'heading',
       color: 'black',
     },
-    display: {
-      fontFamily: 'display',
+    headingSerif: {
+      fontFamily: 'body',
       lineHeight: 'heading',
       fontWeight: 'heading',
       color: 'black',
@@ -60,47 +60,89 @@ export const theme: Theme = {
       lineHeight: 'body',
     },
     h1: {
-      variant: 'text.heading',
+      variant: 'text.headingSerif',
       fontSize: 5,
+      mt: 5,
+      mb: 3,
     },
     h2: {
-      variant: 'text.heading',
+      variant: 'text.headingSerif',
       fontSize: 4,
+      mt: 5,
+      mb: 3,
     },
     h3: {
-      variant: 'text.heading',
+      variant: 'text.headingSerif',
       fontSize: 3,
+      mt: 4,
+      mb: 3,
     },
     h4: {
-      variant: 'text.heading',
+      variant: 'text.headingSerif',
       fontSize: 2,
+      mt: 3,
+      mb: 3,
     },
     h5: {
-      variant: 'text.heading',
+      variant: 'text.headingSerif',
       fontSize: 1,
     },
     h6: {
-      variant: 'text.heading',
+      variant: 'text.headingSerif',
       fontSize: 0,
     },
     a: {
       color: 'primary',
+      textDecoration: 'underline',
+      opacity: 1,
+      transition: 'opacity .2s ease-out',
+      ':hover': {
+        opacity: 0.7,
+      },
+    },
+    ol: {
+      listStyle: 'decimal',
+      paddingLeft: '3em',
+      my: 2,
+    },
+    ul: {
+      listStyle: 'disc',
+      paddingLeft: '3em',
+      my: 2,
+    },
+    blockquote: {
+      position: 'relative',
+      px: 4,
+      py: 3,
+      my: 2,
+      fontStyle: 'italic',
+      bg: 'lightgray',
     },
     pre: {
       fontFamily: 'monospace',
       overflowX: 'auto',
+      fontSize: 1,
+      p: 3,
+      my: 2,
+      bg: 'lightgray',
+      borderRadius: '6px',
       code: {
         color: 'inherit',
+        p: 0,
       },
     },
     code: {
       fontFamily: 'monospace',
       fontSize: 'inherit',
+      padding: '.2em .5em',
+      bg: 'lightgray',
+      borderRadius: '6px',
     },
     table: {
       width: '100%',
       borderCollapse: 'separate',
       borderSpacing: 0,
+      my: 2,
     },
     th: {
       textAlign: 'left',
@@ -127,7 +169,7 @@ export const theme: Theme = {
   },
   links: {
     nav: {
-      variant: 'text.display',
+      variant: 'text.heading',
       display: 'block',
       p: 2,
       color: 'black',
@@ -142,7 +184,7 @@ export const theme: Theme = {
     primary: {
       color: 'white',
       bg: 'secondary',
-      fontFamily: 'display',
+      fontFamily: 'heading',
       paddingTop: '3px',
       px: 2,
     },

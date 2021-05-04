@@ -9,7 +9,7 @@ interface SkillItemProps {
 
 export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
   return (
-    <Box>
+    <Box as="li">
       <Flex
         sx={{
           position: 'relative',
