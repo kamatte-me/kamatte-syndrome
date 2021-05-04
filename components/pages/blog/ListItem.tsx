@@ -15,16 +15,16 @@ export const ListItem: React.FC<{
     <Flex
       sx={{
         justifyContent: 'center',
-        mb: 3,
+        mb: 4,
       }}
     >
       <Link href={`/blog/${post.id}`}>
         <Flex
           sx={{
             justifyContent: 'center',
-            width: [60, 90],
-            height: [60, 90],
-            mr: [2, 4],
+            width: [80, 200],
+            height: [80, 120],
+            mr: [3, 3],
             cursor: 'pointer',
           }}
         >
@@ -32,18 +32,19 @@ export const ListItem: React.FC<{
             src={post.featuredImage ? post.featuredImage.url : '/avatar.png'}
             alt="me"
             objectFit="contain"
-            width={90}
-            height={90}
+            objectPosition="center top"
+            width={200}
+            height={120}
           />
         </Flex>
       </Link>
       <Box sx={{ flex: 1 }}>
-        <span sx={{ color: 'gray', fontSize: 1 }}>
-          {formatDate(post.publishedAt)}
-        </span>
-        <Themed.h2 sx={{ fontFamily: 'body', fontSize: 3 }}>
+        <Themed.h2 sx={{ fontFamily: 'body', fontSize: [3, 4], mb: 2 }}>
           <Link href={`/blog/${post.id}`}>{post.title}</Link>
         </Themed.h2>
+        <span sx={{ display: 'block', color: 'gray', fontSize: 1 }}>
+          {formatDate(post.publishedAt)}
+        </span>
       </Box>
     </Flex>
   );

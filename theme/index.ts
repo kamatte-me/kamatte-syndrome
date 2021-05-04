@@ -19,6 +19,12 @@ export const theme: Theme = merge(base as Theme, {
       minHeight: '100vh',
     },
   },
+  layout: {
+    blogContainer: {
+      variant: 'layout.container',
+      maxWidth: '768px',
+    },
+  },
   links: {
     nav: {
       display: 'block',

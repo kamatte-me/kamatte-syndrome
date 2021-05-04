@@ -2,7 +2,7 @@
 /** @jsx jsx * */
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
-import { Box, jsx, Text, Themed } from 'theme-ui';
+import { Box, Container, jsx, Text, Themed } from 'theme-ui';
 
 import { formatDate } from '@/lib/date';
 import { getAllContents, getContent } from '@/lib/microcms';
@@ -30,18 +30,19 @@ const BlogPostPage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ post }) => {
   return (
-    <Box sx={{ mb: 5 }}>
+    <Container variant="layout.blogContainer">
       <Box sx={{ mb: 4 }}>
-        <span sx={{ display: 'block', mb: 1, color: 'gray' }}>
-          {formatDate(post.publishedAt)}
-        </span>
         <Themed.h1
           sx={{
             fontFamily: 'body',
+            mb: 2,
           }}
         >
           {post.title}
         </Themed.h1>
+        <span sx={{ display: 'block', fontSize: 1, color: 'gray' }}>
+          {formatDate(post.publishedAt)}
+        </span>
       </Box>
       <Box
         sx={{
@@ -50,7 +51,7 @@ const BlogPostPage: React.FC<
       >
         <Text dangerouslySetInnerHTML={{ __html: post.body }} />
       </Box>
-    </Box>
+    </Container>
   );
 };
 
