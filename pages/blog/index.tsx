@@ -12,7 +12,7 @@ export const getStaticProps: GetStaticProps<{
   posts: Blog[];
 }> = async () => {
   const posts = await getContents<Blog>('blog', {
-    orders: 'year',
+    orders: '-publishedAt',
     limit: 5,
   });
 
