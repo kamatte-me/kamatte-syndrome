@@ -55,7 +55,6 @@ export const YouTubeModal: React.FC<{
         >
           {cultureItem.name}
         </Themed.h1>
-        aaa
         <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
           <Embed
             src={`https://www.youtube.com/embed/${cultureItem.youtubeVideoId}?autoplay=1`}
