@@ -26,8 +26,8 @@ const links: {
   to: string;
 }[] = [
   {
-    title: 'Bio',
-    to: '/bio',
+    title: 'Biography',
+    to: '/biography',
   },
   {
     title: 'Portfolio',

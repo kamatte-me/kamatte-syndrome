@@ -5,9 +5,12 @@ import Image from 'next/image';
 import React from 'react';
 import { Box, Flex, Grid, jsx, Themed } from 'theme-ui';
 
-import { HistoryContainer, HistoryItem } from '@/components/pages/bio/History';
-import { SkillItem } from '@/components/pages/bio/Skill';
-import { Sns } from '@/components/pages/bio/Sns';
+import {
+  HistoryContainer,
+  HistoryItem,
+} from '@/components/pages/biography/History';
+import { SkillItem } from '@/components/pages/biography/Skill';
+import { Sns } from '@/components/pages/biography/Sns';
 import { getAllContents } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
@@ -28,9 +31,9 @@ export const getStaticProps = async () => {
   };
 };
 
-type BioPageProps = InferGetStaticPropsType<typeof getStaticProps>;
+type BiographyPageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
-const BioPage: React.FC<BioPageProps> = ({ histories, skills }) => {
+const BiographyPage: React.FC<BiographyPageProps> = ({ histories, skills }) => {
   return (
     <>
       <Flex
@@ -101,4 +104,4 @@ const BioPage: React.FC<BioPageProps> = ({ histories, skills }) => {
   );
 };
 
-export default BioPage;
+export default BiographyPage;

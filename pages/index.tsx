@@ -19,7 +19,7 @@ const IndexPage: React.FC = () => {
         minHeight: `calc(100vh - ${negativeHeight}px)`,
       }}
     >
-      <Link href="/bio">
+      <Link href="/biography">
         <a>
           <MainVisual />
         </a>
