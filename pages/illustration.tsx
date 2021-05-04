@@ -2,13 +2,14 @@ import { InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Grid } from 'theme-ui';
 
-import { IllustrationCard } from '@/components/illustration/IllustrationCard';
+import { IllustrationItem } from '@/components/pages/illustration/IllustrationItem';
 import { getAllContents } from '@/lib/microcms';
 import { Illustration } from '@/lib/microcms/model';
 
 export const getStaticProps = async () => {
   const illustrations = await getAllContents<Illustration>('illustration', {
     orders: 'publishedAt',
+    limit: 100,
   });
 
   return {
@@ -25,9 +26,9 @@ const IllustrationPage: React.FC<IllustrationPageProps> = ({
 }) => {
   return (
     <>
-      <Grid gap={4} columns={[1, 2]}>
+      <Grid as="dl" gap={4} columns={[1, 2]}>
         {illustrations.map(item => (
-          <IllustrationCard key={item.id} illustration={item} />
+          <IllustrationItem key={item.id} item={item} />
         ))}
       </Grid>
     </>

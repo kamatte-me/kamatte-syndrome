@@ -5,17 +5,20 @@ import Image from 'next/image';
 import React from 'react';
 import { Box, Flex, Grid, jsx, Themed } from 'theme-ui';
 
-import { HistoryContainer, HistoryItem } from '@/components/bio/History';
-import { SkillItem } from '@/components/bio/Skill';
-import { Sns } from '@/components/bio/Sns';
+import { HistoryContainer, HistoryItem } from '@/components/pages/bio/History';
+import { SkillItem } from '@/components/pages/bio/Skill';
+import { Sns } from '@/components/pages/bio/Sns';
 import { getAllContents } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
 export const getStaticProps = async () => {
   const histories = await getAllContents<History>('history', {
     orders: 'year',
+    limit: 100,
   });
-  const skills = await getAllContents<Skill>('skill');
+  const skills = await getAllContents<Skill>('skill', {
+    limit: 100,
+  });
 
   return {
     props: {

@@ -1,39 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { Global } from '@emotion/react';
 import React from 'react';
 import { Close, jsx } from 'theme-ui';
 
+import { Overlay } from '@/components/elements/Overlay';
 import { HeaderHeight } from '@/layout/header/index';
-
-const Overlay: React.FC<{
-  handleClose: () => void;
-}> = ({ handleClose }) => {
-  return (
-    <>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/no-static-element-interactions */}
-      <div
-        onClick={() => handleClose()}
-        sx={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          bg: 'primary',
-          zIndex: 100,
-        }}
-      />
-      <Global
-        styles={{
-          body: {
-            overflow: 'hidden',
-          },
-        }}
-      />
-    </>
-  );
-};
 
 interface SideNavProps {
   open: boolean;

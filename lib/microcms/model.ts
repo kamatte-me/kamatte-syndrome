@@ -38,3 +38,9 @@ export interface Illustration extends Model {
   title: string;
   image: Image;
 }
+
+export interface Culture extends Model {
+  name: string;
+  youtubeVideoId: string;
+  description: string;
+}

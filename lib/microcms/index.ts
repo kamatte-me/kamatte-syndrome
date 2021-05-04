@@ -1,10 +1,18 @@
-const baseUrl = `https://${process.env.MICROCMS_SERVICE_ID}.microcms.io/api/v1`;
+const BASE_URL = `https://${process.env.MICROCMS_SERVICE_ID}.microcms.io/api/v1`;
 
-const httpOption = {
+const HTTP_OPTION = {
   headers: { 'X-API-KEY': process.env.MICROCMS_API_KEY! },
 };
 
-type Endpoint = 'blog' | 'history' | 'skill' | 'portfolio' | 'illustration';
+const GET_ALL_CONTENTS_LIMIT = 10;
+
+type Endpoint =
+  | 'blog'
+  | 'history'
+  | 'skill'
+  | 'portfolio'
+  | 'illustration'
+  | 'culture';
 
 export interface GetContentQuery {
   draftKey?: string;
@@ -12,7 +20,7 @@ export interface GetContentQuery {
   depth?: number;
 }
 
-export interface GetAllContentsQuery extends GetContentQuery {
+interface GetContentsQuery extends GetContentQuery {
   limit?: number;
   offset?: number;
   orders?: string;
@@ -20,6 +28,8 @@ export interface GetAllContentsQuery extends GetContentQuery {
   ids?: string;
   filters?: string;
 }
+
+interface GetAllContentsQuery extends Omit<GetContentsQuery, 'offset'> {}
 
 const makeQueryString = (query: object): string => {
   let queryStr = Object.entries(query)
@@ -31,17 +41,45 @@ const makeQueryString = (query: object): string => {
   return queryStr;
 };
 
+interface GetContentsResponse<T> {
+  contents: T[];
+  totalCount: number;
+  offset: number;
+  limit: 10;
+}
+
+export const getContents = async <T>(
+  endpoint: Endpoint,
+  query: GetContentsQuery = {},
+): Promise<GetContentsResponse<T>> => {
+  return fetch(
+    `${BASE_URL}/${endpoint}${makeQueryString(query)}`,
+    HTTP_OPTION,
+  ).then(res => res.json() as Promise<GetContentsResponse<T>>);
+};
+
 export const getAllContents = async <T>(
   endpoint: Endpoint,
   query: GetAllContentsQuery = {},
 ): Promise<T[]> => {
-  const data = await fetch(
-    `${baseUrl}/${endpoint}${makeQueryString(query)}`,
-    httpOption,
-  )
-    .then(res => res.json())
-    .catch(() => null);
-  return data.contents;
+  const allContents: T[] = [];
+
+  let offset = 0;
+  while (true) {
+    // eslint-disable-next-line no-await-in-loop
+    const data = await getContents<T>(endpoint, {
+      limit: GET_ALL_CONTENTS_LIMIT,
+      ...query,
+      offset,
+    });
+    allContents.push(...data.contents);
+    offset += data.limit;
+    if (offset > data.totalCount) {
+      break;
+    }
+  }
+
+  return allContents;
 };
 
 export const getContent = async <T>(
@@ -50,9 +88,7 @@ export const getContent = async <T>(
   query: GetContentQuery,
 ): Promise<T> => {
   return fetch(
-    `${baseUrl}/${endpoint}/${id}${makeQueryString(query)}`,
-    httpOption,
-  )
-    .then(res => res.json())
-    .catch(() => null);
+    `${BASE_URL}/${endpoint}/${id}${makeQueryString(query)}`,
+    HTTP_OPTION,
+  ).then(res => res.json() as Promise<T>);
 };

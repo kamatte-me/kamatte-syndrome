@@ -4,8 +4,8 @@ import Link from 'next/link';
 import React from 'react';
 import { Flex, jsx } from 'theme-ui';
 
-import { MainVisual } from '@/components/index/MainVisual';
-import { FooterHeight } from '@/layout/footer';
+import { MainVisual } from '@/components/pages/index/MainVisual';
+import { FooterHeight } from '@/layout/Footer';
 import { HeaderHeight } from '@/layout/header';
 
 const negativeHeight = HeaderHeight + FooterHeight + 80;

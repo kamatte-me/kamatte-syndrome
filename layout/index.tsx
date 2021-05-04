@@ -6,8 +6,8 @@ import { Global } from '@emotion/react';
 import React from 'react';
 import { Container, jsx } from 'theme-ui';
 
-import { Footer, FooterHeight } from '@/layout/footer';
-import { Head } from '@/layout/head';
+import { Footer, FooterHeight } from '@/layout/Footer';
+import { Head } from '@/layout/Head';
 import { Header, HeaderHeight } from '@/layout/header';
 
 export const Layout: React.FC = ({ children }) => {

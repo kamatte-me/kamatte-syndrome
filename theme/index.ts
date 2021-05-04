@@ -9,7 +9,7 @@ export const theme: Theme = merge(base as Theme, {
     secondary: '#ff6272',
   },
   fonts: {
-    hand: `"Caveat", sans-serif`,
+    hand: `Caveat, sans-serif`,
     heading: `"Josefin Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK JP", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
     body: `"Hiragino Mincho ProN", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "BIZ UDPMincho", "Yu Mincho", YuMincho, serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
   },

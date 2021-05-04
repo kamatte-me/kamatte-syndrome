@@ -4,7 +4,7 @@ import { InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Box, jsx, Themed } from 'theme-ui';
 
-import { PortfolioItem as PortfolioItemComponent } from '@/components/portfolio/PortfolioItem';
+import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
 import { getAllContents } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
@@ -19,7 +19,9 @@ type PortfolioDict = {
 };
 
 export const getStaticProps = async () => {
-  const portfolio = await getAllContents<Portfolio>('portfolio');
+  const portfolio = await getAllContents<Portfolio>('portfolio', {
+    limit: 50,
+  });
   const portfolioDict = portfolio.reduce<PortfolioDict>(
     (accumulator, current) => {
       const tmpAcc = accumulator;
