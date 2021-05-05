@@ -8,7 +8,7 @@ export const Sns: React.FC = () => {
     <Box
       sx={{
         textAlign: ['center', 'left'],
-        transition: 'opacity .2s ease-in',
+        transition: 'opacity .2s ease-out',
         '&:hover': {
           opacity: 0.7,
         },

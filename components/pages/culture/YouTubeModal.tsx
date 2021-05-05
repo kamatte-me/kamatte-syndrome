@@ -31,6 +31,11 @@ export const YouTubeModal: React.FC<{
           width: [48, 64],
           cursor: 'pointer',
           zIndex: 102,
+          opacity: 1,
+          transition: 'opacity .2s ease-out',
+          ':hover': {
+            opacity: 0.7,
+          },
         }}
       />
 
