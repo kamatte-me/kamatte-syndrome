@@ -1,11 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
 import React from 'react';
-import { jsx } from 'theme-ui';
-
-export const HistoryContainer: React.FC = ({ children }) => {
-  return <ul>{children}</ul>;
-};
+import { Flex, jsx } from 'theme-ui';
 
 interface HistoryItemProps {
   year: number;
@@ -14,18 +10,9 @@ interface HistoryItemProps {
 
 export const HistoryItem: React.FC<HistoryItemProps> = ({ year, body }) => {
   return (
-    <div>
-      <dt
-        sx={{
-          width: 72,
-          float: 'left',
-          clear: 'left',
-          fontWeight: 'normal',
-        }}
-      >
-        {year}年
-      </dt>
-      <dd sx={{ marginLeft: 72 }}>{body}</dd>
-    </div>
+    <Flex>
+      <dt sx={{ fontWeight: 'normal', width: '68px' }}>{year}年</dt>
+      <dd sx={{ flex: 1, width: '100%', marginLeft: 2 }}>{body}</dd>
+    </Flex>
   );
 };

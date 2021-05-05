@@ -74,9 +74,18 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
           height: 120,
           mr: [0, 4],
           mb: [4, 0],
+          a: {
+            textDecoration: 'none',
+          },
         }}
       >
-        <FeaturedImage item={item} />
+        {item.url ? (
+          <Link href={item.url} target="_blank">
+            <FeaturedImage item={item} />
+          </Link>
+        ) : (
+          <FeaturedImage item={item} />
+        )}
       </Flex>
       <Box sx={{ flex: 1, width: '100%' }}>
         <Box

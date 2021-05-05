@@ -70,13 +70,7 @@ const BlogPostPage: React.FC<
             </Flex>
           )}
         </Box>
-        <Box
-          sx={{
-            overflowX: 'hidden',
-          }}
-        >
-          {htmlToThemed(post.body)}
-        </Box>
+        {htmlToThemed(post.body)}
       </Container>
     </>
   );

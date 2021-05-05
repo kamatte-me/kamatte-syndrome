@@ -6,10 +6,7 @@ import React from 'react';
 import { Box, Flex, Grid, Heading, jsx } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
-import {
-  HistoryContainer,
-  HistoryItem,
-} from '@/components/pages/biography/History';
+import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
 import { getAllContents } from '@/lib/microcms';
@@ -84,11 +81,11 @@ const BiographyPage: React.FC<
           >
             <Sns />
           </Box>
-          <HistoryContainer>
+          <Box as="dl">
             {histories.map(item => (
               <HistoryItem key={item.id} year={item.year} body={item.body} />
             ))}
-          </HistoryContainer>
+          </Box>
         </Box>
       </Flex>
 
@@ -102,7 +99,7 @@ const BiographyPage: React.FC<
           <Heading
             as="h2"
             sx={{
-              fontSize: 5,
+              fontSize: 4,
             }}
           >
             Skills

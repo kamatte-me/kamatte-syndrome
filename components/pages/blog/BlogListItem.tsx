@@ -13,33 +13,46 @@ export const BlogListItem: React.FC<{
 }> = ({ post }) => {
   return (
     <Flex>
-      <Link href={`/blog/${post.id}`}>
-        <Flex
+      <Box
+        sx={{
+          variant: 'styles.a',
+        }}
+      >
+        <Link href={`/blog/${post.id}`}>
+          <Flex
+            sx={{
+              justifyContent: 'center',
+              width: [80, 200],
+              height: [80, 120],
+              mr: [3, 3],
+              cursor: 'pointer',
+            }}
+          >
+            <Image
+              src={post.featuredImage ? post.featuredImage.url : '/avatar.png'}
+              alt="me"
+              objectFit="contain"
+              objectPosition="center top"
+              width={200}
+              height={120}
+            />
+          </Flex>
+        </Link>
+      </Box>
+      <Box sx={{ flex: 1 }}>
+        <Box
           sx={{
-            justifyContent: 'center',
-            width: [80, 200],
-            height: [80, 120],
-            mr: [3, 3],
-            cursor: 'pointer',
+            variant: 'styles.a',
+            textDecoration: 'none',
           }}
         >
-          <Image
-            src={post.featuredImage ? post.featuredImage.url : '/avatar.png'}
-            alt="me"
-            objectFit="contain"
-            objectPosition="center top"
-            width={200}
-            height={120}
-          />
-        </Flex>
-      </Link>
-      <Box sx={{ flex: 1 }}>
-        <Heading
-          as="h2"
-          sx={{ variant: 'text.headingSerif', fontSize: [3, 4], mb: 2 }}
-        >
-          <Link href={`/blog/${post.id}`}>{post.title}</Link>
-        </Heading>
+          <Heading
+            as="h2"
+            sx={{ variant: 'text.headingSerif', fontSize: [3, 4], mb: 2 }}
+          >
+            <Link href={`/blog/${post.id}`}>{post.title}</Link>
+          </Heading>
+        </Box>
         <Text as="span" sx={{ color: 'gray', fontSize: 1 }}>
           {formatDate(post.publishedAt)}
         </Text>
