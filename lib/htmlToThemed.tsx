@@ -6,7 +6,16 @@ import parse, {
 } from 'html-react-parser';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import { Embed, Link, Themed } from 'theme-ui';
+import React from 'react';
+import { Embed, Flex, Link, Themed } from 'theme-ui';
+
+const MediaWrapper: React.FC = ({ children }) => {
+  return (
+    <Flex sx={{ justifyContent: 'center', my: 3 }}>
+      <Flex sx={{ width: '100%', maxWidth: '576px' }}>{children}</Flex>
+    </Flex>
+  );
+};
 
 const parseOption: HTMLReactParserOptions = {
   replace: domNode => {
@@ -38,15 +47,21 @@ const parseOption: HTMLReactParserOptions = {
         );
       case 'img':
         return (
-          <NextImage
-            src={attribs.src}
-            objectFit="contain"
-            width={512}
-            height={512}
-          />
+          <MediaWrapper>
+            <NextImage
+              src={attribs.src}
+              objectFit="contain"
+              width={480}
+              height={360}
+            />
+          </MediaWrapper>
         );
       case 'iframe':
-        return <Embed src={attribs.src} loading="lazy" />;
+        return (
+          <MediaWrapper>
+            <Embed src={attribs.src} loading="lazy" />
+          </MediaWrapper>
+        );
       default:
         if (name in Themed) {
           // @ts-ignore
