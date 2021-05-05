@@ -21,11 +21,7 @@ export const Footer: React.FC = () => {
         justifyContent: 'center',
       }}
     >
-      <Text
-        as="small"
-        color="lightgray"
-        sx={{ fontSize: 1, textAlign: 'center' }}
-      >
+      <Text as="small" color="gray" sx={{ fontSize: 1, textAlign: 'center' }}>
         <span sx={{ display: 'block', mb: 1 }}>
           © {year} かまって☆しんどろ〜む
         </span>

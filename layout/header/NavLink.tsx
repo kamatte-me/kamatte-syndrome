@@ -18,19 +18,20 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
 
   return (
     <Link href={to}>
-      <Box
-        sx={{
-          variant: 'links.nav',
-          color: isActive ? 'primary' : 'black',
-          WebkitTextFillColor: isActive ? 'transparent' : undefined,
-          '&:hover': {
-            WebkitTextFillColor: 'transparent',
-          },
-          cursor: 'pointer',
-        }}
-      >
-        {children}
-      </Box>
+      <a>
+        <Box
+          sx={{
+            variant: 'links.nav',
+            color: isActive ? 'primary' : 'black',
+            WebkitTextFillColor: isActive ? 'transparent' : undefined,
+            '&:hover': {
+              WebkitTextFillColor: 'transparent',
+            },
+          }}
+        >
+          {children}
+        </Box>
+      </a>
     </Link>
   );
 };

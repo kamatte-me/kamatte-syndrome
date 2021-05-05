@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React from 'react';
 import { Box, Container, Flex, Heading, jsx, Text } from 'theme-ui';
 
-import { Seo } from '@/components/elements/Seo';
+import { SEO } from '@/components/elements/SEO';
 import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
 import { fetchAllContents, fetchContent } from '@/lib/microcms';
@@ -34,7 +34,7 @@ const BlogPostPage: React.FC<
 > = ({ post }) => {
   return (
     <>
-      <Seo
+      <SEO
         title={post.title}
         ogImageUrl={post.featuredImage && post.featuredImage.url}
       />
@@ -49,7 +49,7 @@ const BlogPostPage: React.FC<
           >
             {post.title}
           </Heading>
-          <Text as="span" sx={{ fontSize: 1, color: 'gray' }}>
+          <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
             {formatDate(post.publishedAt)}
           </Text>
           {post.featuredImage && (

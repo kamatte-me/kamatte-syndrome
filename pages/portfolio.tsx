@@ -4,7 +4,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { Box, Heading, jsx } from 'theme-ui';
 
-import { Seo } from '@/components/elements/Seo';
+import { SEO } from '@/components/elements/SEO';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
 import { fetchAllContents } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
@@ -53,7 +53,7 @@ const PortfolioPage: React.FC<
 > = ({ portfolio }) => {
   return (
     <>
-      <Seo title="Portfolio" description="kamatteの戦歴に刮目せよ！！" />
+      <SEO title="Portfolio" description="kamatteの戦歴に刮目せよ！！" />
       {Object.keys(portfolio)
         .reverse()
         .map(year => (

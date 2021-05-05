@@ -106,7 +106,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
           <Text
             sx={{
               fontSize: 1,
-              color: 'gray',
+              color: 'darkgray',
             }}
           >
             {item.category}

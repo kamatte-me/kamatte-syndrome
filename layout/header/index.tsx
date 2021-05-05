@@ -98,18 +98,19 @@ export const Header: React.FC = () => {
             }}
           >
             <Link href="/">
-              <div
-                sx={{
-                  variant: 'links.nav',
-                  mr: [0, 3],
-                  '&.active, &:hover': {
-                    color: 'black',
-                  },
-                  cursor: 'pointer',
-                }}
-              >
-                かまって☆しんどろ〜む
-              </div>
+              <a>
+                <div
+                  sx={{
+                    variant: 'links.nav',
+                    mr: [0, 3],
+                    '&.active, &:hover': {
+                      color: 'black',
+                    },
+                  }}
+                >
+                  かまって☆しんどろ〜む
+                </div>
+              </a>
             </Link>
             <Flex
               sx={{

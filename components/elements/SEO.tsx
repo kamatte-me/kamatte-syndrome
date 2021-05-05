@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
 
-export const Seo: React.FC<{
+export const SEO: React.FC<{
   title?: string | null;
   description?: string | null;
   ogImageUrl?: string | null;

@@ -1,12 +1,12 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetStaticPaths, InferGetStaticPropsType } from 'next';
 import React from 'react';
 
+import { SEO } from '@/components/elements/SEO';
 import { fetchContentsRaw } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 import BlogPage, {
-  getStaticPropsBlogsPerPage,
+  BlogListGetStaticProps,
+  getStaticPropsBlogList,
   POSTS_PER_PAGE,
 } from '@/pages/blog';
 
@@ -17,14 +17,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<{
-  posts: Blog[];
-}> = async context => {
-  return getStaticPropsBlogsPerPage(Number(context.params!.page));
+export const getStaticProps: BlogListGetStaticProps = async context => {
+  return getStaticPropsBlogList(Number(context.params!.page));
 };
 
 const BlogPaginatePage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
-> = BlogPage;
+> = props => {
+  return (
+    <>
+      <SEO title={`Blog (${props.pageInfo.current}ページ)`} />
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+      <BlogPage {...props} />
+    </>
+  );
+};
 
 export default BlogPaginatePage;

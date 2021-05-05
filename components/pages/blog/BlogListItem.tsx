@@ -19,24 +19,27 @@ export const BlogListItem: React.FC<{
         }}
       >
         <Link href={`/blog/${post.id}`}>
-          <Flex
-            sx={{
-              justifyContent: 'center',
-              width: [80, 200],
-              height: [80, 120],
-              mr: [3, 3],
-              cursor: 'pointer',
-            }}
-          >
-            <Image
-              src={post.featuredImage ? post.featuredImage.url : '/avatar.png'}
-              alt="me"
-              objectFit="contain"
-              objectPosition="center top"
-              width={200}
-              height={120}
-            />
-          </Flex>
+          <a>
+            <Flex
+              sx={{
+                justifyContent: 'center',
+                width: [80, 200],
+                height: [80, 120],
+                mr: [3, 3],
+              }}
+            >
+              <Image
+                src={
+                  post.featuredImage ? post.featuredImage.url : '/avatar.png'
+                }
+                alt="me"
+                objectFit="contain"
+                objectPosition="center top"
+                width={200}
+                height={120}
+              />
+            </Flex>
+          </a>
         </Link>
       </Box>
       <Box sx={{ flex: 1 }}>
@@ -53,7 +56,7 @@ export const BlogListItem: React.FC<{
             <Link href={`/blog/${post.id}`}>{post.title}</Link>
           </Heading>
         </Box>
-        <Text as="span" sx={{ color: 'gray', fontSize: 1 }}>
+        <Text as="span" sx={{ color: 'darkgray', fontSize: 1 }}>
           {formatDate(post.publishedAt)}
         </Text>
       </Box>

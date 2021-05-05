@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React from 'react';
 import { Box, Flex, Grid, Heading, jsx } from 'theme-ui';
 
-import { Seo } from '@/components/elements/Seo';
+import { SEO } from '@/components/elements/SEO';
 import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
@@ -37,7 +37,7 @@ const BiographyPage: React.FC<
 > = ({ histories, skills }) => {
   return (
     <>
-      <Seo title="Biography" description="kamatteのすべて" />
+      <SEO title="Biography" description="kamatteのすべて" />
       <Flex
         sx={{
           flexDirection: ['column', 'row'],
