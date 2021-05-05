@@ -9,18 +9,18 @@ import { Seo } from '@/components/elements/Seo';
 import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
-import { getAllContents } from '@/lib/microcms';
+import { fetchAllContents } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
 export const getStaticProps: GetStaticProps<{
   histories: History[];
   skills: Skill[];
 }> = async () => {
-  const histories = await getAllContents<History>('history', {
+  const histories = await fetchAllContents<History>('history', {
     orders: 'year',
     limit: 100,
   });
-  const skills = await getAllContents<Skill>('skill', {
+  const skills = await fetchAllContents<Skill>('skill', {
     limit: 100,
   });
 

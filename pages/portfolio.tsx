@@ -6,7 +6,7 @@ import { Box, Heading, jsx } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
-import { getAllContents } from '@/lib/microcms';
+import { fetchAllContents } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
 export interface PortfolioItem
@@ -21,7 +21,7 @@ type PortfolioDict = {
 export const getStaticProps: GetStaticProps<{
   portfolio: PortfolioDict;
 }> = async () => {
-  const portfolio = await getAllContents<Portfolio>('portfolio', {
+  const portfolio = await fetchAllContents<Portfolio>('portfolio', {
     limit: 50,
   });
   const portfolioDict = portfolio.reduce<PortfolioDict>(

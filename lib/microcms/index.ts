@@ -42,7 +42,7 @@ interface GetContentsResponse<T> {
   limit: 10;
 }
 
-const fetchContents = async <T>(
+export const fetchContentsRaw = async <T>(
   endpoint: Endpoint,
   query: GetContentsQuery = {},
 ): Promise<GetContentsResponse<T>> => {
@@ -52,15 +52,15 @@ const fetchContents = async <T>(
   ).then(res => res.json() as Promise<GetContentsResponse<T>>);
 };
 
-export const getContents = async <T>(
+export const fetchContents = async <T>(
   endpoint: Endpoint,
   query: GetContentsQuery = {},
 ): Promise<T[]> => {
-  const data = await fetchContents<T>(endpoint, query);
+  const data = await fetchContentsRaw<T>(endpoint, query);
   return data.contents;
 };
 
-export const getAllContents = async <T>(
+export const fetchAllContents = async <T>(
   endpoint: Endpoint,
   query: GetAllContentsQuery = {},
 ): Promise<T[]> => {
@@ -69,7 +69,7 @@ export const getAllContents = async <T>(
   let offset = 0;
   while (true) {
     // eslint-disable-next-line no-await-in-loop
-    const data = await fetchContents<T>(endpoint, {
+    const data = await fetchContentsRaw<T>(endpoint, {
       limit: GET_ALL_CONTENTS_LIMIT,
       ...query,
       offset,
@@ -84,7 +84,7 @@ export const getAllContents = async <T>(
   return allContents;
 };
 
-export const getContent = async <T>(
+export const fetchContent = async <T>(
   endpoint: Endpoint,
   id: string,
   query: GetContentQuery = {},

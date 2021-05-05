@@ -8,11 +8,11 @@ import { Box, Container, Flex, Heading, jsx, Text } from 'theme-ui';
 import { Seo } from '@/components/elements/Seo';
 import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
-import { getAllContents, getContent } from '@/lib/microcms';
+import { fetchAllContents, fetchContent } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await getAllContents<Blog>('blog');
+  const posts = await fetchAllContents<Blog>('blog');
   const paths = posts.map(post => `/blog/${post.id}`);
   return { paths, fallback: false };
 };
@@ -20,7 +20,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<{
   post: Blog;
 }> = async context => {
-  const post = await getContent<Blog>('blog', context.params!.id! as string);
+  const post = await fetchContent<Blog>('blog', context.params!.id! as string);
 
   return {
     props: {

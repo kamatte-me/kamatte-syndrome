@@ -6,15 +6,16 @@ import { Box, Container, jsx } from 'theme-ui';
 
 import { Seo } from '@/components/elements/Seo';
 import { BlogListItem } from '@/components/pages/blog/BlogListItem';
-import { getContents } from '@/lib/microcms';
+import { fetchContents } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
-export const getStaticProps: GetStaticProps<{
-  posts: Blog[];
-}> = async () => {
-  const posts = await getContents<Blog>('blog', {
+export const POSTS_PER_PAGE = 5;
+
+export const getStaticPropsBlogsPerPage = async (pageNumber: number) => {
+  const posts = await fetchContents<Blog>('blog', {
     orders: '-publishedAt',
-    limit: 5,
+    limit: POSTS_PER_PAGE,
+    offset: (pageNumber - 1) * POSTS_PER_PAGE,
   });
 
   return {
@@ -22,6 +23,12 @@ export const getStaticProps: GetStaticProps<{
       posts,
     },
   };
+};
+
+export const getStaticProps: GetStaticProps<{
+  posts: Blog[];
+}> = async () => {
+  return getStaticPropsBlogsPerPage(1);
 };
 
 const BlogPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
