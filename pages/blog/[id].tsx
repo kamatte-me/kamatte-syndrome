@@ -6,9 +6,10 @@ import React from 'react';
 import { Box, Container, Flex, Heading, jsx, Text } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
+import { PostPagination } from '@/components/pages/blog/PostPagination';
 import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
-import { fetchAllContents, fetchContent } from '@/lib/microcms';
+import { fetchAllContents, fetchContent, fetchContents } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -19,19 +20,36 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<{
   post: Blog;
+  prevPost?: Blog | null;
+  nextPost?: Blog | null;
 }> = async context => {
   const post = await fetchContent<Blog>('blog', context.params!.id! as string);
+
+  const prevPostList = await fetchContents<Blog>('blog', {
+    limit: 1,
+    fields: 'id,title',
+    filters: `publishedAt[less_than]${post.publishedAt}`,
+    orders: '-publishedAt',
+  });
+  const nextPostList = await fetchContents<Blog>('blog', {
+    limit: 1,
+    fields: 'id,title',
+    filters: `publishedAt[greater_than]${post.publishedAt}`,
+    orders: 'publishedAt',
+  });
 
   return {
     props: {
       post,
+      prevPost: prevPostList.length > 0 ? prevPostList[0] : null,
+      nextPost: nextPostList.length > 0 ? nextPostList[0] : null,
     },
   };
 };
 
 const BlogPostPage: React.FC<
   InferGetStaticPropsType<typeof getStaticProps>
-> = ({ post }) => {
+> = ({ post, prevPost, nextPost }) => {
   return (
     <>
       <SEO
@@ -71,6 +89,9 @@ const BlogPostPage: React.FC<
           )}
         </Box>
         {htmlToThemed(post.body)}
+        <Box sx={{ mt: 5 }}>
+          <PostPagination prev={prevPost} next={nextPost} />
+        </Box>
       </Container>
     </>
   );

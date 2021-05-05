@@ -6,7 +6,7 @@ import { Flex, jsx } from 'theme-ui';
 
 import { ArrowLeft, ArrowRight } from '@/components/elements/Icon';
 
-const ICON_SIZE = 32;
+export const ICON_SIZE = 32;
 
 export const Pagination: React.FC<{
   totalPages: number;

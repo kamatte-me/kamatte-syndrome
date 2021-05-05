@@ -10,9 +10,9 @@ import { BlogListItem } from '@/components/pages/blog/BlogListItem';
 import { fetchContentsRaw } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
-export const POSTS_PER_PAGE = 5;
+export const BLOG_POSTS_PER_PAGE = 5;
 
-export type BlogListGetStaticProps = GetStaticProps<{
+export type BlogPostListGetStaticProps = GetStaticProps<{
   pageInfo: {
     total: number;
     current: number;
@@ -20,19 +20,20 @@ export type BlogListGetStaticProps = GetStaticProps<{
   posts: Blog[];
 }>;
 
-export const getStaticPropsBlogList = async (
+export const getStaticPropsBlogPostList = async (
   pageNumber: number,
-): ReturnType<BlogListGetStaticProps> => {
+): ReturnType<BlogPostListGetStaticProps> => {
   const data = await fetchContentsRaw<Blog>('blog', {
     orders: '-publishedAt',
-    limit: POSTS_PER_PAGE,
-    offset: (pageNumber - 1) * POSTS_PER_PAGE,
+    fields: 'id,title,featuredImage,publishedAt',
+    limit: BLOG_POSTS_PER_PAGE,
+    offset: (pageNumber - 1) * BLOG_POSTS_PER_PAGE,
   });
 
   return {
     props: {
       pageInfo: {
-        total: Math.ceil(data.totalCount / POSTS_PER_PAGE),
+        total: Math.ceil(data.totalCount / BLOG_POSTS_PER_PAGE),
         current: pageNumber,
       },
       posts: data.contents,
@@ -40,8 +41,8 @@ export const getStaticPropsBlogList = async (
   };
 };
 
-export const getStaticProps: BlogListGetStaticProps = async () => {
-  return getStaticPropsBlogList(1);
+export const getStaticProps: BlogPostListGetStaticProps = async () => {
+  return getStaticPropsBlogPostList(1);
 };
 
 const BlogPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
