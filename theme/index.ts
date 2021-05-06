@@ -136,7 +136,7 @@ export const theme: Theme = {
     code: {
       fontFamily: 'monospace',
       fontSize: 'inherit',
-      padding: '.2em .5em',
+      padding: '.2em .4em',
       bg: 'lightgray',
       borderRadius: '6px',
     },

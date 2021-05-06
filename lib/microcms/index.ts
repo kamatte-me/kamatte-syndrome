@@ -1,3 +1,5 @@
+import { Blog, Culture, History, Portfolio, Skill } from '@/lib/microcms/model';
+
 const BASE_URL = `https://${process.env.MICROCMS_SERVICE_ID}.microcms.io/api/v1`;
 
 const HTTP_OPTION = {
@@ -6,15 +8,21 @@ const HTTP_OPTION = {
 
 const GET_ALL_CONTENTS_LIMIT = 10;
 
-type Endpoint = 'blog' | 'history' | 'skill' | 'portfolio' | 'culture';
+type EndpointTypeMap = {
+  blog: Blog;
+  history: History;
+  skill: Skill;
+  portfolio: Portfolio;
+  culture: Culture;
+};
 
-export interface GetContentQuery {
+interface FetchContentQuery {
   draftKey?: string;
   fields?: string;
   depth?: number;
 }
 
-interface GetContentsQuery extends GetContentQuery {
+interface FetchContentsQuery extends FetchContentQuery {
   limit?: number;
   offset?: number;
   orders?: string;
@@ -23,7 +31,14 @@ interface GetContentsQuery extends GetContentQuery {
   filters?: string;
 }
 
-interface GetAllContentsQuery extends Omit<GetContentsQuery, 'offset'> {}
+interface FetchAllContentsQuery extends Omit<FetchContentsQuery, 'offset'> {}
+
+interface GetContentsResponse<T> {
+  contents: T[];
+  totalCount: number;
+  offset: number;
+  limit: number;
+}
 
 const makeQueryString = (query: object): string => {
   let queryStr = Object.entries(query)
@@ -35,41 +50,64 @@ const makeQueryString = (query: object): string => {
   return queryStr;
 };
 
-interface GetContentsResponse<T> {
-  contents: T[];
-  totalCount: number;
-  offset: number;
-  limit: 10;
-}
-
-export const fetchContentsRaw = async <T>(
-  endpoint: Endpoint,
-  query: GetContentsQuery = {},
-): Promise<GetContentsResponse<T>> => {
+// 引数値によって返り値の型がいい感じに変わる
+// https://github.com/microsoft/TypeScript/issues/24929
+type IFetchContentsRawFn<T extends keyof EndpointTypeMap> = (
+  endpoint: T,
+  query?: FetchContentsQuery,
+) => Promise<GetContentsResponse<EndpointTypeMap[T]>>;
+type FetchContentsRawFn = IFetchContentsRawFn<'blog'> &
+  IFetchContentsRawFn<'history'> &
+  IFetchContentsRawFn<'skill'> &
+  IFetchContentsRawFn<'portfolio'> &
+  IFetchContentsRawFn<'culture'> &
+  IFetchContentsRawFn<any>;
+export const fetchContentsRaw: FetchContentsRawFn = async (
+  endpoint: keyof EndpointTypeMap,
+  query: FetchContentsQuery = {},
+) => {
   return fetch(
     `${BASE_URL}/${endpoint}${makeQueryString(query)}`,
     HTTP_OPTION,
-  ).then(res => res.json() as Promise<GetContentsResponse<T>>);
+  ).then(res => res.json());
 };
 
-export const fetchContents = async <T>(
-  endpoint: Endpoint,
-  query: GetContentsQuery = {},
-): Promise<T[]> => {
-  const data = await fetchContentsRaw<T>(endpoint, query);
+type IFetchContentsFn<T extends keyof EndpointTypeMap> = (
+  endpoint: T,
+  query?: FetchContentsQuery,
+) => Promise<EndpointTypeMap[T][]>;
+type FetchContentsFn = IFetchContentsFn<'blog'> &
+  IFetchContentsFn<'history'> &
+  IFetchContentsFn<'skill'> &
+  IFetchContentsFn<'portfolio'> &
+  IFetchContentsFn<'culture'>;
+export const fetchContents: FetchContentsFn = async (
+  endpoint: keyof EndpointTypeMap,
+  query: FetchContentsQuery = {},
+) => {
+  const data = await fetchContentsRaw(endpoint, query);
   return data.contents;
 };
 
-export const fetchAllContents = async <T>(
-  endpoint: Endpoint,
-  query: GetAllContentsQuery = {},
-): Promise<T[]> => {
-  const allContents: T[] = [];
+type IFetchAllContentsFn<T extends keyof EndpointTypeMap> = (
+  endpoint: T,
+  query?: FetchAllContentsQuery,
+) => Promise<EndpointTypeMap[T][]>;
+type FetchAllContentsFn = IFetchAllContentsFn<'blog'> &
+  IFetchAllContentsFn<'history'> &
+  IFetchAllContentsFn<'skill'> &
+  IFetchAllContentsFn<'portfolio'> &
+  IFetchAllContentsFn<'culture'>;
+export const fetchAllContents: FetchAllContentsFn = async (
+  endpoint: keyof EndpointTypeMap,
+  query: FetchAllContentsQuery = {},
+) => {
+  const allContents = [];
 
   let offset = 0;
-  while (true) {
+  for (;;) {
     // eslint-disable-next-line no-await-in-loop
-    const data = await fetchContentsRaw<T>(endpoint, {
+    const data = await fetchContentsRaw(endpoint, {
       limit: GET_ALL_CONTENTS_LIMIT,
       ...query,
       offset,
@@ -80,17 +118,26 @@ export const fetchAllContents = async <T>(
       break;
     }
   }
-
   return allContents;
 };
 
-export const fetchContent = async <T>(
-  endpoint: Endpoint,
+type IFetchContentFn<T extends keyof EndpointTypeMap> = (
+  endpoint: T,
   id: string,
-  query: GetContentQuery = {},
-): Promise<T> => {
+  query?: FetchContentQuery,
+) => Promise<EndpointTypeMap[T]>;
+type FetchContentFn = IFetchContentFn<'blog'> &
+  IFetchContentFn<'history'> &
+  IFetchContentFn<'skill'> &
+  IFetchContentFn<'portfolio'> &
+  IFetchContentFn<'culture'>;
+export const fetchContent: FetchContentFn = async (
+  endpoint: keyof EndpointTypeMap,
+  id: string,
+  query: FetchContentQuery = {},
+) => {
   return fetch(
     `${BASE_URL}/${endpoint}/${id}${makeQueryString(query)}`,
     HTTP_OPTION,
-  ).then(res => res.json() as Promise<T>);
+  ).then(res => res.json());
 };

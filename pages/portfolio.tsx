@@ -21,7 +21,7 @@ type PortfolioDict = {
 export const getStaticProps: GetStaticProps<{
   portfolio: PortfolioDict;
 }> = async () => {
-  const portfolio = await fetchAllContents<Portfolio>('portfolio', {
+  const portfolio = await fetchAllContents('portfolio', {
     limit: 50,
   });
   const portfolioDict = portfolio.reduce<PortfolioDict>(

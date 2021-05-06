@@ -13,7 +13,7 @@ import { fetchAllContents, fetchContent, fetchContents } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await fetchAllContents<Blog>('blog');
+  const posts = await fetchAllContents('blog');
   const paths = posts.map(post => `/blog/${post.id}`);
   return { paths, fallback: false };
 };
@@ -23,15 +23,15 @@ export const getStaticProps: GetStaticProps<{
   prevPost?: Blog | null;
   nextPost?: Blog | null;
 }> = async context => {
-  const post = await fetchContent<Blog>('blog', context.params!.id! as string);
+  const post = await fetchContent('blog', context.params!.id! as string);
 
-  const prevPostList = await fetchContents<Blog>('blog', {
+  const prevPostList = await fetchContents('blog', {
     limit: 1,
     fields: 'id,title',
     filters: `publishedAt[less_than]${post.publishedAt}`,
     orders: '-publishedAt',
   });
-  const nextPostList = await fetchContents<Blog>('blog', {
+  const nextPostList = await fetchContents('blog', {
     limit: 1,
     fields: 'id,title',
     filters: `publishedAt[greater_than]${post.publishedAt}`,
@@ -84,6 +84,7 @@ const BlogPostPage: React.FC<
                 objectFit="contain"
                 width={post.featuredImage.width}
                 height={post.featuredImage.height}
+                priority
               />
             </Flex>
           )}

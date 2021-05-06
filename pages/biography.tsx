@@ -16,11 +16,11 @@ export const getStaticProps: GetStaticProps<{
   histories: History[];
   skills: Skill[];
 }> = async () => {
-  const histories = await fetchAllContents<History>('history', {
+  const histories = await fetchAllContents('history', {
     orders: 'year',
     limit: 100,
   });
-  const skills = await fetchAllContents<Skill>('skill', {
+  const skills = await fetchAllContents('skill', {
     limit: 100,
   });
 

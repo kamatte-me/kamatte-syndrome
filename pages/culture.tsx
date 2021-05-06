@@ -10,7 +10,7 @@ import { Culture } from '@/lib/microcms/model';
 export const getStaticProps: GetStaticProps<{
   cultures: Culture[];
 }> = async () => {
-  const cultures = await fetchAllContents<Culture>('culture', {
+  const cultures = await fetchAllContents('culture', {
     limit: 50,
   });
 

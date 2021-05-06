@@ -23,7 +23,7 @@ export type BlogPostListGetStaticProps = GetStaticProps<{
 export const getStaticPropsBlogPostList = async (
   pageNumber: number,
 ): ReturnType<BlogPostListGetStaticProps> => {
-  const data = await fetchContentsRaw<Blog>('blog', {
+  const data = await fetchContentsRaw('blog', {
     orders: '-publishedAt',
     fields: 'id,title,featuredImage,publishedAt',
     limit: BLOG_POSTS_PER_PAGE,
