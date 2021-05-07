@@ -7,7 +7,7 @@ import { Box, Container, jsx } from 'theme-ui';
 import { Pagination } from '@/components/elements/Pagination';
 import { SEO } from '@/components/elements/SEO';
 import { BlogListItem } from '@/components/pages/blog/BlogListItem';
-import { fetchContentsRaw } from '@/lib/microcms';
+import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
 export const BLOG_POSTS_PER_PAGE = 5;
@@ -23,7 +23,7 @@ export type BlogPostListGetStaticProps = GetStaticProps<{
 export const getStaticPropsBlogPostList = async (
   pageNumber: number,
 ): ReturnType<BlogPostListGetStaticProps> => {
-  const data = await fetchContentsRaw('blog', {
+  const data = await client.getContentsRaw('blog', {
     orders: '-publishedAt',
     fields: 'id,title,featuredImage,publishedAt',
     limit: BLOG_POSTS_PER_PAGE,
@@ -55,6 +55,7 @@ const BlogPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
       <Container as="ul" variant="layout.blogContainer">
         {posts.map(post => (
           <Box
+            key={post.id}
             as="li"
             sx={{
               ':not(:last-child)': {

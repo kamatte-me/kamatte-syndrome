@@ -1,16 +1,4 @@
-interface Model {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  revisedAt: string;
-}
-
-interface Image {
-  url: string;
-  height: number;
-  width: number;
-}
+import { Image, Model } from '@/lib/microcms/client/types/model';
 
 export interface Blog extends Model {
   title: string;

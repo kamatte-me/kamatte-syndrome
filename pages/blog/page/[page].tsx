@@ -2,7 +2,7 @@ import { GetStaticPaths, InferGetStaticPropsType } from 'next';
 import React from 'react';
 
 import { SEO } from '@/components/elements/SEO';
-import { fetchContentsRaw } from '@/lib/microcms';
+import { client } from '@/lib/microcms';
 import BlogPage, {
   BLOG_POSTS_PER_PAGE,
   BlogPostListGetStaticProps,
@@ -10,7 +10,7 @@ import BlogPage, {
 } from '@/pages/blog';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const data = await fetchContentsRaw('blog');
+  const data = await client.getContentsRaw('blog');
   const pageCount = Math.ceil(data.totalCount / BLOG_POSTS_PER_PAGE);
   const paths = [...Array(pageCount)].map((_, i) => `/blog/page/${i + 1}`);
   return { paths, fallback: false };

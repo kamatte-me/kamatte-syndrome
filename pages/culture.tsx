@@ -4,13 +4,13 @@ import { Grid } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { CultureItem } from '@/components/pages/culture/CultureItem';
-import { fetchAllContents } from '@/lib/microcms';
+import { client } from '@/lib/microcms';
 import { Culture } from '@/lib/microcms/model';
 
 export const getStaticProps: GetStaticProps<{
   cultures: Culture[];
 }> = async () => {
-  const cultures = await fetchAllContents('culture', {
+  const cultures = await client.getAllContents('culture', {
     limit: 50,
   });
 

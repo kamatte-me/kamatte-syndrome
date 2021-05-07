@@ -9,11 +9,11 @@ import { SEO } from '@/components/elements/SEO';
 import { PostPagination } from '@/components/pages/blog/PostPagination';
 import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
-import { fetchAllContents, fetchContent, fetchContents } from '@/lib/microcms';
+import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await fetchAllContents('blog');
+  const posts = await client.getAllContents('blog');
   const paths = posts.map(post => `/blog/${post.id}`);
   return { paths, fallback: false };
 };
@@ -23,15 +23,15 @@ export const getStaticProps: GetStaticProps<{
   prevPost?: Blog | null;
   nextPost?: Blog | null;
 }> = async context => {
-  const post = await fetchContent('blog', context.params!.id! as string);
+  const post = await client.getContent('blog', context.params!.id! as string);
 
-  const prevPostList = await fetchContents('blog', {
+  const prevPostList = await client.getContents('blog', {
     limit: 1,
     fields: 'id,title',
     filters: `publishedAt[less_than]${post.publishedAt}`,
     orders: '-publishedAt',
   });
-  const nextPostList = await fetchContents('blog', {
+  const nextPostList = await client.getContents('blog', {
     limit: 1,
     fields: 'id,title',
     filters: `publishedAt[greater_than]${post.publishedAt}`,
@@ -89,7 +89,7 @@ const BlogPostPage: React.FC<
             </Flex>
           )}
         </Box>
-        {htmlToThemed(post.body)}
+        <Box>{htmlToThemed(post.body)}</Box>
         <Box sx={{ mt: 5 }}>
           <PostPagination prev={prevPost} next={nextPost} />
         </Box>
