@@ -104,12 +104,12 @@ export const theme: Theme = {
     },
     ol: {
       listStyle: 'decimal',
-      paddingLeft: '3em',
+      paddingLeft: '2em',
       my: 2,
     },
     ul: {
       listStyle: 'disc',
-      paddingLeft: '3em',
+      paddingLeft: '2em',
       my: 2,
     },
     blockquote: {

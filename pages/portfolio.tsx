@@ -22,7 +22,7 @@ export const getStaticProps: GetStaticProps<{
   portfolio: PortfolioDict;
 }> = async () => {
   const portfolio = await client.getAllContents('portfolio', {
-    limit: 50,
+    limit: 20,
   });
   const portfolioDict = portfolio.reduce<PortfolioDict>(
     (accumulator, current) => {
