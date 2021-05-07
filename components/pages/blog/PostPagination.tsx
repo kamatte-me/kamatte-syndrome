@@ -29,7 +29,14 @@ export const PostPagination: React.FC<{
         {prev && (
           <Link href={`/blog/${prev.id}`}>
             <a>
-              <Flex sx={{ alignItems: 'center' }}>
+              <Flex
+                sx={{
+                  variant: 'styles.a',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  color: 'black',
+                }}
+              >
                 <ArrowLeft
                   size={ICON_SIZE}
                   sx={{
@@ -55,7 +62,14 @@ export const PostPagination: React.FC<{
         {next && (
           <Link href={`/blog/${next.id}`}>
             <a>
-              <Flex sx={{ alignItems: 'center' }}>
+              <Flex
+                sx={{
+                  variant: 'styles.a',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  color: 'black',
+                }}
+              >
                 {next.title}
                 <ArrowRight
                   size={ICON_SIZE}

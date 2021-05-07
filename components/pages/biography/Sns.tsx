@@ -7,11 +7,8 @@ export const Sns: React.FC = () => {
   return (
     <Box
       sx={{
+        variant: 'styles.a',
         textAlign: ['center', 'left'],
-        transition: 'opacity .2s ease-out',
-        '&:hover': {
-          opacity: 0.7,
-        },
       }}
     >
       <Link href="https://github.com/kamatte-me" target="_blank">

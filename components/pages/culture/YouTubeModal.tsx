@@ -23,6 +23,7 @@ export const YouTubeModal: React.FC<{
       <CloseIcon
         onClick={() => handleClose()}
         sx={{
+          variant: 'styles.a',
           position: 'fixed',
           top: 3,
           right: 3,
@@ -31,11 +32,6 @@ export const YouTubeModal: React.FC<{
           width: [48, 64],
           cursor: 'pointer',
           zIndex: 102,
-          opacity: 1,
-          transition: 'opacity .2s ease-out',
-          ':hover': {
-            opacity: 0.7,
-          },
         }}
       />
 

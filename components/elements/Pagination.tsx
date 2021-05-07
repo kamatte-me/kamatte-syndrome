@@ -37,7 +37,7 @@ export const Pagination: React.FC<{
         justifyContent: 'center',
       }}
     >
-      <Flex sx={{ width: ICON_SIZE, height: ICON_SIZE }}>
+      <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {prevPath && (
           <Link href={prevPath}>
             <a>
@@ -55,7 +55,7 @@ export const Pagination: React.FC<{
         <span sx={{ fontSize: 4, color: 'black' }}>{currentPage}</span>
         <span sx={{ fontSize: 1, color: 'darkgray' }}>/{totalPages}</span>
       </Flex>
-      <Flex sx={{ width: ICON_SIZE, height: ICON_SIZE }}>
+      <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {nextPath && (
           <Link href={nextPath}>
             <a>
