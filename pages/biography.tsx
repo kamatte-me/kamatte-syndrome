@@ -16,6 +16,7 @@ export const getStaticProps: GetStaticProps<{
   histories: History[];
   skills: Skill[];
 }> = async () => {
+  // TODO: パラレルfetch
   const histories = await client.getAllContents('history', {
     orders: 'year',
     limit: 100,

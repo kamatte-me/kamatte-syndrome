@@ -25,13 +25,14 @@ export const getStaticProps: GetStaticProps<{
 }> = async context => {
   const post = await client.getContent('blog', context.params!.id! as string);
 
-  const prevPostList = await client.getContents('blog', {
+  // TODO: パラレルfetch
+  const prevPost = await client.getContents('blog', {
     limit: 1,
     fields: 'id,title',
     filters: `publishedAt[less_than]${post.publishedAt}`,
     orders: '-publishedAt',
   });
-  const nextPostList = await client.getContents('blog', {
+  const nextPost = await client.getContents('blog', {
     limit: 1,
     fields: 'id,title',
     filters: `publishedAt[greater_than]${post.publishedAt}`,
@@ -41,8 +42,8 @@ export const getStaticProps: GetStaticProps<{
   return {
     props: {
       post,
-      prevPost: prevPostList.length > 0 ? prevPostList[0] : null,
-      nextPost: nextPostList.length > 0 ? nextPostList[0] : null,
+      prevPost: prevPost.length > 0 ? prevPost[0] : null,
+      nextPost: nextPost.length > 0 ? nextPost[0] : null,
     },
   };
 };

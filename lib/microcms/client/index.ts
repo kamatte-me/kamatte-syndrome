@@ -85,6 +85,7 @@ export const createClient = <T extends EndpointTypeMap>(
 
     let offset = 0;
     for (;;) {
+      // TODO: パラレルfetch
       // eslint-disable-next-line no-await-in-loop
       const data = await getContentsRaw(endpoint, {
         ...query,
