@@ -13,9 +13,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@emotion/react": "^11.1.5",
-    "@theme-ui/css": "^0.7.4",
-    "@theme-ui/presets": "^0.7.4",
+    "@emotion/react": "^11.4.0",
+    "@theme-ui/css": "^0.8.4",
     "destyle.css": "^2.0.2",
     "html-react-parser": "^1.2.6",
     "next": "^10.2.0",
@@ -25,11 +24,11 @@
     "theme-ui": "^0.7.4"
   },
   "devDependencies": {
-    "@types/node": "^15.0.1",
-    "@types/react": "^17.0.4",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^7.25.0",
+    "@types/node": "^14.14.44",
+    "@types/react": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
+    "@typescript-eslint/parser": "^4.22.1",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^8.3.0",
