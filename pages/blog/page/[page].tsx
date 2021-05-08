@@ -1,4 +1,4 @@
-import { GetStaticPaths, InferGetStaticPropsType } from 'next';
+import { GetStaticPaths, InferGetStaticPropsType, NextPage } from 'next';
 import React from 'react';
 
 import { SEO } from '@/components/elements/SEO';
@@ -20,7 +20,7 @@ export const getStaticProps: BlogPostListGetStaticProps = async context => {
   return getStaticPropsBlogPostList(Number(context.params!.page));
 };
 
-const BlogPaginatePage: React.FC<
+const BlogPaginatePage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = props => {
   return (

@@ -1,6 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+  NextPage,
+} from 'next';
 import Image from 'next/image';
 import React from 'react';
 import { Box, Container, Flex, Heading, jsx, Text } from 'theme-ui';
@@ -48,7 +53,7 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
-const BlogPostPage: React.FC<
+const BlogPostPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ post, prevPost, nextPost }) => {
   return (

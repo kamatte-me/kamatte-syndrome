@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import React from 'react';
 import { Box, Container, jsx } from 'theme-ui';
 
@@ -45,7 +45,7 @@ export const getStaticProps: BlogPostListGetStaticProps = async () => {
   return getStaticPropsBlogPostList(1);
 };
 
-const BlogPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   posts,
   pageInfo,
 }) => {

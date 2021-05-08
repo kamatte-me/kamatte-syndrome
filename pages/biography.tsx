@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
 import React from 'react';
 import { Box, Flex, Grid, Heading, jsx } from 'theme-ui';
@@ -33,7 +33,7 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
-const BiographyPage: React.FC<
+const BiographyPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ histories, skills }) => {
   return (

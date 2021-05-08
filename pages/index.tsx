@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { NextPage } from 'next';
 import Link from 'next/link';
 import React from 'react';
 import { Flex, jsx } from 'theme-ui';
@@ -10,7 +11,7 @@ import { HeaderHeight } from '@/layout/header';
 
 const negativeHeight = HeaderHeight + FooterHeight + 100;
 
-const IndexPage: React.FC = () => {
+const IndexPage: NextPage = () => {
   return (
     <Flex
       sx={{

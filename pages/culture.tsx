@@ -1,4 +1,4 @@
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import React from 'react';
 import { Grid } from 'theme-ui';
 
@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
-const CulturePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+const CulturePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   cultures,
 }) => {
   return (
