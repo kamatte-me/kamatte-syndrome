@@ -1,21 +1,7 @@
 import Head from 'next/head';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export const GlobalHead: React.FC = () => {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // eslint-disable-next-line global-require
-      const WebFontLoader = require('webfontloader');
-
-      WebFontLoader.load({
-        google: {
-          families: ['Caveat:700', 'Josefin Sans:400,700'],
-          timeout: 2000,
-        },
-      });
-    }
-  }, []);
-
   return (
     <Head>
       <meta charSet="utf-8" />
@@ -34,6 +20,15 @@ export const GlobalHead: React.FC = () => {
       <meta property="fb:app_id" content="159097111464111" />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=block&text=plzkamte!"
+        rel="stylesheet"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=block"
+        rel="stylesheet"
+      />
     </Head>
   );
 };

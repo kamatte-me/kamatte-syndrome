@@ -1,7 +1,6 @@
-import { ThemeProvider } from '@emotion/react';
 import { AppType } from 'next/dist/next-server/lib/utils';
 import React from 'react';
-import { Themed } from 'theme-ui';
+import { Themed, ThemeProvider } from 'theme-ui';
 
 import { Layout } from '@/layout';
 import { theme } from '@/theme';

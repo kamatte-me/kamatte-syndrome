@@ -2,7 +2,6 @@
 /** @jsx jsx */
 import 'destyle.css';
 
-import { Global } from '@emotion/react';
 import React from 'react';
 import { Container, jsx } from 'theme-ui';
 
@@ -14,16 +13,6 @@ export const Layout: React.FC = ({ children }) => {
   return (
     <>
       <GlobalHead />
-      <Global
-        styles={() => ({
-          html: {
-            visibility: 'hidden',
-          },
-          'html.wf-active': {
-            visibility: 'visible',
-          },
-        })}
-      />
       <Header />
       <div
         sx={{
