@@ -60,6 +60,7 @@ const BiographyPage: NextPage<
             objectFit="contain"
             width={300}
             height={300}
+            priority
             unoptimized
           />
         </Flex>
