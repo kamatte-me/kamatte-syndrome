@@ -39,3 +39,4 @@ yarn-error.log*
 
 # Site meta
 /public/feed.xml
+/public/sitemap.xml

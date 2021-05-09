@@ -26,7 +26,7 @@ import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
-import Error from '@/pages/blog/_error';
+import Error from '@/pages/_error';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const entries = await client.getAllContents('blog', {

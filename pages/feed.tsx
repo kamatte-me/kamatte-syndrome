@@ -50,12 +50,13 @@ export const getStaticProps: GetStaticProps = async () => {
   });
 
   await writeFile(`${process.cwd()}/public/feed.xml`, feed.rss2());
+
   return {
     props: {},
   };
 };
 
-const RSSFeed: NextPage = () => {
+const FeedXML: NextPage = () => {
   return (
     <Head>
       <meta httpEquiv="refresh" content="0; url=/feed.xml" />
@@ -64,4 +65,4 @@ const RSSFeed: NextPage = () => {
   );
 };
 
-export default RSSFeed;
+export default FeedXML;
