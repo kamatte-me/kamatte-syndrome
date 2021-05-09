@@ -9,8 +9,8 @@ import { formatDate } from '@/lib/date';
 import { Blog } from '@/lib/microcms/model';
 
 export const BlogListItem: React.FC<{
-  post: Blog;
-}> = ({ post }) => {
+  entry: Blog;
+}> = ({ entry }) => {
   return (
     <Flex>
       <Box
@@ -18,7 +18,7 @@ export const BlogListItem: React.FC<{
           variant: 'styles.a',
         }}
       >
-        <Link href={`/blog/${post.id}`}>
+        <Link href={`/blog/${entry.id}`}>
           <a>
             <Flex
               sx={{
@@ -30,7 +30,7 @@ export const BlogListItem: React.FC<{
             >
               <Image
                 src={
-                  post.featuredImage ? post.featuredImage.url : '/avatar.png'
+                  entry.featuredImage ? entry.featuredImage.url : '/avatar.png'
                 }
                 alt="me"
                 objectFit="contain"
@@ -53,11 +53,11 @@ export const BlogListItem: React.FC<{
             as="h2"
             sx={{ variant: 'text.headingSerif', fontSize: [3, 4], mb: 2 }}
           >
-            <Link href={`/blog/${post.id}`}>{post.title}</Link>
+            <Link href={`/blog/${entry.id}`}>{entry.title}</Link>
           </Heading>
         </Box>
         <Text as="span" sx={{ color: 'darkgray', fontSize: 1 }}>
-          {formatDate(post.publishedAt)}
+          {formatDate(entry.publishedAt)}
         </Text>
       </Box>
     </Flex>

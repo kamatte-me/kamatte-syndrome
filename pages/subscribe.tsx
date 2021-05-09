@@ -2,11 +2,12 @@ import React from 'react';
 import { Box, Container, Heading, Link, Text } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
+import { author } from '@/constants/site';
 
 const CulturePage: React.FC = () => {
   return (
     <>
-      <SEO title="Subscribe" description="kamatteを信仰する" />
+      <SEO title="Subscribe" description={`${author}を信仰する`} />
       <Container variant="narrowContainer">
         <Box sx={{ mb: 5 }}>
           <Heading as="h1" sx={{ fontSize: 5, mb: 2 }}>

@@ -4,6 +4,7 @@ import { Grid } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { CultureItem } from '@/components/pages/culture/CultureItem';
+import { author } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { Culture } from '@/lib/microcms/model';
 
@@ -26,7 +27,7 @@ const CulturePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 }) => {
   return (
     <>
-      <SEO title="Culture" description="kamatteを構成するもの" />
+      <SEO title="Culture" description={`${author}を構成するもの`} />
       <Grid as="dl" gap={3} columns={[2, 3, 4, 5]}>
         {cultures.map(item => (
           <CultureItem key={item.id} item={item} />

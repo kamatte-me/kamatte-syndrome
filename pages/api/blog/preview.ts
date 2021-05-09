@@ -8,20 +8,20 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(404).end();
   }
 
-  const post = await client.getContent('blog', String(req.query.id), {
+  const entry = await client.getContent('blog', String(req.query.id), {
     fields: 'id',
     draftKey: String(req.query.draftKey),
   });
 
-  if (!post) {
+  if (!entry) {
     return res.status(401).json({ message: 'Invalid slug' });
   }
 
   res.setPreviewData({
-    id: post.id,
+    id: entry.id,
     draftKey: req.query.draftKey,
   } as BlogPreviewData);
-  res.writeHead(307, { Location: `/blog/${post.id}` });
+  res.writeHead(307, { Location: `/blog/${entry.id}` });
   return res.end('Preview mode enabled');
 };
 

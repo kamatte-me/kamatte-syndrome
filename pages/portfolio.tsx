@@ -6,6 +6,7 @@ import { Box, Heading, jsx } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
+import { author } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
@@ -53,7 +54,10 @@ const PortfolioPage: NextPage<
 > = ({ portfolio }) => {
   return (
     <>
-      <SEO title="Portfolio" description="kamatteの戦歴に刮目せよ！！" />
+      <SEO
+        title="Portfolio"
+        description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
+      />
       {Object.keys(portfolio)
         .reverse()
         .map(year => (

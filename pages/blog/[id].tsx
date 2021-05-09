@@ -21,7 +21,7 @@ import {
 } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
-import { PostPagination } from '@/components/pages/blog/PostPagination';
+import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
@@ -29,8 +29,11 @@ import { Blog } from '@/lib/microcms/model';
 import Error from '@/pages/blog/_error';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await client.getAllContents('blog');
-  const paths = posts.map(post => `/blog/${post.id}`);
+  const entries = await client.getAllContents('blog', {
+    fields: 'id',
+    limit: 50,
+  });
+  const paths = entries.map(entry => `/blog/${entry.id}`);
   return { paths, fallback: true };
 };
 
@@ -39,59 +42,61 @@ export interface BlogPreviewData {
   draftKey: string;
 }
 
+interface BlogPageProps {
+  entry: Blog;
+  prevEntry?: Blog | null;
+  nextEntry?: Blog | null;
+  isPreview: boolean;
+}
+
 export const getStaticProps: GetStaticProps<
-  {
-    post: Blog;
-    prevPost?: Blog | null;
-    nextPost?: Blog | null;
-    isPreview: boolean;
-  },
+  BlogPageProps,
   {
     id: string;
   }
 > = async ({ params, preview, previewData }) => {
-  const post = await client.getContent('blog', params!.id, {
+  const entry = await client.getContent('blog', params!.id, {
     draftKey: preview ? (previewData as BlogPreviewData).draftKey : undefined,
   });
 
-  if (!post) {
+  if (!entry) {
     return {
       props: {
-        post,
+        entry,
         isPreview: preview || false,
-      },
+      } as BlogPageProps,
     };
   }
 
-  const [prevPost, nextPost] = await Promise.all([
+  const [prevEntry, nextEntry] = await Promise.all([
     client.getContents('blog', {
       limit: 1,
       fields: 'id,title',
-      filters: `publishedAt[less_than]${post.publishedAt}`,
+      filters: `publishedAt[less_than]${entry.publishedAt}`,
       orders: '-publishedAt',
     }),
     client.getContents('blog', {
       limit: 1,
       fields: 'id,title',
-      filters: `publishedAt[greater_than]${post.publishedAt}`,
+      filters: `publishedAt[greater_than]${entry.publishedAt}`,
       orders: 'publishedAt',
     }),
   ]);
 
   return {
     props: {
-      post,
-      prevPost: prevPost.length > 0 ? prevPost[0] : null,
-      nextPost: nextPost.length > 0 ? nextPost[0] : null,
+      entry,
+      prevEntry: prevEntry.length > 0 ? prevEntry[0] : null,
+      nextEntry: nextEntry.length > 0 ? nextEntry[0] : null,
       isPreview: preview || false,
-    },
+    } as BlogPageProps,
   };
 };
 
-const BlogPostPage: NextPage<
+const BlogEntryPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
-> = ({ post, prevPost, nextPost, isPreview }) => {
-  if (!post) {
+> = ({ entry, prevEntry, nextEntry, isPreview }) => {
+  if (!entry) {
     return <Error statusCode={404} />;
   }
 
@@ -105,8 +110,8 @@ const BlogPostPage: NextPage<
   return (
     <>
       <SEO
-        title={post.title}
-        ogImageUrl={post.featuredImage && post.featuredImage.url}
+        title={entry.title}
+        ogImageUrl={entry.featuredImage && entry.featuredImage.url}
       />
       <Container variant="narrowContainer">
         {isPreview && (
@@ -131,12 +136,12 @@ const BlogPostPage: NextPage<
               mb: 2,
             }}
           >
-            {post.title}
+            {entry.title}
           </Heading>
           <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
-            {formatDate(post.publishedAt)}
+            {formatDate(entry.publishedAt)}
           </Text>
-          {post.featuredImage && (
+          {entry.featuredImage && (
             <Flex
               sx={{
                 width: '100%',
@@ -146,22 +151,22 @@ const BlogPostPage: NextPage<
               }}
             >
               <Image
-                src={post.featuredImage.url}
+                src={entry.featuredImage.url}
                 objectFit="contain"
-                width={post.featuredImage.width}
-                height={post.featuredImage.height}
+                width={entry.featuredImage.width}
+                height={entry.featuredImage.height}
                 priority
               />
             </Flex>
           )}
         </Box>
-        <Box>{htmlToThemed(post.body)}</Box>
+        <Box>{htmlToThemed(entry.body)}</Box>
         <Box sx={{ mt: 5 }}>
-          <PostPagination prev={prevPost} next={nextPost} />
+          <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
         </Box>
       </Container>
     </>
   );
 };
 
-export default BlogPostPage;
+export default BlogEntryPage;

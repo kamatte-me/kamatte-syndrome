@@ -9,6 +9,7 @@ import { SEO } from '@/components/elements/SEO';
 import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
+import { author } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
@@ -19,10 +20,10 @@ export const getStaticProps: GetStaticProps<{
   const [histories, skills] = await Promise.all([
     client.getAllContents('history', {
       orders: 'year',
-      limit: 100,
+      limit: 50,
     }),
     client.getAllContents('skill', {
-      limit: 100,
+      limit: 50,
     }),
   ]);
 
@@ -39,7 +40,7 @@ const BiographyPage: NextPage<
 > = ({ histories, skills }) => {
   return (
     <>
-      <SEO title="Biography" description="kamatteのすべて" />
+      <SEO title="Biography" description={`${author}のすべて`} />
       <Flex
         sx={{
           flexDirection: ['column', 'row'],
@@ -75,7 +76,7 @@ const BiographyPage: NextPage<
               textAlign: ['center', 'left'],
             }}
           >
-            kamatte
+            {author}
           </Heading>
           <Box
             sx={{

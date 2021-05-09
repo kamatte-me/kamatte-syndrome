@@ -9,6 +9,8 @@ import NextLink from 'next/link';
 import React from 'react';
 import { Embed, Flex, Link, Themed } from 'theme-ui';
 
+import { baseUrl } from '@/constants/site';
+
 const MediaWrapper: React.FC = ({ children }) => {
   return (
     <Flex sx={{ justifyContent: 'center', my: 3 }}>
@@ -33,9 +35,9 @@ const parseOption: HTMLReactParserOptions = {
       case 'h5':
         return <Themed.h5 as="h6">{parseChildren(children)}</Themed.h5>;
       case 'a':
-        if (attribs.href.startsWith('https://kamatte.me')) {
+        if (attribs.href.startsWith(baseUrl)) {
           return (
-            <NextLink href={attribs.href.replace('https://kamatte.me', '')}>
+            <NextLink href={attribs.href.replace(baseUrl, '')}>
               {parseChildren(children)}
             </NextLink>
           );

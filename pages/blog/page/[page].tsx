@@ -4,22 +4,22 @@ import React from 'react';
 import { SEO } from '@/components/elements/SEO';
 import { client } from '@/lib/microcms';
 import BlogPage, {
-  BLOG_POSTS_PER_PAGE,
-  BlogPostListGetStaticProps,
-  getStaticPropsBlogPostList,
+  BLOG_ENTRIES_PER_PAGE,
+  BlogEntriesGetStaticProps,
+  blogEntriesGetStaticProps,
 } from '@/pages/blog';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await client.getContentsRaw('blog');
-  const pageCount = Math.ceil(data.totalCount / BLOG_POSTS_PER_PAGE);
+  const pageCount = Math.ceil(data.totalCount / BLOG_ENTRIES_PER_PAGE);
   const paths = [...Array(pageCount)].map((_, i) => `/blog/page/${i + 1}`);
   return { paths, fallback: false };
 };
 
-export const getStaticProps: BlogPostListGetStaticProps<{
+export const getStaticProps: BlogEntriesGetStaticProps<{
   page: string;
 }> = async ({ params }) => {
-  return getStaticPropsBlogPostList(Number(params!.page));
+  return blogEntriesGetStaticProps(Number(params!.page));
 };
 
 const BlogPaginatePage: NextPage<

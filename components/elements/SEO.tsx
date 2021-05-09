@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
 
+import { siteName } from '@/constants/site';
+
 export const SEO: React.FC<{
   title?: string | null;
   description?: string | null;
@@ -8,7 +10,9 @@ export const SEO: React.FC<{
 }> = ({ title, description, ogImageUrl }) => {
   return (
     <Head>
-      <title key="title">{title} - かまって☆しんどろ〜む</title>
+      <title key="title">
+        {title} - ${siteName}
+      </title>
       {description && (
         <meta name="description" content={description} key="description" />
       )}

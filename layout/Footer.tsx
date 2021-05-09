@@ -4,6 +4,8 @@
 import React from 'react';
 import { Flex, jsx, Text } from 'theme-ui';
 
+import { siteName } from '@/constants/site';
+
 export const FooterHeight = 60;
 
 const year = new Date().getFullYear();
@@ -23,7 +25,7 @@ export const Footer: React.FC = () => {
     >
       <Text as="small" color="gray" sx={{ fontSize: 1, textAlign: 'center' }}>
         <span sx={{ display: 'block', mb: 1 }}>
-          © {year} かまって☆しんどろ〜む
+          © {year} {siteName}
         </span>
         <span sx={{ fontSize: '8px' }}>
           すべての発言は個人のジョークであり、所属組織を代表するものではありません。

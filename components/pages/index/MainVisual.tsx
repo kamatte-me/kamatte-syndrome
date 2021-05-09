@@ -2,6 +2,8 @@ import Image from 'next/image';
 import React from 'react';
 import { Flex, Heading } from 'theme-ui';
 
+import { slogan } from '@/constants/site';
+
 export const MainVisual: React.FC = () => {
   return (
     <Flex
@@ -29,7 +31,7 @@ export const MainVisual: React.FC = () => {
             fontSize: 6,
           }}
         >
-          plz kamatte me!!!
+          {slogan}
         </Heading>
       </Flex>
     </Flex>

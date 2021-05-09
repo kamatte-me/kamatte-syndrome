@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight } from '@/components/elements/Icon';
 import { ICON_SIZE } from '@/components/elements/Pagination';
 import { Blog } from '@/lib/microcms/model';
 
-export const PostPagination: React.FC<{
+export const BlogEntriesPagination: React.FC<{
   prev?: Blog | null;
   next?: Blog | null;
 }> = ({ prev, next }) => {

@@ -11,57 +11,56 @@ import { BlogListItem } from '@/components/pages/blog/BlogListItem';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
-export const BLOG_POSTS_PER_PAGE = 5;
+export const BLOG_ENTRIES_PER_PAGE = 5;
 
-export type BlogPostListGetStaticProps<
+interface BlogEntriesPageProps {
+  pageInfo: {
+    total: number;
+    current: number;
+  };
+  entries: Blog[];
+}
+
+export type BlogEntriesGetStaticProps<
   T extends ParsedUrlQuery = {}
-> = GetStaticProps<
-  {
-    pageInfo: {
-      total: number;
-      current: number;
-    };
-    posts: Blog[];
-  },
-  T
->;
+> = GetStaticProps<BlogEntriesPageProps, T>;
 
-export const getStaticPropsBlogPostList = async (
+export const blogEntriesGetStaticProps = async (
   pageNumber: number,
-): ReturnType<BlogPostListGetStaticProps> => {
+): ReturnType<BlogEntriesGetStaticProps> => {
   const data = await client.getContentsRaw('blog', {
     orders: '-publishedAt',
     fields: 'id,title,featuredImage,publishedAt',
-    limit: BLOG_POSTS_PER_PAGE,
-    offset: (pageNumber - 1) * BLOG_POSTS_PER_PAGE,
+    limit: BLOG_ENTRIES_PER_PAGE,
+    offset: (pageNumber - 1) * BLOG_ENTRIES_PER_PAGE,
   });
 
   return {
     props: {
       pageInfo: {
-        total: Math.ceil(data.totalCount / BLOG_POSTS_PER_PAGE),
+        total: Math.ceil(data.totalCount / BLOG_ENTRIES_PER_PAGE),
         current: pageNumber,
       },
-      posts: data.contents,
-    },
+      entries: data.contents,
+    } as BlogEntriesPageProps,
   };
 };
 
-export const getStaticProps: BlogPostListGetStaticProps = async () => {
-  return getStaticPropsBlogPostList(1);
+export const getStaticProps: BlogEntriesGetStaticProps = async () => {
+  return blogEntriesGetStaticProps(1);
 };
 
 const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  posts,
+  entries,
   pageInfo,
 }) => {
   return (
     <>
       <SEO title="Blog" description="局所的な人気があるらしい。" />
       <Container as="ul" variant="narrowContainer">
-        {posts.map(post => (
+        {entries.map(entry => (
           <Box
-            key={post.id}
+            key={entry.id}
             as="li"
             sx={{
               ':not(:last-child)': {
@@ -69,7 +68,7 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               },
             }}
           >
-            <BlogListItem post={post} />
+            <BlogListItem entry={entry} />
           </Box>
         ))}
 

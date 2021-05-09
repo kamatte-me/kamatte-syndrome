@@ -14,7 +14,7 @@ plz kamatte me!!!
 * Build / Hosting: [Vercel](https://vercel.com/)
 * Headless CMS: [microCMS](https://microcms.io/)
 * Push Notification: [OneSignal](https://onesignal.com/)
-  * [Zapier](https://zapier.com/) detects my blog posts via RSS and webhooks them to Onesignal.
+  * [Zapier](https://zapier.com/) detects my blog entries via RSS and webhooks them to Onesignal.
 
 ## Requires
 

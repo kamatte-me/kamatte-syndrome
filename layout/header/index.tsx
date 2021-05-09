@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useCallback, useState } from 'react';
 import { Box, Flex, jsx, MenuButton } from 'theme-ui';
 
+import { siteName } from '@/constants/site';
 import { SideNav } from '@/layout/header/SideNav';
 
 import { NavLink } from './NavLink';
@@ -79,7 +80,7 @@ export const Header: React.FC = () => {
                     },
                   }}
                 >
-                  かまって☆しんどろ〜む
+                  {siteName}
                 </div>
               </a>
             </Link>

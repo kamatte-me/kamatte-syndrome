@@ -1,19 +1,21 @@
 import Head from 'next/head';
 import React from 'react';
 
+import { baseUrl, siteName, slogan } from '@/constants/site';
+
 export const GlobalHead: React.FC = () => {
   return (
     <Head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title key="title">かまって☆しんどろ〜む</title>
-      <meta name="description" content="plz kamatte me!!!" key="description" />
+      <title key="title">${siteName}</title>
+      <meta name="description" content={slogan} key="description" />
       <meta
         property="og:image"
-        content="https://kamatte.me/icon.png"
+        content={`${baseUrl}/icon.png`}
         key="og:image"
       />
-      <meta property="og:site_name" content="かまって☆しんどろ〜む" />
+      <meta property="og:site_name" content={siteName} />
       <meta property="og:type" content="website" />
       <meta property="og:locale" content="ja_JP" />
       <meta property="twitter:card" content="summary" />
