@@ -1,3 +1,5 @@
+import pLimit from 'p-limit';
+
 import { Model } from '@/lib/microcms/client/types/model';
 import {
   GetAllContentsQuery,
@@ -5,6 +7,9 @@ import {
   GetContentsQuery,
 } from '@/lib/microcms/client/types/request';
 import { GetContentsResponse } from '@/lib/microcms/client/types/response';
+
+// 全件取得の同時並列数
+const MAX_CONCURRENCY = 5;
 
 type GetContentFn<T> = <K extends keyof T>(
   endpoint: K,
@@ -83,20 +88,33 @@ export const createClient = <T extends EndpointTypeMap>(
   const getAllContents: GetAllContentsFn<T> = async (endpoint, query = {}) => {
     const allContents = [];
 
-    let offset = 0;
-    for (;;) {
-      // TODO: パラレルfetch
-      // eslint-disable-next-line no-await-in-loop
-      const data = await getContentsRaw(endpoint, {
-        ...query,
-        offset,
+    // 初めに全件数を取得
+    const firstData = await getContentsRaw(endpoint, {
+      ...query,
+      offset: 0,
+    });
+    allContents.push(...firstData.contents);
+
+    // 残りの件数を並列で取得
+    if (firstData.limit < firstData.totalCount) {
+      const promiseLimit = pLimit(MAX_CONCURRENCY);
+      const allData = await Promise.all(
+        [...Array(Math.ceil(firstData.totalCount / firstData.limit) - 1)].map(
+          (_, i) => {
+            return promiseLimit(() =>
+              getContents(endpoint, {
+                ...query,
+                offset: firstData.limit * (i + 1),
+              }),
+            );
+          },
+        ),
+      );
+      allData.forEach(contents => {
+        allContents.push(...contents);
       });
-      allContents.push(...data.contents);
-      offset += data.limit;
-      if (offset > data.totalCount) {
-        break;
-      }
     }
+
     return allContents;
   };
 

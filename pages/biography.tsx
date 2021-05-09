@@ -16,14 +16,15 @@ export const getStaticProps: GetStaticProps<{
   histories: History[];
   skills: Skill[];
 }> = async () => {
-  // TODO: パラレルfetch
-  const histories = await client.getAllContents('history', {
-    orders: 'year',
-    limit: 100,
-  });
-  const skills = await client.getAllContents('skill', {
-    limit: 100,
-  });
+  const [histories, skills] = await Promise.all([
+    client.getAllContents('history', {
+      orders: 'year',
+      limit: 100,
+    }),
+    client.getAllContents('skill', {
+      limit: 100,
+    }),
+  ]);
 
   return {
     props: {

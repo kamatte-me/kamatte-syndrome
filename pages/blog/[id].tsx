@@ -30,19 +30,20 @@ export const getStaticProps: GetStaticProps<{
 }> = async context => {
   const post = await client.getContent('blog', context.params!.id! as string);
 
-  // TODO: パラレルfetch
-  const prevPost = await client.getContents('blog', {
-    limit: 1,
-    fields: 'id,title',
-    filters: `publishedAt[less_than]${post.publishedAt}`,
-    orders: '-publishedAt',
-  });
-  const nextPost = await client.getContents('blog', {
-    limit: 1,
-    fields: 'id,title',
-    filters: `publishedAt[greater_than]${post.publishedAt}`,
-    orders: 'publishedAt',
-  });
+  const [prevPost, nextPost] = await Promise.all([
+    client.getContents('blog', {
+      limit: 1,
+      fields: 'id,title',
+      filters: `publishedAt[less_than]${post.publishedAt}`,
+      orders: '-publishedAt',
+    }),
+    client.getContents('blog', {
+      limit: 1,
+      fields: 'id,title',
+      filters: `publishedAt[greater_than]${post.publishedAt}`,
+      orders: 'publishedAt',
+    }),
+  ]);
 
   return {
     props: {
