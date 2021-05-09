@@ -24,6 +24,7 @@ export const theme: Theme = {
     background: '#fff',
     primary: '#00c69c',
     secondary: '#ff6272',
+    highlight: '#c5f5eb',
     white: '#fff',
     black: '#000',
     gray: '#dbdbdb',
@@ -212,11 +213,15 @@ export const theme: Theme = {
     },
   },
   messages: {
-    error: {
-      bg: 'secondary',
+    primary: {
+      bg: 'primary',
       color: 'white',
-      fontFamily: 'heading',
       border: 'none',
+      fontFamily: 'heading',
+    },
+    error: {
+      variant: 'messages.primary',
+      bg: 'secondary',
     },
   },
   sizes: {

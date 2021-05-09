@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch';
 import pLimit from 'p-limit';
 
 import { Model } from '@/lib/microcms/client/types/model';
@@ -46,7 +47,9 @@ export interface ClientConfig {
 
 const makeQueryString = (query: object): string => {
   let queryStr = Object.entries(query)
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => {
+      return value ? `${key}=${value}` : '';
+    })
     .join('&');
   if (queryStr.length > 0) {
     queryStr = `?${queryStr}`;
@@ -70,14 +73,15 @@ export const createClient = <T extends EndpointTypeMap>(
     return fetch(
       `${baseUrl}/${endpoint}/${id}${makeQueryString(query)}`,
       httpOption,
-    ).then(res => res.json());
+    )
+      .then(res => res.json())
+      .catch(() => null);
   };
 
   const getContentsRaw: GetContentsRawFn<T> = async (endpoint, query = {}) => {
-    return fetch(
-      `${baseUrl}/${endpoint}${makeQueryString(query)}`,
-      httpOption,
-    ).then(res => res.json());
+    return fetch(`${baseUrl}/${endpoint}${makeQueryString(query)}`, httpOption)
+      .then(res => res.json())
+      .catch(() => []);
   };
 
   const getContents: GetContentsFn<T> = async (endpoint, query = {}) => {

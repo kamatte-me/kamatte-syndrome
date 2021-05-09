@@ -8,7 +8,7 @@ import {
 } from 'next';
 import Image from 'next/image';
 import React from 'react';
-import { Box, Container, Flex, Heading, jsx, Text } from 'theme-ui';
+import { Box, Container, Flex, Heading, jsx, Message, Text } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { PostPagination } from '@/components/pages/blog/PostPagination';
@@ -16,19 +16,42 @@ import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
+import Custom404 from '@/pages/404';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await client.getAllContents('blog');
   const paths = posts.map(post => `/blog/${post.id}`);
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 };
 
-export const getStaticProps: GetStaticProps<{
-  post: Blog;
-  prevPost?: Blog | null;
-  nextPost?: Blog | null;
-}> = async context => {
-  const post = await client.getContent('blog', context.params!.id! as string);
+export interface BlogPreviewData {
+  id: string;
+  draftKey: string;
+}
+
+export const getStaticProps: GetStaticProps<
+  {
+    post: Blog;
+    prevPost?: Blog | null;
+    nextPost?: Blog | null;
+    isPreview: boolean;
+  },
+  {
+    id: string;
+  }
+> = async ({ params, preview, previewData }) => {
+  const post = await client.getContent('blog', params!.id, {
+    draftKey: preview ? (previewData as BlogPreviewData).draftKey : undefined,
+  });
+
+  if (!post) {
+    return {
+      props: {
+        post,
+        isPreview: preview || false,
+      },
+    };
+  }
 
   const [prevPost, nextPost] = await Promise.all([
     client.getContents('blog', {
@@ -50,13 +73,18 @@ export const getStaticProps: GetStaticProps<{
       post,
       prevPost: prevPost.length > 0 ? prevPost[0] : null,
       nextPost: nextPost.length > 0 ? nextPost[0] : null,
+      isPreview: preview || false,
     },
   };
 };
 
 const BlogPostPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
-> = ({ post, prevPost, nextPost }) => {
+> = ({ post, prevPost, nextPost, isPreview }) => {
+  if (!post) {
+    return <Custom404 />;
+  }
+
   return (
     <>
       <SEO
@@ -64,6 +92,11 @@ const BlogPostPage: NextPage<
         ogImageUrl={post.featuredImage && post.featuredImage.url}
       />
       <Container variant="narrowContainer">
+        {isPreview && (
+          <Message variant="primary" sx={{ textAlign: 'center', mb: 3 }}>
+            プレビュー
+          </Message>
+        )}
         <Box sx={{ mb: 4 }}>
           <Heading
             sx={{

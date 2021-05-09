@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { Box, Container, jsx } from 'theme-ui';
 
@@ -12,13 +13,18 @@ import { Blog } from '@/lib/microcms/model';
 
 export const BLOG_POSTS_PER_PAGE = 5;
 
-export type BlogPostListGetStaticProps = GetStaticProps<{
-  pageInfo: {
-    total: number;
-    current: number;
-  };
-  posts: Blog[];
-}>;
+export type BlogPostListGetStaticProps<
+  T extends ParsedUrlQuery = {}
+> = GetStaticProps<
+  {
+    pageInfo: {
+      total: number;
+      current: number;
+    };
+    posts: Blog[];
+  },
+  T
+>;
 
 export const getStaticPropsBlogPostList = async (
   pageNumber: number,

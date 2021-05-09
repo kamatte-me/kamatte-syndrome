@@ -16,8 +16,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-export const getStaticProps: BlogPostListGetStaticProps = async context => {
-  return getStaticPropsBlogPostList(Number(context.params!.page));
+export const getStaticProps: BlogPostListGetStaticProps<{
+  page: string;
+}> = async ({ params }) => {
+  return getStaticPropsBlogPostList(Number(params!.page));
 };
 
 const BlogPaginatePage: NextPage<
