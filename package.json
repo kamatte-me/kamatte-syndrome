@@ -17,6 +17,7 @@
     "@theme-ui/css": "^0.8.4",
     "cross-fetch": "^3.1.4",
     "destyle.css": "^2.0.2",
+    "feed": "^4.2.2",
     "html-react-parser": "^1.2.6",
     "next": "^10.2.0",
     "next-pwa": "^5.2.21",
