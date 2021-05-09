@@ -26,7 +26,7 @@ import { formatDate } from '@/lib/date';
 import { htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
-import Custom404 from '@/pages/404';
+import Error from '@/pages/blog/_error';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await client.getAllContents('blog');
@@ -92,7 +92,7 @@ const BlogPostPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ post, prevPost, nextPost, isPreview }) => {
   if (!post) {
-    return <Custom404 />;
+    return <Error statusCode={404} />;
   }
 
   const router = useRouter();
