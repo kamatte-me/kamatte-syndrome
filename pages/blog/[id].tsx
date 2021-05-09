@@ -7,8 +7,18 @@ import {
   NextPage,
 } from 'next';
 import Image from 'next/image';
-import React from 'react';
-import { Box, Container, Flex, Heading, jsx, Message, Text } from 'theme-ui';
+import { useRouter } from 'next/router';
+import React, { useCallback } from 'react';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  jsx,
+  Message,
+  Text,
+} from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { PostPagination } from '@/components/pages/blog/PostPagination';
@@ -85,6 +95,13 @@ const BlogPostPage: NextPage<
     return <Custom404 />;
   }
 
+  const router = useRouter();
+  const handleClearPreview = useCallback(() => {
+    fetch('/api/clearPreviewData').then(() => {
+      router.reload();
+    });
+  }, []);
+
   return (
     <>
       <SEO
@@ -94,7 +111,16 @@ const BlogPostPage: NextPage<
       <Container variant="narrowContainer">
         {isPreview && (
           <Message variant="primary" sx={{ textAlign: 'center', mb: 3 }}>
-            プレビュー
+            <Text sx={{ fontWeight: 'bold' }}>プレビュー中</Text>
+            <Button
+              variant="secondary"
+              onClick={() => handleClearPreview()}
+              sx={{
+                ml: 3,
+              }}
+            >
+              解除
+            </Button>
           </Message>
         )}
         <Box sx={{ mb: 4 }}>

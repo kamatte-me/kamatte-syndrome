@@ -179,6 +179,19 @@ export const theme: Theme = {
       color: 'white',
     },
   },
+  buttons: {
+    primary: {
+      bg: 'primary',
+      color: 'white',
+      '&:hover': {
+        bg: 'text',
+      },
+    },
+    secondary: {
+      variant: 'buttons.primary',
+      bg: 'secondary',
+    },
+  },
   links: {
     nav: {
       variant: 'text.heading',
@@ -214,6 +227,7 @@ export const theme: Theme = {
   },
   messages: {
     primary: {
+      position: 'relative',
       bg: 'primary',
       color: 'white',
       border: 'none',
