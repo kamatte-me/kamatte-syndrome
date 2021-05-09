@@ -1,4 +1,2 @@
 User-Agent: *
-Disallow:
-
-Sitemap: https://kamatte.me/sitemap.xml
+Disallow: /
