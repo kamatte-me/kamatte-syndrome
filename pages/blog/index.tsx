@@ -52,7 +52,7 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <SEO title="Blog" description="局所的な人気があるらしい。" />
-      <Container as="ul" variant="layout.blogContainer">
+      <Container as="ul" variant="narrowContainer">
         {posts.map(post => (
           <Box
             key={post.id}

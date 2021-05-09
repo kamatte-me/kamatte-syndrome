@@ -23,10 +23,6 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
           sx={{
             variant: 'links.nav',
             color: isActive ? 'primary' : 'black',
-            WebkitTextFillColor: isActive ? 'transparent' : undefined,
-            '&:hover': {
-              WebkitTextFillColor: 'transparent',
-            },
           }}
         >
           {children}

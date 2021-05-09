@@ -62,7 +62,7 @@ const BlogPostPage: NextPage<
         title={post.title}
         ogImageUrl={post.featuredImage && post.featuredImage.url}
       />
-      <Container variant="layout.blogContainer">
+      <Container variant="narrowContainer">
         <Box sx={{ mb: 4 }}>
           <Heading
             sx={{

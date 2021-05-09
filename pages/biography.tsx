@@ -100,7 +100,7 @@ const BiographyPage: NextPage<
           <Heading
             as="h2"
             sx={{
-              fontSize: 4,
+              fontSize: 5,
             }}
           >
             Skills
