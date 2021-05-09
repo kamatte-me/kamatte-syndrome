@@ -30,5 +30,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# PWA
+/public/sw*
+/public/workbox*
+
 # vercel
 .vercel
