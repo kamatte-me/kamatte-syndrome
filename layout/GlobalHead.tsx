@@ -22,6 +22,8 @@ export const GlobalHead: React.FC = () => {
       <meta property="fb:app_id" content="159097111464111" />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+      {/* Google Fonts */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
         href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=block&text=plzkamte!"
@@ -30,6 +32,22 @@ export const GlobalHead: React.FC = () => {
       <link
         href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=block"
         rel="stylesheet"
+      />
+
+      {/* Google Analytics */}
+      <script
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}`}
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}');`,
+        }}
       />
     </Head>
   );
