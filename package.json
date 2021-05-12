@@ -8,6 +8,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel",
+    "vercel:env:pull": "vercel env pull .env.local",
     "lint": "eslint . --ext .ts,.tsx,.js",
     "lint:fix": "eslint . --fix --ext .ts,.tsx,.js",
     "typecheck": "tsc"
