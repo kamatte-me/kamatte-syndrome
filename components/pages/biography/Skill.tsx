@@ -24,6 +24,7 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
+            fontFamily: 'heading',
           }}
           dangerouslySetInnerHTML={{
             __html: name.replace('\n', '<br>'),

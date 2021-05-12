@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useState } from 'react';
 import { Box, Flex, jsx, MenuButton } from 'theme-ui';
@@ -69,21 +70,26 @@ export const Header: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <Link href="/">
-              <a>
-                <div
-                  sx={{
-                    variant: 'links.nav',
-                    mr: [0, 3],
-                    '&.active, &:hover': {
-                      color: 'black',
-                    },
-                  }}
-                >
-                  {siteName}
-                </div>
-              </a>
-            </Link>
+            <Flex
+              sx={{
+                width: [200, 200, 240],
+                height: [24, 24, 28],
+                mb: [0, 1],
+                mr: [0, 3],
+              }}
+            >
+              <Link href="/">
+                <a>
+                  <Image
+                    src="/title.png"
+                    alt={siteName}
+                    objectFit="contain"
+                    width={240}
+                    height={28}
+                  />
+                </a>
+              </Link>
+            </Flex>
             <Flex
               as="nav"
               sx={{

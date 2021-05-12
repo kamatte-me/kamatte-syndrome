@@ -11,7 +11,7 @@ export const SEO: React.FC<{
   return (
     <Head>
       <title key="title">
-        {title} - ${siteName}
+        {title} - {siteName}
       </title>
       {description && (
         <meta name="description" content={description} key="description" />

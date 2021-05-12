@@ -23,7 +23,7 @@ export const getStaticProps: GetStaticProps = async () => {
     id: `${baseUrl}`,
     link: `${baseUrl}`,
     language: 'ja',
-    image: `${baseUrl}/logo.png`,
+    image: `${baseUrl}/avatar.png`,
     favicon: `${baseUrl}/favicon.ico`,
     copyright: `© ${new Date().getFullYear()} ${siteName}`,
     author,

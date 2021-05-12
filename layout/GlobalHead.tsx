@@ -8,7 +8,7 @@ export const GlobalHead: React.FC = () => {
     <Head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title key="title">${siteName}</title>
+      <title key="title">{siteName}</title>
       <meta name="description" content={slogan} key="description" />
       <meta
         property="og:image"
