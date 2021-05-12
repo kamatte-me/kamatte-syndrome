@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch';
 import pLimit from 'p-limit';
 
 import { Model } from '@/lib/microcms/client/types/model';
