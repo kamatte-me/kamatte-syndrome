@@ -10,6 +10,10 @@ export const GlobalHead: React.FC = () => {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title key="title">{siteName}</title>
       <meta name="description" content={slogan} key="description" />
+      <link rel="shortcut icon" href="/favicon.ico" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      <link rel="manifest" href="/manifest.json" />
+
       <meta
         property="og:image"
         content={`${baseUrl}/icon.png`}
@@ -20,8 +24,6 @@ export const GlobalHead: React.FC = () => {
       <meta property="og:locale" content="ja_JP" />
       <meta property="twitter:card" content="summary" />
       <meta property="fb:app_id" content="159097111464111" />
-      <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
       {/* Google Fonts */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
