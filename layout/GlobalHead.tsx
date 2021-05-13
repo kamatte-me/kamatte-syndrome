@@ -28,7 +28,7 @@ export const GlobalHead: React.FC = () => {
       {/* Google Fonts */}
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
-        href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=block&text=plzkamte!"
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=block"
         rel="stylesheet"
       />
       <link

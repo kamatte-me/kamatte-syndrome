@@ -15,7 +15,7 @@ export const MainVisual: React.FC = () => {
     >
       <Flex>
         <Image
-          src="/avatar.png"
+          src="/avatar.svg"
           alt="me"
           objectFit="contain"
           width={380}

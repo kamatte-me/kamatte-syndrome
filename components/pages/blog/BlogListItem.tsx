@@ -30,7 +30,7 @@ export const BlogListItem: React.FC<{
             >
               <Image
                 src={
-                  entry.featuredImage ? entry.featuredImage.url : '/avatar.png'
+                  entry.featuredImage ? entry.featuredImage.url : '/avatar.svg'
                 }
                 alt="me"
                 objectFit="contain"

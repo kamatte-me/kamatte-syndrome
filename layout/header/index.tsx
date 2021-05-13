@@ -81,7 +81,7 @@ export const Header: React.FC = () => {
               <Link href="/">
                 <a>
                   <Image
-                    src="/logo.png"
+                    src="/logo.svg"
                     alt={siteName}
                     objectFit="contain"
                     width={240}

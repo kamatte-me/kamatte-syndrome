@@ -56,7 +56,7 @@ const BiographyPage: NextPage<
           }}
         >
           <Image
-            src="/avatar.png"
+            src="/avatar.svg"
             alt="me"
             objectFit="contain"
             width={300}
