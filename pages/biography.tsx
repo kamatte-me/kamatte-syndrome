@@ -62,7 +62,6 @@ const BiographyPage: NextPage<
             width={300}
             height={300}
             priority
-            unoptimized
           />
         </Flex>
         <Box>

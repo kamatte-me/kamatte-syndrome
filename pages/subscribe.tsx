@@ -1,5 +1,6 @@
+import Image from 'next/image';
 import React from 'react';
-import { Box, Container, Heading, Link, Text } from 'theme-ui';
+import { Box, Container, Flex, Heading, Link, Paragraph, Text } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { author } from '@/constants/site';
@@ -10,21 +11,58 @@ const CulturePage: React.FC = () => {
       <SEO title="Subscribe" description={`${author}を信仰する`} />
       <Container variant="narrowContainer">
         <Box sx={{ mb: 5 }}>
-          <Heading as="h1" sx={{ fontSize: 5, mb: 2 }}>
-            ブログの更新通知を受け取る
+          <Heading as="h1" sx={{ fontSize: 5, mb: 1 }}>
+            LINE公式アカウント
           </Heading>
-          <Box sx={{ mb: 3 }}>
-            めったに更新されないことで一定の評価を得ているこのブログ。
-            <br />
-            でも更新されたらすぐ読みたい・・・
-            <br />
-            そんなキミは通知を受け取ってライバルに差をつけろ！！！
-            <br />
-            ごくまれに通知限定のひとり言も配信するぞ！！！
-          </Box>
+          <Flex
+            sx={{
+              flexDirection: ['column', 'row'],
+              alignItems: ['center', 'flex-start'],
+            }}
+          >
+            <Box sx={{ textAlign: 'center', mr: [0, 3], mb: [3, 0] }}>
+              <Box>
+                <Image
+                  src="https://qr-official.line.me/sid/L/200qygmw.png"
+                  alt="QRコード"
+                  objectFit="contain"
+                  width={180}
+                  height={180}
+                  priority
+                />
+              </Box>
+              <Box>
+                <a href="https://lin.ee/ZsmmUMP">
+                  <Image
+                    src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+                    alt="友だち追加"
+                    objectFit="contain"
+                    width={120}
+                    height={36}
+                    unoptimized
+                  />
+                </a>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, mt: [0, 2], mb: [0, 3] }}>
+              <Paragraph sx={{ mb: 2 }}>
+                めったに更新されないことで一定の評価を得ているこのブログ。
+                <br />
+                でも更新されたらすぐ読みたい・・・
+              </Paragraph>
+              <Paragraph>
+                そんなキミのために、LINEで
+                <b>ブログの更新を通知</b>するぞ！！！
+                <br />
+                登録してライバルに差をつけろ！！！
+                <br />
+                ごくまれに限定のひとり言もあり〼。
+              </Paragraph>
+            </Box>
+          </Flex>
         </Box>
 
-        <Heading as="h1" sx={{ fontSize: 5, mb: 2 }}>
+        <Heading as="h1" sx={{ fontSize: 5, mb: 3 }}>
           お布施
         </Heading>
         <Text>

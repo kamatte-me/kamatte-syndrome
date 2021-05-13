@@ -21,7 +21,6 @@ export const MainVisual: React.FC = () => {
           width={380}
           height={380}
           priority
-          unoptimized
         />
       </Flex>
       <Flex>
