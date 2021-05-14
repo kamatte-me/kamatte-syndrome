@@ -13,6 +13,12 @@ export const GlobalHead: React.FC = () => {
       <link rel="shortcut icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="manifest" href="/manifest.json" />
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        href="/feed.xml"
+        title="RSS2.0"
+      />
 
       <meta
         property="og:image"
