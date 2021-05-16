@@ -14,7 +14,7 @@ const FeaturedImage: React.FC<{
     return (
       <Image
         src={item.featuredImage.url}
-        alt="me"
+        alt={item.title}
         objectFit="contain"
         width={item.featuredImage.width}
         height={item.featuredImage.height}
