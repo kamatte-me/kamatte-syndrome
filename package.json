@@ -1,0 +1,52 @@
+{
+  "name": "kamatte-syndrome",
+  "version": "2.0.0-next.0",
+  "private": true,
+  "description": "plz kamatte me!!!",
+  "author": "kamatte",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel",
+    "vercel:env:pull": "vercel env pull .env.local",
+    "lint": "eslint . --ext .ts,.tsx,.js",
+    "lint:fix": "eslint . --fix --ext .ts,.tsx,.js",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.4.0",
+    "@theme-ui/css": "^0.8.4",
+    "destyle.css": "^2.0.2",
+    "feed": "^4.2.2",
+    "html-react-parser": "^1.2.6",
+    "next": "^10.2.0",
+    "next-pwa": "^5.2.21",
+    "p-limit": "^3.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "sitemap": "^7.0.0",
+    "theme-ui": "^0.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.45",
+    "@types/react": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
+    "eslint": "^7.26.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unused-imports": "^1.1.1",
+    "prettier": "^2.3.0",
+    "typescript": "^4.2.4"
+  }
+}
