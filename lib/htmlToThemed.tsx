@@ -1,3 +1,5 @@
+/** @jsxRuntime classic */
+/** @jsx jsx * */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import parse, {
   domToReact,
@@ -7,7 +9,7 @@ import parse, {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import React from 'react';
-import { Embed, Flex, Link, Themed } from 'theme-ui';
+import { Embed, Flex, jsx, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
@@ -38,7 +40,11 @@ const parseOption: HTMLReactParserOptions = {
         if (attribs.href.startsWith(baseUrl)) {
           return (
             <NextLink href={attribs.href.replace(baseUrl, '')}>
-              {parseChildren(children)}
+              <a>
+                <span sx={{ variant: 'styles.a' }}>
+                  {parseChildren(children)}
+                </span>
+              </a>
             </NextLink>
           );
         }

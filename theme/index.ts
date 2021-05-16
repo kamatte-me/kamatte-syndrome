@@ -99,6 +99,7 @@ export const theme: Theme = {
       textDecoration: 'underline',
       opacity: 1,
       transition: 'opacity .2s ease-out',
+      cursor: 'pointer',
       ':hover': {
         opacity: 0.7,
       },
