@@ -152,6 +152,7 @@ const BlogEntryPage: NextPage<
             >
               <Image
                 src={entry.featuredImage.url}
+                alt={entry.title}
                 objectFit="contain"
                 width={entry.featuredImage.width}
                 height={entry.featuredImage.height}

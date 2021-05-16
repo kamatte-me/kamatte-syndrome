@@ -24,7 +24,7 @@ const CulturePage: React.FC = () => {
               <Box>
                 <Image
                   src="https://qr-official.line.me/sid/L/200qygmw.png"
-                  alt="QRコード"
+                  alt="友だち追加QRコード"
                   objectFit="contain"
                   width={180}
                   height={180}
