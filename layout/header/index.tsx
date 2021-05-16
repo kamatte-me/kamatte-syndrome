@@ -62,7 +62,7 @@ export const Header: React.FC = () => {
             justifyContent: 'space-between',
             px: [3, 4],
             bg: 'background',
-            boxShadow: '0px 5px 10px #fff',
+            boxShadow: '0px 8px 8px #fff',
           }}
         >
           <Flex
