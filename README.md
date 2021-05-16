@@ -13,7 +13,9 @@ plz kamatte me!!!
 
 - Build / Hosting: [Vercel](https://vercel.com/)
 - Headless CMS: [microCMS](https://microcms.io/)
-- Marketing Automation: RSS -> [IFTTT](https://ifttt.com/) -> [LINE Messaging API](https://developers.line.biz/ja/services/messaging-api/) -> LINE公式アカウント
+- SNS連携（iPaaS Freeプラン運用）
+  - LINE公式アカウント: RSS -> [Integromat](https://www.integromat.com/) -> [LINE Messaging API](https://developers.line.biz/ja/services/messaging-api/)
+  - Twitter: RSS -> [IFTTT](https://ifttt.com/) -> ツイート
 
 # 開発
 
