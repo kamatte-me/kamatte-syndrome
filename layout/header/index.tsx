@@ -60,9 +60,9 @@ export const Header: React.FC = () => {
             height: HeaderHeight,
             alignItems: 'center',
             justifyContent: 'space-between',
-            px: 3,
-            background:
-              'linear-gradient(180deg, rgba(255,255,255,1) 85%, rgba(255,255,255,0) 100%)',
+            px: [3, 4],
+            bg: 'background',
+            boxShadow: '0px 5px 10px #fff',
           }}
         >
           <Flex
@@ -72,9 +72,8 @@ export const Header: React.FC = () => {
           >
             <Flex
               sx={{
-                width: [200, 200, 240],
-                height: [24, 24, 28],
-                mb: [0, 1],
+                width: [110, 120],
+                height: [32, 36],
                 mr: [0, 3],
               }}
             >
@@ -84,8 +83,8 @@ export const Header: React.FC = () => {
                     src="/logo.svg"
                     alt={siteName}
                     objectFit="contain"
-                    width={240}
-                    height={28}
+                    width={120}
+                    height={36}
                   />
                 </a>
               </Link>
