@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
         }}
       >
         {links.map(link => (
-          <li>
+          <li key={link.to}>
             <Link href={link.to}>{link.title}</Link>
           </li>
         ))}
