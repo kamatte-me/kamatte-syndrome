@@ -13,9 +13,11 @@ plz kamatte me!!!
 
 - Build / Hosting: [Vercel](https://vercel.com/)
 - Headless CMS: [microCMS](https://microcms.io/)
-- SNS連携（iPaaS Freeプラン運用）
-  - LINE公式アカウント: RSS -> [Integromat](https://www.integromat.com/) -> [LINE Messaging API](https://developers.line.biz/ja/services/messaging-api/)
-  - Twitter: RSS -> [IFTTT](https://ifttt.com/) -> ツイート
+- SNS連携
+  ```
+  RSS -> IFTTT -> LINE Messaging API
+               -> Twitter
+  ```
 
 # 開発
 
