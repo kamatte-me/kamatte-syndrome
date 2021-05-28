@@ -17,17 +17,13 @@ export const getStaticProps: GetStaticProps = async () => {
     orders: '-updatedAt',
     limit: 1,
   };
-  const [
-    latestHistory,
-    latestSkill,
-    latestPortfolio,
-    latestCulture,
-  ] = await Promise.all([
-    client.getContents('history', getLatestOneQuery),
-    client.getContents('skill', getLatestOneQuery),
-    client.getContents('portfolio', getLatestOneQuery),
-    client.getContents('culture', getLatestOneQuery),
-  ]);
+  const [latestHistory, latestSkill, latestPortfolio, latestCulture] =
+    await Promise.all([
+      client.getContents('history', getLatestOneQuery),
+      client.getContents('skill', getLatestOneQuery),
+      client.getContents('portfolio', getLatestOneQuery),
+      client.getContents('culture', getLatestOneQuery),
+    ]);
 
   const staticPages: SitemapItemLoose[] = [
     { url: '/', changefreq: EnumChangefreq.YEARLY, priority: 1 },

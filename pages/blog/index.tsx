@@ -21,9 +21,8 @@ interface BlogEntriesPageProps {
   entries: Blog[];
 }
 
-export type BlogEntriesGetStaticProps<
-  T extends ParsedUrlQuery = {}
-> = GetStaticProps<BlogEntriesPageProps, T>;
+export type BlogEntriesGetStaticProps<T extends ParsedUrlQuery = {}> =
+  GetStaticProps<BlogEntriesPageProps, T>;
 
 export const blogEntriesGetStaticProps = async (
   pageNumber: number,
