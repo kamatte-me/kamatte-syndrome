@@ -21,10 +21,11 @@ export const GlobalHead: React.FC = () => {
         title="RSS2.0"
       />
 
+      <meta property="og:title" key="og:title" content={siteName} />
       <meta
         property="og:image"
-        content={`${baseUrl}/icon.png`}
         key="og:image"
+        content={`${baseUrl}/icon.png`}
       />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:type" content="website" />
