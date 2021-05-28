@@ -35,88 +35,87 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
-const BiographyPage: NextPage<
-  InferGetStaticPropsType<typeof getStaticProps>
-> = ({ histories, skills }) => {
-  return (
-    <>
-      <SEO title="Biography" description={`${author}のすべて`} />
-      <Flex
-        sx={{
-          flexDirection: ['column', 'row'],
-          alignItems: ['center', 'flex-start'],
-          justifyContent: 'center',
-          mb: 5,
-        }}
-      >
+const BiographyPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
+  ({ histories, skills }) => {
+    return (
+      <>
+        <SEO title="Biography" description={`${author}のすべて`} />
         <Flex
           sx={{
+            flexDirection: ['column', 'row'],
+            alignItems: ['center', 'flex-start'],
             justifyContent: 'center',
-            mr: [0, 4],
+            mb: 5,
           }}
         >
-          <Image
-            src="/avatar.svg"
-            alt="me"
-            objectFit="contain"
-            width={300}
-            height={300}
-            priority
-          />
+          <Flex
+            sx={{
+              justifyContent: 'center',
+              mr: [0, 4],
+            }}
+          >
+            <Image
+              src="/avatar.svg"
+              alt="me"
+              objectFit="contain"
+              width={300}
+              height={300}
+              priority
+            />
+          </Flex>
+          <Box>
+            <Heading
+              as="h1"
+              sx={{
+                variant: 'text.display',
+                color: 'primary',
+                mb: 1,
+                fontSize: 5,
+                textAlign: ['center', 'left'],
+              }}
+            >
+              {author}
+            </Heading>
+            <Box
+              sx={{
+                mb: 2,
+              }}
+            >
+              <Sns />
+            </Box>
+            <Box as="dl">
+              {histories.map(item => (
+                <HistoryItem key={item.id} year={item.year} body={item.body} />
+              ))}
+            </Box>
+          </Box>
         </Flex>
-        <Box>
-          <Heading
-            as="h1"
-            sx={{
-              variant: 'text.display',
-              color: 'primary',
-              mb: 1,
-              fontSize: 5,
-              textAlign: ['center', 'left'],
-            }}
-          >
-            {author}
-          </Heading>
-          <Box
-            sx={{
-              mb: 2,
-            }}
-          >
-            <Sns />
-          </Box>
-          <Box as="dl">
-            {histories.map(item => (
-              <HistoryItem key={item.id} year={item.year} body={item.body} />
-            ))}
-          </Box>
-        </Box>
-      </Flex>
 
-      <Box>
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mb: 3,
-          }}
-        >
-          <Heading
-            as="h2"
+        <Box>
+          <Flex
             sx={{
-              fontSize: 5,
+              justifyContent: 'center',
+              mb: 3,
             }}
           >
-            Skills
-          </Heading>
-        </Flex>
-        <Grid as="ul" gap={3} columns={[2, 3, 4, 5]}>
-          {skills.map(item => (
-            <SkillItem key={item.id} name={item.name} level={item.level} />
-          ))}
-          <SkillItem name="kawaii" level={100} />
-        </Grid>
-      </Box>
-    </>
-  );
-};
+            <Heading
+              as="h2"
+              sx={{
+                fontSize: 5,
+              }}
+            >
+              Skills
+            </Heading>
+          </Flex>
+          <Grid as="ul" gap={3} columns={[2, 3, 4, 5]}>
+            {skills.map(item => (
+              <SkillItem key={item.id} name={item.name} level={item.level} />
+            ))}
+            <SkillItem name="kawaii" level={100} />
+          </Grid>
+        </Box>
+      </>
+    );
+  };
 
 export default BiographyPage;
