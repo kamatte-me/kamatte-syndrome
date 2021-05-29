@@ -4,7 +4,7 @@ import Image from 'next/image';
 import React from 'react';
 import { Badge, Box, Flex, Heading, jsx, Link, Text } from 'theme-ui';
 
-import { htmlToThemed } from '@/lib/htmlToThemed';
+import { htmlToThemed } from '@/lib/parseHTML';
 import { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
 
 const FeaturedImage: React.FC<{

@@ -23,9 +23,9 @@ import {
 import { SEO } from '@/components/elements/SEO';
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { formatDate } from '@/lib/date';
-import { htmlToTextContent, htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
+import { htmlToTextContent, htmlToThemed } from '@/lib/parseHTML';
 import Custom404 from '@/pages/404';
 
 export const getStaticPaths: GetStaticPaths = async () => {

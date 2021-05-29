@@ -5,8 +5,8 @@ import { Box, Container, Embed, Flex, Heading, jsx } from 'theme-ui';
 
 import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
-import { htmlToThemed } from '@/lib/htmlToThemed';
 import { Culture } from '@/lib/microcms/model';
+import { htmlToThemed } from '@/lib/parseHTML';
 
 export const YouTubeModal: React.FC<{
   cultureItem: Culture;

@@ -23,6 +23,28 @@ const MediaWrapper: React.FC = ({ children }) => {
   );
 };
 
+const parseStyleString = (styleStr?: string | null) => {
+  if (!styleStr) {
+    return {};
+  }
+  return styleStr.split(';').reduce((acc, style) => {
+    const colonPosition = style.indexOf(':');
+
+    if (colonPosition === -1) {
+      return acc;
+    }
+
+    const camelCaseProperty = style
+      .substr(0, colonPosition)
+      .trim()
+      .replace(/^-ms-/, 'ms-')
+      .replace(/-./g, c => c.substr(1).toUpperCase());
+    const value = style.substr(colonPosition + 1).trim();
+
+    return value ? { ...acc, [camelCaseProperty]: value } : acc;
+  }, {});
+};
+
 const parseOption: HTMLReactParserOptions = {
   replace: domNode => {
     const { name, attribs, children } = domNode as Element;
@@ -76,7 +98,11 @@ const parseOption: HTMLReactParserOptions = {
         if (name in Themed) {
           // @ts-ignore
           const ThemedComponent = Themed[name];
-          return <ThemedComponent>{parseChildren(children)}</ThemedComponent>;
+          return (
+            <ThemedComponent style={parseStyleString(attribs.style)}>
+              {parseChildren(children)}
+            </ThemedComponent>
+          );
         }
         return null;
     }
