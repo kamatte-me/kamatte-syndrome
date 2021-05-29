@@ -5,6 +5,8 @@ import parse, {
   domToReact,
   Element,
   HTMLReactParserOptions,
+  htmlToDOM,
+  Text,
 } from 'html-react-parser';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
@@ -87,4 +89,29 @@ const parseChildren = (children: Element['children']) => {
 
 export const htmlToThemed = (html: string): ReturnType<typeof parse> => {
   return parse(html, parseOption);
+};
+
+const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string => {
+  return dom
+    .reduce((acc, current) => {
+      if (['script', 'iframe'].includes((current as Element).name)) {
+        return acc;
+      }
+
+      let newText = '';
+      if ((current as Element).children) {
+        newText = parseDOMText(
+          (current as Element).children as ReturnType<typeof htmlToDOM>,
+        );
+      } else if (current.type === 'text') {
+        newText = (current as Text).data;
+      }
+
+      return newText === '' ? acc : [...acc, newText];
+    }, [] as string[])
+    .join(' ');
+};
+
+export const htmlToTextContent = (html: string): string => {
+  return parseDOMText(htmlToDOM(html));
 };
