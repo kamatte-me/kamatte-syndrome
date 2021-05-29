@@ -114,6 +114,11 @@ export const theme: Theme = {
       paddingLeft: '2em',
       my: 2,
     },
+    li: {
+      'ol, ul': {
+        my: 0,
+      },
+    },
     blockquote: {
       position: 'relative',
       pl: 5,
