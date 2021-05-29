@@ -13,8 +13,8 @@ export const getStaticProps: GetStaticProps = async () => {
   });
 
   const getLatestOneQuery = {
-    fields: 'updatedAt',
-    orders: '-updatedAt',
+    fields: 'revisedAt',
+    orders: '-revisedAt',
     limit: 1,
   };
   const [latestHistory, latestSkill, latestPortfolio, latestCulture] =
@@ -31,21 +31,21 @@ export const getStaticProps: GetStaticProps = async () => {
       url: '/biography',
       changefreq: EnumChangefreq.YEARLY,
       lastmod:
-        latestHistory[0].updatedAt >= latestSkill[0].updatedAt
-          ? latestHistory[0].updatedAt
-          : latestSkill[0].updatedAt,
+        latestHistory[0].revisedAt! >= latestSkill[0].revisedAt!
+          ? latestHistory[0].revisedAt
+          : latestSkill[0].revisedAt,
       priority: 0.8,
     },
     {
       url: '/portfolio',
       changefreq: EnumChangefreq.YEARLY,
-      lastmod: latestPortfolio[0].updatedAt,
+      lastmod: latestPortfolio[0].revisedAt,
       priority: 0.2,
     },
     {
       url: '/culture',
       changefreq: EnumChangefreq.MONTHLY,
-      lastmod: latestCulture[0].updatedAt,
+      lastmod: latestCulture[0].revisedAt,
       priority: 0.4,
     },
     { url: '/subscribe', changefreq: EnumChangefreq.YEARLY, priority: 0.3 },
@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps = async () => {
   staticPages.forEach(page => stream.write(page));
 
   const blogEntries = await client.getAllContents('blog', {
-    fields: 'id,publishedAt,updatedAt',
+    fields: 'id,publishedAt,revisedAt',
     limit: 50,
   });
   stream.write({
@@ -66,7 +66,7 @@ export const getStaticProps: GetStaticProps = async () => {
     stream.write({
       url: `/blog/${entry.id}`,
       changefreq: EnumChangefreq.YEARLY,
-      lastmod: entry.updatedAt,
+      lastmod: entry.revisedAt,
       priority: 0.7,
     } as SitemapItemLoose);
   });

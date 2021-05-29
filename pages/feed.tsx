@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps = async () => {
       title: entry.title,
       id: url,
       link: url,
-      date: new Date(entry.publishedAt),
+      date: new Date(entry.publishedAt!),
       description: entry.body,
       content: entry.body,
       image: entry.featuredImage
