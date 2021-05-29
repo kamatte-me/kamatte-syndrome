@@ -64,7 +64,7 @@ export const theme: Theme = {
       variant: 'text.headingSerif',
       fontSize: 5,
       mt: 5,
-      mb: 2,
+      mb: 3,
     },
     h2: {
       variant: 'text.headingSerif',

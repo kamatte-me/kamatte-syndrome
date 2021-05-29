@@ -23,9 +23,9 @@ import {
 import { SEO } from '@/components/elements/SEO';
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { formatDate } from '@/lib/date';
-import { htmlToTextContent, htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
+import { htmlToTextContent, htmlToThemed } from '@/lib/parseHTML';
 import Custom404 from '@/pages/404';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -162,7 +162,15 @@ const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
               </Flex>
             )}
           </Box>
-          <Box>{htmlToThemed(entry.body)}</Box>
+          <Box
+            sx={{
+              '*:first-child': {
+                marginTop: 0,
+              },
+            }}
+          >
+            {htmlToThemed(entry.body)}
+          </Box>
           <Box sx={{ mt: 5 }}>
             <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
           </Box>
