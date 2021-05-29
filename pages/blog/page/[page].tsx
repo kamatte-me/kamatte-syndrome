@@ -27,7 +27,10 @@ const BlogPaginatePage: NextPage<
 > = props => {
   return (
     <>
-      <SEO title={`Blog (${props.pageInfo.current}ページ)`} />
+      <SEO
+        title={`Blog (${props.pageInfo.current}ページ)`}
+        description={`局所的な人気があるらしい。 (${props.pageInfo.current}ページ)`}
+      />
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <BlogPage {...props} />
     </>
