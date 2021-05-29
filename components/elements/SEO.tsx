@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { siteName } from '@/constants/site';
 
@@ -16,19 +16,37 @@ export const SEO: React.FC<{
   ogImageUrl?: string | null;
   ogType?: 'website' | 'article' | null;
 }> = ({ title, description, ogImageUrl, ogType }) => {
+  const formattedTitle = `${title} - ${siteName}`;
+  const formattedDescription: string | null = useMemo(() => {
+    if (description) {
+      return extractDescription(description);
+    }
+    return null;
+  }, []);
+
   return (
     <Head>
-      <title key="title">
-        {title} - {siteName}
-      </title>
+      <title key="title">{formattedTitle}</title>
       <meta property="og:title" key="og:title" content={title} />
+      <meta
+        property="twitter:title"
+        key="twitter:title"
+        content={formattedTitle}
+      />
 
-      {description && (
-        <meta
-          name="description"
-          key="description"
-          content={extractDescription(description)}
-        />
+      {formattedDescription && (
+        <>
+          <meta
+            name="description"
+            key="description"
+            content={formattedDescription}
+          />
+          <meta
+            property="twitter:description"
+            key="twitter:description"
+            content={formattedDescription}
+          />
+        </>
       )}
       {ogImageUrl && (
         <meta property="og:image" key="og:image" content={ogImageUrl} />
