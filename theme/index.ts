@@ -70,7 +70,7 @@ export const theme: Theme = {
       variant: 'text.headingSerif',
       fontSize: 4,
       mt: 4,
-      mb: 3,
+      mb: 2,
     },
     h3: {
       variant: 'text.headingSerif',
