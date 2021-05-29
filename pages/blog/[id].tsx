@@ -140,7 +140,7 @@ const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
               {entry.title}
             </Heading>
             <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
-              {formatDate(entry.publishedAt || entry.updatedAt)}
+              {formatDate(entry.publishedAt)}
             </Text>
             {entry.featuredImage && (
               <Flex
