@@ -162,7 +162,15 @@ const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
               </Flex>
             )}
           </Box>
-          <Box>{htmlToThemed(entry.body)}</Box>
+          <Box
+            sx={{
+              '*:first-child': {
+                marginTop: 0,
+              },
+            }}
+          >
+            {htmlToThemed(entry.body)}
+          </Box>
           <Box sx={{ mt: 5 }}>
             <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
           </Box>
