@@ -23,7 +23,7 @@ import {
 import { SEO } from '@/components/elements/SEO';
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { formatDate } from '@/lib/date';
-import { htmlToThemed } from '@/lib/htmlToThemed';
+import { htmlToTextContent, htmlToThemed } from '@/lib/htmlToThemed';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 import Custom404 from '@/pages/404';
@@ -110,7 +110,9 @@ const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
       <>
         <SEO
           title={entry.title}
+          description={htmlToTextContent(entry.body)}
           ogImageUrl={entry.featuredImage && entry.featuredImage.url}
+          ogType="article"
         />
         <Container variant="narrowContainer">
           {isPreview && (

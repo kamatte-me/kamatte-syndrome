@@ -28,8 +28,8 @@ export const GlobalHead: React.FC = () => {
         key="og:image"
         content={`${baseUrl}/icon.png`}
       />
+      <meta property="og:type" key="og:type" content="website" />
       <meta property="og:site_name" content={siteName} />
-      <meta property="og:type" content="website" />
       <meta property="og:locale" content="ja_JP" />
       <meta property="twitter:card" content="summary" />
       <meta property="fb:app_id" content="159097111464111" />
