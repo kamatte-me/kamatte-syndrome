@@ -4,10 +4,10 @@
 
 plz kamatte me!!!
 
-## 特徴
+## 技術
 
-- Jamstack ([Next.js](https://nextjs.org/))
-- PWA (Progressive Web Apps)
+- Jamstack
+- [Next.js](https://nextjs.org/)
 
 ## インフラ
 
