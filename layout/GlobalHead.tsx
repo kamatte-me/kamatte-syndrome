@@ -32,6 +32,12 @@ export const GlobalHead: React.FC = () => {
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content="ja_JP" />
       <meta property="twitter:card" content="summary" />
+      <meta property="twitter:title" key="twitter:title" content={siteName} />
+      <meta
+        property="twitter:description"
+        key="twitter:description"
+        content={slogan}
+      />
       <meta property="fb:app_id" content="159097111464111" />
 
       {/* Google Fonts */}
