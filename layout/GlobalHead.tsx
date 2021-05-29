@@ -38,6 +38,7 @@ export const GlobalHead: React.FC = () => {
         key="twitter:description"
         content={slogan}
       />
+      <meta property="twitter:site" content="@kamatte_me" />
       <meta property="fb:app_id" content="159097111464111" />
 
       {/* Google Fonts */}
