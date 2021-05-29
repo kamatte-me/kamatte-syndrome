@@ -19,7 +19,7 @@ export const SEO: React.FC<{
   const formattedTitle = `${title} - ${siteName}`;
   const formattedDescription: string | null = useMemo(() => {
     if (description) {
-      extractDescription(description);
+      return extractDescription(description);
     }
     return null;
   }, []);
