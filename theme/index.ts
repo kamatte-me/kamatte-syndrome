@@ -16,7 +16,7 @@ export const theme: Theme = {
     bold: 700,
   },
   lineHeights: {
-    body: 1.5,
+    body: 1.6,
     heading: 1.125,
   },
   colors: {
