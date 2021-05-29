@@ -3,7 +3,7 @@ import React from 'react';
 
 import { siteName } from '@/constants/site';
 
-const cutoutDescription = (description: string): string => {
+const extractDescription = (description: string): string => {
   if (description.length <= 100) {
     return description;
   }
@@ -27,7 +27,7 @@ export const SEO: React.FC<{
         <meta
           name="description"
           key="description"
-          content={cutoutDescription(description)}
+          content={extractDescription(description)}
         />
       )}
       {ogImageUrl && (
