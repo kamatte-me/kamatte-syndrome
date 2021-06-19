@@ -22,7 +22,7 @@ export const SEO: React.FC<{
       return extractDescription(description);
     }
     return null;
-  }, []);
+  }, [description]);
 
   return (
     <Head>
