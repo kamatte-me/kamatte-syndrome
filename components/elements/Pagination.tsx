@@ -28,7 +28,7 @@ export const Pagination: React.FC<{
           ? null
           : `${paginationBasePath}${currentPage + 1}`,
     };
-  }, [currentPage]);
+  }, [currentPage, basePath, paginationBasePath, totalPages]);
 
   return (
     <Flex

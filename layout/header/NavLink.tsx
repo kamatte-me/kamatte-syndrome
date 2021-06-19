@@ -14,7 +14,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
 
   const isActive = useMemo((): boolean => {
     return router.pathname.startsWith(to);
-  }, [router.pathname]);
+  }, [router.pathname, to]);
 
   return (
     <Link href={to}>

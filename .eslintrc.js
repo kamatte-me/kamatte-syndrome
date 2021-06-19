@@ -14,7 +14,7 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.ts', '**/*tsx'],
-      extends: ['airbnb-typescript', 'plugin:prettier/recommended'],
+      extends: ['next', 'airbnb-typescript', 'plugin:prettier/recommended'],
       parserOptions: {
         project: './tsconfig.json',
       },

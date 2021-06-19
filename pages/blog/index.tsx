@@ -26,7 +26,7 @@ export type BlogEntriesGetStaticProps<T extends ParsedUrlQuery = {}> =
 
 export const blogEntriesGetStaticProps = async (
   pageNumber: number,
-): ReturnType<BlogEntriesGetStaticProps> => {
+): Promise<ReturnType<BlogEntriesGetStaticProps>> => {
   const data = await client.getContentsRaw('blog', {
     orders: '-publishedAt',
     fields: 'id,title,featuredImage,publishedAt',

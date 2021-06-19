@@ -95,16 +95,17 @@ export const getStaticProps: GetStaticProps<
 
 const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
   ({ entry, prevEntry, nextEntry, isPreview }) => {
-    if (!entry) {
-      return <Custom404 />;
-    }
-
     const router = useRouter();
+
     const handleClearPreview = useCallback(() => {
       fetch('/api/clearPreviewData').then(() => {
         router.reload();
       });
-    }, []);
+    }, [router]);
+
+    if (!entry) {
+      return <Custom404 />;
+    }
 
     return (
       <>
