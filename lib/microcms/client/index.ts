@@ -64,8 +64,14 @@ export const createClient = <T extends EndpointTypeMap>(
   config: ClientConfig,
 ): Client<T> => {
   const baseUrl = `https://${config.serviceId}.microcms.io/api/v1`;
-  const httpOption = {
-    headers: { 'X-API-KEY': process.env.MICROCMS_API_KEY! },
+  const headers: HeadersInit = new Headers({
+    'X-API-KEY': process.env.MICROCMS_API_KEY,
+  });
+  if (process.env.MICROCMS_GLOBAL_DRAFT_KEY) {
+    headers.set('X-GLOBAL-DRAFT-KEY', process.env.MICROCMS_GLOBAL_DRAFT_KEY);
+  }
+  const httpOption: RequestInit = {
+    headers,
   };
 
   const getContent: GetContentFn<T> = async (endpoint, id, query = {}) => {
