@@ -18,7 +18,9 @@ import { baseUrl } from '@/constants/site';
 const MediaWrapper: React.FC = ({ children }) => {
   return (
     <Flex sx={{ justifyContent: 'center', my: 3 }}>
-      <Flex sx={{ width: '100%', maxWidth: '576px' }}>{children}</Flex>
+      <Flex sx={{ flexDirection: 'column', width: '100%', maxWidth: '576px' }}>
+        {children}
+      </Flex>
     </Flex>
   );
 };
