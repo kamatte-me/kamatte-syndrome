@@ -1,4 +1,4 @@
-import { AppType } from 'next/dist/next-server/lib/utils';
+import { AppType } from 'next/dist/shared/lib/utils';
 import React from 'react';
 import { Themed, ThemeProvider } from 'theme-ui';
 
