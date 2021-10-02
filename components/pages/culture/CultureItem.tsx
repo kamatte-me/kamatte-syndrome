@@ -1,16 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
-import Image, { ImageLoader } from 'next/image';
+import Image from 'next/image';
 import React, { useState } from 'react';
 import { Card, Flex, jsx } from 'theme-ui';
 
 import { PlayIcon } from '@/components/elements/Icon';
 import { YouTubeModal } from '@/components/pages/culture/YouTubeModal';
 import { Culture } from '@/lib/microcms/model';
-
-const youtubeThumbnailLoader: ImageLoader = ({ src }) => {
-  return `https://img.youtube.com/vi/${src}/hqdefault.jpg`;
-};
 
 export const CultureItem: React.FC<{
   item: Culture;
@@ -29,12 +25,12 @@ export const CultureItem: React.FC<{
           }}
         >
           <Image
-            loader={youtubeThumbnailLoader}
-            src={item.youtubeVideoId}
+            src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             alt={item.name}
             objectFit="cover"
             width={480}
             height={360}
+            unoptimized
           />
           <Flex
             sx={{
