@@ -28,7 +28,7 @@ export const blogEntriesGetStaticProps = async (
   pageNumber: number,
 ): Promise<ReturnType<BlogEntriesGetStaticProps>> => {
   const data = await client.getContentsRaw('blog', {
-    orders: '-publishedAt',
+    orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
     fields: 'id,title,featuredImage,publishedAt',
     limit: BLOG_ENTRIES_PER_PAGE,
     offset: (pageNumber - 1) * BLOG_ENTRIES_PER_PAGE,
