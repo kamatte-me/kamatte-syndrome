@@ -1,7 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx * */
 import Image from 'next/image';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useCallback, useState } from 'react';
 import { Card, Flex, jsx } from 'theme-ui';
 
 import { PlayIcon } from '@/components/elements/Icon';
@@ -11,13 +12,28 @@ import { Culture } from '@/lib/microcms/model';
 export const CultureItem: React.FC<{
   item: Culture;
 }> = ({ item }) => {
-  const [play, setPlay] = useState<boolean>(false);
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleOpen = useCallback(() => {
+    setIsOpen(true);
+    history.pushState(null, '', router.asPath);
+    router.beforePopState(() => {
+      setIsOpen(false);
+      router.beforePopState(() => true);
+      return true;
+    });
+  }, []);
+
+  const handleClose = useCallback(() => {
+    router.back();
+  }, []);
 
   return (
     <Card>
       <dd sx={{ mb: 1 }}>
         <Flex
-          onClick={() => setPlay(true)}
+          onClick={handleOpen}
           sx={{
             position: 'relative',
             cursor: 'pointer',
@@ -59,8 +75,8 @@ export const CultureItem: React.FC<{
       </dd>
       <dt sx={{ fontWeight: 'normal' }}>{item.name}</dt>
       <YouTubeModal
-        open={play}
-        handleClose={() => setPlay(false)}
+        open={isOpen}
+        handleClose={handleClose}
         cultureItem={item}
       />
     </Card>
