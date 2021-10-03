@@ -58,7 +58,7 @@ export const GlobalHead: React.FC = () => {
         strategy="afterInteractive"
       />
       <Script
-        id={'ga-dataLayer'}
+        id="ga-dataLayer"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];

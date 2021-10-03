@@ -10,6 +10,7 @@ import parse, {
 } from 'html-react-parser';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
+import Script from 'next/script';
 import React, { ElementType } from 'react';
 import { Embed, Flex, jsx, Link, Themed } from 'theme-ui';
 
@@ -124,7 +125,18 @@ const parseOption: HTMLReactParserOptions = {
           </Themed.blockquote>
         );
         if (attrProps.className && attrProps.className === 'twitter-tweet') {
-          return <MediaWrapper>{elm}</MediaWrapper>;
+          return (
+            <MediaWrapper>
+              {elm}
+              {/* eslint-disable-next-line @next/next/inline-script-id */}
+              <Script
+                dangerouslySetInnerHTML={{
+                  __html: `if (window.twttr) { window.twttr.widgets.load() }`,
+                }}
+                strategy="lazyOnload"
+              />
+            </MediaWrapper>
+          );
         }
         return elm;
       }
