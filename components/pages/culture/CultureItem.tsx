@@ -23,11 +23,11 @@ export const CultureItem: React.FC<{
       router.beforePopState(() => true);
       return true;
     });
-  }, []);
+  }, [router]);
 
   const handleClose = useCallback(() => {
     router.back();
-  }, []);
+  }, [router]);
 
   return (
     <Card>
