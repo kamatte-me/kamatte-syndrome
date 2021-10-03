@@ -166,7 +166,7 @@ const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
           <Box
             sx={{
               '>': {
-                '*:first-of-type': {
+                '*:first-child': {
                   marginTop: 0,
                 },
               },
