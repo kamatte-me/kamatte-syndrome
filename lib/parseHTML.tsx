@@ -140,6 +140,24 @@ const parseOption: HTMLReactParserOptions = {
         }
         return elm;
       }
+      case 'script': {
+        const inlineScript =
+          children.length > 0
+            ? {
+                __html: (children[0] as Text).data,
+              }
+            : undefined;
+        return (
+          <Script
+            id={attrProps.id}
+            src={attrProps.src}
+            dangerouslySetInnerHTML={inlineScript}
+            strategy="lazyOnload"
+            async={!!attrProps.async}
+            defer={!!attrProps.defer}
+          />
+        );
+      }
       default:
         if (name in Themed) {
           // @ts-ignore
