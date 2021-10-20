@@ -74,11 +74,14 @@ export const GlobalHead: React.FC = () => {
       <Script
         id="unregister-sw"
         dangerouslySetInnerHTML={{
-          __html: `navigator.serviceWorker.getRegistrations().then(function (registrations) {
-                     registrations.forEach(registration => {
-                       registration.unregister();
-                     });
-                   });`,
+          __html: `navigator.serviceWorker
+                     .getRegistrations()
+                     .then(function (registrations) {
+                       registrations.forEach(registration => {
+                         registration.unregister();
+                       });
+                     })
+                     .catch(() => {});`,
         }}
         strategy="afterInteractive"
       />
