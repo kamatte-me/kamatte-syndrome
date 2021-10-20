@@ -136,8 +136,11 @@ export const Header: React.FC = () => {
             }}
           >
             {links.map(link => (
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
-              <li key={link.to} onClick={() => setMenuOpen(false)}>
+              <li
+                key={link.to}
+                onClick={() => setMenuOpen(false)}
+                sx={{ py: 1 }}
+              >
                 <NavLink to={link.to}>{link.title}</NavLink>
               </li>
             ))}

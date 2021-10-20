@@ -17,7 +17,6 @@ export const Pagination: React.FC<{
   const { prevPath, nextPath } = useMemo(() => {
     return {
       prevPath:
-        // eslint-disable-next-line no-nested-ternary
         currentPage <= 1
           ? null
           : currentPage === 2

@@ -44,7 +44,6 @@ const handler: NextApiHandler = async (req, res) => {
       } as LineBroadcastMessagePostBody),
     });
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(err);
     return res.status(500).send(err);
   }
