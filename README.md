@@ -8,7 +8,6 @@ plz kamatte me!!!
 
 - Jamstack
 - [Next.js](https://nextjs.org/)
-- PWA (ただしインストール不可。iOSのPWA対応がお粗末なせいで色々・・・)
 
 ## インフラ
 
