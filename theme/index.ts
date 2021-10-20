@@ -205,7 +205,7 @@ export const theme: Theme = {
       p: 2,
       color: 'black',
       textDecoration: 'none',
-      fontSize: 2,
+      fontSize: [4, 2],
       '&.active, &:hover': {
         color: 'primary',
       },
