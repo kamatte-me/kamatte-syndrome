@@ -1,6 +1,7 @@
-const withPWA = require('next-pwa');
-
-module.exports = withPWA({
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   images: {
     domains: [
       'images.microcms-assets.io',
@@ -9,8 +10,6 @@ module.exports = withPWA({
       'scdn.line-apps.com',
     ],
   },
-  pwa: {
-    disable: process.env.NODE_ENV === 'development',
-    dest: 'public',
-  },
-});
+};
+
+module.exports = nextConfig;

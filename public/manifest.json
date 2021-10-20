@@ -60,6 +60,5 @@
   "theme_color": "#00c69c",
   "background_color": "#ffffff",
   "start_url": "/",
-  "display": "browser",
-  "orientation": "portrait"
+  "display": "browser"
 }
