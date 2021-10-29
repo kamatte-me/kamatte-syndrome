@@ -1,4 +1,4 @@
-/* eslint-disable react/no-danger */
+/* eslint-disable @next/next/no-page-custom-font */
 import Head from 'next/head';
 import Script from 'next/script';
 import React from 'react';
@@ -44,10 +44,18 @@ export const GlobalHead: React.FC = () => {
         <meta property="fb:app_id" content="159097111464111" />
 
         {/* Google Fonts */}
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        {/* eslint-disable-next-line @next/next/google-font-display, @next/next/no-page-custom-font */}
+        {/* eslint-disable-next-line @next/next/google-font-display */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Caveat:wght@700&family=Noto+Serif+JP:wght@400;700&display=block"
+          href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=block"
+          rel="stylesheet"
+        />
+        {/* eslint-disable-next-line @next/next/google-font-display */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&text=plzkamte!&display=block"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=optional"
           rel="stylesheet"
         />
       </Head>
