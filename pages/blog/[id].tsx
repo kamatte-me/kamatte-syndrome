@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import {
   GetStaticPaths,
   GetStaticProps,
