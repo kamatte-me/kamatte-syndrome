@@ -1,4 +1,7 @@
-module.exports = {
+/**
+ * @type {import('@typescript-eslint/experimental-utils').TSESLint.Linter.Config}
+ */
+eslintConfig = {
   extends: ['next', 'plugin:prettier/recommended'],
   parserOptions: {
     project: './tsconfig.json',
@@ -20,3 +23,5 @@ module.exports = {
     ],
   },
 };
+
+module.exports = eslintConfig;

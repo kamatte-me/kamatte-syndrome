@@ -1,8 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import React from 'react';
-import { Box, Heading, jsx } from 'theme-ui';
+import { Box, Heading } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';

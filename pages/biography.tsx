@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
 import React from 'react';
-import { Box, Flex, Grid, Heading, jsx } from 'theme-ui';
+import { Box, Flex, Grid, Heading } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { HistoryItem } from '@/components/pages/biography/History';

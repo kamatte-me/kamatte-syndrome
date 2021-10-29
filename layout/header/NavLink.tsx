@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useMemo } from 'react';
-import { Box, jsx } from 'theme-ui';
+import { Box } from 'theme-ui';
 
 interface NavLinkProps {
   to: string;

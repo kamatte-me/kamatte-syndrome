@@ -1,8 +1,7 @@
-/* @jsxRuntime classic */
-/* @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Link from 'next/link';
 import React, { useMemo } from 'react';
-import { Flex, jsx } from 'theme-ui';
+import { Flex } from 'theme-ui';
 
 import { ArrowLeft, ArrowRight } from '@/components/elements/Icon';
 

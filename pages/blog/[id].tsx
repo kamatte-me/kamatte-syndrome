@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import {
   GetStaticPaths,
   GetStaticProps,
@@ -9,16 +8,7 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useCallback } from 'react';
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  jsx,
-  Message,
-  Text,
-} from 'theme-ui';
+import { Box, Button, Container, Flex, Heading, Message, Text } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';

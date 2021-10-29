@@ -1,7 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import React from 'react';
-import { Box, Donut, Flex, jsx, Text } from 'theme-ui';
+import { Box, Donut, Flex, Text } from 'theme-ui';
 
 interface SkillItemProps {
   name: string;

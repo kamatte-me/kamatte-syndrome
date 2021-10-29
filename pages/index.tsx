@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { NextPage } from 'next';
 import Link from 'next/link';
 import React from 'react';
-import { Flex, jsx } from 'theme-ui';
+import { Flex } from 'theme-ui';
 
 import { FitScreenContainer } from '@/components/elements/FitScreenContainer';
 import { MainVisual } from '@/components/pages/index/MainVisual';

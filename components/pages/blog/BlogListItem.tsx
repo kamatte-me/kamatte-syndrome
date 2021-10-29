@@ -1,9 +1,8 @@
-/* @jsxRuntime classic */
-/* @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { Box, Flex, Heading, jsx, Text } from 'theme-ui';
+import { Box, Flex, Heading, Text } from 'theme-ui';
 
 import { formatDate } from '@/lib/date';
 import { Blog } from '@/lib/microcms/model';

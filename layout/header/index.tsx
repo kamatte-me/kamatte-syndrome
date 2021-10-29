@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useState } from 'react';
-import { Box, Flex, jsx, MenuButton } from 'theme-ui';
+import { Box, Flex, MenuButton } from 'theme-ui';
 
 import { siteName } from '@/constants/site';
 import { SideNav } from '@/layout/header/SideNav';
