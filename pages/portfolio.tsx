@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import React from 'react';
 import { Box, Heading } from 'theme-ui';

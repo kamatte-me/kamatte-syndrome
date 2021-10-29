@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import Link from 'next/link';
 import React from 'react';
 import { Box, Flex } from 'theme-ui';

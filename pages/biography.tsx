@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
 import React from 'react';
