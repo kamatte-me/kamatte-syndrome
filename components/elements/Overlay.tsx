@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import { Global } from '@emotion/react';
 import React from 'react';
-import { jsx } from 'theme-ui';
 
 export const Overlay: React.FC<{
   handleClose: () => void;

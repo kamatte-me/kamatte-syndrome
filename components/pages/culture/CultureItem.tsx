@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react';
-import { Card, Flex, jsx } from 'theme-ui';
+import { Card, Flex } from 'theme-ui';
 
 import { PlayIcon } from '@/components/elements/Icon';
 import { YouTubeModal } from '@/components/pages/culture/YouTubeModal';

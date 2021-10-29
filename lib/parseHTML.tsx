@@ -1,5 +1,4 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import parse, {
   attributesToProps,
   domToReact,
@@ -12,7 +11,7 @@ import NextImage from 'next/image';
 import NextLink from 'next/link';
 import Script from 'next/script';
 import React, { ElementType } from 'react';
-import { Embed, Flex, jsx, Link, Themed } from 'theme-ui';
+import { Embed, Flex, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 

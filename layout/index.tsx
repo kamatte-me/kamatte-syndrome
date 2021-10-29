@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import 'destyle.css';
 
 import React from 'react';
-import { Container, jsx } from 'theme-ui';
+import { Container } from 'theme-ui';
 
 import { Footer, FooterHeight } from '@/layout/Footer';
 import { GlobalHead } from '@/layout/GlobalHead';

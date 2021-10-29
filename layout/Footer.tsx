@@ -1,9 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
-
+/** @jsxImportSource theme-ui */
 import Link from 'next/link';
 import React from 'react';
-import { Box, Flex, jsx } from 'theme-ui';
+import { Box, Flex } from 'theme-ui';
 
 import { siteName } from '@/constants/site';
 

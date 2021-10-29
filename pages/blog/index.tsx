@@ -1,9 +1,8 @@
-/** @jsxRuntime classic */
-/** @jsx jsx * */
+/** @jsxImportSource theme-ui */
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import { Box, Container, jsx } from 'theme-ui';
+import { Box, Container } from 'theme-ui';
 
 import { Pagination } from '@/components/elements/Pagination';
 import { SEO } from '@/components/elements/SEO';

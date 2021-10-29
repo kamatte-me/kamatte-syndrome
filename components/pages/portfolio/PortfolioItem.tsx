@@ -1,8 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
+/** @jsxImportSource theme-ui */
 import Image from 'next/image';
 import React from 'react';
-import { Badge, Box, Flex, Heading, jsx, Link, Text } from 'theme-ui';
+import { Badge, Box, Flex, Heading, Link, Text } from 'theme-ui';
 
 import { htmlToThemed } from '@/lib/parseHTML';
 import { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
