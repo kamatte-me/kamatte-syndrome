@@ -54,10 +54,6 @@ export const GlobalHead: React.FC = () => {
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&text=plzkamte!&display=block"
           rel="stylesheet"
         />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=optional"
-          rel="stylesheet"
-        />
       </Head>
 
       {/* Google Analytics */}
