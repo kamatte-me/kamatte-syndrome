@@ -10,7 +10,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <ThemeProvider theme={theme}>
       <Themed.root>
         <Layout>
-          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <Component {...pageProps} />
         </Layout>
       </Themed.root>

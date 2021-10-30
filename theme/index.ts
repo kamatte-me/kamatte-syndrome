@@ -4,8 +4,8 @@ export const theme: Theme = {
   breakpoints: ['576px', '768px', '1024px'],
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fonts: {
-    body: `"Hiragino Mincho ProN", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "BIZ UDPMincho", "Yu Mincho", YuMincho, "Noto Serif JP", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
-    heading: `"Josefin Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK JP", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
+    body: `"BIZ UDPMincho", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
+    heading: `"Josefin Sans", -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Sans Emoji"`,
     hand: `Caveat, sans-serif`,
     monospace: 'SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace',
   },
