@@ -45,7 +45,6 @@ export const CultureItem: React.FC<{
             objectFit="cover"
             width={480}
             height={360}
-            unoptimized
           />
           <Flex
             sx={{

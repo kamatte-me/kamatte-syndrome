@@ -39,7 +39,7 @@ const CulturePage: React.FC = () => {
                     objectFit="contain"
                     width={120}
                     height={36}
-                    unoptimized
+                    quality={100}
                   />
                 </a>
               </Box>
