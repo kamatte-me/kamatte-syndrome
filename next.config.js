@@ -9,6 +9,7 @@ const nextConfig = {
       'qr-official.line.me',
       'scdn.line-apps.com',
     ],
+    formats: ['image/avif', 'image/webp'],
   },
 };
 
