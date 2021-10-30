@@ -68,7 +68,6 @@ export const GlobalHead: React.FC = () => {
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}`}
         strategy="afterInteractive"
-        async
       />
 
       {/* Unregister ServiceWorker */}
