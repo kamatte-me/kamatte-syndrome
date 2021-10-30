@@ -1,3 +1,4 @@
+import { Global } from '@emotion/react';
 import { AppType } from 'next/dist/shared/lib/utils';
 import React from 'react';
 import { Themed, ThemeProvider } from 'theme-ui';
@@ -9,6 +10,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <ThemeProvider theme={theme}>
       <Themed.root>
+        <Global
+          styles={{
+            '*': {
+              fontFeatureSettings: `'pkna'`,
+              '-webkit-font-smoothing': 'antialiased',
+            },
+          }}
+        />
         <Layout>
           <Component {...pageProps} />
         </Layout>
