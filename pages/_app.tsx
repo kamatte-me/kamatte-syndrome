@@ -14,7 +14,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           styles={{
             '*': {
               fontFeatureSettings: `'pkna'`,
-              '-webkit-font-smoothing': 'antialiased',
+              WebkitFontSmoothing: 'antialiased',
             },
           }}
         />
