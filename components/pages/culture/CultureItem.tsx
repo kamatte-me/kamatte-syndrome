@@ -16,12 +16,11 @@ export const CultureItem: React.FC<{
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
-    history.pushState(null, '', router.asPath);
-    router.beforePopState(() => {
+    window.history.pushState(null, '', router.asPath);
+    window.onpopstate = () => {
       setIsOpen(false);
-      router.beforePopState(() => true);
-      return true;
-    });
+      window.onpopstate = () => {};
+    };
   }, [router]);
 
   const handleClose = useCallback(() => {
