@@ -128,33 +128,25 @@ const parseOption: HTMLReactParserOptions = {
             <MediaWrapper>
               {elm}
               {/* eslint-disable-next-line @next/next/inline-script-id */}
-              <Script
-                dangerouslySetInnerHTML={{
-                  __html: `if (window.twttr) { window.twttr.widgets.load() }`,
-                }}
-                strategy="lazyOnload"
-              />
+              <Script strategy="lazyOnload">
+                {`if (window.twttr) { window.twttr.widgets.load() }`}
+              </Script>
             </MediaWrapper>
           );
         }
         return elm;
       }
       case 'script': {
-        const inlineScript =
-          children.length > 0
-            ? {
-                __html: (children[0] as Text).data,
-              }
-            : undefined;
         return (
           <Script
             id={attrProps.id}
             src={attrProps.src}
-            dangerouslySetInnerHTML={inlineScript}
             strategy="lazyOnload"
             async={!!attrProps.async}
             defer={!!attrProps.defer}
-          />
+          >
+            {children.length > 0 && (children[0] as Text).data}
+          </Script>
         );
       }
       default:

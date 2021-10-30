@@ -57,40 +57,34 @@ export const GlobalHead: React.FC = () => {
       </Head>
 
       {/* Google Analytics */}
+      <Script id="google-analytics-dataLayer" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}');
+        `}
+      </Script>
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}`}
         strategy="afterInteractive"
       />
-      <Script
-        id="ga-dataLayer"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}');`,
-        }}
-        strategy="afterInteractive"
-      />
 
       {/* Unregister ServiceWorker */}
-      <Script
-        id="unregister-sw"
-        dangerouslySetInnerHTML={{
-          __html: `if (navigator.serviceWorker) {
-    navigator.serviceWorker
-      .getRegistrations()
-      .then(function (registrations) {
-        registrations.forEach(registration => {
-          registration.unregister();
-        });
-      })
-      .catch(() => {});
-  }`,
-        }}
-        strategy="afterInteractive"
-      />
+      <Script id="unregister-service-worker" strategy="afterInteractive">
+        {`
+          if (navigator.serviceWorker) {
+            navigator.serviceWorker
+              .getRegistrations()
+              .then(function (registrations) {
+                registrations.forEach(registration => {
+                  registration.unregister();
+                });
+              })
+              .catch(() => {});
+          }
+        `}
+      </Script>
     </>
   );
 };
