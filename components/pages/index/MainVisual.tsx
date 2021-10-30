@@ -23,11 +23,13 @@ export const MainVisual: React.FC = () => {
           priority
         />
       </Flex>
-      <Flex>
+      <Flex sx={{ width: '100%' }}>
         <Heading
           sx={{
             variant: 'text.hand',
             fontSize: 6,
+            width: '100%',
+            textAlign: 'center',
           }}
         >
           {slogan}
