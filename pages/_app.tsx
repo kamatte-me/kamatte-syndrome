@@ -13,7 +13,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <Global
           styles={{
             '*': {
-              fontFeatureSettings: `'pkna'`,
               WebkitFontSmoothing: 'antialiased',
             },
           }}
