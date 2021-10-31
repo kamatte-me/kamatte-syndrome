@@ -12,7 +12,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <Themed.root>
         <Global
           styles={{
-            '*': {
+            body: {
               WebkitFontSmoothing: 'antialiased',
             },
           }}
