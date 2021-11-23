@@ -2,11 +2,11 @@
  * @type {import('@typescript-eslint/experimental-utils').TSESLint.Linter.Config}
  */
 eslintConfig = {
-  extends: ['next', 'plugin:prettier/recommended'],
+  extends: ['next', 'prettier'],
   parserOptions: {
     project: './tsconfig.json',
   },
-  plugins: ['prettier', 'simple-import-sort', 'unused-imports'],
+  plugins: ['simple-import-sort', 'unused-imports'],
   rules: {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
