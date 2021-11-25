@@ -1,4 +1,4 @@
-import { Global } from '@emotion/react';
+import { Global as GlobalStyle } from '@emotion/react';
 import { AppType } from 'next/dist/shared/lib/utils';
 import React from 'react';
 import { Themed, ThemeProvider } from 'theme-ui';
@@ -10,9 +10,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <ThemeProvider theme={theme}>
       <Themed.root>
-        <Global
+        <GlobalStyle
           styles={{
             body: {
+              wordBreak: 'break-all',
               WebkitFontSmoothing: 'antialiased',
             },
           }}
