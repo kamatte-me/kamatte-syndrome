@@ -1,4 +1,5 @@
-/** @jsxImportSource theme-ui */
+/* eslint-disable @typescript-eslint/no-use-before-define, react/jsx-pascal-case, react/jsx-props-no-spreading */
+
 import parse, {
   attributesToProps,
   domToReact,
@@ -15,15 +16,13 @@ import { Embed, Flex, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
-const MediaWrapper: React.FC = ({ children }) => {
-  return (
-    <Flex sx={{ justifyContent: 'center', my: 3 }}>
-      <Flex sx={{ flexDirection: 'column', width: '100%', maxWidth: '576px' }}>
-        {children}
-      </Flex>
+const MediaWrapper: React.FC = ({ children }) => (
+  <Flex sx={{ justifyContent: 'center', my: 3 }}>
+    <Flex sx={{ flexDirection: 'column', width: '100%', maxWidth: '576px' }}>
+      {children}
     </Flex>
-  );
-};
+  </Flex>
+);
 
 const parseStyleString = (styleStr?: string | null) => {
   if (!styleStr) {
@@ -87,6 +86,7 @@ const parseOption: HTMLReactParserOptions = {
         if (attribs.href.startsWith(baseUrl)) {
           return (
             <NextLink href={attribs.href.replace(baseUrl, '')}>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a>
                 <span sx={{ variant: 'styles.a' }}>
                   {parseChildren(children)}
@@ -129,7 +129,7 @@ const parseOption: HTMLReactParserOptions = {
               {elm}
               {/* eslint-disable-next-line @next/next/inline-script-id */}
               <Script strategy="lazyOnload">
-                {`if (window.twttr) { window.twttr.widgets.load() }`}
+                {'if (window.twttr) { window.twttr.widgets.load() }'}
               </Script>
             </MediaWrapper>
           );
@@ -167,16 +167,14 @@ const parseOption: HTMLReactParserOptions = {
   },
 };
 
-const parseChildren = (children: Element['children']) => {
-  return domToReact(children, parseOption);
-};
+const parseChildren = (children: Element['children']) =>
+  domToReact(children, parseOption);
 
-export const htmlToThemed = (html: string): ReturnType<typeof parse> => {
-  return parse(html, parseOption);
-};
+export const htmlToThemed = (html: string): ReturnType<typeof parse> =>
+  parse(html, parseOption);
 
-const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string => {
-  return dom
+const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string =>
+  dom
     .reduce((acc, current) => {
       if (['script', 'iframe'].includes((current as Element).name)) {
         return acc;
@@ -194,8 +192,6 @@ const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string => {
       return newText === '' ? acc : [...acc, newText];
     }, [] as string[])
     .join(' ');
-};
 
-export const htmlToTextContent = (html: string): string => {
-  return parseDOMText(htmlToDOM(html));
-};
+export const htmlToTextContent = (html: string): string =>
+  parseDOMText(htmlToDOM(html));

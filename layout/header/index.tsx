@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useState } from 'react';
@@ -77,6 +76,7 @@ export const Header: React.FC = () => {
               }}
             >
               <Link href="/">
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <a>
                   <Image
                     src="/logo.svg"

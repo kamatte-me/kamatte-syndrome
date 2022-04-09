@@ -19,6 +19,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           }}
         />
         <Layout>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <Component {...pageProps} />
         </Layout>
       </Themed.root>

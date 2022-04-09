@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge, Box, Flex, Heading, Link, Text } from 'theme-ui';
 
 import { htmlToThemed } from '@/lib/parseHTML';
-import { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
+import type { PortfolioItem as PortfolioItemType } from '@/pages/portfolio';
 
 const FeaturedImage: React.FC<{
   item: PortfolioItemType;

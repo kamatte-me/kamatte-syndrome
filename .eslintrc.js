@@ -1,33 +1,49 @@
-/**
- * @type {import('@typescript-eslint/experimental-utils').TSESLint.Linter.Config}
- */
-eslintConfig = {
-  extends: ['next', 'prettier'],
+module.exports = {
+  env: {
+    browser: true,
+    node: true,
+  },
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   parserOptions: {
-    project: './tsconfig.json',
+    ecmaVersion: 2021,
   },
-  plugins: ['simple-import-sort', 'unused-imports'],
-  rules: {
-    'semi': ['error', 'always'],
-    'semi-spacing': ['error', {'after': true, 'before': false}],
-    'semi-style': ['error', 'last'],
-    'no-extra-semi': 'error',
-    'no-unexpected-multiline': 'error',
-    'no-unreachable': 'error',
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
-    '@typescript-eslint/no-unused-vars': 0,
-    'unused-imports/no-unused-imports-ts': 'warn',
-    'unused-imports/no-unused-vars': [
-      'warn',
-      {
-        vars: 'all',
-        varsIgnorePattern: '^_',
-        args: 'after-used',
-        argsIgnorePattern: '^_',
+  overrides: [
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      extends: [
+        'airbnb',
+        'airbnb-typescript',
+        'next',
+        'plugin:prettier/recommended',
+      ],
+      parserOptions: {
+        project: './tsconfig.json',
       },
-    ],
-  },
+      plugins: ['simple-import-sort', 'unused-imports'],
+      rules: {
+        'consistent-return': 0,
+        'import/prefer-default-export': 0,
+        'react/function-component-definition': 0,
+        'react/jsx-pascal-case': 0,
+        'react/require-default-props': 0,
+        'react/destructuring-assignment': 0,
+        'jsx-a11y/click-events-have-key-events': 0,
+        'jsx-a11y/no-noninteractive-element-interactions': 0,
+        'react/jsx-no-useless-fragment': 0,
+        'simple-import-sort/imports': 'error',
+        'simple-import-sort/exports': 'error',
+        '@typescript-eslint/no-unused-vars': 'off',
+        'unused-imports/no-unused-imports': 'error',
+        'unused-imports/no-unused-vars': [
+          'warn',
+          {
+            vars: 'all',
+            varsIgnorePattern: '^_',
+            args: 'after-used',
+            argsIgnorePattern: '^_',
+          },
+        ],
+      },
+    },
+  ],
 };
-
-module.exports = eslintConfig;

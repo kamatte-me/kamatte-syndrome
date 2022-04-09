@@ -13,42 +13,47 @@ type LineBroadcastMessagePostBody = {
   }[];
 };
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextApiHandler = (req, res) => {
   if (req.method !== 'POST') {
-    return res.status(400).end();
+    res.status(400).end();
+    return;
   }
 
   const { access_token: accessToken, title, url } = req.body as RequestBody;
   if (!accessToken || !title || !url) {
-    return res.status(400).end();
+    res.status(400).end();
+    return;
   }
   if (accessToken !== process.env.LINE_ACCESS_TOKEN) {
-    return res.status(401).end();
+    res.status(401).end();
+    return;
   }
 
-  try {
-    // https://developers.line.biz/ja/reference/messaging-api/#send-broadcast-message
-    await fetch('https://api.line.me/v2/bot/message/broadcast', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
+  const body: LineBroadcastMessagePostBody = {
+    messages: [
+      {
+        type: 'text',
+        text: `ウェブログｺｼｰﾝしますた\n\n${title}\n${url}`,
       },
-      body: JSON.stringify({
-        messages: [
-          {
-            type: 'text',
-            text: `ウェブログｺｼｰﾝしますた\n\n${title}\n${url}`,
-          },
-        ],
-      } as LineBroadcastMessagePostBody),
+    ],
+  };
+  // https://developers.line.biz/ja/reference/messaging-api/#send-broadcast-message
+  return fetch('https://api.line.me/v2/bot/message/broadcast', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+    .then(() => {
+      res.status(200).end();
+    })
+    .catch(err => {
+      // eslint-disable-next-line no-console
+      console.error(err);
+      res.status(500).send(err);
     });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send(err);
-  }
-
-  return res.status(200).end();
 };
 
 export default handler;

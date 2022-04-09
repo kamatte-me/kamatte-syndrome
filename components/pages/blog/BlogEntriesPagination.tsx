@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import Link from 'next/link';
 import React from 'react';
 import { Flex } from 'theme-ui';
@@ -27,6 +26,7 @@ export const BlogEntriesPagination: React.FC<{
       >
         {prev && (
           <Link href={`/blog/${prev.id}`}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
               <Flex
                 sx={{
@@ -60,6 +60,7 @@ export const BlogEntriesPagination: React.FC<{
       >
         {next && (
           <Link href={`/blog/${next.id}`}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
               <Flex
                 sx={{

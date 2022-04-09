@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import Link from 'next/link';
 import React, { useMemo } from 'react';
 import { Flex } from 'theme-ui';
@@ -14,17 +13,20 @@ export const Pagination: React.FC<{
   paginationBasePath: string;
 }> = ({ totalPages, currentPage, basePath, paginationBasePath }) => {
   const { prevPath, nextPath } = useMemo(() => {
+    let prev: string | null = null;
+    if (currentPage === 2) {
+      prev = basePath;
+    } else if (currentPage > 2) {
+      prev = `${paginationBasePath}${currentPage - 1}`;
+    }
+    const next =
+      currentPage === totalPages
+        ? null
+        : `${paginationBasePath}${currentPage + 1}`;
+
     return {
-      prevPath:
-        currentPage <= 1
-          ? null
-          : currentPage === 2
-          ? basePath
-          : `${paginationBasePath}${currentPage - 1}`,
-      nextPath:
-        currentPage === totalPages
-          ? null
-          : `${paginationBasePath}${currentPage + 1}`,
+      prevPath: prev,
+      nextPath: next,
     };
   }, [currentPage, basePath, paginationBasePath, totalPages]);
 
@@ -38,6 +40,7 @@ export const Pagination: React.FC<{
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {prevPath && (
           <Link href={prevPath}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
               <ArrowLeft
                 size={ICON_SIZE}
@@ -56,6 +59,7 @@ export const Pagination: React.FC<{
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {nextPath && (
           <Link href={nextPath}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
               <ArrowRight
                 size={ICON_SIZE}

@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import React from 'react';
 import { Box, Container, Embed, Flex, Heading } from 'theme-ui';
 

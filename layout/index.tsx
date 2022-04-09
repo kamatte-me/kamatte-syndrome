@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import 'destyle.css';
 
 import React from 'react';
