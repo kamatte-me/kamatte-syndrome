@@ -16,6 +16,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
 
   return (
     <Link href={to}>
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
       <a>
         <Box
           sx={{

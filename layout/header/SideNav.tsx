@@ -1,9 +1,7 @@
-/** @jsxImportSource theme-ui */
 import React from 'react';
 
 import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
-import { HeaderHeight } from '@/layout/header/index';
 
 interface SideNavProps {
   open: boolean;
@@ -27,7 +25,7 @@ export const SideNav: React.FC<SideNavProps> = ({
           zIndex: 101,
           minWidth: 0,
           width: '50vw',
-          paddingTop: HeaderHeight,
+          paddingTop: 64,
           px: 3,
           maxHeight: '100vh',
           overflowX: 'visible',

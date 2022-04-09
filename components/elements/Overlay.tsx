@@ -1,4 +1,3 @@
-/** @jsxImportSource theme-ui */
 import { Global } from '@emotion/react';
 import React from 'react';
 
@@ -19,6 +18,7 @@ export const Overlay: React.FC<{
           bg: bgColor,
           zIndex: 100,
         }}
+        role="dialog"
       />
       <Global
         styles={{

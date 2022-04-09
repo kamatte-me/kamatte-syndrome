@@ -17,6 +17,7 @@ export const BlogListItem: React.FC<{
         }}
       >
         <Link href={`/blog/${entry.id}`}>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a>
             <Flex
               sx={{

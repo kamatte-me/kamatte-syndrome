@@ -47,52 +47,53 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
-const PortfolioPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ portfolio }) => {
-    return (
-      <>
-        <SEO
-          title="Portfolio"
-          description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
-        />
-        {Object.keys(portfolio)
-          .reverse()
-          .map(year => (
-            <Box
-              key={year}
+const PortfolioPage: NextPage<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ portfolio }) => {
+  return (
+    <>
+      <SEO
+        title="Portfolio"
+        description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
+      />
+      {Object.keys(portfolio)
+        .reverse()
+        .map(year => (
+          <Box
+            key={year}
+            sx={{
+              ':not(:last-child)': {
+                mb: 5,
+              },
+            }}
+          >
+            <Heading
+              as="h1"
               sx={{
-                ':not(:last-child)': {
-                  mb: 5,
-                },
+                fontSize: 5,
+                mb: 4,
+                textAlign: 'center',
               }}
             >
-              <Heading
-                as="h1"
+              {year}
+            </Heading>
+            {portfolio[Number(year)].map(item => (
+              <Box
+                key={item.id}
+                as="ul"
                 sx={{
-                  fontSize: 5,
-                  mb: 4,
-                  textAlign: 'center',
+                  ':not(:last-child)': {
+                    mb: 5,
+                  },
                 }}
               >
-                {year}
-              </Heading>
-              {portfolio[Number(year)].map(item => (
-                <Box
-                  key={item.id}
-                  as="ul"
-                  sx={{
-                    ':not(:last-child)': {
-                      mb: 5,
-                    },
-                  }}
-                >
-                  <PortfolioItemComponent item={item} />
-                </Box>
-              ))}
-            </Box>
-          ))}
-      </>
-    );
-  };
+                <PortfolioItemComponent item={item} />
+              </Box>
+            ))}
+          </Box>
+        ))}
+    </>
+  );
+};
 
 export default PortfolioPage;

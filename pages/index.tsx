@@ -17,6 +17,7 @@ const IndexPage: NextPage = () => {
         }}
       >
         <Link href="/biography">
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a>
             <MainVisual />
           </a>

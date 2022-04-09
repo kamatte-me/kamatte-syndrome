@@ -82,94 +82,96 @@ export const getStaticProps: GetStaticProps<
   };
 };
 
-const BlogEntryPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> =
-  ({ entry, prevEntry, nextEntry, isPreview }) => {
-    const router = useRouter();
+const BlogEntryPage: NextPage<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ entry, prevEntry, nextEntry, isPreview }) => {
+  const router = useRouter();
 
-    const handleClearPreview = useCallback(() => {
-      fetch('/api/clearPreviewData').then(() => {
-        router.reload();
-      });
-    }, [router]);
+  const handleClearPreview = useCallback(() => {
+    fetch('/api/clearPreviewData').then(() => {
+      router.reload();
+    });
+  }, [router]);
 
-    if (!entry) {
-      return <Custom404 />;
-    }
+  if (!entry) {
+    return <Custom404 />;
+  }
 
-    return (
-      <>
-        <SEO
-          title={entry.title}
-          description={htmlToTextContent(entry.body)}
-          ogImageUrl={entry.featuredImage && entry.featuredImage.url}
-          ogType="article"
-        />
-        <Container variant="narrowContainer">
-          {isPreview && (
-            <Message variant="primary" sx={{ textAlign: 'center', mb: 3 }}>
-              <Text sx={{ fontWeight: 'bold' }}>プレビュー中</Text>
-              <Button
-                variant="secondary"
-                onClick={() => handleClearPreview()}
-                sx={{
-                  ml: 3,
-                }}
-              >
-                解除
-              </Button>
-            </Message>
-          )}
-          <Box sx={{ mb: 4 }}>
-            <Heading
+  return (
+    <>
+      <SEO
+        title={entry.title}
+        description={htmlToTextContent(entry.body)}
+        ogImageUrl={entry.featuredImage && entry.featuredImage.url}
+        ogType="article"
+      />
+      <Container as="article" variant="narrowContainer">
+        {isPreview && (
+          <Message variant="primary" sx={{ textAlign: 'center', mb: 3 }}>
+            <Text sx={{ fontWeight: 'bold' }}>プレビュー中</Text>
+            <Button
+              variant="secondary"
+              onClick={() => handleClearPreview()}
               sx={{
-                variant: 'text.headingSerif',
-                fontSize: 5,
-                mb: 2,
+                ml: 3,
               }}
             >
-              {entry.title}
-            </Heading>
-            <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
-              {formatDate(entry.publishedAt)}
-            </Text>
-            {entry.featuredImage && (
-              <Flex
-                sx={{
-                  width: '100%',
-                  height: 200,
-                  justifyContent: 'center',
-                  mt: 2,
-                }}
-              >
-                <Image
-                  src={entry.featuredImage.url}
-                  alt={entry.title}
-                  objectFit="contain"
-                  width={entry.featuredImage.width}
-                  height={entry.featuredImage.height}
-                  priority
-                />
-              </Flex>
-            )}
-          </Box>
-          <Box
+              解除
+            </Button>
+          </Message>
+        )}
+        <Box sx={{ mb: 4 }}>
+          <Heading
+            as="h1"
             sx={{
-              lineHeight: 1.9,
-              '>': {
-                '*:first-child': {
-                  marginTop: 0,
-                },
-              },
+              variant: 'text.headingSerif',
+              fontSize: 5,
+              mb: 2,
             }}
           >
-            {htmlToThemed(entry.body)}
-          </Box>
-          <Box sx={{ mt: 5 }}>
-            <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
-          </Box>
-        </Container>
-      </>
-    );
-  };
+            {entry.title}
+          </Heading>
+          <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
+            {formatDate(entry.publishedAt)}
+          </Text>
+          {entry.featuredImage && (
+            <Flex
+              sx={{
+                width: '100%',
+                height: 200,
+                justifyContent: 'center',
+                mt: 2,
+              }}
+            >
+              <Image
+                src={entry.featuredImage.url}
+                alt={entry.title}
+                objectFit="contain"
+                width={entry.featuredImage.width}
+                height={entry.featuredImage.height}
+                priority
+              />
+            </Flex>
+          )}
+        </Box>
+        <Box
+          sx={{
+            lineHeight: 1.9,
+            '>': {
+              '*:first-child': {
+                marginTop: 0,
+              },
+            },
+          }}
+        >
+          {htmlToThemed(entry.body)}
+        </Box>
+        <Box sx={{ mt: 5 }}>
+          <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
+        </Box>
+      </Container>
+    </>
+  );
+};
 
 export default BlogEntryPage;

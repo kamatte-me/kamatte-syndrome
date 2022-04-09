@@ -74,13 +74,14 @@ export const createClient = <T extends EndpointTypeMap>(
     return fetch(
       `${baseUrl}/${endpoint}/${id}${makeQueryString(query)}`,
       httpOption,
-    )
-      .then(res => res.json());
+    ).then(res => res.json());
   };
 
   const getContentsRaw: GetContentsRawFn<T> = async (endpoint, query = {}) => {
-    return fetch(`${baseUrl}/${endpoint}${makeQueryString(query)}`, httpOption)
-      .then(res => res.json());
+    return fetch(
+      `${baseUrl}/${endpoint}${makeQueryString(query)}`,
+      httpOption,
+    ).then(res => res.json());
   };
 
   const getContents: GetContentsFn<T> = async (endpoint, query = {}) => {
