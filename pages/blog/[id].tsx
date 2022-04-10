@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     limit: 50,
   });
   const paths = entries.map(entry => `/blog/${entry.id}`);
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 };
 
 export interface BlogPreviewData {
