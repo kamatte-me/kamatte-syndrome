@@ -6,7 +6,7 @@ import {
 } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import { Box, Button, Container, Flex, Heading, Message, Text } from 'theme-ui';
 
 import { SEO } from '@/components/elements/SEO';
@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     limit: 50,
   });
   const paths = entries.map(entry => `/blog/${entry.id}`);
-  return { paths, fallback: true };
+  return { paths, fallback: 'blocking' };
 };
 
 export interface BlogPreviewData {
@@ -97,11 +97,23 @@ const BlogEntryPage: NextPage<
     return <Custom404 />;
   }
 
+  // eslint-disable-next-line react/display-name
+  const Body = React.memo<{ body: Blog['body'] }>(({ body }) => {
+    return (
+      <>
+        {body.map((b, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Fragment key={`body-${i}`}>{htmlToThemed(b.body)}</Fragment>
+        ))}
+      </>
+    );
+  });
+
   return (
     <>
       <SEO
         title={entry.title}
-        description={htmlToTextContent(entry.body)}
+        description={entry.body.map(b => htmlToTextContent(b.body)).join('')}
         ogImageUrl={entry.featuredImage && entry.featuredImage.url}
         ogType="article"
       />
@@ -164,7 +176,7 @@ const BlogEntryPage: NextPage<
             },
           }}
         >
-          {htmlToThemed(entry.body)}
+          <Body body={entry.body} />
         </Box>
         <Box sx={{ mt: 5 }}>
           <BlogEntriesPagination prev={prevEntry} next={nextEntry} />

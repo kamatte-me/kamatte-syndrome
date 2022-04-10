@@ -1,22 +1,41 @@
-import { Image, Model } from '@/lib/microcms/client/types/model';
+import {
+  CustomField,
+  Image,
+  Model,
+  RepeatedField,
+} from '@/lib/microcms/client/types/model';
 
-export interface Blog extends Model {
+type BlogCustomFieldRichEditor = CustomField<
+  'richEditor',
+  {
+    body: string;
+  }
+>;
+
+type BlogCustomFieldHTML = CustomField<
+  'html',
+  {
+    body: string;
+  }
+>;
+
+export type Blog = Model<{
   title: string;
-  body: string;
+  body: RepeatedField<BlogCustomFieldRichEditor | BlogCustomFieldHTML>;
   featuredImage?: Image | null;
-}
+}>;
 
-export interface History extends Model {
+export type History = Model<{
   year: number;
   body: string;
-}
+}>;
 
-export interface Skill extends Model {
+export type Skill = Model<{
   name: string;
   level: number;
-}
+}>;
 
-export interface Portfolio extends Model {
+export type Portfolio = Model<{
   year: number;
   title: string;
   url?: string | null;
@@ -24,10 +43,10 @@ export interface Portfolio extends Model {
   category: string;
   description: string;
   technologies?: string | null;
-}
+}>;
 
-export interface Culture extends Model {
+export type Culture = Model<{
   name: string;
   youtubeVideoId: string;
   description: string;
-}
+}>;

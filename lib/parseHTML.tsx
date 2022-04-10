@@ -8,11 +8,11 @@ import parse, {
   htmlToDOM,
   Text,
 } from 'html-react-parser';
+import Head from 'next/head';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import Script from 'next/script';
 import React, { ElementType } from 'react';
-import { Embed, Flex, Link, Themed } from 'theme-ui';
+import { Embed, Flex, Heading, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
@@ -54,33 +54,33 @@ const parseOption: HTMLReactParserOptions = {
     switch (name as ElementType) {
       case 'h1':
         return (
-          <Themed.h1 {...attrProps} as="h2">
+          <Heading {...attrProps} variant="styles.h1" as="h2">
             {parseChildren(children)}
-          </Themed.h1>
+          </Heading>
         );
       case 'h2':
         return (
-          <Themed.h2 {...attrProps} as="h3">
+          <Heading {...attrProps} variant="styles.h2" as="h3">
             {parseChildren(children)}
-          </Themed.h2>
+          </Heading>
         );
       case 'h3':
         return (
-          <Themed.h3 {...attrProps} as="h4">
+          <Heading {...attrProps} variant="styles.h3" as="h4">
             {parseChildren(children)}
-          </Themed.h3>
+          </Heading>
         );
       case 'h4':
         return (
-          <Themed.h4 {...attrProps} as="h5">
+          <Heading {...attrProps} variant="styles.h4" as="h5">
             {parseChildren(children)}
-          </Themed.h4>
+          </Heading>
         );
       case 'h5':
         return (
-          <Themed.h5 {...attrProps} as="h6">
+          <Heading {...attrProps} variant="styles.h5" as="h6">
             {parseChildren(children)}
-          </Themed.h5>
+          </Heading>
         );
       case 'a':
         if (attribs.href.startsWith(baseUrl)) {
@@ -124,29 +124,22 @@ const parseOption: HTMLReactParserOptions = {
           </Themed.blockquote>
         );
         if (attrProps.className && attrProps.className === 'twitter-tweet') {
-          return (
-            <MediaWrapper>
-              {elm}
-              {/* eslint-disable-next-line @next/next/inline-script-id */}
-              <Script strategy="lazyOnload">
-                {'if (window.twttr) { window.twttr.widgets.load() }'}
-              </Script>
-            </MediaWrapper>
-          );
+          return <MediaWrapper>{elm}</MediaWrapper>;
         }
         return elm;
       }
       case 'script': {
         return (
-          <Script
-            id={attrProps.id}
-            src={attrProps.src}
-            strategy="lazyOnload"
-            async={!!attrProps.async}
-            defer={!!attrProps.defer}
-          >
-            {children.length > 0 && (children[0] as Text).data}
-          </Script>
+          <Head>
+            <script
+              id={attrProps.id}
+              src={attrProps.src}
+              async={!!attrProps.async}
+              defer={!!attrProps.defer}
+            >
+              {children.length > 0 && (children[0] as Text).data}
+            </script>
+          </Head>
         );
       }
       default:

@@ -35,13 +35,14 @@ export const getStaticProps: GetStaticProps = async () => {
 
   blogEntries.forEach(entry => {
     const url = `${baseUrl}/blog/${entry.id}`;
+    const body = entry.body.map(b => b.body).join('');
     feed.addItem({
       title: entry.title,
       id: url,
       link: url,
       date: new Date(entry.publishedAt!),
-      description: entry.body,
-      content: entry.body,
+      description: body,
+      content: body,
       image: entry.featuredImage
         ? entry.featuredImage.url
         : `${baseUrl}/avatar.png`,
