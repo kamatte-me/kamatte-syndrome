@@ -8,9 +8,9 @@ import parse, {
   htmlToDOM,
   Text,
 } from 'html-react-parser';
+import Head from 'next/head';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import Script from 'next/script';
 import React, { ElementType } from 'react';
 import { Embed, Flex, Link, Themed } from 'theme-ui';
 
@@ -124,29 +124,22 @@ const parseOption: HTMLReactParserOptions = {
           </Themed.blockquote>
         );
         if (attrProps.className && attrProps.className === 'twitter-tweet') {
-          return (
-            <MediaWrapper>
-              {elm}
-              {/* eslint-disable-next-line @next/next/inline-script-id */}
-              <Script strategy="lazyOnload">
-                {'if (window.twttr) { window.twttr.widgets.load() }'}
-              </Script>
-            </MediaWrapper>
-          );
+          return <MediaWrapper>{elm}</MediaWrapper>;
         }
         return elm;
       }
       case 'script': {
         return (
-          <Script
-            id={attrProps.id}
-            src={attrProps.src}
-            strategy="lazyOnload"
-            async={!!attrProps.async}
-            defer={!!attrProps.defer}
-          >
-            {children.length > 0 && (children[0] as Text).data}
-          </Script>
+          <Head>
+            <script
+              id={attrProps.id}
+              src={attrProps.src}
+              async={!!attrProps.async}
+              defer={!!attrProps.defer}
+            >
+              {children.length > 0 && (children[0] as Text).data}
+            </script>
+          </Head>
         );
       }
       default:

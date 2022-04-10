@@ -15,22 +15,22 @@ type GetContentFn<T> = <K extends keyof T>(
   endpoint: K,
   id: string,
   query?: GetContentQuery,
-) => Promise<T[K] & Model>;
+) => Promise<Model<T[K]>>;
 
 type GetContentsRawFn<T> = <K extends keyof T>(
   endpoint: K,
   query?: GetContentsQuery,
-) => Promise<GetContentsResponse<T[K] & Model>>;
+) => Promise<GetContentsResponse<Model<T[K]>>>;
 
 type GetContentsFn<T> = <K extends keyof T>(
   endpoint: K,
   query?: GetContentsQuery,
-) => Promise<(T[K] & Model)[]>;
+) => Promise<Model<T[K]>[]>;
 
 type GetAllContentsFn<T> = <K extends keyof T>(
   endpoint: K,
   query?: GetAllContentsQuery,
-) => Promise<(T[K] & Model)[]>;
+) => Promise<Model<T[K]>[]>;
 
 interface Client<T extends EndpointTypeMap> {
   getContent: GetContentFn<T>;
