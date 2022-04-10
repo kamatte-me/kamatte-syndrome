@@ -12,7 +12,7 @@ import Head from 'next/head';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import React, { ElementType } from 'react';
-import { Embed, Flex, Link, Themed } from 'theme-ui';
+import { Embed, Flex, Heading, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
@@ -54,33 +54,33 @@ const parseOption: HTMLReactParserOptions = {
     switch (name as ElementType) {
       case 'h1':
         return (
-          <Themed.h1 {...attrProps} as="h2">
+          <Heading {...attrProps} variant="styles.h1" as="h2">
             {parseChildren(children)}
-          </Themed.h1>
+          </Heading>
         );
       case 'h2':
         return (
-          <Themed.h2 {...attrProps} as="h3">
+          <Heading {...attrProps} variant="styles.h2" as="h3">
             {parseChildren(children)}
-          </Themed.h2>
+          </Heading>
         );
       case 'h3':
         return (
-          <Themed.h3 {...attrProps} as="h4">
+          <Heading {...attrProps} variant="styles.h3" as="h4">
             {parseChildren(children)}
-          </Themed.h3>
+          </Heading>
         );
       case 'h4':
         return (
-          <Themed.h4 {...attrProps} as="h5">
+          <Heading {...attrProps} variant="styles.h4" as="h5">
             {parseChildren(children)}
-          </Themed.h4>
+          </Heading>
         );
       case 'h5':
         return (
-          <Themed.h5 {...attrProps} as="h6">
+          <Heading {...attrProps} variant="styles.h5" as="h6">
             {parseChildren(children)}
-          </Themed.h5>
+          </Heading>
         );
       case 'a':
         if (attribs.href.startsWith(baseUrl)) {
