@@ -35,7 +35,7 @@ export const Footer: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        color: 'gray',
+        color: 'darkgray',
       }}
     >
       <Box as="small" sx={{ fontSize: 0, mb: 1 }}>
@@ -51,6 +51,9 @@ export const Footer: React.FC = () => {
                 content: `"|"`,
                 mx: 2,
               },
+            },
+            a: {
+              color: 'darkgray',
             },
           },
         }}
