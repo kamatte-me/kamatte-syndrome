@@ -1,4 +1,5 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import Link from 'next/link';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { Box, Container } from 'theme-ui';
@@ -65,7 +66,12 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               },
             }}
           >
-            <BlogListItem entry={entry} />
+            <Link href={`/blog/${entry.id}`}>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a>
+                <BlogListItem entry={entry} />
+              </a>
+            </Link>
           </Box>
         ))}
 
