@@ -33,6 +33,13 @@ const PrivacyPolicyPage: React.FC = () => {
             <br />
             なお、この機能はCookieを無効にすることで収集を拒否することが可能ですので、お使いのブラウザの設定をご確認ください。
           </Paragraph>
+
+          <Heading as="h2" sx={{ fontSize: 4, mb: 3, mt: 4 }}>
+            Amazonアソシエイトについて
+          </Heading>
+          <Paragraph>
+            Amazonのアソシエイトとして、当サイトは適格販売により収入を得ています。
+          </Paragraph>
         </Box>
       </Container>
     </>
