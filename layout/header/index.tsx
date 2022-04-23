@@ -48,6 +48,8 @@ export const Header: React.FC = () => {
         as="header"
         sx={{
           position: 'fixed',
+          top: 0,
+          left: 0,
           zIndex: 2,
           width: '100%',
         }}
