@@ -192,8 +192,6 @@ const BlogEntryPage: NextPage<
           {entry.featuredImage && (
             <Flex
               sx={{
-                width: '100%',
-                height: 200,
                 justifyContent: 'center',
                 mt: 2,
               }}
@@ -201,14 +199,23 @@ const BlogEntryPage: NextPage<
               <Image
                 src={entry.featuredImage.url}
                 alt={entry.title}
-                objectFit="contain"
-                width={entry.featuredImage.width}
-                height={entry.featuredImage.height}
+                width={
+                  entry.featuredImage.height > 400
+                    ? entry.featuredImage.width *
+                      (400 / entry.featuredImage.height)
+                    : entry.featuredImage.width
+                }
+                height={
+                  entry.featuredImage.height > 400
+                    ? 400
+                    : entry.featuredImage.url
+                }
                 priority
               />
             </Flex>
           )}
         </Box>
+
         <Box
           sx={{
             lineHeight: 1.9,
