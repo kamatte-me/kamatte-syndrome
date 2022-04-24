@@ -21,7 +21,7 @@ import Custom404 from '@/pages/404';
 export const getStaticPaths: GetStaticPaths = async () => {
   const entries = await client.getAllContents('blog', {
     fields: 'id',
-    limit: 50,
+    limit: 100,
   });
   const paths = entries.map(entry => `/blog/${entry.id}`);
   return { paths, fallback: 'blocking' };
