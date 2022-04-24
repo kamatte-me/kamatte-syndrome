@@ -60,18 +60,12 @@ export const getStaticProps: GetStaticProps = async () => {
     orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
     limit: 100,
   });
-  stream.write({
-    url: '/blog',
-    changefreq: EnumChangefreq.WEEKLY,
-    lastmod: blogEntries[0].revisedAt,
-    priority: 0.5,
-  } as SitemapItemLoose);
-  for (let i = 2; i <= Math.ceil(blogEntries.length / 5); i += 1) {
+  for (let i = 1; i <= Math.ceil(blogEntries.length / 5); i += 1) {
     stream.write({
-      url: `/blog/page/${i}`,
+      url: i === 1 ? '/blog' : `/blog/page/${i}`,
       changefreq: EnumChangefreq.WEEKLY,
-      lastmod: blogEntries[(i - 1) * 5].revisedAt,
-      priority: 0.5,
+      lastmod: blogEntries[0].publishedAt,
+      priority: i === 1 ? 0.5 : 0.1,
     } as SitemapItemLoose);
   }
 
