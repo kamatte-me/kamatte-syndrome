@@ -30,7 +30,8 @@ export const getStaticProps: GetStaticProps = async () => {
   });
 
   const blogEntries = await client.getAllContents('blog', {
-    fields: '',
+    orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
+    limit: 20,
   });
 
   blogEntries.forEach(entry => {

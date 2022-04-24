@@ -48,13 +48,17 @@ export const getStaticProps: GetStaticProps = async () => {
       lastmod: latestCulture[0].revisedAt,
       priority: 0.4,
     },
-    { url: '/subscribe', changefreq: EnumChangefreq.YEARLY, priority: 0.3 },
+    { url: '/subscribe', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
+    { url: '/terms', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
+    { url: '/privacy', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
   ];
   staticPages.forEach(page => stream.write(page));
 
+  // ブログ
   const blogEntries = await client.getAllContents('blog', {
     fields: 'id,publishedAt,revisedAt',
-    limit: 50,
+    orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
+    limit: 100,
   });
   stream.write({
     url: '/blog',
@@ -62,6 +66,15 @@ export const getStaticProps: GetStaticProps = async () => {
     lastmod: blogEntries[0].publishedAt,
     priority: 0.5,
   } as SitemapItemLoose);
+  for (let i = 1; i <= Math.ceil(blogEntries.length / 5); i += 1) {
+    stream.write({
+      url: `/blog/page/${i}`,
+      changefreq: EnumChangefreq.WEEKLY,
+      lastmod: blogEntries[(i - 1) * 5].revisedAt,
+      priority: 0.5,
+    } as SitemapItemLoose);
+  }
+
   blogEntries.forEach(entry => {
     stream.write({
       url: `/blog/${entry.id}`,
