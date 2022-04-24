@@ -1,11 +1,11 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Link from 'next/link';
+import { NextSeo } from 'next-seo';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { Box, Container } from 'theme-ui';
 
 import { Pagination } from '@/components/elements/Pagination';
-import { SEO } from '@/components/elements/SEO';
 import { BlogListItem } from '@/components/pages/blog/BlogListItem';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
@@ -54,7 +54,14 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 }) => {
   return (
     <>
-      <SEO title="Blog" description="局所的な人気があるらしい。" />
+      <NextSeo
+        title={`Blog${
+          pageInfo.current > 1 ? ` （${pageInfo.current}ページ）` : ''
+        }`}
+        description={`局所的な人気があるらしい。${
+          pageInfo.current > 1 ? ` （${pageInfo.current}ページ）` : ''
+        }`}
+      />
       <Container as="ul" variant="narrowContainer">
         {entries.map(entry => (
           <Box

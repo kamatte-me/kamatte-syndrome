@@ -1,13 +1,13 @@
+import { NextSeo } from 'next-seo';
 import React from 'react';
 import { Container, Heading, Themed } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
 import { siteName } from '@/constants/site';
 
 const TermsPage: React.FC = () => {
   return (
     <>
-      <SEO title="免責事項" description={`${siteName}の免責事項`} />
+      <NextSeo title="免責事項" description={`${siteName}の免責事項`} />
       <Container variant="narrowContainer">
         <Heading as="h1" sx={{ fontSize: 5, mb: 4 }}>
           免責事項

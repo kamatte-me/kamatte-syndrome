@@ -1,8 +1,8 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import { NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Heading } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
 import { author } from '@/constants/site';
 import { client } from '@/lib/microcms';
@@ -52,7 +52,7 @@ const PortfolioPage: NextPage<
 > = ({ portfolio }) => {
   return (
     <>
-      <SEO
+      <NextSeo
         title="Portfolio"
         description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
       />

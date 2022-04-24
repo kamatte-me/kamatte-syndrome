@@ -1,7 +1,6 @@
 import { GetStaticPaths, InferGetStaticPropsType, NextPage } from 'next';
 import React from 'react';
 
-import { SEO } from '@/components/elements/SEO';
 import { client } from '@/lib/microcms';
 import BlogPage, {
   BLOG_ENTRIES_PER_PAGE,
@@ -27,10 +26,6 @@ const BlogPaginatePage: NextPage<
 > = props => {
   return (
     <>
-      <SEO
-        title={`Blog (${props.pageInfo.current}ページ)`}
-        description={`局所的な人気があるらしい。 (${props.pageInfo.current}ページ)`}
-      />
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <BlogPage {...props} />
     </>

@@ -6,11 +6,12 @@ import {
 } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import React, { Fragment, useCallback } from 'react';
 import { Box, Button, Container, Flex, Heading, Message, Text } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
+import { author } from '@/constants/site';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
@@ -111,11 +112,23 @@ const BlogEntryPage: NextPage<
 
   return (
     <>
-      <SEO
+      <NextSeo
         title={entry.title}
-        description={entry.body.map(b => htmlToTextContent(b.body)).join('')}
-        ogImageUrl={entry.featuredImage && entry.featuredImage.url}
-        ogType="article"
+        description={`${entry.body
+          .map(b => htmlToTextContent(b.body))
+          .join('')
+          .substring(0, 99)}…`}
+        openGraph={{
+          images: entry.featuredImage
+            ? [{ url: entry.featuredImage.url }]
+            : undefined,
+          type: 'article',
+          article: {
+            authors: [author],
+            publishedTime: entry.publishedAt,
+            modifiedTime: entry.revisedAt,
+          },
+        }}
       />
       <Container as="article" variant="narrowContainer">
         {isPreview && (

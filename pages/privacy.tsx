@@ -1,13 +1,13 @@
+import { NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Container, Heading, Link, Paragraph } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
 import { siteName } from '@/constants/site';
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <>
-      <SEO
+      <NextSeo
         title="プライバシーポリシー"
         description={`${siteName}のプライバシーポリシー`}
       />

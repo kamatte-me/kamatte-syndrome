@@ -1,9 +1,9 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Flex, Grid, Heading } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
 import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
@@ -38,7 +38,7 @@ const BiographyPage: NextPage<
 > = ({ histories, skills }) => {
   return (
     <>
-      <SEO title="Biography" description={`${author}のすべて`} />
+      <NextSeo title="Biography" description={`${author}のすべて`} />
       <Flex
         sx={{
           flexDirection: ['column', 'row'],
