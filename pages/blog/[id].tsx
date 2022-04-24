@@ -6,7 +6,7 @@ import {
 } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { NewsArticleJsonLd, NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { Fragment, useCallback } from 'react';
 import { Box, Button, Container, Flex, Heading, Message, Text } from 'theme-ui';
 
@@ -144,6 +144,20 @@ const BlogEntryPage: NextPage<
         dateCreated={entry.publishedAt!}
         publisherLogo={`${baseUrl}/icon.png`}
         publisherName={siteName}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Blog',
+            item: `${baseUrl}/blog`,
+          },
+          {
+            position: 2,
+            name: entry.title,
+            item: `${baseUrl}/blog/${entry.id}`,
+          },
+        ]}
       />
 
       <Container as="article" variant="narrowContainer">

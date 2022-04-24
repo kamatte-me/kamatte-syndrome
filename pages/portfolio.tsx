@@ -1,10 +1,10 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Heading } from 'theme-ui';
 
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
-import { author } from '@/constants/site';
+import { author, baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { Portfolio } from '@/lib/microcms/model';
 
@@ -56,6 +56,16 @@ const PortfolioPage: NextPage<
         title="Portfolio"
         description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
       />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Portfolio',
+            item: `${baseUrl}/portfolio`,
+          },
+        ]}
+      />
+
       {Object.keys(portfolio)
         .reverse()
         .map(year => (

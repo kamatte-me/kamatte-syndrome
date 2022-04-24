@@ -1,6 +1,6 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
-import { NextSeo, SocialProfileJsonLd } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo, SocialProfileJsonLd } from 'next-seo';
 import React from 'react';
 import { Box, Flex, Grid, Heading } from 'theme-ui';
 
@@ -39,6 +39,15 @@ const BiographyPage: NextPage<
   return (
     <>
       <NextSeo title="Biography" description={`${author}のすべて`} />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Biography',
+            item: `${baseUrl}/biography`,
+          },
+        ]}
+      />
       <SocialProfileJsonLd
         type="Person"
         name={author}

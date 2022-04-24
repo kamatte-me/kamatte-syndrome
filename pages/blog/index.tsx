@@ -1,12 +1,13 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Link from 'next/link';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { Box, Container } from 'theme-ui';
 
 import { Pagination } from '@/components/elements/Pagination';
 import { BlogListItem } from '@/components/pages/blog/BlogListItem';
+import { baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 
@@ -56,12 +57,31 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     <>
       <NextSeo
         title={`Blog${
-          pageInfo.current > 1 ? ` （${pageInfo.current}ページ）` : ''
+          pageInfo.current > 1 ? `（${pageInfo.current}ページ）` : ''
         }`}
         description={`局所的な人気があるらしい。${
-          pageInfo.current > 1 ? ` （${pageInfo.current}ページ）` : ''
+          pageInfo.current > 1 ? `（${pageInfo.current}ページ）` : ''
         }`}
       />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Blog',
+            item: `${baseUrl}/blog`,
+          },
+          ...(pageInfo.current > 1
+            ? [
+                {
+                  position: 2,
+                  name: `${pageInfo.current}ページ`,
+                  item: `${baseUrl}/blog/page/${pageInfo.current}`,
+                },
+              ]
+            : []),
+        ]}
+      />
+
       <Container as="ul" variant="narrowContainer">
         {entries.map(entry => (
           <Box

@@ -24,12 +24,8 @@ export const getStaticProps: BlogEntriesGetStaticProps<{
 const BlogPaginatePage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = props => {
-  return (
-    <>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <BlogPage {...props} />
-    </>
-  );
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  return <BlogPage {...props} />;
 };
 
 export default BlogPaginatePage;
