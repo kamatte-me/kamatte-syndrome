@@ -35,11 +35,6 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
           value={level / 100}
           color={level >= 90 ? 'secondary' : 'primary'}
           strokeWidth={3}
-          // TODO: Theme UIのviewBoxバグ修正プルリクリリース後削除
-          //  https://github.com/system-ui/theme-ui/pull/2209
-          // @ts-ignore
-          viewBo={undefined}
-          viewBox="0 0 32 32"
         />
       </Flex>
     </Box>
