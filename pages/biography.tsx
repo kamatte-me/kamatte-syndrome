@@ -1,13 +1,13 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
-import { NextSeo } from 'next-seo';
+import { NextSeo, SocialProfileJsonLd } from 'next-seo';
 import React from 'react';
 import { Box, Flex, Grid, Heading } from 'theme-ui';
 
 import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
-import { author } from '@/constants/site';
+import { author, baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
@@ -39,6 +39,16 @@ const BiographyPage: NextPage<
   return (
     <>
       <NextSeo title="Biography" description={`${author}のすべて`} />
+      <SocialProfileJsonLd
+        type="Person"
+        name={author}
+        url={`${baseUrl}/biography`}
+        sameAs={[
+          'https://twitter.com/kamatte_me',
+          'https://github.com/kamatte-me',
+        ]}
+      />
+
       <Flex
         sx={{
           flexDirection: ['column', 'row'],
