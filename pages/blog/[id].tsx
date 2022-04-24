@@ -11,7 +11,6 @@ import React, { Fragment, useCallback } from 'react';
 import { Box, Button, Container, Flex, Heading, Message, Text } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
-import { author } from '@/constants/site';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
@@ -120,11 +119,16 @@ const BlogEntryPage: NextPage<
           .substring(0, 99)}…`}
         openGraph={{
           images: entry.featuredImage
-            ? [{ url: entry.featuredImage.url }]
+            ? [
+                {
+                  url: entry.featuredImage.url,
+                  width: entry.featuredImage.width,
+                  height: entry.featuredImage.height,
+                },
+              ]
             : undefined,
           type: 'article',
           article: {
-            authors: [author],
             publishedTime: entry.publishedAt,
             modifiedTime: entry.revisedAt,
           },
