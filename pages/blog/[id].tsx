@@ -39,6 +39,8 @@ interface BlogPageProps {
   isPreview: boolean;
 }
 
+const FEATURED_IMAGE_MAX_HEIGHT = 400;
+
 export const getStaticProps: GetStaticProps<
   BlogPageProps,
   {
@@ -192,8 +194,6 @@ const BlogEntryPage: NextPage<
           {entry.featuredImage && (
             <Flex
               sx={{
-                width: '100%',
-                height: 200,
                 justifyContent: 'center',
                 mt: 2,
               }}
@@ -201,14 +201,23 @@ const BlogEntryPage: NextPage<
               <Image
                 src={entry.featuredImage.url}
                 alt={entry.title}
-                objectFit="contain"
-                width={entry.featuredImage.width}
-                height={entry.featuredImage.height}
+                width={
+                  entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
+                    ? entry.featuredImage.width *
+                      (FEATURED_IMAGE_MAX_HEIGHT / entry.featuredImage.height)
+                    : entry.featuredImage.width
+                }
+                height={
+                  entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
+                    ? FEATURED_IMAGE_MAX_HEIGHT
+                    : entry.featuredImage.url
+                }
                 priority
               />
             </Flex>
           )}
         </Box>
+
         <Box
           sx={{
             lineHeight: 1.9,
