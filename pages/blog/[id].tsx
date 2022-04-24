@@ -39,6 +39,8 @@ interface BlogPageProps {
   isPreview: boolean;
 }
 
+const FEATURED_IMAGE_MAX_HEIGHT = 400;
+
 export const getStaticProps: GetStaticProps<
   BlogPageProps,
   {
@@ -200,14 +202,14 @@ const BlogEntryPage: NextPage<
                 src={entry.featuredImage.url}
                 alt={entry.title}
                 width={
-                  entry.featuredImage.height > 400
+                  entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
                     ? entry.featuredImage.width *
-                      (400 / entry.featuredImage.height)
+                      (FEATURED_IMAGE_MAX_HEIGHT / entry.featuredImage.height)
                     : entry.featuredImage.width
                 }
                 height={
-                  entry.featuredImage.height > 400
-                    ? 400
+                  entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
+                    ? FEATURED_IMAGE_MAX_HEIGHT
                     : entry.featuredImage.url
                 }
                 priority
