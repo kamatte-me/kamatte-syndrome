@@ -1,16 +1,26 @@
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Container, Heading, Link, Paragraph } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
-import { siteName } from '@/constants/site';
+import { baseUrl, siteName } from '@/constants/site';
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <>
-      <SEO
+      <NextSeo
         title="プライバシーポリシー"
         description={`${siteName}のプライバシーポリシー`}
       />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'プライバシーポリシー',
+            item: `${baseUrl}/privacy`,
+          },
+        ]}
+      />
+
       <Container variant="narrowContainer">
         <Heading as="h1" sx={{ fontSize: 5, mb: 4 }}>
           プライバシーポリシー

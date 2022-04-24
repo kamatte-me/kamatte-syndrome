@@ -1,14 +1,24 @@
 import Image from 'next/image';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Container, Flex, Heading, Link, Paragraph, Text } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
-import { author } from '@/constants/site';
+import { author, baseUrl } from '@/constants/site';
 
 const CulturePage: React.FC = () => {
   return (
     <>
-      <SEO title="Subscribe" description={`${author}を信仰する`} />
+      <NextSeo title="Subscribe" description={`${author}を信仰する`} />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Subscribe',
+            item: `${baseUrl}/subscribe`,
+          },
+        ]}
+      />
+
       <Container variant="narrowContainer">
         <Box sx={{ mb: 5 }}>
           <Heading as="h1" sx={{ fontSize: 5, mb: 1 }}>

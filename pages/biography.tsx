@@ -1,13 +1,13 @@
 import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
+import { BreadcrumbJsonLd, NextSeo, SocialProfileJsonLd } from 'next-seo';
 import React from 'react';
 import { Box, Flex, Grid, Heading } from 'theme-ui';
 
-import { SEO } from '@/components/elements/SEO';
 import { HistoryItem } from '@/components/pages/biography/History';
 import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
-import { author } from '@/constants/site';
+import { author, baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import { History, Skill } from '@/lib/microcms/model';
 
@@ -38,7 +38,26 @@ const BiographyPage: NextPage<
 > = ({ histories, skills }) => {
   return (
     <>
-      <SEO title="Biography" description={`${author}のすべて`} />
+      <NextSeo title="Biography" description={`${author}のすべて`} />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          {
+            position: 1,
+            name: 'Biography',
+            item: `${baseUrl}/biography`,
+          },
+        ]}
+      />
+      <SocialProfileJsonLd
+        type="Person"
+        name={author}
+        url={`${baseUrl}/biography`}
+        sameAs={[
+          'https://twitter.com/kamatte_me',
+          'https://github.com/kamatte-me',
+        ]}
+      />
+
       <Flex
         sx={{
           flexDirection: ['column', 'row'],
