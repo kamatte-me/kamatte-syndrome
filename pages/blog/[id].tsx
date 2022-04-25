@@ -7,8 +7,17 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
-import React, { Fragment, useCallback } from 'react';
-import { Box, Button, Container, Flex, Heading, Message, Text } from 'theme-ui';
+import React, { Fragment } from 'react';
+import { MdClose, MdRefresh } from 'react-icons/md';
+import {
+  Alert,
+  Box,
+  Container,
+  Flex,
+  Heading,
+  IconButton,
+  Text,
+} from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { author, baseUrl, siteName } from '@/constants/site';
@@ -36,7 +45,6 @@ interface BlogPageProps {
   entry: Blog;
   prevEntry?: Blog | null;
   nextEntry?: Blog | null;
-  isPreview: boolean;
 }
 
 const FEATURED_IMAGE_MAX_HEIGHT = 400;
@@ -53,10 +61,7 @@ export const getStaticProps: GetStaticProps<
 
   if (!entry) {
     return {
-      props: {
-        entry,
-        isPreview: preview || false,
-      } as BlogPageProps,
+      props: { entry },
     };
   }
 
@@ -80,21 +85,14 @@ export const getStaticProps: GetStaticProps<
       entry,
       prevEntry: prevEntry.length > 0 ? prevEntry[0] : null,
       nextEntry: nextEntry.length > 0 ? nextEntry[0] : null,
-      isPreview: preview || false,
-    } as BlogPageProps,
+    },
   };
 };
 
 const BlogEntryPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
-> = ({ entry, prevEntry, nextEntry, isPreview }) => {
+> = ({ entry, prevEntry, nextEntry }) => {
   const router = useRouter();
-
-  const handleClearPreview = useCallback(() => {
-    fetch('/api/clearPreviewData').then(() => {
-      router.reload();
-    });
-  }, [router]);
 
   if (!entry) {
     return <Custom404 />;
@@ -163,20 +161,6 @@ const BlogEntryPage: NextPage<
       />
 
       <Container as="article" variant="narrowContainer">
-        {isPreview && (
-          <Message variant="primary" sx={{ textAlign: 'center', mb: 3 }}>
-            <Text sx={{ fontWeight: 'bold' }}>プレビュー中</Text>
-            <Button
-              variant="secondary"
-              onClick={() => handleClearPreview()}
-              sx={{
-                ml: 3,
-              }}
-            >
-              解除
-            </Button>
-          </Message>
-        )}
         <Box sx={{ mb: 4 }}>
           <Heading
             as="h1"
@@ -237,6 +221,55 @@ const BlogEntryPage: NextPage<
           <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
         </Box>
       </Container>
+
+      {router.isPreview && (
+        <Alert
+          variant="secondary"
+          sx={{
+            position: 'fixed',
+            bottom: 3,
+            right: 3,
+            fontFamily: 'heading',
+            lineHeight: 1,
+          }}
+        >
+          プレビュー
+          <IconButton
+            onClick={() => {
+              router.replace(router.asPath, undefined, {
+                scroll: false,
+              });
+            }}
+            title="更新"
+            ml={1}
+          >
+            <MdRefresh
+              sx={{
+                width: 28,
+                height: 28,
+              }}
+            />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              const ok = window.confirm('プレビューモードを解除するぅ？');
+              if (ok) {
+                fetch('/api/clearPreviewData').then(() => {
+                  router.reload();
+                });
+              }
+            }}
+            title="解除"
+          >
+            <MdClose
+              sx={{
+                width: 28,
+                height: 28,
+              }}
+            />
+          </IconButton>
+        </Alert>
+      )}
     </>
   );
 };
