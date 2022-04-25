@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   GetStaticPaths,
   GetStaticProps,
@@ -7,7 +8,7 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { MdClose, MdRefresh } from 'react-icons/md';
 import {
   Alert,
@@ -100,12 +101,37 @@ const BlogEntryPage: NextPage<
 
   const bodyText = entry.body.map(b => htmlToTextContent(b.body)).join('');
 
-  const description = (() => {
-    if (bodyText.length > 100) {
-      return `${bodyText.substring(0, 99)}…`;
+  const description = useMemo(() => {
+    if (bodyText.length <= 100) {
+      return bodyText;
     }
-    return bodyText;
-  })();
+    return `${bodyText.substring(0, 99)}…`;
+  }, [bodyText]);
+
+  const [isPreviewUpdated, setIsPreviewUpdated] = useState<boolean>(false);
+  useEffect(() => {
+    if (router.isPreview) {
+      const id = setInterval(() => {
+        router.replace(router.asPath, undefined, {
+          scroll: false,
+        });
+      }, 15000);
+      return () => {
+        clearInterval(id);
+      };
+    }
+  }, [router]);
+  useEffect(() => {
+    if (router.isPreview) {
+      setIsPreviewUpdated(true);
+      const id = setTimeout(() => {
+        setIsPreviewUpdated(false);
+      }, 5000);
+      return () => {
+        clearInterval(id);
+      };
+    }
+  }, [router.isPreview, bodyText]);
 
   return (
     <>
@@ -223,52 +249,79 @@ const BlogEntryPage: NextPage<
       </Container>
 
       {router.isPreview && (
-        <Alert
-          variant="secondary"
-          sx={{
-            position: 'fixed',
-            bottom: 3,
-            right: 3,
-            fontFamily: 'heading',
-            lineHeight: 1,
-          }}
-        >
-          プレビュー
-          <IconButton
-            onClick={() => {
-              router.replace(router.asPath, undefined, {
-                scroll: false,
-              });
-            }}
-            title="更新"
-            ml={1}
-          >
-            <MdRefresh
+        <>
+          {isPreviewUpdated && (
+            <Alert
               sx={{
-                width: 28,
-                height: 28,
+                position: 'fixed',
+                top: 3,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 5,
+                fontFamily: 'heading',
+                lineHeight: 1,
               }}
-            />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              const ok = window.confirm('プレビューモードを解除するぅ？');
-              if (ok) {
-                fetch('/api/clearPreviewData').then(() => {
-                  router.reload();
+            >
+              プレビュー更新
+            </Alert>
+          )}
+          <Alert
+            sx={{
+              position: 'fixed',
+              bottom: 3,
+              right: 3,
+              zIndex: 5,
+              fontFamily: 'heading',
+              lineHeight: 1,
+            }}
+          >
+            プレビュー
+            <IconButton
+              onClick={() => {
+                router.replace(router.asPath, undefined, {
+                  scroll: false,
                 });
-              }
-            }}
-            title="解除"
-          >
-            <MdClose
-              sx={{
-                width: 28,
-                height: 28,
               }}
-            />
-          </IconButton>
-        </Alert>
+              title="更新"
+              ml={1}
+              sx={{
+                ':hover': {
+                  color: 'secondary',
+                },
+              }}
+            >
+              <MdRefresh
+                sx={{
+                  width: 28,
+                  height: 28,
+                }}
+              />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                const ok = window.confirm('プレビューモードを解除するぅ？');
+                if (ok) {
+                  fetch('/api/clearPreviewData').then(() => {
+                    router.reload();
+                  });
+                }
+              }}
+              title="解除"
+              sx={{
+                ':hover': {
+                  color: 'secondary',
+                },
+              }}
+            >
+              <MdClose
+                sx={{
+                  width: 28,
+                  height: 28,
+                }}
+              />
+            </IconButton>
+          </Alert>
+        </>
       )}
     </>
   );
