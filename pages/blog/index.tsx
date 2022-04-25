@@ -41,7 +41,7 @@ export const blogEntriesGetStaticProps = async (
         current: pageNumber,
       },
       entries: data.contents,
-    } as BlogEntriesPageProps,
+    },
   };
 };
 
