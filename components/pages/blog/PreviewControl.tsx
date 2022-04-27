@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { MdClose, MdRefresh } from 'react-icons/md';
 import { Alert, IconButton } from 'theme-ui';
 
-export const PreviewControl: React.FC = () => {
+const PreviewControl: React.FC = () => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -112,3 +112,5 @@ export const PreviewControl: React.FC = () => {
     </Alert>
   );
 };
+
+export default PreviewControl;

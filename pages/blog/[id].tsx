@@ -4,6 +4,7 @@ import {
   InferGetStaticPropsType,
   NextPage,
 } from 'next';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
@@ -11,13 +12,17 @@ import React, { Fragment, useMemo } from 'react';
 import { Box, Container, Flex, Heading, Text } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
-import { PreviewControl } from '@/components/pages/blog/PreviewControl';
 import { author, baseUrl, siteName } from '@/constants/site';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 import { htmlToTextContent, htmlToThemed } from '@/lib/parseHTML';
 import Custom404 from '@/pages/404';
+
+const PreviewControl = dynamic(
+  () => import('@/components/pages/blog/PreviewControl'),
+  { ssr: false },
+);
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const entries = await client.getAllContents('blog', {
