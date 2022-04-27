@@ -1,24 +1,15 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import {
   GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
   NextPage,
 } from 'next';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
-import { MdClose, MdRefresh } from 'react-icons/md';
-import {
-  Alert,
-  Box,
-  Container,
-  Flex,
-  Heading,
-  IconButton,
-  Text,
-} from 'theme-ui';
+import React, { Fragment, useMemo } from 'react';
+import { Box, Container, Flex, Heading, Text } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { author, baseUrl, siteName } from '@/constants/site';
@@ -27,6 +18,11 @@ import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
 import { htmlToTextContent, htmlToThemed } from '@/lib/parseHTML';
 import Custom404 from '@/pages/404';
+
+const PreviewControl = dynamic(
+  () => import('@/components/pages/blog/PreviewControl'),
+  { ssr: false },
+);
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const entries = await client.getAllContents('blog', {
@@ -101,37 +97,13 @@ const BlogEntryPage: NextPage<
 
   const bodyText = entry.body.map(b => htmlToTextContent(b.body)).join('');
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const description = useMemo(() => {
     if (bodyText.length <= 100) {
       return bodyText;
     }
     return `${bodyText.substring(0, 99)}…`;
   }, [bodyText]);
-
-  const [isPreviewUpdated, setIsPreviewUpdated] = useState<boolean>(false);
-  useEffect(() => {
-    if (router.isPreview) {
-      const id = setInterval(() => {
-        router.replace(router.asPath, undefined, {
-          scroll: false,
-        });
-      }, 15000);
-      return () => {
-        clearInterval(id);
-      };
-    }
-  }, [router]);
-  useEffect(() => {
-    if (router.isPreview) {
-      setIsPreviewUpdated(true);
-      const id = setTimeout(() => {
-        setIsPreviewUpdated(false);
-      }, 5000);
-      return () => {
-        clearInterval(id);
-      };
-    }
-  }, [router.isPreview, bodyText]);
 
   return (
     <>
@@ -248,81 +220,7 @@ const BlogEntryPage: NextPage<
         </Box>
       </Container>
 
-      {router.isPreview && (
-        <>
-          {isPreviewUpdated && (
-            <Alert
-              sx={{
-                position: 'fixed',
-                top: 3,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 5,
-                fontFamily: 'heading',
-                lineHeight: 1,
-              }}
-            >
-              プレビュー更新
-            </Alert>
-          )}
-          <Alert
-            sx={{
-              position: 'fixed',
-              bottom: 3,
-              right: 3,
-              zIndex: 5,
-              fontFamily: 'heading',
-              lineHeight: 1,
-            }}
-          >
-            プレビュー
-            <IconButton
-              onClick={() => {
-                router.replace(router.asPath, undefined, {
-                  scroll: false,
-                });
-              }}
-              title="更新"
-              ml={1}
-              sx={{
-                ':hover': {
-                  color: 'secondary',
-                },
-              }}
-            >
-              <MdRefresh
-                sx={{
-                  width: 28,
-                  height: 28,
-                }}
-              />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                const ok = window.confirm('プレビューモードを解除するぅ？');
-                if (ok) {
-                  fetch('/api/clearPreviewData').then(() => {
-                    router.reload();
-                  });
-                }
-              }}
-              title="解除"
-              sx={{
-                ':hover': {
-                  color: 'secondary',
-                },
-              }}
-            >
-              <MdClose
-                sx={{
-                  width: 28,
-                  height: 28,
-                }}
-              />
-            </IconButton>
-          </Alert>
-        </>
-      )}
+      {router.isPreview && <PreviewControl />}
     </>
   );
 };
