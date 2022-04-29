@@ -21,8 +21,8 @@ export const getStaticProps: GetStaticProps = async () => {
   const feed = new Feed({
     title: siteName,
     description: slogan,
-    id: baseUrl,
-    link: baseUrl,
+    id: `${baseUrl}/`,
+    link: `${baseUrl}/`,
     language: 'ja',
     image: `${baseUrl}/icon-48x48.png`,
     favicon: `${baseUrl}/favicon.ico`,
