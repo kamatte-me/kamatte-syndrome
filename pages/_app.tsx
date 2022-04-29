@@ -1,6 +1,6 @@
 import { Global as GlobalStyle } from '@emotion/react';
 import { AppType } from 'next/dist/shared/lib/utils';
-import { DefaultSeo, OrganizationJsonLd } from 'next-seo';
+import { DefaultSeo } from 'next-seo';
 import React from 'react';
 import { Themed, ThemeProvider } from 'theme-ui';
 
@@ -68,11 +68,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               },
             ],
           }}
-        />
-        <OrganizationJsonLd
-          name={siteName}
-          url={baseUrl}
-          logo={`${baseUrl}/icon.png`}
         />
 
         <Layout>
