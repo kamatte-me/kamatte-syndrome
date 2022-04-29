@@ -9,6 +9,7 @@ import {
   siteName,
   slogan,
 } from '@/constants/site';
+import { parseBlogBody } from '@/lib/blog';
 import { client } from '@/lib/microcms';
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -20,38 +21,51 @@ export const getStaticProps: GetStaticProps = async () => {
   const feed = new Feed({
     title: siteName,
     description: slogan,
-    id: `${baseUrl}`,
-    link: `${baseUrl}`,
+    id: baseUrl,
+    link: baseUrl,
     language: 'ja',
-    image: `${baseUrl}/avatar.png`,
+    image: `${baseUrl}/icon-48x48.png`,
     favicon: `${baseUrl}/favicon.ico`,
-    copyright: `© ${new Date().getFullYear()} ${siteName}`,
     author,
+    copyright: `© ${new Date().getFullYear()} ${siteName}`,
+    hub: 'https://pubsubhubbub.appspot.com/',
   });
 
-  const blogEntries = await client.getAllContents('blog', {
-    orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
-    limit: 20,
-  });
+  let lastUpdated = new Date(0);
 
-  blogEntries.forEach(entry => {
-    const url = `${baseUrl}/blog/${entry.id}`;
-    const body = entry.body.map(b => b.body).join('');
-    feed.addItem({
-      title: entry.title,
-      id: url,
-      link: url,
-      date: new Date(entry.publishedAt!),
-      description: body,
-      content: body,
-      image: entry.featuredImage
-        ? entry.featuredImage.url
-        : `${baseUrl}/avatar.png`,
-      author: [author],
+  await client
+    .getAllContents('blog', {
+      orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
+      limit: 20,
+    })
+    .then(blogEntries => {
+      blogEntries.forEach(entry => {
+        const url = `${baseUrl}/blog/${entry.id}`;
+        const body = parseBlogBody(entry.body);
+        const updated = new Date(entry.revisedAt!);
+        feed.addItem({
+          title: entry.title,
+          id: url,
+          link: url,
+          published: new Date(entry.publishedAt!),
+          date: updated,
+          description: body.description,
+          content: body.html,
+          image: entry.featuredImage
+            ? entry.featuredImage.url
+            : `${baseUrl}/avatar.png`,
+          author: [author],
+        });
+
+        if (lastUpdated < updated) {
+          lastUpdated = updated;
+        }
+      });
     });
-  });
 
-  await writeFile(`${process.cwd()}/public/feed.xml`, feed.rss2());
+  feed.options.updated = lastUpdated;
+
+  await writeFile(`${process.cwd()}/public/feed.xml`, feed.atom1());
 
   return {
     props: {},

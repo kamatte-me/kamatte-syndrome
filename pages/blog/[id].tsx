@@ -13,11 +13,11 @@ import { Box, Container, Flex, Heading, Text } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { author, baseUrl, siteName } from '@/constants/site';
+import { parseBlogBody } from '@/lib/blog';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
-import { htmlToTextContent, htmlToThemed } from '@/lib/parseHTML';
-import Custom404 from '@/pages/404';
+import { htmlToThemed } from '@/lib/parseHTML';
 
 const PreviewControl = dynamic(
   () => import('@/components/pages/blog/PreviewControl'),
@@ -52,13 +52,15 @@ export const getStaticProps: GetStaticProps<
     id: string;
   }
 > = async ({ params, preview, previewData }) => {
-  const entry = await client.getContent('blog', params!.id, {
-    draftKey: preview ? (previewData as BlogPreviewData).draftKey : undefined,
-  });
+  const entry = await client
+    .getContent('blog', params!.id, {
+      draftKey: preview ? (previewData as BlogPreviewData).draftKey : undefined,
+    })
+    .catch(() => undefined);
 
   if (!entry) {
     return {
-      props: { entry },
+      notFound: true,
     };
   }
 
@@ -91,19 +93,13 @@ const BlogEntryPage: NextPage<
 > = ({ entry, prevEntry, nextEntry }) => {
   const router = useRouter();
 
-  if (!entry) {
-    return <Custom404 />;
-  }
-
-  const bodyText = entry.body.map(b => htmlToTextContent(b.body)).join('');
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const description = useMemo(() => {
-    if (bodyText.length <= 100) {
-      return bodyText;
-    }
-    return `${bodyText.substring(0, 99)}…`;
-  }, [bodyText]);
+  const {
+    html: bodyHTML,
+    text: bodyText,
+    description,
+  } = useMemo(() => {
+    return parseBlogBody(entry.body);
+  }, [entry.body]);
 
   return (
     <>
@@ -210,10 +206,7 @@ const BlogEntryPage: NextPage<
             },
           }}
         >
-          {entry.body.map((b, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Fragment key={`body-${i}`}>{htmlToThemed(b.body)}</Fragment>
-          ))}
+          {htmlToThemed(bodyHTML)}
         </Box>
         <Box sx={{ mt: 5 }}>
           <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
