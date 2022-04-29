@@ -188,7 +188,7 @@ const BlogEntryPage: NextPage<
                 height={
                   entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
                     ? FEATURED_IMAGE_MAX_HEIGHT
-                    : entry.featuredImage.url
+                    : entry.featuredImage.height
                 }
                 priority
               />
