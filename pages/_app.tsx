@@ -45,7 +45,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             },
             {
               rel: 'alternate',
-              type: 'application/rss+xml',
+              type: 'application/atom+xml',
               href: '/feed.xml',
               // @ts-ignore
               title: siteName,
