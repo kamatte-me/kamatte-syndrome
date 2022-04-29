@@ -15,8 +15,8 @@ plz kamatte me!!!
 - Headless CMS: [microCMS](https://microcms.io/)
 - SNS連携
   ```
-  RSS -> IFTTT -> LINE Messaging API
-               -> Twitter
+  Atom Feed -> IFTTT -> LINE Messaging API
+                     -> Twitter
   ```
 
 # 開発
