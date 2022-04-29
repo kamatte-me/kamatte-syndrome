@@ -34,9 +34,9 @@ export const getStaticProps: GetStaticProps = async () => {
   let lastUpdated = new Date(0);
 
   await client
-    .getAllContents('blog', {
+    .getContents('blog', {
       orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
-      limit: 20,
+      limit: 10,
     })
     .then(blogEntries => {
       blogEntries.forEach(entry => {
