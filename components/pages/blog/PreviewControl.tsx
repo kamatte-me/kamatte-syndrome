@@ -55,7 +55,7 @@ const PreviewControl: React.FC = () => {
         position: 'fixed',
         bottom: 3,
         right: 3,
-        zIndex: 5,
+        zIndex: 110,
         fontFamily: 'heading',
         lineHeight: 1,
       }}

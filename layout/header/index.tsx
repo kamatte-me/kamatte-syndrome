@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
           position: 'fixed',
           top: 0,
           left: 0,
-          zIndex: 2,
+          zIndex: 90,
           width: '100%',
         }}
       >
