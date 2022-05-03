@@ -197,6 +197,7 @@ const BlogEntryPage: NextPage<
         </Box>
 
         <Box
+          key={`blog-body-${entry.id}`} // `DOMException: Failed to execute 'removeChild' on 'Node'` 対策
           sx={{
             lineHeight: 1.9,
             '>': {
