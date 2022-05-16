@@ -6,7 +6,9 @@ import { HeaderHeight } from '@/layout/header';
 
 const negativeHeight = HeaderHeight + FooterHeight + 100;
 
-export const FitScreenContainer: React.FC = ({ children }) => {
+export const FitScreenContainer: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <Flex
       sx={{

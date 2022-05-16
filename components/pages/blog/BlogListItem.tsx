@@ -41,7 +41,12 @@ export const BlogListItem: React.FC<{
         >
           <Heading
             as="h2"
-            sx={{ variant: 'text.headingSerif', fontSize: [3, 4], mb: 2 }}
+            sx={{
+              variant: 'text.headingSerif',
+              fontSize: [3, 4],
+              mb: 2,
+              lineHeight: 1.3,
+            }}
           >
             {entry.title}
           </Heading>

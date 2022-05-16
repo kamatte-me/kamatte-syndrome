@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-use-before-define, react/jsx-pascal-case, react/jsx-props-no-spreading */
-
 import parse, {
   attributesToProps,
   domToReact,
@@ -8,21 +7,54 @@ import parse, {
   htmlToDOM,
   Text,
 } from 'html-react-parser';
-import Head from 'next/head';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import React, { ElementType } from 'react';
+import React, { ElementType, useEffect, useRef } from 'react';
 import { Embed, Flex, Heading, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
-const MediaWrapper: React.FC = ({ children }) => (
+const MediaWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
   <Flex sx={{ justifyContent: 'center', my: 3 }}>
     <Flex sx={{ flexDirection: 'column', width: '100%', maxWidth: '576px' }}>
       {children}
     </Flex>
   </Flex>
 );
+
+interface SafeScriptProps {
+  src: string;
+  children?: string;
+}
+const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref || !ref.current) {
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    if (children) {
+      script.innerHTML = children;
+    }
+    ref.current.appendChild(script);
+
+    return () => {
+      if (!ref || !ref.current) {
+        return;
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      ref.current.removeChild(script);
+    };
+  }, [children, ref, src]);
+
+  return <div ref={ref} />;
+};
 
 const parseStyleString = (styleStr?: string | null) => {
   if (!styleStr) {
@@ -50,6 +82,14 @@ const parseOption: HTMLReactParserOptions = {
   replace: domNode => {
     const { name, attribs, children } = domNode as Element;
     const attrProps = attributesToProps(attribs);
+
+    // 先頭要素は強制的に margin-top: 0
+    if (domNode.prev === null && domNode.parent === null) {
+      attrProps.style = {
+        marginTop: '0',
+        ...attrProps.style,
+      };
+    }
 
     switch (name as ElementType) {
       case 'h1':
@@ -130,16 +170,9 @@ const parseOption: HTMLReactParserOptions = {
       }
       case 'script': {
         return (
-          <Head>
-            <script
-              id={attrProps.id}
-              src={attrProps.src}
-              async={!!attrProps.async}
-              defer={!!attrProps.defer}
-            >
-              {children.length > 0 && (children[0] as Text).data}
-            </script>
-          </Head>
+          <SafeScript src={attrProps.src}>
+            {children.length > 0 ? (children[0] as Text).data : ''}
+          </SafeScript>
         );
       }
       default:

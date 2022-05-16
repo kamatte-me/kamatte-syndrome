@@ -6,6 +6,7 @@ import { Overlay } from '@/components/elements/Overlay';
 interface SideNavProps {
   open: boolean;
   handleClose: () => void;
+  children: React.ReactNode;
 }
 
 export const SideNav: React.FC<SideNavProps> = ({

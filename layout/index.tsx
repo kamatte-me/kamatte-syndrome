@@ -4,13 +4,13 @@ import React from 'react';
 import { Container } from 'theme-ui';
 
 import { Footer, FooterHeight } from '@/layout/Footer';
-import { GlobalHead } from '@/layout/GlobalHead';
 import { Header, HeaderHeight } from '@/layout/header';
 
-export const Layout: React.FC = ({ children }) => {
+export const Layout: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <>
-      <GlobalHead />
       <Header />
       <div
         sx={{

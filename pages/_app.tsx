@@ -1,5 +1,6 @@
 import { Global as GlobalStyle } from '@emotion/react';
 import { AppType } from 'next/dist/shared/lib/utils';
+import Script from 'next/script';
 import { DefaultSeo } from 'next-seo';
 import React from 'react';
 import { Themed, ThemeProvider } from 'theme-ui';
@@ -20,6 +21,37 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             },
           }}
         />
+
+        {/* Google Analytics */}
+        <Script id="google-analytics-dataLayer" strategy="afterInteractive">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}');
+        `}
+        </Script>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}`}
+          strategy="afterInteractive"
+        />
+
+        {/* Unregister ServiceWorker */}
+        <Script id="unregister-service-worker" strategy="afterInteractive">
+          {`
+          if (navigator.serviceWorker) {
+            navigator.serviceWorker
+              .getRegistrations()
+              .then(function (registrations) {
+                registrations.forEach(registration => {
+                  registration.unregister();
+                });
+              })
+              .catch(() => {});
+          }
+        `}
+        </Script>
+
         <DefaultSeo
           titleTemplate={`%s - ${siteName}`}
           defaultTitle={siteName}
