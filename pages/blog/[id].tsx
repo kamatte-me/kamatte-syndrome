@@ -162,6 +162,7 @@ const BlogEntryPage: NextPage<
               variant: 'text.headingSerif',
               fontSize: 5,
               mb: 2,
+              lineHeight: 1.3,
             }}
           >
             {entry.title}
@@ -206,6 +207,7 @@ const BlogEntryPage: NextPage<
               },
             },
           }}
+          className="hoge"
         >
           {htmlToThemed(bodyHTML)}
         </Box>

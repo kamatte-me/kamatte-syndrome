@@ -4,7 +4,6 @@ import React from 'react';
 import { Container } from 'theme-ui';
 
 import { Footer, FooterHeight } from '@/layout/Footer';
-import { GlobalHead } from '@/layout/GlobalHead';
 import { Header, HeaderHeight } from '@/layout/header';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({
@@ -12,7 +11,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   return (
     <>
-      <GlobalHead />
       <Header />
       <div
         sx={{
