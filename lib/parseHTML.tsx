@@ -16,7 +16,9 @@ import { Embed, Flex, Heading, Link, Themed } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
-const MediaWrapper: React.FC = ({ children }) => (
+const MediaWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
   <Flex sx={{ justifyContent: 'center', my: 3 }}>
     <Flex sx={{ flexDirection: 'column', width: '100%', maxWidth: '576px' }}>
       {children}

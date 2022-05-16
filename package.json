@@ -18,15 +18,14 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@mdx-js/react": "^1.6.22",
-    "@theme-ui/css": "^0.14.5",
     "destyle.css": "^3.0.2",
     "feed": "^4.2.2",
     "html-react-parser": "^1.4.12",
     "next": "^12.1.6",
     "next-seo": "^5.4.0",
     "p-limit": "^4.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "react-icons": "^4.3.1",
     "sitemap": "^7.1.1",
     "theme-ui": "^0.14.5"
@@ -34,7 +33,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@types/node": "^16.11.35",
-    "@types/react": "^17.0.44",
+    "@types/react": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.14.0",

@@ -5,6 +5,7 @@ import { Box } from 'theme-ui';
 
 interface NavLinkProps {
   to: string;
+  children: React.ReactNode;
 }
 
 export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
