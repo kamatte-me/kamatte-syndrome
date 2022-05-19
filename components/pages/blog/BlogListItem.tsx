@@ -33,12 +33,7 @@ export const BlogListItem: React.FC<{
         />
       </Flex>
       <Box sx={{ flex: 1 }}>
-        <Box
-          sx={{
-            variant: 'styles.a',
-            textDecoration: 'none',
-          }}
-        >
+        <Box>
           <Heading
             as="h2"
             sx={{

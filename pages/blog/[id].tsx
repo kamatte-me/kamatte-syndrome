@@ -107,6 +107,7 @@ const BlogEntryPage: NextPage<
         title={entry.title}
         description={description}
         openGraph={{
+          title: entry.title,
           images: entry.featuredImage
             ? [
                 {

@@ -22,17 +22,25 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
+const PAGE_TITLE = 'Culture';
+
 const CulturePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   cultures,
 }) => {
   return (
     <>
-      <NextSeo title="Culture" description={`${author}を構成するもの`} />
+      <NextSeo
+        title={PAGE_TITLE}
+        description={`${author}を構成するもの`}
+        openGraph={{
+          title: PAGE_TITLE,
+        }}
+      />
       <BreadcrumbJsonLd
         itemListElements={[
           {
             position: 1,
-            name: 'Culture',
+            name: PAGE_TITLE,
             item: `${baseUrl}/culture`,
           },
         ]}

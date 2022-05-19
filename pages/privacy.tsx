@@ -4,18 +4,23 @@ import { Box, Container, Heading, Link, Paragraph } from 'theme-ui';
 
 import { baseUrl, siteName } from '@/constants/site';
 
+const PAGE_TITLE = 'プライバシーポリシー';
+
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <>
       <NextSeo
-        title="プライバシーポリシー"
+        title={PAGE_TITLE}
         description={`${siteName}のプライバシーポリシー`}
+        openGraph={{
+          title: PAGE_TITLE,
+        }}
       />
       <BreadcrumbJsonLd
         itemListElements={[
           {
             position: 1,
-            name: 'プライバシーポリシー',
+            name: PAGE_TITLE,
             item: `${baseUrl}/privacy`,
           },
         ]}
