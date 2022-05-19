@@ -47,20 +47,25 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
+const PAGE_TITLE = 'Portfolio';
+
 const PortfolioPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ portfolio }) => {
   return (
     <>
       <NextSeo
-        title="Portfolio"
+        title={PAGE_TITLE}
         description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
+        openGraph={{
+          title: PAGE_TITLE,
+        }}
       />
       <BreadcrumbJsonLd
         itemListElements={[
           {
             position: 1,
-            name: 'Portfolio',
+            name: PAGE_TITLE,
             item: `${baseUrl}/portfolio`,
           },
         ]}

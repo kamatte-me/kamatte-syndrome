@@ -5,15 +5,23 @@ import { Box, Container, Flex, Heading, Link, Paragraph, Text } from 'theme-ui';
 
 import { author, baseUrl } from '@/constants/site';
 
+const PAGE_TITLE = 'Subscribe';
+
 const CulturePage: React.FC = () => {
   return (
     <>
-      <NextSeo title="Subscribe" description={`${author}を信仰する`} />
+      <NextSeo
+        title={PAGE_TITLE}
+        description={`${author}を信仰する`}
+        openGraph={{
+          title: PAGE_TITLE,
+        }}
+      />
       <BreadcrumbJsonLd
         itemListElements={[
           {
             position: 1,
-            name: 'Subscribe',
+            name: PAGE_TITLE,
             item: `${baseUrl}/subscribe`,
           },
         ]}

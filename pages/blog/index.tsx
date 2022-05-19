@@ -53,15 +53,20 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   entries,
   pageInfo,
 }) => {
+  const isTopPage = pageInfo.current <= 1;
+  const pageText = isTopPage ? '' : `${pageInfo.current}ページ`;
+  const pageTitle = `Blog${isTopPage ? '' : `（${pageText}）`}`;
+
   return (
     <>
       <NextSeo
-        title={`Blog${
-          pageInfo.current > 1 ? `（${pageInfo.current}ページ）` : ''
-        }`}
+        title={pageTitle}
         description={`局所的な人気があるらしい。${
-          pageInfo.current > 1 ? `（${pageInfo.current}ページ）` : ''
+          isTopPage ? '' : `（${pageText}）`
         }`}
+        openGraph={{
+          title: pageTitle,
+        }}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -70,15 +75,15 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             name: 'Blog',
             item: `${baseUrl}/blog`,
           },
-          ...(pageInfo.current > 1
-            ? [
+          ...(isTopPage
+            ? []
+            : [
                 {
                   position: 2,
-                  name: `${pageInfo.current}ページ`,
+                  name: pageText,
                   item: `${baseUrl}/blog/page/${pageInfo.current}`,
                 },
-              ]
-            : []),
+              ]),
         ]}
       />
 

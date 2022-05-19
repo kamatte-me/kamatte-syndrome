@@ -4,15 +4,23 @@ import { Container, Heading, Themed } from 'theme-ui';
 
 import { baseUrl, siteName } from '@/constants/site';
 
+const PAGE_TITLE = '免責事項';
+
 const TermsPage: React.FC = () => {
   return (
     <>
-      <NextSeo title="免責事項" description={`${siteName}の免責事項`} />
+      <NextSeo
+        title={PAGE_TITLE}
+        description={`${siteName}の免責事項`}
+        openGraph={{
+          title: PAGE_TITLE,
+        }}
+      />
       <BreadcrumbJsonLd
         itemListElements={[
           {
             position: 1,
-            name: '免責事項',
+            name: PAGE_TITLE,
             item: `${baseUrl}/terms`,
           },
         ]}
