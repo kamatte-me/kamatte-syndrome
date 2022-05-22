@@ -5,23 +5,32 @@ import {
   RepeatedField,
 } from '@/lib/microcms/client/types/model';
 
-type BlogCustomFieldRichEditor = CustomField<
+export type BlogCustomFieldRichEditor = CustomField<
   'richEditor',
   {
     body: string;
   }
 >;
 
-type BlogCustomFieldHTML = CustomField<
+export type BlogCustomFieldHTML = CustomField<
   'html',
   {
     body: string;
   }
 >;
 
+export type BlogCustomFieldLinkCard = CustomField<
+  'linkCard',
+  {
+    url: string;
+  }
+>;
+
 export type Blog = Model<{
   title: string;
-  body: RepeatedField<BlogCustomFieldRichEditor | BlogCustomFieldHTML>;
+  body: RepeatedField<
+    BlogCustomFieldRichEditor | BlogCustomFieldHTML | BlogCustomFieldLinkCard
+  >;
   featuredImage?: Image | null;
 }>;
 

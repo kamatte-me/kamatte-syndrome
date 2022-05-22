@@ -104,7 +104,7 @@ const BiographyPage: NextPage<
           </Heading>
           <Box
             sx={{
-              mb: 2,
+              mb: 3,
             }}
           >
             <Sns />

@@ -20,7 +20,7 @@ export const parseBlogBody = (
   const ReactComponent: React.FC = () => (
     <>
       {blogBody.map((b, index) => {
-        const key = `blog-body-${index}`;
+        const key = `blog-body-element-${index}`;
         switch (b.fieldId) {
           case 'linkCard':
             return (
@@ -29,7 +29,14 @@ export const parseBlogBody = (
               </Box>
             );
           default:
-            return <Fragment key={key}>{htmlToThemed(b.body)}</Fragment>;
+            return (
+              <Fragment key={key}>
+                {htmlToThemed(
+                  b.body,
+                  index === 0 ? { removeFirstChildMarginTop: true } : undefined,
+                )}
+              </Fragment>
+            );
         }
       })}
     </>

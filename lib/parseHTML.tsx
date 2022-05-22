@@ -78,17 +78,22 @@ const parseStyleString = (styleStr?: string | null) => {
   }, {});
 };
 
-const parseOption: HTMLReactParserOptions = {
+export interface ParseReplaceOption {
+  removeFirstChildMarginTop?: boolean;
+}
+
+const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
   replace: domNode => {
     const { name, attribs, children } = domNode as Element;
     const attrProps = attributesToProps(attribs);
 
-    // 先頭要素は強制的に margin-top: 0
-    if (domNode.prev === null && domNode.parent === null) {
-      attrProps.style = {
-        marginTop: '0',
-        ...attrProps.style,
-      };
+    if (option && option.removeFirstChildMarginTop) {
+      if (domNode.prev === null && domNode.parent === null) {
+        attrProps.style = {
+          marginTop: '0',
+          ...attrProps.style,
+        };
+      }
     }
 
     switch (name as ElementType) {
@@ -191,13 +196,15 @@ const parseOption: HTMLReactParserOptions = {
         return null;
     }
   },
-};
+});
 
 const parseChildren = (children: Element['children']) =>
-  domToReact(children, parseOption);
+  domToReact(children, parseOption());
 
-export const htmlToThemed = (html: string): ReturnType<typeof parse> =>
-  parse(html, parseOption);
+export const htmlToThemed = (
+  html: string,
+  option?: ParseReplaceOption,
+): ReturnType<typeof parse> => parse(html, parseOption(option));
 
 const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string =>
   dom
