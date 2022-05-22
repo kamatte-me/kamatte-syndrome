@@ -2,23 +2,25 @@ import * as metascraper from 'metascraper';
 import metaScraperAuthor from 'metascraper-author';
 import metaScraperDate from 'metascraper-date';
 import metaScraperDescription from 'metascraper-description';
+import metaScraperImage from 'metascraper-image';
 import metaScraperLogo from 'metascraper-logo-favicon';
 import metaScraperPublisher from 'metascraper-publisher';
 import metaScraperTitle from 'metascraper-title';
 import needle from 'needle';
-import { NextApiHandler, NextApiResponse } from 'next';
+import { NextApiHandler } from 'next';
 
-type RequestQuery = {
+export type EmbedApiRequestQuery = {
   url: string;
 };
 
-type Response = {
+export type EmbedApiResponse = {
   title: string;
-  description: string;
-  publisher: string;
+  description?: string | null;
+  publisher?: string | null;
   logo: string;
-  date: string;
-  author: string;
+  image?: string | null;
+  date?: string | null;
+  author?: string | null;
 };
 
 const scrape = metascraper.default([
@@ -38,32 +40,39 @@ const scrape = metascraper.default([
       return favicon || pickDefault(sizes);
     },
   }) as metascraper.Rule,
+  metaScraperImage(),
   metaScraperDate(),
   metaScraperAuthor(),
 ]);
 
-const setCacheControl = (res: NextApiResponse): void => {
-  res.setHeader('cache-control', 'public, max-age=86400');
-};
-
-const handler: NextApiHandler<Response> = async (req, res) => {
+const handler: NextApiHandler<EmbedApiResponse> = async (req, res) => {
   if (req.method !== 'GET') {
     res.status(403).end();
     return;
   }
 
-  const url = decodeURIComponent((req.query as RequestQuery).url);
+  const { url } = req.query as EmbedApiRequestQuery;
   try {
-    const html = await needle('get', url, null, {
-      user_agent: 'facebookexternalhit/1.1',
+    const response = await needle('get', url, null, {
+      user_agent: 'Twitterbot/1.0',
       timeout: 30000,
-    }).then(response => {
-      return response.body;
+      follow: 3,
     });
 
-    const metadata = await scrape({ html, url });
-    setCacheControl(res);
-    res.status(200).json(metadata as unknown as Response);
+    const metadata = await scrape({ html: response.body, url });
+    if (response.statusCode) {
+      switch (response.statusCode / 100) {
+        case 3:
+        case 5:
+          break;
+        default:
+          res.setHeader(
+            'cache-control',
+            'max-age=3600, s-maxage=2592000, stale-while-revalidate=3600',
+          );
+      }
+    }
+    res.status(200).json(metadata as unknown as EmbedApiResponse);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(url);

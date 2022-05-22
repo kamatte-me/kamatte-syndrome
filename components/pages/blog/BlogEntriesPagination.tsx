@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Flex } from 'theme-ui';
 
-import { ArrowLeft, ArrowRight } from '@/components/elements/Icon';
+import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
 import { ICON_SIZE } from '@/components/elements/Pagination';
 import { Blog } from '@/lib/microcms/model';
 
@@ -36,7 +36,7 @@ export const BlogEntriesPagination: React.FC<{
                   color: 'black',
                 }}
               >
-                <ArrowLeft
+                <ArrowLeftIcon
                   size={ICON_SIZE}
                   sx={{
                     color: 'black',
@@ -71,7 +71,7 @@ export const BlogEntriesPagination: React.FC<{
                 }}
               >
                 {next.title}
-                <ArrowRight
+                <ArrowRightIcon
                   size={ICON_SIZE}
                   sx={{
                     color: 'black',
