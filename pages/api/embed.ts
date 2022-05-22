@@ -14,13 +14,13 @@ export type EmbedApiRequestQuery = {
 };
 
 export type EmbedApiResponse = {
-  title: string;
-  description?: string | null;
-  publisher?: string | null;
+  title: string | null;
+  description: string | null;
+  publisher: string | null;
   logo: string;
-  image?: string | null;
-  date?: string | null;
-  author?: string | null;
+  image: string | null;
+  date: string | null;
+  author: string | null;
 };
 
 const scrape = metascraper.default([

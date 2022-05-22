@@ -71,7 +71,7 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
             {!isLoading && metadata && (
               <Image
                 src={metadata.image || metadata.logo}
-                alt={metadata.title}
+                alt={metadata.title || url}
                 objectFit="cover"
                 width={180}
                 height={180}
@@ -148,7 +148,7 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                   {metadata ? (
                     <Image
                       src={metadata.logo}
-                      alt={metadata.title}
+                      alt={metadata.title || url}
                       objectFit="contain"
                       width={18}
                       height={18}
