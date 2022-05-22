@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { Fragment, useMemo } from 'react';
-import { Box, Container, Flex, Heading, Text } from 'theme-ui';
+import { Box, Container, Flex, Heading } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { author, baseUrl, siteName } from '@/constants/site';
@@ -17,7 +17,6 @@ import { parseBlogBody } from '@/lib/blog';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
-import { htmlToThemed } from '@/lib/parseHTML';
 
 const PreviewControl = dynamic(
   () => import('@/components/pages/blog/PreviewControl'),
@@ -94,7 +93,7 @@ const BlogEntryPage: NextPage<
   const router = useRouter();
 
   const {
-    html: bodyHTML,
+    Component: BlogBody,
     text: bodyText,
     description,
   } = useMemo(() => {
@@ -121,6 +120,7 @@ const BlogEntryPage: NextPage<
           article: {
             publishedTime: entry.publishedAt,
             modifiedTime: entry.revisedAt,
+            authors: [author],
           },
         }}
       />
@@ -168,9 +168,9 @@ const BlogEntryPage: NextPage<
           >
             {entry.title}
           </Heading>
-          <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
+          <Box sx={{ fontSize: 1, color: 'darkgray' }}>
             {formatDate(entry.publishedAt)}
-          </Text>
+          </Box>
           {entry.featuredImage && (
             <Flex
               sx={{
@@ -201,16 +201,11 @@ const BlogEntryPage: NextPage<
         <Box
           key={`blog-body-${entry.id}`} // `DOMException: Failed to execute 'removeChild' on 'Node'` 対策
           sx={{
+            fontSize: 2,
             lineHeight: 1.9,
-            '>': {
-              '*:first-child': {
-                marginTop: 0,
-              },
-            },
           }}
-          className="hoge"
         >
-          {htmlToThemed(bodyHTML)}
+          <BlogBody />
         </Box>
         <Box sx={{ mt: 5 }}>
           <BlogEntriesPagination prev={prevEntry} next={nextEntry} />

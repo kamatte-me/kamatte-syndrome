@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
-import { Box, Flex, Heading, Text } from 'theme-ui';
+import { Box, Flex, Heading } from 'theme-ui';
 
 import { formatDate } from '@/lib/date';
 import { Blog } from '@/lib/microcms/model';
@@ -20,7 +20,7 @@ export const BlogListItem: React.FC<{
           justifyContent: 'center',
           width: [80, 200],
           height: [80, 120],
-          mr: [3, 3],
+          mr: 3,
         }}
       >
         <Image
@@ -46,9 +46,9 @@ export const BlogListItem: React.FC<{
             {entry.title}
           </Heading>
         </Box>
-        <Text as="span" sx={{ color: 'darkgray', fontSize: 1 }}>
+        <Box sx={{ color: 'darkgray', fontSize: 1 }}>
           {formatDate(entry.publishedAt)}
-        </Text>
+        </Box>
       </Box>
     </Flex>
   );

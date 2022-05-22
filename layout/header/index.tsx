@@ -60,7 +60,7 @@ export const Header: React.FC = () => {
             height: HeaderHeight,
             alignItems: 'center',
             justifyContent: 'space-between',
-            px: [3, 4],
+            px: [3, 3, 4],
             bg: 'background',
             boxShadow: '0px 8px 8px #fff',
           }}
@@ -72,8 +72,8 @@ export const Header: React.FC = () => {
           >
             <Flex
               sx={{
-                width: [110, 120],
-                height: [32, 36],
+                width: [110, 110, 120],
+                height: [32, 32, 36],
                 mr: [0, 3],
               }}
             >

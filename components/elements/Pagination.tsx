@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React, { useMemo } from 'react';
 import { Flex } from 'theme-ui';
 
-import { ArrowLeft, ArrowRight } from '@/components/elements/Icon';
+import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
 
 export const ICON_SIZE = 32;
 
@@ -42,7 +42,7 @@ export const Pagination: React.FC<{
           <Link href={prevPath}>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
-              <ArrowLeft
+              <ArrowLeftIcon
                 size={ICON_SIZE}
                 sx={{
                   color: 'black',
@@ -61,7 +61,7 @@ export const Pagination: React.FC<{
           <Link href={nextPath}>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
-              <ArrowRight
+              <ArrowRightIcon
                 size={ICON_SIZE}
                 sx={{
                   color: 'black',
