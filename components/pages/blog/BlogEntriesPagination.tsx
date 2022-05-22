@@ -15,6 +15,7 @@ export const BlogEntriesPagination: React.FC<{
       sx={{
         alignItems: 'center',
         justifyContent: 'space-between',
+        fontSize: 1,
       }}
     >
       <Flex

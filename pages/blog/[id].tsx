@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
 import React, { Fragment, useMemo } from 'react';
-import { Box, Container, Flex, Heading, Text } from 'theme-ui';
+import { Box, Container, Flex, Heading } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
 import { author, baseUrl, siteName } from '@/constants/site';
@@ -168,9 +168,9 @@ const BlogEntryPage: NextPage<
           >
             {entry.title}
           </Heading>
-          <Text as="span" sx={{ fontSize: 1, color: 'darkgray' }}>
+          <Box sx={{ fontSize: 1, color: 'darkgray' }}>
             {formatDate(entry.publishedAt)}
-          </Text>
+          </Box>
           {entry.featuredImage && (
             <Flex
               sx={{

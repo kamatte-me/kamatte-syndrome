@@ -1,10 +1,21 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Grid, Spinner } from 'theme-ui';
+import { Box, Flex, Grid, Spinner, ThemeUIStyleObject } from 'theme-ui';
 
 import { EarthIcon, NotSupportedIcon } from '@/components/elements/Icon';
 import { formatDate } from '@/lib/date';
 import { EmbedApiResponse } from '@/pages/api/embed';
+
+const CARD_HEIGHTS: number[] = [128, 144, 180];
+
+const TEXT_ELLIPSE_STYLE = (lines: number | number[]): ThemeUIStyleObject => ({
+  display: '-webkit-box',
+  WebkitLineClamp:
+    typeof lines === 'number' ? lines.toString() : lines.map(l => l.toString()),
+  textOverflow: 'ellipsis',
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+});
 
 export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
   const [isLoading, serIsLoading] = useState<boolean>(true);
@@ -41,8 +52,8 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
         <Grid
           sx={{
             gap: 0,
-            gridTemplateColumns: ['128px 1fr', '144px 1fr', '180px 1fr'],
-            height: [128, 144, 180],
+            gridTemplateColumns: CARD_HEIGHTS.map(h => `${h}px 1fr`),
+            height: CARD_HEIGHTS,
           }}
         >
           <Flex
@@ -90,11 +101,7 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                     fontSize: [1, 2, '18px'],
                     lineHeight: 1.3,
                     marginBottom: [1, 1, 2],
-                    display: '-webkit-box',
-                    WebkitLineClamp: ['3', '2', '3'],
-                    textOverflow: 'ellipsis',
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
+                    ...TEXT_ELLIPSE_STYLE([3, 2, 3]),
                   }}
                 >
                   {(metadata && metadata.title) || url}
@@ -105,11 +112,7 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                       color: 'darkgray',
                       fontSize: ['10px', 1],
                       lineHeight: 1.4,
-                      display: '-webkit-box',
-                      WebkitLineClamp: '2',
-                      textOverflow: 'ellipsis',
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
+                      ...TEXT_ELLIPSE_STYLE(2),
                     }}
                   >
                     {metadata.description}
@@ -119,7 +122,7 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
 
               <Flex
                 sx={{
-                  fontSize: ['12px', 1],
+                  fontSize: ['10px', 1],
                   alignItems: 'center',
                   lineHeight: 1,
                   'span + span': {
@@ -136,8 +139,8 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
               >
                 <Box
                   sx={{
-                    width: [14, 16, 18],
-                    height: [14, 16, 18],
+                    width: [12, 16, 18],
+                    height: [12, 16, 18],
                     marginRight: '4px',
                     flexShrink: 0,
                   }}
@@ -160,35 +163,31 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                     />
                   )}
                 </Box>
-                <Box
-                  sx={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: '1',
-                    textOverflow: 'ellipsis',
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                  }}
-                >
+                <Box sx={TEXT_ELLIPSE_STYLE(1)}>
                   <span>
                     {(metadata && metadata.publisher) || new URL(url).host}
                   </span>
-                  {metadata && metadata.date && (
-                    <span
-                      sx={{
-                        display: ['none', 'inline', 'inline'],
-                      }}
-                    >
-                      {formatDate(metadata.date)}
-                    </span>
-                  )}
-                  {metadata && metadata.author && (
-                    <span
-                      sx={{
-                        display: ['none', 'inline', 'inline'],
-                      }}
-                    >
-                      {metadata.author}
-                    </span>
+                  {metadata && (
+                    <>
+                      {metadata.date && (
+                        <span
+                          sx={{
+                            display: ['none', 'inline'],
+                          }}
+                        >
+                          {formatDate(metadata.date)}
+                        </span>
+                      )}
+                      {metadata.author && (
+                        <span
+                          sx={{
+                            display: ['none', 'inline'],
+                          }}
+                        >
+                          {metadata.author}
+                        </span>
+                      )}
+                    </>
                   )}
                 </Box>
               </Flex>
