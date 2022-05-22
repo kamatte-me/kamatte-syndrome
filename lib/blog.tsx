@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Box } from 'theme-ui';
 
 import { LinkCard } from '@/components/elements/LinkCard';
 import {
@@ -22,7 +23,11 @@ export const parseBlogBody = (
         const key = `blog-body-${index}`;
         switch (b.fieldId) {
           case 'linkCard':
-            return <LinkCard key={key} url={b.url} />;
+            return (
+              <Box my={3} key={key}>
+                <LinkCard url={b.url} />
+              </Box>
+            );
           default:
             return <Fragment key={key}>{htmlToThemed(b.body)}</Fragment>;
         }

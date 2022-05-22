@@ -27,7 +27,6 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
 
   return (
     <Box
-      my={3}
       variant="styles.a"
       sx={{
         color: 'inherit',
@@ -35,163 +34,166 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
         borderRadius: 8,
         border: '1px solid',
         borderColor: 'gray',
+        overflow: 'hidden',
       }}
     >
       <a href={url} target="_blank" rel="noreferrer" sx={{ height: '100%' }}>
         <Grid
           sx={{
-            gap: 3,
-            gridTemplateColumns: ['100px 1fr', '120px 1fr', '140px 1fr'],
-            padding: 3,
+            gap: 0,
+            gridTemplateColumns: ['128px 1fr', '144px 1fr', '180px 1fr'],
+            height: [128, 144, 180],
           }}
         >
-          <Box
+          <Flex
             sx={{
-              height: [100, 120, 140],
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'lightgray',
             }}
           >
-            {isLoading || error ? (
-              <Flex
-                sx={{
-                  height: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'lightgray',
-                }}
-              >
-                {isLoading ? (
-                  <Spinner color="gray" strokeWidth={3} />
-                ) : (
-                  error && <NotSupportedIcon size={32} sx={{ color: 'gray' }} />
-                )}
-              </Flex>
-            ) : (
-              metadata && (
-                <Image
-                  src={metadata.image || metadata.logo}
-                  alt={metadata.title}
-                  objectFit="cover"
-                  width={160}
-                  height={160}
-                  unoptimized
-                />
-              )
+            {isLoading && <Spinner color="gray" strokeWidth={3} />}
+            {!isLoading && error && (
+              <NotSupportedIcon size={32} sx={{ color: 'gray' }} />
             )}
-          </Box>
+            {!isLoading && metadata && (
+              <Image
+                src={metadata.image || metadata.logo}
+                alt={metadata.title}
+                objectFit="cover"
+                width={180}
+                height={180}
+                unoptimized
+              />
+            )}
+          </Flex>
 
-          <Flex
-            sx={{ flexDirection: 'column', justifyContent: 'space-between' }}
+          <Box
+            sx={{
+              padding: [2, 3],
+              borderLeft: '1px solid',
+              borderColor: 'lightgray',
+            }}
           >
-            <Box sx={{ marginBottom: 2 }}>
-              <Box
-                sx={{
-                  fontWeight: 'bold',
-                  fontSize: [1, 2],
-                  lineHeight: 1.3,
-                  marginBottom: [1, 1, 2],
-                  display: '-webkit-box',
-                  WebkitLineClamp: ['2', '2', '3'],
-                  textOverflow: 'ellipsis',
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                }}
-              >
-                {(metadata && metadata.title) || url}
-              </Box>
-              {metadata && metadata.description && (
-                <p
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%',
+              }}
+            >
+              <Box sx={{ marginBottom: 2 }}>
+                <Box
                   sx={{
-                    color: 'darkgray',
-                    fontSize: ['10px', 1],
-                    lineHeight: 1.4,
+                    fontWeight: 'bold',
+                    fontSize: [1, 2, '18px'],
+                    lineHeight: 1.3,
+                    marginBottom: [1, 1, 2],
                     display: '-webkit-box',
-                    WebkitLineClamp: '2',
+                    WebkitLineClamp: ['3', '2', '3'],
                     textOverflow: 'ellipsis',
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                   }}
                 >
-                  {metadata.description}
-                </p>
-              )}
-            </Box>
-
-            <Flex
-              sx={{
-                fontSize: ['12px', 1],
-                alignItems: 'center',
-                lineHeight: 1,
-                'span + span': {
-                  ':before': {
-                    content: '""',
-                    height: '100%',
-                    width: 0,
-                    border: '0.5px solid',
-                    borderColor: 'gray',
-                    margin: '0 8px',
-                  },
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  width: [14, 16, 18],
-                  height: [14, 16, 18],
-                  marginRight: '4px',
-                  flexShrink: 0,
-                }}
-              >
-                {metadata ? (
-                  <Image
-                    src={metadata.logo}
-                    alt={metadata.title}
-                    objectFit="contain"
-                    width={18}
-                    height={18}
-                    unoptimized
-                  />
-                ) : (
-                  <EarthIcon
-                    size="100%"
+                  {(metadata && metadata.title) || url}
+                </Box>
+                {metadata && metadata.description && (
+                  <p
                     sx={{
                       color: 'darkgray',
+                      fontSize: ['10px', 1],
+                      lineHeight: 1.4,
+                      display: '-webkit-box',
+                      WebkitLineClamp: '2',
+                      textOverflow: 'ellipsis',
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
                     }}
-                  />
+                  >
+                    {metadata.description}
+                  </p>
                 )}
               </Box>
-              <Box
+
+              <Flex
                 sx={{
-                  display: '-webkit-box',
-                  WebkitLineClamp: '1',
-                  textOverflow: 'ellipsis',
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
+                  fontSize: ['12px', 1],
+                  alignItems: 'center',
+                  lineHeight: 1,
+                  'span + span': {
+                    ':before': {
+                      content: '""',
+                      height: '100%',
+                      width: 0,
+                      border: '0.5px solid',
+                      borderColor: 'gray',
+                      margin: '0 8px',
+                    },
+                  },
                 }}
               >
-                <span>
-                  {(metadata && metadata.publisher) || new URL(url).host}
-                </span>
-                {metadata && metadata.date && (
-                  <span
-                    sx={{
-                      display: ['none', 'inline', 'inline'],
-                    }}
-                  >
-                    {formatDate(metadata.date)}
+                <Box
+                  sx={{
+                    width: [14, 16, 18],
+                    height: [14, 16, 18],
+                    marginRight: '4px',
+                    flexShrink: 0,
+                  }}
+                >
+                  {metadata ? (
+                    <Image
+                      src={metadata.logo}
+                      alt={metadata.title}
+                      objectFit="contain"
+                      width={18}
+                      height={18}
+                      unoptimized
+                    />
+                  ) : (
+                    <EarthIcon
+                      size="100%"
+                      sx={{
+                        color: 'darkgray',
+                      }}
+                    />
+                  )}
+                </Box>
+                <Box
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: '1',
+                    textOverflow: 'ellipsis',
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <span>
+                    {(metadata && metadata.publisher) || new URL(url).host}
                   </span>
-                )}
-                {metadata && metadata.author && (
-                  <span
-                    sx={{
-                      display: ['none', 'inline', 'inline'],
-                    }}
-                  >
-                    {metadata.author}
-                  </span>
-                )}
-              </Box>
+                  {metadata && metadata.date && (
+                    <span
+                      sx={{
+                        display: ['none', 'inline', 'inline'],
+                      }}
+                    >
+                      {formatDate(metadata.date)}
+                    </span>
+                  )}
+                  {metadata && metadata.author && (
+                    <span
+                      sx={{
+                        display: ['none', 'inline', 'inline'],
+                      }}
+                    >
+                      {metadata.author}
+                    </span>
+                  )}
+                </Box>
+              </Flex>
             </Flex>
-          </Flex>
+          </Box>
         </Grid>
       </a>
     </Box>
