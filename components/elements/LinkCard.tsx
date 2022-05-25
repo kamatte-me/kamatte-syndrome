@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Flex, Grid, Spinner, ThemeUIStyleObject } from 'theme-ui';
 
 import { EarthIcon, NotSupportedIcon } from '@/components/elements/Icon';
@@ -19,8 +19,9 @@ const TEXT_ELLIPSE_STYLE = (lines: number | number[]): ThemeUIStyleObject => ({
 
 export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
   const [isLoading, serIsLoading] = useState<boolean>(true);
-  const [error, serError] = useState<Error | null>(null);
   const [metadata, setMetadata] = useState<EmbedApiResponse | null>(null);
+
+  const decodedURL = useMemo(() => decodeURIComponent(url), [url]);
 
   useEffect(() => {
     fetch(`/api/embed?url=${encodeURIComponent(url)}`)
@@ -29,9 +30,6 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
           throw new Error(`Response error: ${res.status}`);
         }
         res.json().then((json: EmbedApiResponse) => setMetadata(json));
-      })
-      .catch(err => {
-        serError(err);
       })
       .finally(() => serIsLoading(false));
   }, [url]);
@@ -64,19 +62,23 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
               backgroundColor: 'lightgray',
             }}
           >
-            {isLoading && <Spinner color="gray" strokeWidth={3} />}
-            {!isLoading && error && (
-              <NotSupportedIcon size={32} sx={{ color: 'gray' }} />
-            )}
-            {!isLoading && metadata && (
-              <Image
-                src={metadata.image || metadata.logo}
-                alt={metadata.title || url}
-                objectFit="cover"
-                width={180}
-                height={180}
-                unoptimized
-              />
+            {isLoading ? (
+              <Spinner color="gray" strokeWidth={3} />
+            ) : (
+              <>
+                {metadata && (metadata.image || metadata.logo) ? (
+                  <Image
+                    src={metadata.image || metadata.logo!}
+                    alt={metadata.title || decodedURL}
+                    objectFit="cover"
+                    width={180}
+                    height={180}
+                    unoptimized
+                  />
+                ) : (
+                  <NotSupportedIcon size={32} sx={{ color: 'gray' }} />
+                )}
+              </>
             )}
           </Flex>
 
@@ -98,13 +100,13 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                 <Box
                   sx={{
                     fontWeight: 'bold',
-                    fontSize: [1, 2, '18px'],
+                    fontSize: [1, 2, 2],
                     lineHeight: 1.3,
                     marginBottom: [1, 1, 2],
                     ...TEXT_ELLIPSE_STYLE([3, 2, 3]),
                   }}
                 >
-                  {(metadata && metadata.title) || url}
+                  {(metadata && metadata.title) || decodedURL}
                 </Box>
                 {metadata && metadata.description && (
                   <p
@@ -145,10 +147,10 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                     flexShrink: 0,
                   }}
                 >
-                  {metadata ? (
+                  {metadata && metadata.favicon ? (
                     <Image
-                      src={metadata.logo}
-                      alt={metadata.title || url}
+                      src={metadata.favicon}
+                      alt={metadata.title || decodedURL}
                       objectFit="contain"
                       width={18}
                       height={18}
