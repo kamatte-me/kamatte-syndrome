@@ -100,7 +100,7 @@ const handler: NextApiHandler<EmbedApiResponse> = async (req, res) => {
         default:
           res.setHeader(
             'cache-control',
-            'max-age=3600, s-maxage=2592000, stale-while-revalidate=3600',
+            'max-age=3600, s-maxage=86400, stale-while-revalidate=2592000',
           );
       }
     }
