@@ -26,10 +26,14 @@ export const BlogListItem: React.FC<{
         <Image
           src={entry.featuredImage ? entry.featuredImage.url : '/avatar.svg'}
           alt={entry.title}
-          objectFit="contain"
-          objectPosition="center top"
           width={200}
           height={120}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+            objectFit: 'contain',
+            objectPosition: 'center top',
+          }}
         />
       </Flex>
       <Box sx={{ flex: 1 }}>

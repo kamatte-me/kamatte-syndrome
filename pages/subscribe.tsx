@@ -43,10 +43,14 @@ const CulturePage: React.FC = () => {
                 <Image
                   src="https://qr-official.line.me/sid/L/200qygmw.png"
                   alt="友だち追加QRコード"
-                  objectFit="contain"
                   width={180}
                   height={180}
                   priority
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    objectFit: 'contain',
+                  }}
                 />
               </Box>
               <Box>
@@ -54,10 +58,14 @@ const CulturePage: React.FC = () => {
                   <Image
                     src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
                     alt="友だち追加"
-                    objectFit="contain"
                     width={120}
                     height={36}
                     quality={100}
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                      objectFit: 'contain',
+                    }}
                   />
                 </a>
               </Box>

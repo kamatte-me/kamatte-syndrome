@@ -81,9 +81,13 @@ export const Header: React.FC = () => {
                 <Image
                   src="/logo.svg"
                   alt={siteName}
-                  objectFit="contain"
                   width={120}
                   height={36}
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    objectFit: 'contain',
+                  }}
                 />
               </Link>
             </Flex>

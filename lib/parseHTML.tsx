@@ -148,10 +148,13 @@ const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
           <MediaWrapper>
             <NextImage
               src={attribs.src}
-              objectFit="contain"
               width={480}
               height={360}
               alt={attribs.alt}
+              style={{
+                maxWidth: '100%',
+                objectFit: 'contain',
+              }}
             />
           </MediaWrapper>
         );
