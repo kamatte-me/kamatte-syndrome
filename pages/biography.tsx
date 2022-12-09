@@ -83,10 +83,14 @@ const BiographyPage: NextPage<
           <Image
             src="/avatar.svg"
             alt="me"
-            objectFit="contain"
             width={300}
             height={300}
             priority
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+            }}
           />
         </Flex>
         <Box>

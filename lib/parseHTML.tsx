@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define, react/jsx-pascal-case, react/jsx-props-no-spreading */
+import { Themed } from '@theme-ui/mdx';
 import parse, {
   attributesToProps,
   domToReact,
@@ -10,7 +11,7 @@ import parse, {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import React, { ElementType, useEffect, useRef } from 'react';
-import { Embed, Flex, Heading, Link, Themed } from 'theme-ui';
+import { Embed, Flex, Heading, Link } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
@@ -131,12 +132,9 @@ const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
         if (attribs.href.startsWith(baseUrl)) {
           return (
             <NextLink href={attribs.href.replace(baseUrl, '')}>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a>
-                <span sx={{ variant: 'styles.a' }}>
-                  {parseChildren(children)}
-                </span>
-              </a>
+              <span sx={{ variant: 'styles.a' }}>
+                {parseChildren(children)}
+              </span>
             </NextLink>
           );
         }
@@ -150,9 +148,13 @@ const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
           <MediaWrapper>
             <NextImage
               src={attribs.src}
-              objectFit="contain"
               width={480}
               height={360}
+              alt={attribs.alt}
+              style={{
+                maxWidth: '100%',
+                objectFit: 'contain',
+              }}
             />
           </MediaWrapper>
         );

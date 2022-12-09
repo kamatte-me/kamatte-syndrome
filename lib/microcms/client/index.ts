@@ -11,23 +11,29 @@ import { GetContentsResponse } from '@/lib/microcms/client/types/response';
 // 全件取得の同時並列数
 const MAX_CONCURRENCY = 5;
 
-type GetContentFn<T> = <K extends keyof T>(
+type GetContentFn<T extends Record<string, Record<string, any>>> = <
+  K extends keyof T,
+>(
   endpoint: K,
   id: string,
   query?: GetContentQuery,
 ) => Promise<Model<T[K]>>;
 
-type GetContentsRawFn<T> = <K extends keyof T>(
+type GetContentsRawFn<T extends Record<string, Record<string, any>>> = <
+  K extends keyof T,
+>(
   endpoint: K,
   query?: GetContentsQuery,
 ) => Promise<GetContentsResponse<Model<T[K]>>>;
 
-type GetContentsFn<T> = <K extends keyof T>(
+type GetContentsFn<T extends Record<string, Record<string, any>>> = <
+  K extends keyof T,
+>(
   endpoint: K,
   query?: GetContentsQuery,
 ) => Promise<Model<T[K]>[]>;
 
-type GetAllContentsFn<T> = <K extends keyof T>(
+type GetAllContentsFn<T extends Record<string, any>> = <K extends keyof T>(
   endpoint: K,
   query?: GetAllContentsQuery,
 ) => Promise<Model<T[K]>[]>;

@@ -193,6 +193,10 @@ const BlogEntryPage: NextPage<
                     : entry.featuredImage.height
                 }
                 priority
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
             </Flex>
           )}

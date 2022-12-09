@@ -13,9 +13,13 @@ const FeaturedImage: React.FC<{
       <Image
         src={item.featuredImage.url}
         alt={item.title}
-        objectFit="contain"
         width={item.featuredImage.width}
         height={item.featuredImage.height}
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+          objectFit: 'contain',
+        }}
       />
     );
   }

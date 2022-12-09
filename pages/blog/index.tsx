@@ -99,10 +99,7 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             }}
           >
             <Link href={`/blog/${entry.id}`}>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a>
-                <BlogListItem entry={entry} />
-              </a>
+              <BlogListItem entry={entry} />
             </Link>
           </Box>
         ))}

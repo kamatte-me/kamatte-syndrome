@@ -70,10 +70,13 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                   <Image
                     src={metadata.image || metadata.logo!}
                     alt={metadata.title || decodedURL}
-                    objectFit="cover"
                     width={180}
                     height={180}
                     unoptimized
+                    style={{
+                      maxWidth: '100%',
+                      objectFit: 'cover',
+                    }}
                   />
                 ) : (
                   <NotSupportedIcon size={32} sx={{ color: 'gray' }} />
@@ -151,10 +154,14 @@ export const LinkCard: React.FC<{ url: string }> = ({ url }) => {
                     <Image
                       src={metadata.favicon}
                       alt={metadata.title || decodedURL}
-                      objectFit="contain"
                       width={18}
                       height={18}
                       unoptimized
+                      style={{
+                        maxWidth: '100%',
+                        height: 'auto',
+                        objectFit: 'contain',
+                      }}
                     />
                   ) : (
                     <EarthIcon

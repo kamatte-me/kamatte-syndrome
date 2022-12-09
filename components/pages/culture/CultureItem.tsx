@@ -40,9 +40,13 @@ export const CultureItem: React.FC<{
           <Image
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             alt={item.name}
-            objectFit="cover"
             width={480}
             height={360}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+              objectFit: 'cover',
+            }}
           />
           <Flex
             sx={{
