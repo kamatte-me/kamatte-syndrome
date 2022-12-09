@@ -1,9 +1,10 @@
 import { Global as GlobalStyle } from '@emotion/react';
+import { Themed } from '@theme-ui/mdx';
 import { AppType } from 'next/dist/shared/lib/utils';
 import Script from 'next/script';
 import { DefaultSeo } from 'next-seo';
 import React from 'react';
-import { Themed, ThemeProvider } from 'theme-ui';
+import { ThemeProvider } from 'theme-ui';
 
 import { baseUrl, siteName, slogan } from '@/constants/site';
 import { Layout } from '@/layout';

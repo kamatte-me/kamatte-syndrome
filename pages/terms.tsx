@@ -1,6 +1,7 @@
+import { Themed } from '@theme-ui/mdx';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
-import { Container, Heading, Themed } from 'theme-ui';
+import { Container, Heading } from 'theme-ui';
 
 import { baseUrl, siteName } from '@/constants/site';
 

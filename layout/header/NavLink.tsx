@@ -17,17 +17,14 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
 
   return (
     <Link href={to}>
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-      <a>
-        <Box
-          sx={{
-            variant: 'links.nav',
-            color: isActive ? 'primary' : 'black',
-          }}
-        >
-          {children}
-        </Box>
-      </a>
+      <Box
+        sx={{
+          variant: 'links.nav',
+          color: isActive ? 'primary' : 'black',
+        }}
+      >
+        {children}
+      </Box>
     </Link>
   );
 };

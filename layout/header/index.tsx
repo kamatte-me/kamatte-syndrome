@@ -78,16 +78,13 @@ export const Header: React.FC = () => {
               }}
             >
               <Link href="/">
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                <a>
-                  <Image
-                    src="/logo.svg"
-                    alt={siteName}
-                    objectFit="contain"
-                    width={120}
-                    height={36}
-                  />
-                </a>
+                <Image
+                  src="/logo.svg"
+                  alt={siteName}
+                  objectFit="contain"
+                  width={120}
+                  height={36}
+                />
               </Link>
             </Flex>
             <Flex

@@ -40,15 +40,12 @@ export const Pagination: React.FC<{
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {prevPath && (
           <Link href={prevPath}>
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <ArrowLeftIcon
-                size={ICON_SIZE}
-                sx={{
-                  color: 'black',
-                }}
-              />
-            </a>
+            <ArrowLeftIcon
+              size={ICON_SIZE}
+              sx={{
+                color: 'black',
+              }}
+            />
           </Link>
         )}
       </Flex>
@@ -59,15 +56,12 @@ export const Pagination: React.FC<{
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {nextPath && (
           <Link href={nextPath}>
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <ArrowRightIcon
-                size={ICON_SIZE}
-                sx={{
-                  color: 'black',
-                }}
-              />
-            </a>
+            <ArrowRightIcon
+              size={ICON_SIZE}
+              sx={{
+                color: 'black',
+              }}
+            />
           </Link>
         )}
       </Flex>

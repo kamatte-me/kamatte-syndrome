@@ -27,28 +27,25 @@ export const BlogEntriesPagination: React.FC<{
       >
         {prev && (
           <Link href={`/blog/${prev.id}`}>
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <Flex
+            <Flex
+              sx={{
+                variant: 'styles.a',
+                alignItems: 'center',
+                textDecoration: 'none',
+                color: 'black',
+              }}
+            >
+              <ArrowLeftIcon
+                size={ICON_SIZE}
                 sx={{
-                  variant: 'styles.a',
-                  alignItems: 'center',
-                  textDecoration: 'none',
                   color: 'black',
+                  minWidth: ICON_SIZE,
+                  minHeight: ICON_SIZE,
+                  mr: 2,
                 }}
-              >
-                <ArrowLeftIcon
-                  size={ICON_SIZE}
-                  sx={{
-                    color: 'black',
-                    minWidth: ICON_SIZE,
-                    minHeight: ICON_SIZE,
-                    mr: 2,
-                  }}
-                />
-                {prev.title}
-              </Flex>
-            </a>
+              />
+              {prev.title}
+            </Flex>
           </Link>
         )}
       </Flex>
@@ -61,28 +58,25 @@ export const BlogEntriesPagination: React.FC<{
       >
         {next && (
           <Link href={`/blog/${next.id}`}>
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <Flex
+            <Flex
+              sx={{
+                variant: 'styles.a',
+                alignItems: 'center',
+                textDecoration: 'none',
+                color: 'black',
+              }}
+            >
+              {next.title}
+              <ArrowRightIcon
+                size={ICON_SIZE}
                 sx={{
-                  variant: 'styles.a',
-                  alignItems: 'center',
-                  textDecoration: 'none',
                   color: 'black',
+                  minWidth: ICON_SIZE,
+                  minHeight: ICON_SIZE,
+                  ml: 2,
                 }}
-              >
-                {next.title}
-                <ArrowRightIcon
-                  size={ICON_SIZE}
-                  sx={{
-                    color: 'black',
-                    minWidth: ICON_SIZE,
-                    minHeight: ICON_SIZE,
-                    ml: 2,
-                  }}
-                />
-              </Flex>
-            </a>
+              />
+            </Flex>
           </Link>
         )}
       </Flex>
