@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('@typescript-eslint/utils/dist/ts-eslint').Linter.Config} */
+const eslintConfig = {
   env: {
     browser: true,
     node: true,
@@ -47,3 +48,5 @@ module.exports = {
     },
   ],
 };
+
+module.exports = eslintConfig;
