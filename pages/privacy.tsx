@@ -1,3 +1,4 @@
+import { NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Container, Heading, Link, Paragraph } from 'theme-ui';
@@ -6,7 +7,7 @@ import { baseUrl, siteName } from '@/constants/site';
 
 const PAGE_TITLE = 'プライバシーポリシー';
 
-const PrivacyPolicyPage: React.FC = () => {
+const PrivacyPolicyPage: NextPage = () => {
   return (
     <>
       <NextSeo

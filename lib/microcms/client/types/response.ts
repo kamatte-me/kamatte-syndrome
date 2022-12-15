@@ -1,6 +1,6 @@
 import { Model } from '@/lib/microcms/client/types/model';
 
-export interface GetContentsResponse<T extends Model<Record<string, any>>> {
+export interface GetContentsResponse<T extends Model<object>> {
   contents: T[];
   totalCount: number;
   offset: number;

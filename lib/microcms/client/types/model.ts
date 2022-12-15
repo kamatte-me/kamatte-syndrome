@@ -1,4 +1,4 @@
-export type Model<TSchema extends Record<string, any>> = {
+export type Model<TSchema extends object> = {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -6,13 +6,9 @@ export type Model<TSchema extends Record<string, any>> = {
   revisedAt?: string;
 } & TSchema;
 
-export type RepeatedField<T extends CustomField<string, Record<string, any>>> =
-  T[];
+export type RepeatedField<T extends CustomField<string, object>> = T[];
 
-export type CustomField<
-  TID extends string,
-  TSchema extends Record<string, any>,
-> = {
+export type CustomField<TID extends string, TSchema extends object> = {
   fieldId: TID;
 } & TSchema;
 
