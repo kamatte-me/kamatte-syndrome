@@ -1,3 +1,4 @@
+import { NextPage } from 'next';
 import Image from 'next/image';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
@@ -7,7 +8,7 @@ import { author, baseUrl } from '@/constants/site';
 
 const PAGE_TITLE = 'Subscribe';
 
-const CulturePage: React.FC = () => {
+const CulturePage: NextPage = () => {
   return (
     <>
       <NextSeo

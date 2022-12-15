@@ -1,4 +1,5 @@
 import { Themed } from '@theme-ui/mdx';
+import { NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Container, Heading } from 'theme-ui';
@@ -7,7 +8,7 @@ import { baseUrl, siteName } from '@/constants/site';
 
 const PAGE_TITLE = '免責事項';
 
-const TermsPage: React.FC = () => {
+const TermsPage: NextPage = () => {
   return (
     <>
       <NextSeo
