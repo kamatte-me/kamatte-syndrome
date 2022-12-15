@@ -35,14 +35,7 @@ const scrape = metascraper.default([
   metaScraperTitle(),
   metaScraperDescription(),
   metaScraperPublisher(),
-  (
-    metaScraperLogo as (option?: {
-      pickFn: <T extends Record<string, any>>(
-        sizes: T[],
-        pickDefault: (sizes: T[]) => T,
-      ) => T;
-    }) => metascraper.RuleSet
-  )() as metascraper.Rule,
+  metaScraperLogo(),
   metaScraperImage(),
   metaScraperDate(),
   metaScraperAuthor(),
