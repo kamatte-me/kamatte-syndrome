@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import * as metascraper from 'metascraper';
 import metaScraperAuthor from 'metascraper-author';
 import metaScraperDate from 'metascraper-date';
@@ -104,7 +104,7 @@ const handler: NextApiHandler<EmbedApiResponse> = async (req, res) => {
       url: url.toString(),
     });
 
-    const $ = cheerio.load(response.body);
+    const $ = load(response.body);
     const resBody: Metadata = {
       ...metadata,
       favicon: (() => {
