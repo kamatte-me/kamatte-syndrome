@@ -4,6 +4,7 @@
     "config:base"
   ],
   "timezone": "Asia/Tokyo",
+  "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "labels": [
     "dependencies"
