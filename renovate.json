@@ -1,70 +1,58 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
+  "extends": ["config:base"],
   "timezone": "Asia/Tokyo",
+  "schedule": ["before 3am on Monday"],
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
-  "labels": [
-    "dependencies"
-  ],
-  "ignoreDeps": [
-    "npm"
-  ],
+  "labels": ["dependencies"],
+  "ignoreDeps": ["npm"],
   "packageRules": [
     {
-      "groupName": "Next.js",
-      "matchPackageNames": [
-        "next",
-        "eslint-config-next"
-      ],
-      "matchPackagePatterns": [
-        "^@next/"
-      ],
+      "matchDepTypes": ["dependencies"],
       "automerge": false
     },
     {
-      "groupName": "React",
-      "matchPackageNames": [
-        "react",
-        "react-dom"
-      ],
-      "automerge": false
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true
     },
     {
-      "groupName": "Theme UI",
-      "matchPackageNames": [
-        "theme-ui"
-      ],
-      "matchPackagePatterns": [
-        "^@theme-ui/"
-      ],
-      "automerge": false
-    },
-    {
-      "groupName": "Linters",
-      "matchPackagePatterns": [
-        "eslint"
-      ],
-      "matchPackageNames": [
-        "prettier"
-      ],
-      "excludePackageNames": [
-        "eslint-config-next"
-      ]
-    },
-    {
-      "groupName": "metascraper",
-      "matchPackagePatterns": [
-        "^metascraper"
-      ]
+      "matchPackageNames": ["node"],
+      "schedule": ["before 3am on the first day of the month"],
+      "automerge": true
     },
     {
       "groupName": "@types",
-      "matchPackagePrefixes": [
-        "@types/"
-      ]
+      "matchPackagePrefixes": ["@types/"],
+      "automerge": true
+    },
+    {
+      "groupName": "linters",
+      "matchPackagePatterns": ["eslint"],
+      "matchPackageNames": ["prettier"],
+      "automerge": true
+    },
+    {
+      "groupName": "metascraper",
+      "matchPackagePatterns": ["^metascraper"],
+      "automerge": true
+    },
+    {
+      "groupName": "theme-ui",
+      "matchPackageNames": ["theme-ui"],
+      "matchPackagePatterns": ["^@theme-ui/"],
+      "automerge": false
+    },
+    {
+      "groupName": "next",
+      "matchPackageNames": ["next", "eslint-config-next"],
+      "matchPackagePatterns": ["^@next/"],
+      "automerge": false
+    },
+    {
+      "groupName": "react",
+      "matchPackageNames": ["react", "react-dom"],
+      "automerge": false
     }
   ]
 }
