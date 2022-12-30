@@ -22,7 +22,7 @@
     "cheerio": "^1.0.0-rc.12",
     "destyle.css": "^4.0.0",
     "feed": "^4.2.2",
-    "html-react-parser": "^3.0.4",
+    "html-react-parser": "^3.0.6",
     "metascraper": "^5.32.3",
     "metascraper-author": "^5.32.3",
     "metascraper-date": "^5.32.3",
