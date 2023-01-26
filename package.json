@@ -45,7 +45,7 @@
     "@babel/core": "^7.20.12",
     "@types/needle": "^3.2.0",
     "@types/node": "^18.11.18",
-    "@types/react": "^18.0.26",
+    "@types/react": "^18.0.27",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
     "eslint": "^8.30.0",
