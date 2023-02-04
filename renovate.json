@@ -54,5 +54,10 @@
       "matchPackageNames": ["react", "react-dom"],
       "automerge": false
     }
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "automerge": true
+  }
 }
