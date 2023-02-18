@@ -25,8 +25,8 @@ plz kamatte me!!!
 
 ## 必要なもの
 
-- Node.js v18
-- npm v8
+- Node.js `18.x`
+- npm `>=8.6.0`
 - [microCMS](https://microcms.io/) のアカウント
   - と [型定義](./lib/microcms/model.ts) を見てデータ構造を完全再現するガッツ
 - (Optional) [Vercel CLI](https://vercel.com/cli)
