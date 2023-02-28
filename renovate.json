@@ -1,8 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:base", "schedule:daily"],
   "timezone": "Asia/Tokyo",
-  "schedule": ["before 3am on Friday"],
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "labels": ["dependencies"],
@@ -14,11 +13,6 @@
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "automerge": true
-    },
-    {
-      "matchPackageNames": ["node"],
-      "schedule": ["before 3am on the first day of the month"],
       "automerge": true
     },
     {
@@ -53,6 +47,12 @@
       "groupName": "react",
       "matchPackageNames": ["react", "react-dom"],
       "automerge": false
+    },
+    {
+      "groupName": "node.js",
+      "matchPackageNames": ["node", "@types/node"],
+      "automerge": true,
+      "extends": ["schedule:monthly"]
     }
   ],
   "vulnerabilityAlerts": {
