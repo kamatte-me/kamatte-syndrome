@@ -41,7 +41,7 @@
     "theme-ui": "~0.15.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
+    "@babel/core": "^7.21.0",
     "@types/needle": "^3.2.0",
     "@types/node": "^18.14.2",
     "@types/react": "^18.0.28",
