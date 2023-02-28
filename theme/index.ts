@@ -1,4 +1,4 @@
-import { Caveat, Josefin_Sans } from '@next/font/google';
+import { Caveat, Josefin_Sans } from 'next/font/google';
 import { Theme } from 'theme-ui';
 
 const josefinSans = Josefin_Sans({
