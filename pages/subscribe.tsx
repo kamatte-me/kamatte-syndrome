@@ -40,12 +40,12 @@ const CulturePage: NextPage = () => {
             }}
           >
             <Box sx={{ textAlign: 'center', mr: [0, 3], mb: [3, 0] }}>
-              <Box>
+              <Box sx={{ mb: 1 }}>
                 <Image
-                  src="https://qr-official.line.me/sid/L/200qygmw.png"
+                  src="https://qr-official.line.me/gs/M_200qygmw_GW.png"
                   alt="友だち追加QRコード"
-                  width={180}
-                  height={180}
+                  width={160}
+                  height={160}
                   priority
                   style={{
                     maxWidth: '100%',
