@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
-    "@theme-ui/mdx": "~0.15.5",
+    "@theme-ui/mdx": "~0.15.7",
     "cheerio": "^1.0.0-rc.12",
     "destyle.css": "^4.0.0",
     "feed": "^4.2.2",
@@ -38,7 +38,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "sitemap": "^7.1.1",
-    "theme-ui": "~0.15.5"
+    "theme-ui": "~0.15.7"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
