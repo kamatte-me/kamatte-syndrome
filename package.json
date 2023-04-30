@@ -43,7 +43,7 @@
   "devDependencies": {
     "@babel/core": "^7.21.5",
     "@types/needle": "^3.2.0",
-    "@types/node": "^18.15.11",
+    "@types/node": "^18.16.3",
     "@types/react": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
@@ -67,6 +67,6 @@
     "npm": ">=8.6.0"
   },
   "volta": {
-    "node": "18.15.0"
+    "node": "18.16.0"
   }
 }
