@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.0",
+    "@emotion/react": "^11.11.1",
     "@theme-ui/mdx": "~0.15.7",
     "cheerio": "^1.0.0-rc.12",
     "destyle.css": "^4.0.0",
