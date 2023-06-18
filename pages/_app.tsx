@@ -1,10 +1,11 @@
 import { Global as GlobalStyle } from '@emotion/react';
 import { Themed } from '@theme-ui/mdx';
 import { AppType } from 'next/dist/shared/lib/utils';
+import Head from 'next/head';
 import Script from 'next/script';
 import { DefaultSeo } from 'next-seo';
 import React from 'react';
-import { ThemeProvider } from 'theme-ui';
+import { ThemeUIProvider } from 'theme-ui';
 
 import { baseUrl, siteName, slogan } from '@/constants/site';
 import { Layout } from '@/layout';
@@ -12,13 +13,16 @@ import { theme } from '@/theme';
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeUIProvider theme={theme}>
       <Themed.root>
         <GlobalStyle
           styles={{
             body: {
               wordBreak: 'break-all',
               WebkitFontSmoothing: 'antialiased',
+            },
+            '.iframely-embed': {
+              margin: '1.6em 0',
             },
           }}
         />
@@ -102,13 +106,16 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             ],
           }}
         />
+        <Head>
+          <meta name="color-scheme" content="light" />
+        </Head>
 
         <Layout>
           {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <Component {...pageProps} />
         </Layout>
       </Themed.root>
-    </ThemeProvider>
+    </ThemeUIProvider>
   );
 };
 

@@ -79,22 +79,20 @@ const parseStyleString = (styleStr?: string | null) => {
   }, {});
 };
 
-export interface ParseReplaceOption {
-  removeFirstChildMarginTop?: boolean;
-}
-
-const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
+const parseOption: HTMLReactParserOptions = {
   replace: domNode => {
     const { name, attribs, children } = domNode as Element;
     const attrProps = attributesToProps(attribs);
 
-    if (option && option.removeFirstChildMarginTop) {
-      if (domNode.prev === null && domNode.parent === null) {
-        attrProps.style = {
-          marginTop: '0',
-          ...attrProps.style,
-        };
-      }
+    if (domNode.prev === null && domNode.parent === null) {
+      attrProps.style = {
+        marginTop: '0',
+        ...attrProps.style,
+      };
+    }
+
+    if (attrProps.className?.startsWith('iframely-')) {
+      return domNode;
     }
 
     switch (name as ElementType) {
@@ -158,12 +156,18 @@ const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
             />
           </MediaWrapper>
         );
-      case 'iframe':
-        return (
-          <MediaWrapper>
-            <Embed {...attrProps} loading="lazy" />
-          </MediaWrapper>
-        );
+      case 'div':
+        if (children.some(child => (child as Element).name === 'iframe')) {
+          return <MediaWrapper>{parseChildren(children)}</MediaWrapper>;
+        }
+        return domNode;
+      case 'iframe': {
+        const elm = <Embed {...attrProps} loading="lazy" />;
+        if ((domNode.parent as Element | null)?.name === 'div') {
+          return elm;
+        }
+        return <MediaWrapper>{elm}</MediaWrapper>;
+      }
       case 'blockquote': {
         const elm = (
           <Themed.blockquote {...attrProps}>
@@ -176,6 +180,9 @@ const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
         return elm;
       }
       case 'script': {
+        if (attrProps.src === '//cdn.iframe.ly/embed.js') {
+          attrProps.src += '?theme=light';
+        }
         return (
           <SafeScript src={attrProps.src}>
             {children.length > 0 ? (children[0] as Text).data : ''}
@@ -195,18 +202,15 @@ const parseOption = (option?: ParseReplaceOption): HTMLReactParserOptions => ({
             </ThemedComponent>
           );
         }
-        return null;
+        return domNode;
     }
   },
-});
+};
 
-const parseChildren = (children: Element['children']) =>
-  domToReact(children, parseOption());
+const parseChildren = (children: Parameters<typeof domToReact>[0]) =>
+  domToReact(children, parseOption);
 
-export const htmlToThemed = (
-  html: string,
-  option?: ParseReplaceOption,
-): ReturnType<typeof parse> => parse(html, parseOption(option));
+export const htmlToThemed = (html: string) => parse(html, parseOption);
 
 const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string =>
   dom
