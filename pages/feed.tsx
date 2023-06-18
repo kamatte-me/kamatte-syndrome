@@ -41,16 +41,16 @@ export const getStaticProps: GetStaticProps = async () => {
     .then(blogEntries => {
       blogEntries.forEach(entry => {
         const url = `${baseUrl}/blog/${entry.id}`;
-        const body = parseBlogBody(entry.body);
+        const { description } = parseBlogBody(entry.body);
         const updated = new Date(entry.revisedAt!);
         feed.addItem({
           title: entry.title,
           id: url,
           link: url,
-          published: new Date(entry.publishedAt!),
+          published: new Date(entry.publishedAt || new Date()),
           date: updated,
-          description: body.description,
-          content: body.html,
+          description,
+          content: entry.body,
           image: entry.featuredImage
             ? entry.featuredImage.url
             : `${baseUrl}/avatar.png`,

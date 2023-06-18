@@ -17,6 +17,7 @@ import { parseBlogBody } from '@/lib/blog';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
 import { Blog } from '@/lib/microcms/model';
+import { htmlToThemed } from '@/lib/parseHTML';
 
 const PreviewControl = dynamic(
   () => import('@/components/pages/blog/PreviewControl'),
@@ -92,13 +93,10 @@ const BlogEntryPage: NextPage<
 > = ({ entry, prevEntry, nextEntry }) => {
   const router = useRouter();
 
-  const {
-    Component: BlogBody,
-    text: bodyText,
-    description,
-  } = useMemo(() => {
-    return parseBlogBody(entry.body);
-  }, [entry.body]);
+  const { text: bodyText, description } = useMemo(
+    () => parseBlogBody(entry.body),
+    [entry.body],
+  );
 
   return (
     <>
@@ -207,9 +205,12 @@ const BlogEntryPage: NextPage<
           sx={{
             fontSize: 2,
             lineHeight: 1.9,
+            'p + p': {
+              marginTop: '1.2em',
+            },
           }}
         >
-          <BlogBody />
+          {htmlToThemed(entry.body)}
         </Box>
         <Box sx={{ mt: 5 }}>
           <BlogEntriesPagination prev={prevEntry} next={nextEntry} />

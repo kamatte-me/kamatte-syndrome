@@ -1,9 +1,4 @@
-import {
-  CustomField,
-  Image,
-  Model,
-  RepeatedField,
-} from '@/lib/microcms/client/types/model';
+import { CustomField, Image, Model } from '@/lib/microcms/client/types/model';
 
 export type BlogCustomFieldRichEditor = CustomField<
   'richEditor',
@@ -28,9 +23,7 @@ export type BlogCustomFieldLinkCard = CustomField<
 
 export type Blog = Model<{
   title: string;
-  body: RepeatedField<
-    BlogCustomFieldRichEditor | BlogCustomFieldHTML | BlogCustomFieldLinkCard
-  >;
+  body: string;
   featuredImage?: Image | null;
 }>;
 
