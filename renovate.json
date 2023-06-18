@@ -27,11 +27,6 @@
       "automerge": true
     },
     {
-      "groupName": "metascraper",
-      "matchPackagePatterns": ["^metascraper"],
-      "automerge": true
-    },
-    {
       "groupName": "theme-ui",
       "matchPackageNames": ["theme-ui"],
       "matchPackagePatterns": ["^@theme-ui/"],
