@@ -5,6 +5,7 @@
   "prHourlyLimit": 0,
   "labels": ["dependencies"],
   "ignoreDeps": ["npm"],
+  "separateMajorMinor": true,
   "packageRules": [
     {
       "matchDepTypes": ["devDependencies"],
@@ -44,6 +45,11 @@
     {
       "groupName": "react",
       "matchPackageNames": ["react", "react-dom", "@types/react"]
+    },
+    {
+      "matchPackageNames": ["node"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
     },
     {
       "groupName": "node.js",
