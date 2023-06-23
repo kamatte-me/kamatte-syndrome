@@ -24,8 +24,8 @@
     "next": "13.4.6",
     "next-seo": "^6.1.0",
     "p-limit": "^4.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "sitemap": "^7.1.1",
     "theme-ui": "~0.16.0"
