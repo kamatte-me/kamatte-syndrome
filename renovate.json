@@ -7,7 +7,11 @@
   "ignoreDeps": ["npm"],
   "packageRules": [
     {
-      "matchUpdateTypes": ["major"],
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["dependencies"],
       "automerge": false
     },
     {
@@ -15,32 +19,12 @@
       "automerge": true
     },
     {
-      "groupName": "node.js",
-      "matchPackageNames": ["node", "@types/node"],
-      "automerge": true,
-      "extends": ["schedule:monthly"]
-    },
-    {
-      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["major"],
       "automerge": false
     },
     {
-      "matchDepTypes": ["devDependencies"],
-      "automerge": true
-    },
-    {
-      "groupName": "react",
-      "matchPackageNames": ["react", "react-dom", "@types/react"]
-    },
-    {
-      "groupName": "next",
-      "matchPackageNames": ["next", "eslint-config-next"],
-      "matchPackagePatterns": ["^@next/"]
-    },
-    {
-      "groupName": "theme-ui",
-      "matchPackageNames": ["theme-ui"],
-      "matchPackagePatterns": ["^@theme-ui/"]
+      "groupName": "@types",
+      "matchPackagePrefixes": ["@types/"]
     },
     {
       "groupName": "linters",
@@ -48,8 +32,23 @@
       "matchPackageNames": ["prettier"]
     },
     {
-      "groupName": "@types",
-      "matchPackagePrefixes": ["@types/"]
+      "groupName": "theme-ui",
+      "matchPackageNames": ["theme-ui"],
+      "matchPackagePatterns": ["^@theme-ui/"]
+    },
+    {
+      "groupName": "next",
+      "matchPackageNames": ["next", "eslint-config-next"],
+      "matchPackagePatterns": ["^@next/"]
+    },
+    {
+      "groupName": "react",
+      "matchPackageNames": ["react", "react-dom", "@types/react"]
+    },
+    {
+      "groupName": "node.js",
+      "matchPackageNames": ["node", "@types/node"],
+      "extends": ["schedule:monthly"]
     }
   ],
   "vulnerabilityAlerts": {
