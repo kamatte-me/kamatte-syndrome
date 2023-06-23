@@ -1,12 +1,25 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "schedule:daily"],
+  "extends": ["config:js-app", "schedule:daily"],
   "timezone": "Asia/Tokyo",
   "prHourlyLimit": 0,
-  "rangeStrategy": "bump",
   "labels": ["dependencies"],
   "ignoreDeps": ["npm"],
   "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "matchUpdateTypes": ["pin", "digest"],
+      "automerge": true
+    },
+    {
+      "groupName": "node.js",
+      "matchPackageNames": ["node", "@types/node"],
+      "automerge": true,
+      "extends": ["schedule:monthly"]
+    },
     {
       "matchDepTypes": ["dependencies"],
       "automerge": false
@@ -16,38 +29,27 @@
       "automerge": true
     },
     {
-      "groupName": "@types",
-      "matchPackagePrefixes": ["@types/"],
-      "automerge": true
-    },
-    {
-      "groupName": "linters",
-      "matchPackagePatterns": ["eslint"],
-      "matchPackageNames": ["prettier"],
-      "automerge": true
-    },
-    {
-      "groupName": "theme-ui",
-      "matchPackageNames": ["theme-ui"],
-      "matchPackagePatterns": ["^@theme-ui/"],
-      "automerge": false
+      "groupName": "react",
+      "matchPackageNames": ["react", "react-dom", "@types/react"]
     },
     {
       "groupName": "next",
       "matchPackageNames": ["next", "eslint-config-next"],
-      "matchPackagePatterns": ["^@next/"],
-      "automerge": false
+      "matchPackagePatterns": ["^@next/"]
     },
     {
-      "groupName": "react",
-      "matchPackageNames": ["react", "react-dom"],
-      "automerge": false
+      "groupName": "theme-ui",
+      "matchPackageNames": ["theme-ui"],
+      "matchPackagePatterns": ["^@theme-ui/"]
     },
     {
-      "groupName": "node.js",
-      "matchPackageNames": ["node", "@types/node"],
-      "automerge": true,
-      "extends": ["schedule:monthly"]
+      "groupName": "linters",
+      "matchPackagePatterns": ["eslint"],
+      "matchPackageNames": ["prettier"]
+    },
+    {
+      "groupName": "@types",
+      "matchPackagePrefixes": ["@types/"]
     }
   ],
   "vulnerabilityAlerts": {
