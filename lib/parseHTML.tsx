@@ -127,20 +127,17 @@ const parseOption: HTMLReactParserOptions = {
           </Heading>
         );
       case 'a':
-        if (attribs.href.startsWith(baseUrl)) {
+        if (
+          new RegExp(`^(/|${baseUrl})`).test(attribs.href) &&
+          !attribs.target
+        ) {
           return (
             <NextLink href={attribs.href.replace(baseUrl, '')}>
-              <span sx={{ variant: 'styles.a' }}>
-                {parseChildren(children)}
-              </span>
+              {parseChildren(children)}
             </NextLink>
           );
         }
-        return (
-          <Link {...attrProps} target="_blank">
-            {parseChildren(children)}
-          </Link>
-        );
+        return <Link {...attrProps}>{parseChildren(children)}</Link>;
       case 'img':
         return (
           <MediaWrapper>
