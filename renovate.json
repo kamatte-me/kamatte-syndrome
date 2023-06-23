@@ -5,6 +5,7 @@
   "prHourlyLimit": 0,
   "labels": ["dependencies"],
   "ignoreDeps": ["npm"],
+  "separateMajorMinor": true,
   "packageRules": [
     {
       "matchDepTypes": ["devDependencies"],
