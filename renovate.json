@@ -46,6 +46,11 @@
       "matchPackageNames": ["react", "react-dom", "@types/react"]
     },
     {
+      "matchPackageNames": ["node"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
       "groupName": "node.js",
       "matchPackageNames": ["node", "@types/node"],
       "extends": ["schedule:monthly"]
