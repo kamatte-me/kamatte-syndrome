@@ -1,6 +1,6 @@
 # かまって☆しんどろ〜む
 
-> https://kamatte.me
+> https://kamatte.me/
 
 plz kamatte me!!!
 
@@ -16,7 +16,6 @@ plz kamatte me!!!
 - SNS連携
   ```
   Atom Feed -> IFTTT -> LINE Messaging API
-                     -> Twitter
   ```
 
 # 開発
