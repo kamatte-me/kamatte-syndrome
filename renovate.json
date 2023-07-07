@@ -8,12 +8,12 @@
   "separateMajorMinor": true,
   "packageRules": [
     {
-      "matchDepTypes": ["devDependencies"],
-      "automerge": true
-    },
-    {
       "matchDepTypes": ["dependencies"],
       "automerge": false
+    },
+    {
+      "matchDepTypes": ["devDependencies", "volta"],
+      "automerge": true
     },
     {
       "matchUpdateTypes": ["pin", "digest"],
@@ -24,36 +24,7 @@
       "automerge": false
     },
     {
-      "groupName": "@types",
-      "matchPackagePrefixes": ["@types/"]
-    },
-    {
-      "groupName": "linters",
-      "matchPackagePatterns": ["eslint"],
-      "matchPackageNames": ["prettier"]
-    },
-    {
-      "groupName": "theme-ui",
-      "matchPackageNames": ["theme-ui"],
-      "matchPackagePatterns": ["^@theme-ui/"]
-    },
-    {
-      "groupName": "next",
-      "matchPackageNames": ["next", "eslint-config-next"],
-      "matchPackagePatterns": ["^@next/"]
-    },
-    {
-      "groupName": "react",
-      "matchPackageNames": ["react", "react-dom", "@types/react"]
-    },
-    {
-      "matchPackageNames": ["node"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true
-    },
-    {
-      "groupName": "node.js",
-      "matchPackageNames": ["node", "@types/node"],
+      "matchDepTypes": ["volta"],
       "extends": ["schedule:monthly"]
     }
   ],
