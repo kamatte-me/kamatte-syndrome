@@ -16,7 +16,7 @@ const PreviewControl: React.FC = () => {
   }, [router]);
 
   useEffect(() => {
-    const id = setTimeout(load, 15000);
+    const id = setTimeout(() => load(), 15000);
     return () => {
       clearTimeout(id);
     };
