@@ -20,7 +20,7 @@
     "@theme-ui/mdx": "0.16.0",
     "destyle.css": "4.0.0",
     "feed": "4.2.2",
-    "html-react-parser": "4.0.0",
+    "html-react-parser": "4.2.0",
     "next": "13.4.10",
     "next-seo": "6.1.0",
     "p-limit": "4.0.0",
