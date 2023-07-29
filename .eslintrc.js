@@ -31,6 +31,7 @@ const eslintConfig = {
         'jsx-a11y/click-events-have-key-events': 0,
         'jsx-a11y/no-noninteractive-element-interactions': 0,
         'react/jsx-no-useless-fragment': 0,
+        'import/order': 'off',
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
         '@typescript-eslint/no-unused-vars': 'off',
