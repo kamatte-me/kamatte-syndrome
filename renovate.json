@@ -12,7 +12,7 @@
       "automerge": false
     },
     {
-      "matchDepTypes": ["devDependencies", "volta"],
+      "matchDepTypes": ["devDependencies", "engines"],
       "automerge": true
     },
     {
@@ -24,7 +24,7 @@
       "automerge": false
     },
     {
-      "matchDepTypes": ["volta"],
+      "matchDepTypes": ["engines"],
       "extends": ["schedule:monthly"]
     }
   ],
