@@ -1,4 +1,4 @@
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Grid } from 'theme-ui';
@@ -6,7 +6,7 @@ import { Grid } from 'theme-ui';
 import { CultureItem } from '@/components/pages/culture/CultureItem';
 import { author, baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
-import { Culture } from '@/lib/microcms/model';
+import type { Culture } from '@/lib/microcms/model';
 
 export const getStaticProps: GetStaticProps<{
   cultures: Culture[];
@@ -30,11 +30,11 @@ const CulturePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <NextSeo
-        title={PAGE_TITLE}
         description={`${author}を構成するもの`}
         openGraph={{
           title: PAGE_TITLE,
         }}
+        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -46,9 +46,9 @@ const CulturePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         ]}
       />
 
-      <Grid as="dl" gap={3} columns={[2, 3, 4, 5]}>
-        {cultures.map(item => (
-          <CultureItem key={item.id} item={item} />
+      <Grid as="dl" columns={[2, 3, 4, 5]} gap={3}>
+        {cultures.map((item) => (
+          <CultureItem item={item} key={item.id} />
         ))}
       </Grid>
     </>

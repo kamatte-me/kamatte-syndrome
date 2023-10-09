@@ -16,7 +16,14 @@ export const SideNav: React.FC<SideNavProps> = ({
 }) => {
   return (
     <>
-      {open && <Overlay bgColor="primary" handleClose={() => handleClose()} />}
+      {open ? (
+        <Overlay
+          bgColor="primary"
+          handleClose={() => {
+            handleClose();
+          }}
+        />
+      ) : null}
       <div
         sx={{
           position: 'fixed',
@@ -38,7 +45,9 @@ export const SideNav: React.FC<SideNavProps> = ({
         }}
       >
         <CloseIcon
-          onClick={() => handleClose()}
+          onClick={() => {
+            handleClose();
+          }}
           sx={{
             position: 'fixed',
             top: 3,

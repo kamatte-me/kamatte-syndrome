@@ -1,4 +1,4 @@
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
 import { BreadcrumbJsonLd, NextSeo, SocialProfileJsonLd } from 'next-seo';
 import React from 'react';
@@ -9,7 +9,7 @@ import { SkillItem } from '@/components/pages/biography/Skill';
 import { Sns } from '@/components/pages/biography/Sns';
 import { author, baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
-import { History, Skill } from '@/lib/microcms/model';
+import type { History, Skill } from '@/lib/microcms/model';
 
 export const getStaticProps: GetStaticProps<{
   histories: History[];
@@ -41,11 +41,11 @@ const BiographyPage: NextPage<
   return (
     <>
       <NextSeo
-        title={PAGE_TITLE}
         description={`${author}のすべて`}
         openGraph={{
           title: PAGE_TITLE,
         }}
+        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -57,13 +57,13 @@ const BiographyPage: NextPage<
         ]}
       />
       <SocialProfileJsonLd
-        type="Person"
         name={author}
-        url={`${baseUrl}/biography`}
         sameAs={[
           'https://twitter.com/kamatte_me',
           'https://github.com/kamatte-me',
         ]}
+        type="Person"
+        url={`${baseUrl}/biography`}
       />
 
       <Flex
@@ -81,16 +81,16 @@ const BiographyPage: NextPage<
           }}
         >
           <Image
-            src="/avatar.svg"
             alt="me"
-            width={300}
             height={300}
             priority
+            src="/avatar.svg"
             style={{
               maxWidth: '100%',
               height: 'auto',
               objectFit: 'contain',
             }}
+            width={300}
           />
         </Flex>
         <Box>
@@ -114,8 +114,8 @@ const BiographyPage: NextPage<
             <Sns />
           </Box>
           <Box as="dl">
-            {histories.map(item => (
-              <HistoryItem key={item.id} year={item.year} body={item.body} />
+            {histories.map((item) => (
+              <HistoryItem body={item.body} key={item.id} year={item.year} />
             ))}
           </Box>
         </Box>
@@ -137,11 +137,11 @@ const BiographyPage: NextPage<
             Skills
           </Heading>
         </Flex>
-        <Grid as="ul" gap={3} columns={[2, 3, 4, 5]}>
-          {skills.map(item => (
-            <SkillItem key={item.id} name={item.name} level={item.level} />
+        <Grid as="ul" columns={[2, 3, 4, 5]} gap={3}>
+          {skills.map((item) => (
+            <SkillItem key={item.id} level={item.level} name={item.name} />
           ))}
-          <SkillItem name="kawaii" level={100} />
+          <SkillItem level={100} name="kawaii" />
         </Grid>
       </Box>
     </>

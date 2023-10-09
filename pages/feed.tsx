@@ -1,6 +1,8 @@
-import { Author, Feed } from 'feed';
-import { writeFile } from 'fs/promises';
-import { GetStaticProps, NextPage } from 'next';
+import { writeFile } from 'node:fs/promises';
+
+import type { Author } from 'feed';
+import { Feed } from 'feed';
+import type { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 
 import {
@@ -38,16 +40,18 @@ export const getStaticProps: GetStaticProps = async () => {
       orders: process.env.MICROCMS_GLOBAL_DRAFT_KEY ? '' : '-publishedAt',
       limit: 10,
     })
-    .then(blogEntries => {
-      blogEntries.forEach(entry => {
+    .then((blogEntries) => {
+      blogEntries.forEach((entry) => {
         const url = `${baseUrl}/blog/${entry.id}`;
         const { description } = parseBlogBody(entry.body);
-        const updated = new Date(entry.revisedAt!);
+        const published = new Date(entry.publishedAt || new Date());
+        const updated =
+          entry.revisedAt !== undefined ? new Date(entry.revisedAt) : published;
         feed.addItem({
           title: entry.title,
           id: url,
           link: url,
-          published: new Date(entry.publishedAt || new Date()),
+          published,
           date: updated,
           description,
           content: entry.body,
@@ -75,7 +79,7 @@ export const getStaticProps: GetStaticProps = async () => {
 const FeedXML: NextPage = () => {
   return (
     <Head>
-      <meta httpEquiv="refresh" content="0; url=/feed.xml" />
+      <meta content="0; url=/feed.xml" httpEquiv="refresh" />
       <title>Redirect to /feed.xml</title>
     </Head>
   );

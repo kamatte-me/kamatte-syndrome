@@ -38,7 +38,7 @@ export const Pagination: React.FC<{
       }}
     >
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
-        {prevPath && (
+        {prevPath ? (
           <Link href={prevPath}>
             <ArrowLeftIcon
               size={ICON_SIZE}
@@ -47,14 +47,14 @@ export const Pagination: React.FC<{
               }}
             />
           </Link>
-        )}
+        ) : null}
       </Flex>
       <Flex sx={{ alignItems: 'flex-end', mx: 4, cursor: 'default' }}>
         <span sx={{ fontSize: 4, color: 'black' }}>{currentPage}</span>
         <span sx={{ fontSize: 1, color: 'darkgray' }}>/{totalPages}</span>
       </Flex>
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
-        {nextPath && (
+        {nextPath ? (
           <Link href={nextPath}>
             <ArrowRightIcon
               size={ICON_SIZE}
@@ -63,7 +63,7 @@ export const Pagination: React.FC<{
               }}
             />
           </Link>
-        )}
+        ) : null}
       </Flex>
     </Flex>
   );

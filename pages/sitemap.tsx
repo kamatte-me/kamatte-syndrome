@@ -1,8 +1,9 @@
-import { writeFile } from 'fs/promises';
-import { GetStaticProps, NextPage } from 'next';
+import { writeFile } from 'node:fs/promises';
+
+import type { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { EnumChangefreq, SitemapStream, streamToPromise } from 'sitemap';
-import { SitemapItemLoose } from 'sitemap/dist/lib/types';
+import type { SitemapItemLoose } from 'sitemap/dist/lib/types';
 
 import { baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
@@ -31,6 +32,7 @@ export const getStaticProps: GetStaticProps = async () => {
       url: '/biography',
       changefreq: EnumChangefreq.YEARLY,
       lastmod:
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- always exists
         latestHistory[0].revisedAt! >= latestSkill[0].revisedAt!
           ? latestHistory[0].revisedAt
           : latestSkill[0].revisedAt,
@@ -52,7 +54,7 @@ export const getStaticProps: GetStaticProps = async () => {
     { url: '/terms', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
     { url: '/privacy', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
   ];
-  staticPages.forEach(page => stream.write(page));
+  staticPages.forEach((page) => stream.write(page));
 
   // ブログ
   const blogEntries = await client.getAllContents('blog', {
@@ -69,7 +71,7 @@ export const getStaticProps: GetStaticProps = async () => {
     } as SitemapItemLoose);
   }
 
-  blogEntries.forEach(entry => {
+  blogEntries.forEach((entry) => {
     stream.write({
       url: `/blog/${entry.id}`,
       changefreq: EnumChangefreq.YEARLY,
@@ -90,7 +92,7 @@ export const getStaticProps: GetStaticProps = async () => {
 const SitemapXML: NextPage = () => {
   return (
     <Head>
-      <meta httpEquiv="refresh" content="0; url=/sitemap.xml" />
+      <meta content="0; url=/sitemap.xml" httpEquiv="refresh" />
       <title>Redirect to /sitemap.xml</title>
     </Head>
   );

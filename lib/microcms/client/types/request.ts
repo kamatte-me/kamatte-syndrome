@@ -4,7 +4,7 @@ interface DefaultQuery {
   depth?: number;
 }
 
-export interface GetContentQuery extends DefaultQuery {}
+export type GetContentQuery = DefaultQuery;
 
 export interface GetContentsQuery extends DefaultQuery {
   limit?: number;
@@ -15,4 +15,4 @@ export interface GetContentsQuery extends DefaultQuery {
   filters?: string;
 }
 
-export interface GetAllContentsQuery extends Omit<GetContentsQuery, 'offset'> {}
+export type GetAllContentsQuery = Omit<GetContentsQuery, 'offset'>;

@@ -3,7 +3,7 @@ import { Box, Container, Embed, Flex, Heading } from 'theme-ui';
 
 import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
-import { Culture } from '@/lib/microcms/model';
+import type { Culture } from '@/lib/microcms/model';
 import { htmlToThemed } from '@/lib/parseHTML';
 
 export const YouTubeModal: React.FC<{
@@ -12,14 +12,16 @@ export const YouTubeModal: React.FC<{
   handleClose: () => void;
 }> = ({ cultureItem, open, handleClose }) => {
   if (!open) {
-    return <></>;
+    return null;
   }
 
   return (
     <Box>
-      <Overlay handleClose={handleClose} bgColor="black" />
+      <Overlay bgColor="black" handleClose={handleClose} />
       <CloseIcon
-        onClick={() => handleClose()}
+        onClick={() => {
+          handleClose();
+        }}
         sx={{
           variant: 'styles.a',
           position: 'fixed',
@@ -34,7 +36,6 @@ export const YouTubeModal: React.FC<{
       />
 
       <Container
-        variant="layout.youtubeModalContainer"
         sx={{
           position: 'fixed',
           top: '50%',
@@ -42,6 +43,7 @@ export const YouTubeModal: React.FC<{
           transform: 'translate(-50%, -50%)',
           zIndex: 101,
         }}
+        variant="layout.youtubeModalContainer"
       >
         <Heading
           as="h1"

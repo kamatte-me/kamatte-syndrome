@@ -7,8 +7,12 @@ export const Overlay: React.FC<{
 }> = ({ handleClose, bgColor }) => {
   return (
     <>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions -- モーダル背景。やむなし */}
       <div
-        onClick={() => handleClose()}
+        onClick={() => {
+          handleClose();
+        }}
+        role="dialog"
         sx={{
           position: 'fixed',
           top: 0,
@@ -18,7 +22,6 @@ export const Overlay: React.FC<{
           bg: bgColor,
           zIndex: 100,
         }}
-        role="dialog"
       />
       <Global
         styles={{

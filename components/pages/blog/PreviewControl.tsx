@@ -10,23 +10,25 @@ const PreviewControl: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const load = useCallback(() => {
-    router.replace(router.asPath, undefined, {
+    void router.replace(router.asPath, undefined, {
       scroll: false,
     });
   }, [router]);
 
   useEffect(() => {
-    const id = setTimeout(() => load(), 15000);
+    const id = setTimeout(() => {
+      load();
+    }, 15000);
     return () => {
       clearTimeout(id);
     };
   }, [load]);
 
   useEffect(() => {
-    const start = () => {
+    const start = (): void => {
       setIsLoading(true);
     };
-    const done = () => {
+    const done = (): void => {
       setIsLoading(false);
     };
 
@@ -62,10 +64,9 @@ const PreviewControl: React.FC = () => {
     >
       プレビュー
       <IconButton
-        onClick={load}
-        title="更新"
-        ml={1}
         disabled={isLoading}
+        ml={1}
+        onClick={load}
         sx={
           isLoading
             ? {
@@ -77,6 +78,7 @@ const PreviewControl: React.FC = () => {
                 },
               }
         }
+        title="更新"
       >
         <MdRefresh
           sx={{
@@ -87,20 +89,20 @@ const PreviewControl: React.FC = () => {
       </IconButton>
       <IconButton
         onClick={() => {
-          // eslint-disable-next-line no-alert
+          // eslint-disable-next-line no-alert -- 開発向け
           const ok = window.confirm('プレビューモードを解除するぅ？');
           if (ok) {
-            fetch('/api/clearPreviewData').then(() => {
+            void fetch('/api/clearPreviewData').then(() => {
               router.reload();
             });
           }
         }}
-        title="解除"
         sx={{
           ':hover': {
             color: 'secondary',
           },
         }}
+        title="解除"
       >
         <MdClose
           sx={{

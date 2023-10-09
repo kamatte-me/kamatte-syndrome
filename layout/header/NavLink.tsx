@@ -5,10 +5,11 @@ import { Box } from 'theme-ui';
 
 interface NavLinkProps {
   to: string;
+  onClick?: React.ComponentProps<typeof Link>['onClick'];
   children: React.ReactNode;
 }
 
-export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
+export const NavLink: React.FC<NavLinkProps> = ({ to, onClick, children }) => {
   const router = useRouter();
 
   const isActive = useMemo((): boolean => {
@@ -16,7 +17,7 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, children }) => {
   }, [router.pathname, to]);
 
   return (
-    <Link href={to}>
+    <Link href={to} onClick={onClick}>
       <Box
         sx={{
           variant: 'links.nav',

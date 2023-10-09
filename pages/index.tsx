@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import Link from 'next/link';
 import { OrganizationJsonLd } from 'next-seo';
 import React from 'react';
@@ -12,9 +12,9 @@ const IndexPage: NextPage = () => {
   return (
     <>
       <OrganizationJsonLd
+        logo={`${baseUrl}/icon.png`}
         name={siteName}
         url={baseUrl}
-        logo={`${baseUrl}/icon.png`}
       />
 
       <FitScreenContainer>

@@ -1,7 +1,7 @@
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 
 import { client } from '@/lib/microcms';
-import { BlogPreviewData } from '@/pages/blog/[id]';
+import type { BlogPreviewData } from '@/pages/blog/[id]';
 
 const handler: NextApiHandler = (req, res) => {
   if (!req.query.id) {
@@ -14,7 +14,7 @@ const handler: NextApiHandler = (req, res) => {
       fields: 'id',
       draftKey: String(req.query.draftKey),
     })
-    .then(entry => {
+    .then((entry) => {
       res.setPreviewData({
         id: entry.id,
         draftKey: req.query.draftKey,
@@ -22,8 +22,8 @@ const handler: NextApiHandler = (req, res) => {
       res.writeHead(307, { Location: `/blog/${entry.id}` });
       res.end('Preview mode enabled');
     })
-    .catch(err => {
-      // eslint-disable-next-line no-console
+    .catch((err) => {
+      // eslint-disable-next-line no-console -- designed
       console.error(err);
       res.status(401).json({ message: 'Invalid slug' });
     });

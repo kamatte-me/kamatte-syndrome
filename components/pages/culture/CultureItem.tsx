@@ -5,7 +5,7 @@ import { Card, Flex } from 'theme-ui';
 
 import { PlayIcon } from '@/components/elements/Icon';
 import { YouTubeModal } from '@/components/pages/culture/YouTubeModal';
-import { Culture } from '@/lib/microcms/model';
+import type { Culture } from '@/lib/microcms/model';
 
 export const CultureItem: React.FC<{
   item: Culture;
@@ -18,6 +18,7 @@ export const CultureItem: React.FC<{
     window.history.pushState(null, '', router.asPath);
     window.onpopstate = () => {
       setIsOpen(false);
+      // eslint-disable-next-line @typescript-eslint/no-empty-function -- clear event handler
       window.onpopstate = () => {};
     };
   }, [router]);
@@ -38,15 +39,15 @@ export const CultureItem: React.FC<{
           }}
         >
           <Image
-            src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             alt={item.name}
-            width={480}
             height={360}
+            src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             style={{
               maxWidth: '100%',
               height: 'auto',
               objectFit: 'cover',
             }}
+            width={480}
           />
           <Flex
             sx={{
@@ -75,9 +76,9 @@ export const CultureItem: React.FC<{
       </dd>
       <dt sx={{ fontWeight: 'normal' }}>{item.name}</dt>
       <YouTubeModal
-        open={isOpen}
-        handleClose={handleClose}
         cultureItem={item}
+        handleClose={handleClose}
+        open={isOpen}
       />
     </Card>
   );

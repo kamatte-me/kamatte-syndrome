@@ -4,7 +4,7 @@ import { Flex } from 'theme-ui';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
 import { ICON_SIZE } from '@/components/elements/Pagination';
-import { Blog } from '@/lib/microcms/model';
+import type { Blog } from '@/lib/microcms/model';
 
 export const BlogEntriesPagination: React.FC<{
   prev?: Blog | null;
@@ -25,7 +25,7 @@ export const BlogEntriesPagination: React.FC<{
           justifyContent: 'flex-start',
         }}
       >
-        {prev && (
+        {prev ? (
           <Link href={`/blog/${prev.id}`}>
             <Flex
               sx={{
@@ -47,7 +47,7 @@ export const BlogEntriesPagination: React.FC<{
               {prev.title}
             </Flex>
           </Link>
-        )}
+        ) : null}
       </Flex>
       <Flex
         sx={{
@@ -56,7 +56,7 @@ export const BlogEntriesPagination: React.FC<{
           justifyContent: 'flex-end',
         }}
       >
-        {next && (
+        {next ? (
           <Link href={`/blog/${next.id}`}>
             <Flex
               sx={{
@@ -78,7 +78,7 @@ export const BlogEntriesPagination: React.FC<{
               />
             </Flex>
           </Link>
-        )}
+        ) : null}
       </Flex>
     </Flex>
   );

@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Flex, Heading } from 'theme-ui';
@@ -10,7 +10,7 @@ const Custom404: NextPage = () => {
 
   return (
     <>
-      <NextSeo title="404" description={text} />
+      <NextSeo description={text} title="404" />
       <FitScreenContainer>
         <Flex
           sx={{

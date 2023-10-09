@@ -1,4 +1,4 @@
-import { Blog } from '@/lib/microcms/model';
+import type { Blog } from '@/lib/microcms/model';
 import { htmlToTextContent } from '@/lib/parseHTML';
 
 export const parseBlogBody = (

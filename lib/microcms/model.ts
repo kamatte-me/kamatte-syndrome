@@ -1,4 +1,8 @@
-import { CustomField, Image, Model } from '@/lib/microcms/client/types/model';
+import type {
+  CustomField,
+  Image,
+  Model,
+} from '@/lib/microcms/client/types/model';
 
 export type BlogCustomFieldRichEditor = CustomField<
   'richEditor',

@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import Image from 'next/image';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
@@ -12,11 +12,11 @@ const CulturePage: NextPage = () => {
   return (
     <>
       <NextSeo
-        title={PAGE_TITLE}
         description={`${author}を信仰する`}
         openGraph={{
           title: PAGE_TITLE,
         }}
+        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -42,31 +42,31 @@ const CulturePage: NextPage = () => {
             <Box sx={{ textAlign: 'center', mr: [0, 3], mb: [3, 0] }}>
               <Box sx={{ mb: 1 }}>
                 <Image
-                  src="https://qr-official.line.me/gs/M_200qygmw_GW.png"
                   alt="友だち追加QRコード"
-                  width={160}
                   height={160}
                   priority
+                  src="https://qr-official.line.me/gs/M_200qygmw_GW.png"
                   style={{
                     maxWidth: '100%',
                     height: 'auto',
                     objectFit: 'contain',
                   }}
+                  width={160}
                 />
               </Box>
               <Box>
                 <a href="https://lin.ee/ZsmmUMP">
                   <Image
-                    src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
                     alt="友だち追加"
-                    width={120}
                     height={36}
                     quality={100}
+                    src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
                     style={{
                       maxWidth: '100%',
                       height: 'auto',
                       objectFit: 'contain',
                     }}
+                    width={120}
                   />
                 </a>
               </Box>
