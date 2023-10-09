@@ -24,29 +24,32 @@ plz kamatte me!!!
 
 ## 必要なもの
 
-- Node.js `18.x`
-- npm `>=8.6.0`
+- Node.js ([.node-version](./.node-version))
 - [microCMS](https://microcms.io/) のアカウント
   - と [型定義](./lib/microcms/model.ts) を見てデータ構造を完全再現するガッツ
 - (Optional) [Vercel CLI](https://vercel.com/cli)
 
 ## 手順
 
+1. Corepack有効化
+   ```shell
+   corepack enable
+   ```
 1. 依存パッケージのインストール
    ```shell
-   npm install
+   pnpm install
    ```
 1. 環境変数定義
    - [型定義](./@types/globals.d.ts) を見て設定
    - or Vercel CLI をインストールしている場合は
      ```shell
-     npm run vercel:env:pull
+     pnpm vercel:env:pull
      ```
 1. 開発サーバー起動
    ```shell
-   npm run dev
+   pnpm dev
    # or
-   npm run vercel:dev
+   pnpm vercel:dev
    ```
 
 ## デプロイ
