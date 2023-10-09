@@ -1,53 +1,44 @@
-/** @type {import('@typescript-eslint/utils/dist/ts-eslint').Linter.Config} */
-const eslintConfig = {
-  env: {
-    browser: true,
-    node: true,
-  },
-  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+/** @type {import('eslint/lib/shared/types').ConfigData} */
+module.exports = {
+  extends: [
+    '@vercel/style-guide/eslint/node',
+    '@vercel/style-guide/eslint/browser',
+    '@vercel/style-guide/eslint/typescript',
+    '@vercel/style-guide/eslint/react',
+    '@vercel/style-guide/eslint/next',
+  ].map(require.resolve),
   parserOptions: {
-    ecmaVersion: 2021,
+    project: './tsconfig.json',
   },
-  overrides: [
-    {
-      files: ['**/*.ts', '**/*.tsx'],
-      extends: [
-        'airbnb',
-        'airbnb-typescript',
-        'next',
-        'plugin:prettier/recommended',
-      ],
-      parserOptions: {
-        project: './tsconfig.json',
+  globals: {
+    React: true,
+    JSX: true,
+  },
+  plugins: ['simple-import-sort', 'unused-imports'],
+  rules: {
+    'react/function-component-definition': [
+      'error',
+      { namedComponents: 'arrow-function' },
+    ],
+    'react/jsx-pascal-case': ['error', { allowNamespace: true }],
+    '@typescript-eslint/no-unnecessary-condition': 'off',
+    '@typescript-eslint/consistent-type-definitions': 'off',
+    'import/no-useless-path-segments': 'error',
+    'import/no-default-export': 'off',
+    'import/order': 'off',
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
       },
-      plugins: ['simple-import-sort', 'unused-imports'],
-      rules: {
-        'consistent-return': 0,
-        'import/prefer-default-export': 0,
-        'react/function-component-definition': 0,
-        'react/jsx-pascal-case': 0,
-        'react/require-default-props': 0,
-        'react/destructuring-assignment': 0,
-        'jsx-a11y/click-events-have-key-events': 0,
-        'jsx-a11y/no-noninteractive-element-interactions': 0,
-        'react/jsx-no-useless-fragment': 0,
-        'import/order': 'off',
-        'simple-import-sort/imports': 'error',
-        'simple-import-sort/exports': 'error',
-        '@typescript-eslint/no-unused-vars': 'off',
-        'unused-imports/no-unused-imports': 'error',
-        'unused-imports/no-unused-vars': [
-          'warn',
-          {
-            vars: 'all',
-            varsIgnorePattern: '^_',
-            args: 'after-used',
-            argsIgnorePattern: '^_',
-          },
-        ],
-      },
-    },
-  ],
+    ],
+  },
+  ignorePatterns: ['node_modules/', 'dist/', '.next/'],
 };
-
-module.exports = eslintConfig;
