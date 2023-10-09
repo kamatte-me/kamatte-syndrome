@@ -4,7 +4,6 @@
   "timezone": "Asia/Tokyo",
   "prHourlyLimit": 0,
   "labels": ["dependencies"],
-  "ignoreDeps": ["npm"],
   "separateMajorMinor": true,
   "packageRules": [
     {
