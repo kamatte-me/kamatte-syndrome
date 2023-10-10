@@ -11,7 +11,11 @@
       "automerge": false
     },
     {
-      "matchDepTypes": ["devDependencies", "engines", "packageManager"],
+      "matchDepTypes": ["devDependencies", "packageManager"],
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["node"],
       "automerge": true
     },
     {
@@ -23,7 +27,7 @@
       "automerge": false
     },
     {
-      "matchDepTypes": ["engines"],
+      "matchPackageNames": ["node"],
       "extends": ["schedule:monthly"]
     }
   ],
