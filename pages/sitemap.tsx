@@ -32,22 +32,23 @@ export const getStaticProps: GetStaticProps = async () => {
       url: '/biography',
       changefreq: EnumChangefreq.YEARLY,
       lastmod:
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- always exists
-        latestHistory[0].revisedAt! >= latestSkill[0].revisedAt!
+        latestHistory[0]?.revisedAt &&
+        latestSkill[0]?.revisedAt &&
+        latestHistory[0].revisedAt >= latestSkill[0].revisedAt
           ? latestHistory[0].revisedAt
-          : latestSkill[0].revisedAt,
+          : latestSkill[0]?.revisedAt,
       priority: 0.8,
     },
     {
       url: '/portfolio',
       changefreq: EnumChangefreq.YEARLY,
-      lastmod: latestPortfolio[0].revisedAt,
+      lastmod: latestPortfolio[0]?.revisedAt,
       priority: 0.2,
     },
     {
       url: '/culture',
       changefreq: EnumChangefreq.MONTHLY,
-      lastmod: latestCulture[0].revisedAt,
+      lastmod: latestCulture[0]?.revisedAt,
       priority: 0.4,
     },
     { url: '/subscribe', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
@@ -66,7 +67,7 @@ export const getStaticProps: GetStaticProps = async () => {
     stream.write({
       url: i === 1 ? '/blog' : `/blog/page/${i}`,
       changefreq: EnumChangefreq.WEEKLY,
-      lastmod: blogEntries[0].publishedAt,
+      lastmod: blogEntries[0]?.publishedAt,
       priority: i === 1 ? 0.5 : 0.1,
     } as SitemapItemLoose);
   }

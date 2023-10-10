@@ -90,7 +90,7 @@ const PortfolioPage: NextPage<
             >
               {year}
             </Heading>
-            {portfolio[Number(year)].map((item) => (
+            {portfolio[Number(year)]?.map((item) => (
               <Box
                 as="ul"
                 key={item.id}
