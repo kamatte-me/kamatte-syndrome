@@ -1,5 +1,11 @@
 import { createClient } from '@/lib/microcms/client';
-import { Blog, Culture, History, Portfolio, Skill } from '@/lib/microcms/model';
+import type {
+  Blog,
+  Culture,
+  History,
+  Portfolio,
+  Skill,
+} from '@/lib/microcms/model';
 
 type EndpointTypeMap = {
   blog: Blog;

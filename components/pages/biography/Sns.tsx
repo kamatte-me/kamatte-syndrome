@@ -12,7 +12,7 @@ export const Sns: React.FC = () => {
       }}
     >
       <Link href="https://github.com/kamatte-me" target="_blank">
-        <GitHubIcon size={32} color="#24292e" />
+        <GitHubIcon color="#24292e" size={32} />
       </Link>
     </Box>
   );

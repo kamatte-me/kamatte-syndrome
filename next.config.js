@@ -1,7 +1,5 @@
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+/** @type {import('next').NextConfig} */
+module.exports = {
   images: {
     domains: [
       'images.microcms-assets.io',
@@ -16,5 +14,3 @@ const nextConfig = {
     defaultLocale: 'ja',
   },
 };
-
-module.exports = nextConfig;

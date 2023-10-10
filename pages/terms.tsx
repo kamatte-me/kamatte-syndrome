@@ -1,5 +1,5 @@
 import { Themed } from '@theme-ui/mdx';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Container, Heading } from 'theme-ui';
@@ -12,11 +12,11 @@ const TermsPage: NextPage = () => {
   return (
     <>
       <NextSeo
-        title={PAGE_TITLE}
         description={`${siteName}の免責事項`}
         openGraph={{
           title: PAGE_TITLE,
         }}
+        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[

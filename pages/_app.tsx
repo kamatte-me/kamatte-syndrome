@@ -1,6 +1,6 @@
 import { Global as GlobalStyle } from '@emotion/react';
 import { Themed } from '@theme-ui/mdx';
-import { AppType } from 'next/dist/shared/lib/utils';
+import type { AppType } from 'next/dist/shared/lib/utils';
 import Head from 'next/head';
 import Script from 'next/script';
 import { DefaultSeo } from 'next-seo';
@@ -58,15 +58,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         </Script>
 
         <DefaultSeo
-          titleTemplate={`%s - ${siteName}`}
-          defaultTitle={siteName}
-          description={slogan}
-          additionalMetaTags={[
-            {
-              name: 'theme-color',
-              content: theme.colors!.primary as string,
-            },
-          ]}
           additionalLinkTags={[
             {
               rel: 'shortcut icon',
@@ -84,14 +75,18 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               rel: 'alternate',
               type: 'application/atom+xml',
               href: '/feed.xml',
-              // @ts-ignore
+              // @ts-expect-error -- ライブラリ側未定義
               title: siteName,
             },
           ]}
-          twitter={{
-            cardType: 'summary',
-            site: '@kamatte_me',
-          }}
+          additionalMetaTags={[
+            {
+              name: 'theme-color',
+              content: theme.colors?.primary as string,
+            },
+          ]}
+          defaultTitle={siteName}
+          description={slogan}
           facebook={{
             appId: '159097111464111',
           }}
@@ -105,13 +100,18 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               },
             ],
           }}
+          titleTemplate={`%s - ${siteName}`}
+          twitter={{
+            cardType: 'summary',
+            site: '@kamatte_me',
+          }}
         />
         <Head>
-          <meta name="color-scheme" content="light" />
+          <meta content="light" name="color-scheme" />
         </Head>
 
         <Layout>
-          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+          {}
           <Component {...pageProps} />
         </Layout>
       </Themed.root>

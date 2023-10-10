@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Flex, Heading } from 'theme-ui';
 
 import { formatDate } from '@/lib/date';
-import { Blog } from '@/lib/microcms/model';
+import type { Blog } from '@/lib/microcms/model';
 
 export const BlogListItem: React.FC<{
   entry: Blog;
@@ -24,16 +24,16 @@ export const BlogListItem: React.FC<{
         }}
       >
         <Image
-          src={entry.featuredImage ? entry.featuredImage.url : '/avatar.svg'}
           alt={entry.title}
-          width={200}
           height={120}
+          src={entry.featuredImage ? entry.featuredImage.url : '/avatar.svg'}
           style={{
             maxWidth: '100%',
             height: 'auto',
             objectFit: 'contain',
             objectPosition: 'center top',
           }}
+          width={200}
         />
       </Flex>
       <Box sx={{ flex: 1 }}>

@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-use-before-define, react/jsx-pascal-case, react/jsx-props-no-spreading */
 import { Themed } from '@theme-ui/mdx';
+import { ElementType as DOMElementType } from 'domelementtype';
+import type { Element, HTMLReactParserOptions, Text } from 'html-react-parser';
 import parse, {
   attributesToProps,
   domToReact,
-  Element,
-  HTMLReactParserOptions,
   htmlToDOM,
-  Text,
 } from 'html-react-parser';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import React, { ElementType, useEffect, useRef } from 'react';
+import type { ElementType } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Embed, Flex, Heading, Link } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
@@ -26,19 +25,21 @@ const MediaWrapper: React.FC<{ children: React.ReactNode }> = ({
 );
 
 interface SafeScriptProps {
-  src: string;
+  src?: string;
   children?: string;
 }
 const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref || !ref.current) {
+    if (!ref.current) {
       return;
     }
 
     const script = document.createElement('script');
-    script.src = src;
+    if (src) {
+      script.src = src;
+    }
     script.async = true;
     if (children) {
       script.innerHTML = children;
@@ -46,10 +47,10 @@ const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
     ref.current.appendChild(script);
 
     return () => {
-      if (!ref || !ref.current) {
+      if (!ref.current) {
         return;
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- need cleanup
       ref.current.removeChild(script);
     };
   }, [children, ref, src]);
@@ -57,7 +58,7 @@ const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
   return <div ref={ref} />;
 };
 
-const parseStyleString = (styleStr?: string | null) => {
+const parseStyleString = (styleStr?: string | null): Record<string, string> => {
   if (!styleStr) {
     return {};
   }
@@ -72,7 +73,7 @@ const parseStyleString = (styleStr?: string | null) => {
       .substring(0, colonPosition)
       .trim()
       .replace(/^-ms-/, 'ms-')
-      .replace(/-./g, c => c.substring(1).toUpperCase());
+      .replace(/-./g, (c) => c.substring(1).toUpperCase());
     const value = style.substring(colonPosition + 1).trim();
 
     return value ? { ...acc, [camelCaseProperty]: value } : acc;
@@ -80,7 +81,7 @@ const parseStyleString = (styleStr?: string | null) => {
 };
 
 const parseOption: HTMLReactParserOptions = {
-  replace: domNode => {
+  replace: (domNode) => {
     const { name, attribs, children } = domNode as Element;
     const attrProps = attributesToProps(attribs);
 
@@ -98,36 +99,37 @@ const parseOption: HTMLReactParserOptions = {
     switch (name as ElementType) {
       case 'h1':
         return (
-          <Heading {...attrProps} variant="styles.h1" as="h2">
+          <Heading {...attrProps} as="h2" variant="styles.h1">
             {parseChildren(children)}
           </Heading>
         );
       case 'h2':
         return (
-          <Heading {...attrProps} variant="styles.h2" as="h3">
+          <Heading {...attrProps} as="h3" variant="styles.h2">
             {parseChildren(children)}
           </Heading>
         );
       case 'h3':
         return (
-          <Heading {...attrProps} variant="styles.h3" as="h4">
+          <Heading {...attrProps} as="h4" variant="styles.h3">
             {parseChildren(children)}
           </Heading>
         );
       case 'h4':
         return (
-          <Heading {...attrProps} variant="styles.h4" as="h5">
+          <Heading {...attrProps} as="h5" variant="styles.h4">
             {parseChildren(children)}
           </Heading>
         );
       case 'h5':
         return (
-          <Heading {...attrProps} variant="styles.h5" as="h6">
+          <Heading {...attrProps} as="h6" variant="styles.h5">
             {parseChildren(children)}
           </Heading>
         );
       case 'a':
         if (
+          attribs.href &&
           new RegExp(`^(/|${baseUrl})`).test(attribs.href) &&
           !attribs.target
         ) {
@@ -139,22 +141,26 @@ const parseOption: HTMLReactParserOptions = {
         }
         return <Link {...attrProps}>{parseChildren(children)}</Link>;
       case 'img':
+        if (!attribs.src) {
+          return null;
+        }
+
         return (
           <MediaWrapper>
             <NextImage
-              src={attribs.src}
-              width={480}
+              alt={attribs.alt ?? attribs.src}
               height={360}
-              alt={attribs.alt}
+              src={attribs.src}
               style={{
                 maxWidth: '100%',
                 objectFit: 'contain',
               }}
+              width={480}
             />
           </MediaWrapper>
         );
       case 'div':
-        if (children.some(child => (child as Element).name === 'iframe')) {
+        if (children.some((child) => (child as Element).name === 'iframe')) {
           return <MediaWrapper>{parseChildren(children)}</MediaWrapper>;
         }
         return domNode;
@@ -188,7 +194,8 @@ const parseOption: HTMLReactParserOptions = {
       }
       default:
         if (name in Themed) {
-          // @ts-ignore
+          // @ts-expect-error -- ThemeUIのせい
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ThemeUIのせい
           const ThemedComponent = Themed[name];
           return (
             <ThemedComponent
@@ -204,29 +211,31 @@ const parseOption: HTMLReactParserOptions = {
   },
 };
 
-const parseChildren = (children: Parameters<typeof domToReact>[0]) =>
-  domToReact(children, parseOption);
+const parseChildren = (
+  children: Parameters<typeof domToReact>[0],
+): ReturnType<typeof domToReact> => domToReact(children, parseOption);
 
-export const htmlToThemed = (html: string) => parse(html, parseOption);
+export const htmlToThemed = (html: string): ReturnType<typeof domToReact> =>
+  parse(html, parseOption);
 
 const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string =>
   dom
-    .reduce((acc, current) => {
+    .reduce<string[]>((acc, current) => {
       if (['script', 'iframe'].includes((current as Element).name)) {
         return acc;
       }
 
       let newText = '';
-      if ((current as Element).children) {
+      if ('children' in current) {
         newText = parseDOMText(
-          (current as Element).children as ReturnType<typeof htmlToDOM>,
+          current.children as ReturnType<typeof htmlToDOM>,
         );
-      } else if (current.type === 'text') {
-        newText = (current as Text).data;
+      } else if (current.type === DOMElementType.Text) {
+        newText = current.data;
       }
 
       return newText === '' ? acc : [...acc, newText];
-    }, [] as string[])
+    }, [])
     .join(' ');
 
 export const htmlToTextContent = (html: string): string =>

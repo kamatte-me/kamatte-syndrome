@@ -11,15 +11,15 @@ const FeaturedImage: React.FC<{
   if (item.featuredImage) {
     return (
       <Image
-        src={item.featuredImage.url}
         alt={item.title}
-        width={item.featuredImage.width}
         height={item.featuredImage.height}
+        src={item.featuredImage.url}
         style={{
           maxWidth: '100%',
           height: 'auto',
           objectFit: 'contain',
         }}
+        width={item.featuredImage.width}
       />
     );
   }
@@ -116,7 +116,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
         </Box>
         <Box>{htmlToThemed(item.description)}</Box>
         <Box sx={{ mt: 3 }}>
-          {item.technologies.map(tech => (
+          {item.technologies.map((tech) => (
             <Badge
               key={tech}
               sx={{

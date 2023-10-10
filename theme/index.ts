@@ -1,7 +1,7 @@
-import { Caveat, Josefin_Sans } from 'next/font/google';
-import { Theme } from 'theme-ui';
+import { Caveat, Josefin_Sans as JosefinSans } from 'next/font/google';
+import type { Theme } from 'theme-ui';
 
-const josefinSans = Josefin_Sans({
+const josefinSans = JosefinSans({
   weight: ['400', '700'],
   display: 'block',
   subsets: ['latin'],

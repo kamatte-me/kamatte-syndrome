@@ -17,6 +17,9 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
         }}
       >
         <Text
+          dangerouslySetInnerHTML={{
+            __html: name.replace('\n', '<br>'),
+          }}
           sx={{
             display: 'flex',
             position: 'absolute',
@@ -26,15 +29,12 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
             fontFamily: 'heading',
             fontWeight: 'bold',
           }}
-          dangerouslySetInnerHTML={{
-            __html: name.replace('\n', '<br>'),
-          }}
         />
         <Donut
-          title={name}
-          value={level / 100}
           color={level >= 90 ? 'secondary' : 'primary'}
           strokeWidth={3}
+          title={name}
+          value={level / 100}
         />
       </Flex>
     </Box>

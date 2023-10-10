@@ -1,7 +1,8 @@
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import type { ParsedUrlQuery } from 'node:querystring';
+
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Link from 'next/link';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { Box, Container } from 'theme-ui';
 
@@ -9,7 +10,7 @@ import { Pagination } from '@/components/elements/Pagination';
 import { BlogListItem } from '@/components/pages/blog/BlogListItem';
 import { baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
-import { Blog } from '@/lib/microcms/model';
+import type { Blog } from '@/lib/microcms/model';
 
 export const BLOG_ENTRIES_PER_PAGE = 5;
 
@@ -21,8 +22,9 @@ interface BlogEntriesPageProps {
   entries: Blog[];
 }
 
-export type BlogEntriesGetStaticProps<T extends ParsedUrlQuery = {}> =
-  GetStaticProps<BlogEntriesPageProps, T>;
+export type BlogEntriesGetStaticProps<
+  T extends ParsedUrlQuery = Record<string, never>,
+> = GetStaticProps<BlogEntriesPageProps, T>;
 
 export const blogEntriesGetStaticProps = async (
   pageNumber: number,
@@ -60,13 +62,13 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <NextSeo
-        title={pageTitle}
         description={`局所的な人気があるらしい。${
           isTopPage ? '' : `（${pageText}）`
         }`}
         openGraph={{
           title: pageTitle,
         }}
+        title={pageTitle}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -88,10 +90,10 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       />
 
       <Container as="ul" variant="narrowContainer">
-        {entries.map(entry => (
+        {entries.map((entry) => (
           <Box
-            key={entry.id}
             as="li"
+            key={entry.id}
             sx={{
               ':not(:last-child)': {
                 mb: 4,
@@ -106,10 +108,10 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
         <Box sx={{ mt: 4 }}>
           <Pagination
-            totalPages={pageInfo.total}
-            currentPage={pageInfo.current}
             basePath="/blog"
+            currentPage={pageInfo.current}
             paginationBasePath="/blog/page/"
+            totalPages={pageInfo.total}
           />
         </Box>
       </Container>

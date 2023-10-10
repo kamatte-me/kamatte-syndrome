@@ -39,7 +39,7 @@ const links: {
 export const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const toggleMenuOpen = useCallback(() => {
-    setMenuOpen(prevState => !prevState);
+    setMenuOpen((prevState) => !prevState);
   }, []);
 
   return (
@@ -79,15 +79,15 @@ export const Header: React.FC = () => {
             >
               <Link href="/">
                 <Image
-                  src="/logo.svg"
                   alt={siteName}
-                  width={120}
                   height={36}
+                  src="/logo.svg"
                   style={{
                     maxWidth: '100%',
                     height: 'auto',
                     objectFit: 'contain',
                   }}
+                  width={120}
                 />
               </Link>
             </Flex>
@@ -97,7 +97,7 @@ export const Header: React.FC = () => {
                 display: ['none', 'flex'],
               }}
             >
-              {links.map(link => (
+              {links.map((link) => (
                 <NavLink key={link.to} to={link.to}>
                   {link.title}
                 </NavLink>
@@ -120,30 +120,40 @@ export const Header: React.FC = () => {
             >
               <MenuButton
                 aria-label="Toggle Menu"
+                onClick={() => {
+                  toggleMenuOpen();
+                }}
                 sx={{
                   cursor: 'pointer',
                 }}
-                onClick={() => toggleMenuOpen()}
               />
             </Flex>
           </Flex>
         </Flex>
       </Flex>
 
-      <SideNav open={menuOpen} handleClose={() => setMenuOpen(false)}>
+      <SideNav
+        handleClose={() => {
+          setMenuOpen(false);
+        }}
+        open={menuOpen}
+      >
         <Box as="nav">
           <ul
             sx={{
               textAlign: 'right',
             }}
           >
-            {links.map(link => (
-              <li
-                key={link.to}
-                onClick={() => setMenuOpen(false)}
-                sx={{ py: 1 }}
-              >
-                <NavLink to={link.to}>{link.title}</NavLink>
+            {links.map((link) => (
+              <li key={link.to} sx={{ py: 1 }}>
+                <NavLink
+                  onClick={() => {
+                    setMenuOpen(false);
+                  }}
+                  to={link.to}
+                >
+                  {link.title}
+                </NavLink>
               </li>
             ))}
           </ul>

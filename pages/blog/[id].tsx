@@ -1,4 +1,4 @@
-import {
+import type {
   GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
@@ -16,7 +16,7 @@ import { author, baseUrl, siteName } from '@/constants/site';
 import { parseBlogBody } from '@/lib/blog';
 import { formatDate } from '@/lib/date';
 import { client } from '@/lib/microcms';
-import { Blog } from '@/lib/microcms/model';
+import type { Blog } from '@/lib/microcms/model';
 import { htmlToThemed } from '@/lib/parseHTML';
 
 const PreviewControl = dynamic(
@@ -29,7 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fields: 'id',
     limit: 100,
   });
-  const paths = entries.map(entry => `/blog/${entry.id}`);
+  const paths = entries.map((entry) => `/blog/${entry.id}`);
   return { paths, fallback: 'blocking' };
 };
 
@@ -52,8 +52,14 @@ export const getStaticProps: GetStaticProps<
     id: string;
   }
 > = async ({ params, preview, previewData }) => {
+  if (!params) {
+    return {
+      notFound: true,
+    };
+  }
+
   const entry = await client
-    .getContent('blog', params!.id, {
+    .getContent('blog', params.id, {
       draftKey: preview ? (previewData as BlogPreviewData).draftKey : undefined,
     })
     .catch(() => undefined);
@@ -101,7 +107,6 @@ const BlogEntryPage: NextPage<
   return (
     <>
       <NextSeo
-        title={entry.title}
         description={description}
         openGraph={{
           title: entry.title,
@@ -121,22 +126,23 @@ const BlogEntryPage: NextPage<
             authors: [author],
           },
         }}
+        title={entry.title}
       />
       <NewsArticleJsonLd
-        type="BlogPosting"
-        url={`${baseUrl}/blog/${entry.id}`}
-        title={entry.title}
+        authorName={author}
+        body={bodyText}
+        dateCreated={entry.publishedAt ?? new Date().toISOString()}
+        dateModified={entry.revisedAt}
+        datePublished={entry.publishedAt ?? new Date().toISOString()}
         description={description}
         images={entry.featuredImage ? [entry.featuredImage.url] : []}
-        authorName={author}
         keywords=""
-        section=""
-        body={bodyText}
-        datePublished={entry.publishedAt!}
-        dateModified={entry.revisedAt}
-        dateCreated={entry.publishedAt!}
         publisherLogo={`${baseUrl}/icon.png`}
         publisherName={siteName}
+        section=""
+        title={entry.title}
+        type="BlogPosting"
+        url={`${baseUrl}/blog/${entry.id}`}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -169,7 +175,7 @@ const BlogEntryPage: NextPage<
           <Box sx={{ fontSize: 1, color: 'darkgray' }}>
             {formatDate(entry.publishedAt)}
           </Box>
-          {entry.featuredImage && (
+          {entry.featuredImage ? (
             <Flex
               sx={{
                 justifyContent: 'center',
@@ -177,27 +183,27 @@ const BlogEntryPage: NextPage<
               }}
             >
               <Image
-                src={entry.featuredImage.url}
                 alt={entry.title}
-                width={
-                  entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
-                    ? entry.featuredImage.width *
-                      (FEATURED_IMAGE_MAX_HEIGHT / entry.featuredImage.height)
-                    : entry.featuredImage.width
-                }
                 height={
                   entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
                     ? FEATURED_IMAGE_MAX_HEIGHT
                     : entry.featuredImage.height
                 }
                 priority
+                src={entry.featuredImage.url}
                 style={{
                   maxWidth: '100%',
                   height: 'auto',
                 }}
+                width={
+                  entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
+                    ? entry.featuredImage.width *
+                      (FEATURED_IMAGE_MAX_HEIGHT / entry.featuredImage.height)
+                    : entry.featuredImage.width
+                }
               />
             </Flex>
-          )}
+          ) : null}
         </Box>
 
         <Box
@@ -213,11 +219,11 @@ const BlogEntryPage: NextPage<
           {htmlToThemed(entry.body)}
         </Box>
         <Box sx={{ mt: 5 }}>
-          <BlogEntriesPagination prev={prevEntry} next={nextEntry} />
+          <BlogEntriesPagination next={nextEntry} prev={prevEntry} />
         </Box>
       </Container>
 
-      {router.isPreview && <PreviewControl />}
+      {router.isPreview ? <PreviewControl /> : null}
     </>
   );
 };

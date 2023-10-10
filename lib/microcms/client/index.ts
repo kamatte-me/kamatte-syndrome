@@ -1,12 +1,12 @@
 import pLimit from 'p-limit';
 
-import { Model } from '@/lib/microcms/client/types/model';
-import {
+import type { Model } from '@/lib/microcms/client/types/model';
+import type {
   GetAllContentsQuery,
   GetContentQuery,
   GetContentsQuery,
 } from '@/lib/microcms/client/types/request';
-import { GetContentsResponse } from '@/lib/microcms/client/types/response';
+import type { GetContentsResponse } from '@/lib/microcms/client/types/response';
 
 // 全件取得の同時並列数
 const MAX_CONCURRENCY = 5;
@@ -56,9 +56,7 @@ const makeQueryString = (query: object): string => {
   return queryStr;
 };
 
-interface EndpointTypeMap {
-  [endpoint: string]: Model<object>;
-}
+type EndpointTypeMap = Record<string, Model<object>>;
 
 export const createClient = <T extends EndpointTypeMap>(
   config: ClientConfig,
@@ -71,17 +69,19 @@ export const createClient = <T extends EndpointTypeMap>(
   };
 
   const getContent: GetContentFn<T> = async (endpoint, id, query = {}) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Generics制約
     return fetch(
       `${baseUrl}/${endpoint as string}/${id}${makeQueryString(query)}`,
       httpOption,
-    ).then(res => res.json());
+    ).then((res) => res.json());
   };
 
   const getContentsRaw: GetContentsRawFn<T> = async (endpoint, query = {}) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Generics制約
     return fetch(
       `${baseUrl}/${endpoint as string}${makeQueryString(query)}`,
       httpOption,
-    ).then(res => res.json());
+    ).then((res) => res.json());
   };
 
   const getContents: GetContentsFn<T> = async (endpoint, query = {}) => {
@@ -103,18 +103,20 @@ export const createClient = <T extends EndpointTypeMap>(
     if (firstData.limit < firstData.totalCount) {
       const promiseLimit = pLimit(MAX_CONCURRENCY);
       const allData = await Promise.all(
-        [...Array(Math.ceil(firstData.totalCount / firstData.limit) - 1)].map(
-          (_, i) => {
-            return promiseLimit(() =>
-              getContents(endpoint, {
-                ...query,
-                offset: firstData.limit * (i + 1),
-              }),
-            );
-          },
-        ),
+        [
+          ...Array<never>(
+            Math.ceil(firstData.totalCount / firstData.limit) - 1,
+          ),
+        ].map((_, i) => {
+          return promiseLimit(() =>
+            getContents(endpoint, {
+              ...query,
+              offset: firstData.limit * (i + 1),
+            }),
+          );
+        }),
       );
-      allData.forEach(contents => {
+      allData.forEach((contents) => {
         allContents.push(...contents);
       });
     }

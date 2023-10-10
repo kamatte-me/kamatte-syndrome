@@ -1,8 +1,9 @@
-import { writeFile } from 'fs/promises';
-import { GetStaticProps, NextPage } from 'next';
+import { writeFile } from 'node:fs/promises';
+
+import type { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import { EnumChangefreq, SitemapStream, streamToPromise } from 'sitemap';
-import { SitemapItemLoose } from 'sitemap/dist/lib/types';
+import type { SitemapItemLoose } from 'sitemap/dist/lib/types';
 
 import { baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
@@ -31,28 +32,30 @@ export const getStaticProps: GetStaticProps = async () => {
       url: '/biography',
       changefreq: EnumChangefreq.YEARLY,
       lastmod:
-        latestHistory[0].revisedAt! >= latestSkill[0].revisedAt!
+        latestHistory[0]?.revisedAt &&
+        latestSkill[0]?.revisedAt &&
+        latestHistory[0].revisedAt >= latestSkill[0].revisedAt
           ? latestHistory[0].revisedAt
-          : latestSkill[0].revisedAt,
+          : latestSkill[0]?.revisedAt,
       priority: 0.8,
     },
     {
       url: '/portfolio',
       changefreq: EnumChangefreq.YEARLY,
-      lastmod: latestPortfolio[0].revisedAt,
+      lastmod: latestPortfolio[0]?.revisedAt,
       priority: 0.2,
     },
     {
       url: '/culture',
       changefreq: EnumChangefreq.MONTHLY,
-      lastmod: latestCulture[0].revisedAt,
+      lastmod: latestCulture[0]?.revisedAt,
       priority: 0.4,
     },
     { url: '/subscribe', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
     { url: '/terms', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
     { url: '/privacy', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
   ];
-  staticPages.forEach(page => stream.write(page));
+  staticPages.forEach((page) => stream.write(page));
 
   // ブログ
   const blogEntries = await client.getAllContents('blog', {
@@ -64,12 +67,12 @@ export const getStaticProps: GetStaticProps = async () => {
     stream.write({
       url: i === 1 ? '/blog' : `/blog/page/${i}`,
       changefreq: EnumChangefreq.WEEKLY,
-      lastmod: blogEntries[0].publishedAt,
+      lastmod: blogEntries[0]?.publishedAt,
       priority: i === 1 ? 0.5 : 0.1,
     } as SitemapItemLoose);
   }
 
-  blogEntries.forEach(entry => {
+  blogEntries.forEach((entry) => {
     stream.write({
       url: `/blog/${entry.id}`,
       changefreq: EnumChangefreq.YEARLY,
@@ -90,7 +93,7 @@ export const getStaticProps: GetStaticProps = async () => {
 const SitemapXML: NextPage = () => {
   return (
     <Head>
-      <meta httpEquiv="refresh" content="0; url=/sitemap.xml" />
+      <meta content="0; url=/sitemap.xml" httpEquiv="refresh" />
       <title>Redirect to /sitemap.xml</title>
     </Head>
   );

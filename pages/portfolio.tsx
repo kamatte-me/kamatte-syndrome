@@ -1,4 +1,4 @@
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import React from 'react';
 import { Box, Heading } from 'theme-ui';
@@ -6,16 +6,14 @@ import { Box, Heading } from 'theme-ui';
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
 import { author, baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
-import { Portfolio } from '@/lib/microcms/model';
+import type { Portfolio } from '@/lib/microcms/model';
 
 export interface PortfolioItem
   extends Omit<Portfolio, 'year' | 'technologies'> {
   technologies: string[];
 }
 
-type PortfolioDict = {
-  [year: number]: PortfolioItem[];
-};
+type PortfolioDict = Record<number, PortfolioItem[]>;
 
 export const getStaticProps: GetStaticProps<{
   portfolio: PortfolioDict;
@@ -37,7 +35,7 @@ export const getStaticProps: GetStaticProps<{
       (tmpAcc[key] || (tmpAcc[key] = [])).push(item);
       return tmpAcc;
     },
-    {} as PortfolioDict,
+    {},
   );
 
   return {
@@ -55,11 +53,11 @@ const PortfolioPage: NextPage<
   return (
     <>
       <NextSeo
-        title={PAGE_TITLE}
         description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
         openGraph={{
           title: PAGE_TITLE,
         }}
+        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -73,7 +71,7 @@ const PortfolioPage: NextPage<
 
       {Object.keys(portfolio)
         .reverse()
-        .map(year => (
+        .map((year) => (
           <Box
             key={year}
             sx={{
@@ -92,10 +90,10 @@ const PortfolioPage: NextPage<
             >
               {year}
             </Heading>
-            {portfolio[Number(year)].map(item => (
+            {portfolio[Number(year)]?.map((item) => (
               <Box
-                key={item.id}
                 as="ul"
+                key={item.id}
                 sx={{
                   ':not(:last-child)': {
                     mb: 5,

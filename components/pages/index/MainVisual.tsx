@@ -15,16 +15,16 @@ export const MainVisual: React.FC = () => {
     >
       <Flex>
         <Image
-          src="/avatar.svg"
           alt="me"
-          width={380}
           height={380}
           priority
+          src="/avatar.svg"
           style={{
             maxWidth: '100%',
             height: 'auto',
             objectFit: 'contain',
           }}
+          width={380}
         />
       </Flex>
       <Flex sx={{ width: '100%' }}>
