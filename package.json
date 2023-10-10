@@ -7,8 +7,10 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "eslint . && prettier . --check",
-    "lint:fix": "eslint . --fix && prettier . --write",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "vercel:deploy": "vercel",
