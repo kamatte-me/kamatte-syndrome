@@ -1,14 +1,27 @@
 /** @type {import('eslint/lib/shared/types').ConfigData} */
 module.exports = {
-  extends: [
-    '@vercel/style-guide/eslint/node',
-    '@vercel/style-guide/eslint/typescript',
-  ].map(require.resolve),
+  extends: ['@vercel/style-guide/eslint/node'].map(require.resolve),
+  plugins: ['simple-import-sort', 'unused-imports'],
+  rules: {
+    'import/order': 'off',
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
+  },
   overrides: [
     {
-      files: ['**/*.ts', '**/*.tsx'],
+      files: ['*.{ts,tsx}'],
       extends: [
-        '@vercel/style-guide/eslint/node',
         '@vercel/style-guide/eslint/browser',
         '@vercel/style-guide/eslint/typescript',
         '@vercel/style-guide/eslint/react',
@@ -22,7 +35,6 @@ module.exports = {
         React: true,
         JSX: true,
       },
-      plugins: ['simple-import-sort', 'unused-imports'],
       rules: {
         'unicorn/filename-case': 'off',
         'react/function-component-definition': [
@@ -38,22 +50,9 @@ module.exports = {
           },
         ],
         '@typescript-eslint/consistent-type-definitions': 'off',
+        'import/order': 'off',
         'import/no-useless-path-segments': 'error',
         'import/no-default-export': 'off',
-        'import/order': 'off',
-        'simple-import-sort/imports': 'error',
-        'simple-import-sort/exports': 'error',
-        '@typescript-eslint/no-unused-vars': 'off',
-        'unused-imports/no-unused-imports': 'error',
-        'unused-imports/no-unused-vars': [
-          'warn',
-          {
-            vars: 'all',
-            varsIgnorePattern: '^_',
-            args: 'after-used',
-            argsIgnorePattern: '^_',
-          },
-        ],
       },
     },
   ],
