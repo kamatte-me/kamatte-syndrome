@@ -32,6 +32,7 @@
     {
       matchPackageNames: ['node'],
       extends: ['schedule:monthly'],
+      minimumReleaseAge: '3 days',
     },
   ],
   vulnerabilityAlerts: {
