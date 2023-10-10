@@ -11,7 +11,7 @@
       "automerge": false
     },
     {
-      "matchDepTypes": ["devDependencies", "engines"],
+      "matchDepTypes": ["devDependencies", "engines", "packageManager"],
       "automerge": true
     },
     {
