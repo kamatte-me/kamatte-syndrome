@@ -56,5 +56,5 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: ['node_modules/', 'dist/', '.next/'],
+  ignorePatterns: ['node_modules/', 'public/', '.next/', '.vercel/'],
 };
