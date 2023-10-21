@@ -39,7 +39,7 @@
     "@types/react": "18.2.31",
     "@typescript-eslint/parser": "6.8.0",
     "@vercel/style-guide": "5.0.1",
-    "eslint": "8.51.0",
+    "eslint": "8.52.0",
     "eslint-plugin-simple-import-sort": "10.0.0",
     "eslint-plugin-unused-imports": "3.0.0",
     "prettier": "3.0.3",
