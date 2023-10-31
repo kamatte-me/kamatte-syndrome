@@ -1,6 +1,11 @@
 import { Themed } from '@theme-ui/mdx';
 import { ElementType as DOMElementType } from 'domelementtype';
-import type { Element, HTMLReactParserOptions, Text } from 'html-react-parser';
+import type {
+  DOMNode,
+  Element,
+  HTMLReactParserOptions,
+  Text,
+} from 'html-react-parser';
 import parse, {
   attributesToProps,
   domToReact,
@@ -82,9 +87,10 @@ const parseStyleString = (styleStr?: string | null): Record<string, string> => {
 
 const parseOption: HTMLReactParserOptions = {
   replace: (domNode) => {
-    const { name, attribs, children } = domNode as Element;
-    const attrProps = attributesToProps(attribs);
+    const { name, attribs } = domNode as Element;
+    const children = (domNode as Element).children as DOMNode[];
 
+    const attrProps = attributesToProps(attribs);
     if (domNode.prev === null && domNode.parent === null) {
       attrProps.style = {
         marginTop: '0',
@@ -92,7 +98,10 @@ const parseOption: HTMLReactParserOptions = {
       };
     }
 
-    if (attrProps.className?.startsWith('iframely-')) {
+    if (
+      attrProps.className &&
+      (attrProps.className as string).startsWith('iframely-')
+    ) {
       return domNode;
     }
 
@@ -187,7 +196,7 @@ const parseOption: HTMLReactParserOptions = {
           attrProps.src += '?theme=light';
         }
         return (
-          <SafeScript src={attrProps.src}>
+          <SafeScript src={attrProps.src as string | undefined}>
             {children.length > 0 ? (children[0] as Text).data : ''}
           </SafeScript>
         );
