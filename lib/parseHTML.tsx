@@ -99,8 +99,8 @@ const parseOption: HTMLReactParserOptions = {
     }
 
     if (
-      attrProps.className &&
-      (attrProps.className as string).startsWith('iframely-')
+      typeof attrProps.className === 'string' &&
+      attrProps.className.startsWith('iframely-')
     ) {
       return domNode;
     }
