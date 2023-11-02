@@ -21,8 +21,8 @@ dependencies:
     specifier: 4.2.2
     version: 4.2.2
   html-react-parser:
-    specifier: 5.0.3
-    version: 5.0.3(react@18.2.0)
+    specifier: 5.0.5
+    version: 5.0.5(react@18.2.0)
   next:
     specifier: 14.0.1
     version: 14.0.1(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
@@ -2464,20 +2464,20 @@ packages:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
     dev: true
 
-  /html-dom-parser@5.0.3:
-    resolution: {integrity: sha512-slsc6ipw88OUZjAayRs5NTmfOQCwcUa3hNyk6AdsbQxY09H5Lr1Y3CZ4ZlconMKql3Ga6sWg3HMoUzo7KSItaQ==}
+  /html-dom-parser@5.0.4:
+    resolution: {integrity: sha512-azy8THLKd4Ar0OVJpEgX+MSjYvKdNDWlGiRBIlovMqEQYMAnLLXBhhiSwjylDD3RDdcCYT8Utg6uoRDeLHUyHg==}
     dependencies:
       domhandler: 5.0.3
       htmlparser2: 9.0.0
     dev: false
 
-  /html-react-parser@5.0.3(react@18.2.0):
-    resolution: {integrity: sha512-ytYcl22Hr7YSPT58ujeMyVoOPGSu1OOzNRWYemEVuZnCrTlW1EMWV//K/Z9kpfjw4+sFsrZknvoEydY8b+Exfg==}
+  /html-react-parser@5.0.5(react@18.2.0):
+    resolution: {integrity: sha512-quhMjFwjIncXdvilOyAmU9zW6tp4HrPqASuL6fn7LxqPWrwu68k6seYP+4LB737mEfWG+WjfYMCencQSFrEXlQ==}
     peerDependencies:
       react: 0.14 || 15 || 16 || 17 || 18
     dependencies:
       domhandler: 5.0.3
-      html-dom-parser: 5.0.3
+      html-dom-parser: 5.0.4
       react: 18.2.0
       react-property: 2.0.2
       style-to-js: 1.1.8
