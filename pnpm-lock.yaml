@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@emotion/react':
     specifier: 11.11.1
-    version: 11.11.1(@types/react@18.2.33)(react@18.2.0)
+    version: 11.11.1(@types/react@18.2.34)(react@18.2.0)
   '@theme-ui/mdx':
     specifier: 0.16.1
     version: 0.16.1(@emotion/react@11.11.1)(@types/mdx@2.0.8)(react@18.2.0)
@@ -56,8 +56,8 @@ devDependencies:
     specifier: 18.18.8
     version: 18.18.8
   '@types/react':
-    specifier: 18.2.33
-    version: 18.2.33
+    specifier: 18.2.34
+    version: 18.2.34
   '@typescript-eslint/parser':
     specifier: 6.9.1
     version: 6.9.1(eslint@8.52.0)(typescript@5.2.2)
@@ -332,7 +332,7 @@ packages:
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
     dev: false
 
-  /@emotion/react@11.11.1(@types/react@18.2.33)(react@18.2.0):
+  /@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0):
     resolution: {integrity: sha512-5mlW1DquU5HaxjLkfkGN1GA/fvVGdyHURRiX/0FHl2cfIfRxSOfmxEH5YS43edp0OldZrZ+dkBKbngxcNCdZvA==}
     peerDependencies:
       '@types/react': '*'
@@ -348,7 +348,7 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
-      '@types/react': 18.2.33
+      '@types/react': 18.2.34
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
     dev: false
@@ -713,7 +713,7 @@ packages:
       '@emotion/react': ^11.11.1
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@theme-ui/core': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
       '@theme-ui/css': 0.16.1(@emotion/react@11.11.1)
       deepmerge: 4.3.1
@@ -727,7 +727,7 @@ packages:
       '@theme-ui/theme-provider': ^0.16.1
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@styled-system/color': 5.1.2
       '@styled-system/should-forward-prop': 5.1.5
       '@styled-system/space': 5.1.2
@@ -744,7 +744,7 @@ packages:
       '@emotion/react': ^11.11.1
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@theme-ui/css': 0.16.1(@emotion/react@11.11.1)
       deepmerge: 4.3.1
       react: 18.2.0
@@ -755,7 +755,7 @@ packages:
     peerDependencies:
       '@emotion/react': ^11.11.1
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       csstype: 3.1.2
     dev: false
 
@@ -765,7 +765,7 @@ packages:
       '@emotion/react': ^11.11.1
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@theme-ui/core': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
       '@theme-ui/css': 0.16.1(@emotion/react@11.11.1)
       react: 18.2.0
@@ -778,7 +778,7 @@ packages:
       '@types/mdx': ^2.0.2
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@theme-ui/core': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
       '@theme-ui/css': 0.16.1(@emotion/react@11.11.1)
       '@types/mdx': 2.0.8
@@ -791,7 +791,7 @@ packages:
       '@emotion/react': ^11.11.1
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@theme-ui/color-modes': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
       '@theme-ui/core': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
       '@theme-ui/css': 0.16.1(@emotion/react@11.11.1)
@@ -830,8 +830,8 @@ packages:
   /@types/prop-types@15.7.8:
     resolution: {integrity: sha512-kMpQpfZKSCBqltAJwskgePRaYRFukDkm1oItcAbC3gNELR20XIBcN9VRgg4+m8DKsTfkWeA4m4Imp4DDuWy7FQ==}
 
-  /@types/react@18.2.33:
-    resolution: {integrity: sha512-v+I7S+hu3PIBoVkKGpSYYpiBT1ijqEzWpzQD62/jm4K74hPpSP7FF9BnKG6+fg2+62weJYkkBWDJlZt5JO/9hg==}
+  /@types/react@18.2.34:
+    resolution: {integrity: sha512-U6eW/alrRk37FU/MS2RYMjx0Va2JGIVXELTODaTIYgvWGCV4Y4TfTUzG8DdmpDNIT0Xpj/R7GfyHOJJrDttcvg==}
     dependencies:
       '@types/prop-types': 15.7.8
       '@types/scheduler': 0.16.4
@@ -3756,7 +3756,7 @@ packages:
       '@emotion/react': '>=11.1.1'
       react: '>=18'
     dependencies:
-      '@emotion/react': 11.11.1(@types/react@18.2.33)(react@18.2.0)
+      '@emotion/react': 11.11.1(@types/react@18.2.34)(react@18.2.0)
       '@theme-ui/color-modes': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
       '@theme-ui/components': 0.16.1(@emotion/react@11.11.1)(@theme-ui/theme-provider@0.16.1)(react@18.2.0)
       '@theme-ui/core': 0.16.1(@emotion/react@11.11.1)(react@18.2.0)
