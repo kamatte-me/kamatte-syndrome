@@ -1,11 +1,19 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
-    domains: [
-      'images.microcms-assets.io',
-      'img.youtube.com',
-      'qr-official.line.me',
-      'scdn.line-apps.com',
+    remotePatterns: [
+      {
+        hostname: 'images.microcms-assets.io',
+      },
+      {
+        hostname: 'img.youtube.com',
+      },
+      {
+        hostname: 'qr-official.line.me',
+      },
+      {
+        hostname: 'scdn.line-apps.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
