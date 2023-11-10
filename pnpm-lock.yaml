@@ -62,8 +62,8 @@ devDependencies:
     specifier: 6.10.0
     version: 6.10.0(eslint@8.53.0)(typescript@5.2.2)
   '@vercel/style-guide':
-    specifier: 5.0.1
-    version: 5.0.1(@next/eslint-plugin-next@14.0.1)(eslint@8.53.0)(prettier@3.0.3)(typescript@5.2.2)
+    specifier: 5.1.0
+    version: 5.1.0(@next/eslint-plugin-next@14.0.1)(eslint@8.53.0)(prettier@3.0.3)(typescript@5.2.2)
   eslint:
     specifier: 8.53.0
     version: 8.53.0
@@ -1095,11 +1095,11 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@vercel/style-guide@5.0.1(@next/eslint-plugin-next@14.0.1)(eslint@8.53.0)(prettier@3.0.3)(typescript@5.2.2):
-    resolution: {integrity: sha512-3J/5xpwJ2Wk+cKB3EGY2KCdVQycaThLKhjBmgXPfIKb+E74lPpXVIDfaQE0D2JoAyIzGsqdH7Lbmr+DojwofxQ==}
+  /@vercel/style-guide@5.1.0(@next/eslint-plugin-next@14.0.1)(eslint@8.53.0)(prettier@3.0.3)(typescript@5.2.2):
+    resolution: {integrity: sha512-L9lWYePIycm7vIOjDLj+mmMdmmPkW3/brHjgq+nJdvMOrL7Hdk/19w8X583HYSk0vWsq494o5Qkh6x5+uW7ljg==}
     engines: {node: '>=16'}
     peerDependencies:
-      '@next/eslint-plugin-next': '>=12.3.0 <14'
+      '@next/eslint-plugin-next': '>=12.3.0 <15'
       eslint: '>=8.48.0 <9'
       prettier: '>=3.0.0 <4'
       typescript: '>=4.8.0 <6'
