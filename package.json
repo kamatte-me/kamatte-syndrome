@@ -24,7 +24,7 @@
     "domelementtype": "2.3.0",
     "feed": "4.2.2",
     "html-react-parser": "5.0.6",
-    "next": "14.0.1",
+    "next": "14.0.2",
     "next-seo": "6.4.0",
     "p-limit": "5.0.0",
     "react": "18.2.0",
@@ -34,7 +34,7 @@
     "theme-ui": "0.16.1"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "14.0.1",
+    "@next/eslint-plugin-next": "14.0.2",
     "@types/node": "18.18.9",
     "@types/react": "18.2.37",
     "@typescript-eslint/parser": "6.10.0",
