@@ -37,7 +37,7 @@
     "@next/eslint-plugin-next": "14.0.2",
     "@types/node": "18.18.9",
     "@types/react": "18.2.37",
-    "@typescript-eslint/parser": "6.10.0",
+    "@typescript-eslint/parser": "6.11.0",
     "@vercel/style-guide": "5.1.0",
     "eslint": "8.53.0",
     "eslint-plugin-simple-import-sort": "10.0.0",
