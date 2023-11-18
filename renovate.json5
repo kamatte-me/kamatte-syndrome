@@ -4,24 +4,14 @@
   timezone: 'Asia/Tokyo',
   prHourlyLimit: 0,
   labels: ['dependencies'],
+  automerge: true,
   separateMajorMinor: true,
   packageRules: [
     // Auto merge
     {
       matchDepTypes: ['dependencies'],
+      matchUpdateTypes: ['minor'],
       automerge: false,
-    },
-    {
-      matchDepTypes: ['devDependencies', 'packageManager'],
-      automerge: true,
-    },
-    {
-      matchPackageNames: ['node'],
-      automerge: true,
-    },
-    {
-      matchUpdateTypes: ['pin', 'digest'],
-      automerge: true,
     },
     {
       matchUpdateTypes: ['major'],
@@ -35,9 +25,12 @@
       minimumReleaseAge: '3 days',
     },
   ],
+  lockFileMaintenance: {
+    enabled: true,
+  },
   vulnerabilityAlerts: {
     enabled: true,
-    labels: ['security'],
+    addLabels: ['security'],
     automerge: true,
   },
 }
