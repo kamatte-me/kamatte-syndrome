@@ -21,8 +21,8 @@ dependencies:
     specifier: 4.2.2
     version: 4.2.2
   html-react-parser:
-    specifier: 5.0.6
-    version: 5.0.6(react@18.2.0)
+    specifier: 5.0.7
+    version: 5.0.7(react@18.2.0)
   next:
     specifier: 14.0.3
     version: 14.0.3(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
@@ -2473,8 +2473,8 @@ packages:
       htmlparser2: 9.0.0
     dev: false
 
-  /html-react-parser@5.0.6(react@18.2.0):
-    resolution: {integrity: sha512-aPSzFhO2bK/L/mYQbMwFz+1QG8nhxozbwENt/52HTApasrBvDX87MFD5uSQIjq7Io0bnKzH4uh7PM42zZ4ag9A==}
+  /html-react-parser@5.0.7(react@18.2.0):
+    resolution: {integrity: sha512-00ve/0B7ukLUAcAbmD6Vh74EicB+ktLvAM4APeXJjiBsRiPz2ouochTvyUhOJB8apP2t40xAXvpmd+t50aVnJg==}
     peerDependencies:
       react: 0.14 || 15 || 16 || 17 || 18
     dependencies:
@@ -2482,7 +2482,7 @@ packages:
       html-dom-parser: 5.0.4
       react: 18.2.0
       react-property: 2.0.2
-      style-to-js: 1.1.9
+      style-to-js: 1.1.10
     dev: false
 
   /htmlparser2@9.0.0:
@@ -3677,14 +3677,14 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /style-to-js@1.1.9:
-    resolution: {integrity: sha512-6bkwhOlPOx+wKiHVlPTHjUqM4zDKv9pyccehB8zetZL0hhQ7MVp7UEWUsohjiMdxwhSsEdjMrEve+8qzUVmY4w==}
+  /style-to-js@1.1.10:
+    resolution: {integrity: sha512-VC7MBJa+y0RZhpnLKDPmVRLRswsASLmixkiZ5R8xZpNT9VyjeRzwnXd2pBzAWdgSGv/pCNNH01gPCCUsB9exYg==}
     dependencies:
-      style-to-object: 1.0.4
+      style-to-object: 1.0.5
     dev: false
 
-  /style-to-object@1.0.4:
-    resolution: {integrity: sha512-KyNO6mfijxSnypdvEjeXlhvbGPSh0l1zBJp80n+ncBQvrEbSwBHwZCpo0xz6Q4AKSPfXowWwypCBAUAdfz3rFQ==}
+  /style-to-object@1.0.5:
+    resolution: {integrity: sha512-rDRwHtoDD3UMMrmZ6BzOW0naTjMsVZLIjsGleSKS/0Oz+cgCfAPRspaqJuE8rDzpKha/nEvnM0IF4seEAZUTKQ==}
     dependencies:
       inline-style-parser: 0.2.2
     dev: false
