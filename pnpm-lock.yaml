@@ -12,8 +12,8 @@ dependencies:
     specifier: 0.16.1
     version: 0.16.1(@emotion/react@11.11.3)(@types/mdx@2.0.10)(react@18.2.0)
   destyle.css:
-    specifier: 4.0.0
-    version: 4.0.0
+    specifier: 4.0.1
+    version: 4.0.1
   domelementtype:
     specifier: 2.3.0
     version: 2.3.0
@@ -1466,8 +1466,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /destyle.css@4.0.0:
-    resolution: {integrity: sha512-yE2SpDRZdqfEZRkYSIxSWSuh4Higsm01VinAWC3hny9DDV+NjBARpCEqf6TLDTWka1I7pu4bDJ68aF1WjLPKUw==}
+  /destyle.css@4.0.1:
+    resolution: {integrity: sha512-G9iyW0JfRkgdxhbWQeuLdO1KZ40nzKssHtArbSFvaU/w44G0cZ5v3u4bHY829INSu480J/fxae+lTm225mN3Vw==}
     dev: false
 
   /detect-indent@7.0.1:
