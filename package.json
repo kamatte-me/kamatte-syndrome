@@ -20,7 +20,7 @@
   "dependencies": {
     "@emotion/react": "11.11.3",
     "@theme-ui/mdx": "0.16.1",
-    "destyle.css": "4.0.0",
+    "destyle.css": "4.0.1",
     "domelementtype": "2.3.0",
     "feed": "4.2.2",
     "html-react-parser": "5.0.11",
