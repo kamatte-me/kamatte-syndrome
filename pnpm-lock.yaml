@@ -21,8 +21,8 @@ dependencies:
     specifier: 4.2.2
     version: 4.2.2
   html-react-parser:
-    specifier: 5.1.7
-    version: 5.1.7(react@18.2.0)
+    specifier: 5.1.8
+    version: 5.1.8(@types/react@18.2.58)(react@18.2.0)
   next:
     specifier: 14.1.0
     version: 14.1.0(@babel/core@7.23.9)(react-dom@18.2.0)(react@18.2.0)
@@ -2529,10 +2529,14 @@ packages:
       htmlparser2: 9.1.0
     dev: false
 
-  /html-react-parser@5.1.7(react@18.2.0):
-    resolution: {integrity: sha512-clDscCPYxpZbKLAXJVw3DIiuklZejb5ChK+yXMaA7KKuc0c74ep8jY40pUvMo2WnUU7GB3/hAike/ZAfQ+Ybkw==}
+  /html-react-parser@5.1.8(@types/react@18.2.58)(react@18.2.0):
+    resolution: {integrity: sha512-oAXgUB4JYHFg4le3RQZtoge1TGMkwXSZPiWiexwdx3AuldgG+QEvbwMrscSViu90JNje3V4Zq5gCUSoTxa0W0A==}
     peerDependencies:
+      '@types/react': 17 || 18
       react: 0.14 || 15 || 16 || 17 || 18
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
     dependencies:
       '@types/react': 18.2.58
       domhandler: 5.0.3
