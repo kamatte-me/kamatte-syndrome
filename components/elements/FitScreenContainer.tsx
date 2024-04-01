@@ -12,7 +12,7 @@ export const FitScreenContainer: React.FC<{ children: React.ReactNode }> = ({
   return (
     <Flex
       sx={{
-        minHeight: `calc(100vh - ${negativeHeight}px)`,
+        minHeight: `calc(100vh - ${String(negativeHeight)}px)`,
         width: '100%',
       }}
     >

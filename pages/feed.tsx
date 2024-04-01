@@ -29,7 +29,7 @@ export const getStaticProps: GetStaticProps = async () => {
     image: `${baseUrl}/icon-48x48.png`,
     favicon: `${baseUrl}/favicon.ico`,
     author,
-    copyright: `© ${new Date().getFullYear()} ${siteName}`,
+    copyright: `© ${String(new Date().getFullYear())} ${siteName}`,
     hub: 'https://pubsubhubbub.appspot.com/',
   });
 
@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps = async () => {
       blogEntries.forEach((entry) => {
         const url = `${baseUrl}/blog/${entry.id}`;
         const { description } = parseBlogBody(entry.body);
-        const published = new Date(entry.publishedAt || new Date());
+        const published = new Date(entry.publishedAt ?? new Date());
         const updated =
           entry.revisedAt !== undefined ? new Date(entry.revisedAt) : published;
         feed.addItem({

@@ -56,7 +56,7 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   pageInfo,
 }) => {
   const isTopPage = pageInfo.current <= 1;
-  const pageText = isTopPage ? '' : `${pageInfo.current}ページ`;
+  const pageText = isTopPage ? '' : `${String(pageInfo.current)}ページ`;
   const pageTitle = `Blog${isTopPage ? '' : `（${pageText}）`}`;
 
   return (
@@ -83,7 +83,7 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 {
                   position: 2,
                   name: pageText,
-                  item: `${baseUrl}/blog/page/${pageInfo.current}`,
+                  item: `${baseUrl}/blog/page/${String(pageInfo.current)}`,
                 },
               ]),
         ]}

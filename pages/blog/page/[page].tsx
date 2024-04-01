@@ -12,7 +12,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const data = await client.getContentsRaw('blog');
   const pageCount = Math.ceil(data.totalCount / BLOG_ENTRIES_PER_PAGE);
   const paths = [...Array<never>(pageCount)].map(
-    (_, i) => `/blog/page/${i + 1}`,
+    (_, i) => `/blog/page/${String(i + 1)}`,
   );
   return { paths, fallback: false };
 };

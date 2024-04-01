@@ -17,12 +17,12 @@ export const Pagination: React.FC<{
     if (currentPage === 2) {
       prev = basePath;
     } else if (currentPage > 2) {
-      prev = `${paginationBasePath}${currentPage - 1}`;
+      prev = `${paginationBasePath}${String(currentPage - 1)}`;
     }
     const next =
       currentPage === totalPages
         ? null
-        : `${paginationBasePath}${currentPage + 1}`;
+        : `${paginationBasePath}${String(currentPage + 1)}`;
 
     return {
       prevPath: prev,

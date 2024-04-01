@@ -65,7 +65,7 @@ export const getStaticProps: GetStaticProps = async () => {
   });
   for (let i = 1; i <= Math.ceil(blogEntries.length / 5); i += 1) {
     stream.write({
-      url: i === 1 ? '/blog' : `/blog/page/${i}`,
+      url: i === 1 ? '/blog' : `/blog/page/${String(i)}`,
       changefreq: EnumChangefreq.WEEKLY,
       lastmod: blogEntries[0]?.publishedAt,
       priority: i === 1 ? 0.5 : 0.1,
