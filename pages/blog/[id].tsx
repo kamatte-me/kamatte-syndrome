@@ -70,20 +70,22 @@ export const getStaticProps: GetStaticProps<
     };
   }
 
-  const [prevEntry, nextEntry] = await Promise.all([
-    client.getContents('blog', {
-      limit: 1,
-      fields: 'id,title',
-      filters: `publishedAt[less_than]${entry.publishedAt}`,
-      orders: '-publishedAt',
-    }),
-    client.getContents('blog', {
-      limit: 1,
-      fields: 'id,title',
-      filters: `publishedAt[greater_than]${entry.publishedAt}`,
-      orders: 'publishedAt',
-    }),
-  ]);
+  const [prevEntry, nextEntry] = entry.publishedAt
+    ? await Promise.all([
+        client.getContents('blog', {
+          limit: 1,
+          fields: 'id,title',
+          filters: `publishedAt[less_than]${entry.publishedAt}`,
+          orders: '-publishedAt',
+        }),
+        client.getContents('blog', {
+          limit: 1,
+          fields: 'id,title',
+          filters: `publishedAt[greater_than]${entry.publishedAt}`,
+          orders: 'publishedAt',
+        }),
+      ])
+    : [[], []];
 
   return {
     props: {

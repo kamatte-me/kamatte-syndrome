@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps<{
           ? current.technologies.trim().split('\n')
           : [],
       };
-      (tmpAcc[key] || (tmpAcc[key] = [])).push(item);
+      (tmpAcc[key] ?? (tmpAcc[key] = [])).push(item);
       return tmpAcc;
     },
     {},

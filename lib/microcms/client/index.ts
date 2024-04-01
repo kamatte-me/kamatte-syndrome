@@ -44,16 +44,22 @@ export interface ClientConfig {
   apiKey: string;
 }
 
-const makeQueryString = (query: object): string => {
-  let queryStr = Object.entries(query)
+const makeQueryString = (
+  query?: Record<string, string | number | undefined>,
+): string => {
+  if (query === undefined) {
+    return '';
+  }
+
+  const queryStr = Object.entries(query)
     .map(([key, value]) => {
-      return value ? `${key}=${value}` : '';
+      return value !== undefined ? `${key}=${String(value)}` : '';
     })
     .join('&');
-  if (queryStr.length > 0) {
-    queryStr = `?${queryStr}`;
+  if (queryStr.length === 0) {
+    return '';
   }
-  return queryStr;
+  return `?${queryStr}`;
 };
 
 type EndpointTypeMap = Record<string, Model<object>>;
@@ -69,19 +75,20 @@ export const createClient = <T extends EndpointTypeMap>(
   };
 
   const getContent: GetContentFn<T> = async (endpoint, id, query = {}) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Generics制約
     return fetch(
       `${baseUrl}/${endpoint as string}/${id}${makeQueryString(query)}`,
       httpOption,
-    ).then((res) => res.json());
+    ).then((res) => res.json() as Promise<Model<T[typeof endpoint]>>);
   };
 
   const getContentsRaw: GetContentsRawFn<T> = async (endpoint, query = {}) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Generics制約
     return fetch(
       `${baseUrl}/${endpoint as string}${makeQueryString(query)}`,
       httpOption,
-    ).then((res) => res.json());
+    ).then(
+      (res) =>
+        res.json() as Promise<GetContentsResponse<Model<T[typeof endpoint]>>>,
+    );
   };
 
   const getContents: GetContentsFn<T> = async (endpoint, query = {}) => {
