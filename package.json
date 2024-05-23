@@ -30,7 +30,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "5.0.1",
-    "sitemap": "7.1.2",
+    "sitemap": "8.0.0",
     "theme-ui": "0.16.2"
   },
   "devDependencies": {
