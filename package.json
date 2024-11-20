@@ -18,7 +18,7 @@
     "vercel:env:pull": "vercel env pull .env.local"
   },
   "dependencies": {
-    "@emotion/react": "11.13.3",
+    "@emotion/react": "11.13.5",
     "@theme-ui/mdx": "0.16.2",
     "destyle.css": "4.0.1",
     "domelementtype": "2.3.0",
