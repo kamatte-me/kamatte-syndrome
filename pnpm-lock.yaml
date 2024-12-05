@@ -24,8 +24,8 @@ importers:
         specifier: 4.2.2
         version: 4.2.2
       html-react-parser:
-        specifier: 5.1.18
-        version: 5.1.18(@types/react@18.3.13)(react@18.3.1)
+        specifier: 5.1.19
+        version: 5.1.19(@types/react@18.3.13)(react@18.3.1)
       next:
         specifier: 14.2.20
         version: 14.2.20(@babel/core@7.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1286,11 +1286,11 @@ packages:
   hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
 
-  html-dom-parser@5.0.10:
-    resolution: {integrity: sha512-GwArYL3V3V8yU/mLKoFF7HlLBv80BZ2Ey1BzfVNRpAci0cEKhFHI/Qh8o8oyt3qlAMLlK250wsxLdYX4viedvg==}
+  html-dom-parser@5.0.11:
+    resolution: {integrity: sha512-iORudm2K0c0DYeEj4AbrG9PFzgp1dpFGkJUAiBlVTkeyaNf2YYIs1b0dF7rQUPnDZimkLx+Jls+CvRIKO/++Tg==}
 
-  html-react-parser@5.1.18:
-    resolution: {integrity: sha512-65BwC0zzrdeW96jB2FRr5f1ovBhRMpLPJNvwkY5kA8Ay5xdL9t/RH2/uUTM7p+cl5iM88i6dDk4LXtfMnRmaJQ==}
+  html-react-parser@5.1.19:
+    resolution: {integrity: sha512-ecjQg5KDhM+Yv3tRRfdp0fYSdSYHI1FQEDqou0g8NO7mXuoK8ksbYGRjeslqWO6QWX3PKREVWnC8VS1FSZaFHA==}
     peerDependencies:
       '@types/react': 0.14 || 15 || 16 || 17 || 18
       react: 0.14 || 15 || 16 || 17 || 18
@@ -3644,15 +3644,15 @@ snapshots:
 
   hosted-git-info@2.8.9: {}
 
-  html-dom-parser@5.0.10:
+  html-dom-parser@5.0.11:
     dependencies:
       domhandler: 5.0.3
       htmlparser2: 9.1.0
 
-  html-react-parser@5.1.18(@types/react@18.3.13)(react@18.3.1):
+  html-react-parser@5.1.19(@types/react@18.3.13)(react@18.3.1):
     dependencies:
       domhandler: 5.0.3
-      html-dom-parser: 5.0.10
+      html-dom-parser: 5.0.11
       react: 18.3.1
       react-property: 2.0.2
       style-to-js: 1.1.16
