@@ -24,8 +24,8 @@ importers:
         specifier: 4.2.2
         version: 4.2.2
       html-react-parser:
-        specifier: 5.1.19
-        version: 5.1.19(@types/react@18.3.14)(react@18.3.1)
+        specifier: 5.2.0
+        version: 5.2.0(@types/react@18.3.14)(react@18.3.1)
       next:
         specifier: 14.2.20
         version: 14.2.20(@babel/core@7.26.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1289,11 +1289,11 @@ packages:
   html-dom-parser@5.0.11:
     resolution: {integrity: sha512-iORudm2K0c0DYeEj4AbrG9PFzgp1dpFGkJUAiBlVTkeyaNf2YYIs1b0dF7rQUPnDZimkLx+Jls+CvRIKO/++Tg==}
 
-  html-react-parser@5.1.19:
-    resolution: {integrity: sha512-ecjQg5KDhM+Yv3tRRfdp0fYSdSYHI1FQEDqou0g8NO7mXuoK8ksbYGRjeslqWO6QWX3PKREVWnC8VS1FSZaFHA==}
+  html-react-parser@5.2.0:
+    resolution: {integrity: sha512-t5IkGKTBYnjmYUzEV1RBT5twACepcf20u6Q0TylXQkb6NQKaBFSMebb/S/joxXrg8IHc+ROLirQIZc5DkD23hA==}
     peerDependencies:
-      '@types/react': 0.14 || 15 || 16 || 17 || 18
-      react: 0.14 || 15 || 16 || 17 || 18
+      '@types/react': 0.14 || 15 || 16 || 17 || 18 || 19
+      react: 0.14 || 15 || 16 || 17 || 18 || 19
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -3649,7 +3649,7 @@ snapshots:
       domhandler: 5.0.3
       htmlparser2: 9.1.0
 
-  html-react-parser@5.1.19(@types/react@18.3.14)(react@18.3.1):
+  html-react-parser@5.2.0(@types/react@18.3.14)(react@18.3.1):
     dependencies:
       domhandler: 5.0.3
       html-dom-parser: 5.0.11
