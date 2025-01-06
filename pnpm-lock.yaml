@@ -55,8 +55,8 @@ importers:
         specifier: 14.2.22
         version: 14.2.22
       '@types/node':
-        specifier: 20.17.11
-        version: 20.17.11
+        specifier: 20.17.12
+        version: 20.17.12
       '@types/react':
         specifier: 18.3.18
         version: 18.3.18
@@ -467,8 +467,8 @@ packages:
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
-  '@types/node@20.17.11':
-    resolution: {integrity: sha512-Ept5glCK35R8yeyIeYlRIZtX6SLRyqMhOFTgj5SOkMpLTdw3SEHI9fHx60xaUZ+V1aJxQJODE+7/j5ocZydYTg==}
+  '@types/node@20.17.12':
+    resolution: {integrity: sha512-vo/wmBgMIiEA23A/knMfn/cf37VnuF52nZh5ZoW0GWt4e4sxNquibrMRJ7UQsA06+MBx9r/H1jsI9grYjQCQlw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -2666,7 +2666,7 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
-  '@types/node@20.17.11':
+  '@types/node@20.17.12':
     dependencies:
       undici-types: 6.19.8
 
@@ -2683,7 +2683,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 20.17.11
+      '@types/node': 20.17.12
 
   '@types/semver@7.5.8': {}
 
