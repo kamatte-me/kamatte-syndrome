@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "14.2.23",
-    "@types/node": "20.17.12",
+    "@types/node": "20.17.13",
     "@types/react": "18.3.18",
     "@typescript-eslint/parser": "7.18.0",
     "@vercel/style-guide": "6.0.0",
