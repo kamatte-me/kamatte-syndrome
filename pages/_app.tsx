@@ -4,7 +4,6 @@ import type { AppType } from 'next/dist/shared/lib/utils';
 import Head from 'next/head';
 import Script from 'next/script';
 import { DefaultSeo } from 'next-seo';
-import React from 'react';
 import { ThemeUIProvider } from 'theme-ui';
 
 import { baseUrl, siteName, slogan } from '@/constants/site';
@@ -58,6 +57,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         </Script>
 
         <DefaultSeo
+          defaultTitle={siteName}
+          description={slogan}
+          titleTemplate={`%s - ${siteName}`}
           additionalLinkTags={[
             {
               rel: 'shortcut icon',
@@ -85,8 +87,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               content: theme.colors?.primary as string,
             },
           ]}
-          defaultTitle={siteName}
-          description={slogan}
           facebook={{
             appId: '159097111464111',
           }}
@@ -100,7 +100,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               },
             ],
           }}
-          titleTemplate={`%s - ${siteName}`}
           twitter={{
             cardType: 'summary',
             site: '@kamatte_me',

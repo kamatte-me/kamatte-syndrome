@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import type React from 'react';
 import { Flex, Heading } from 'theme-ui';
 
 import { slogan } from '@/constants/site';
@@ -15,16 +15,16 @@ export const MainVisual: React.FC = () => {
     >
       <Flex>
         <Image
+          priority
           alt="me"
           height={380}
-          priority
           src="/avatar.svg"
+          width={380}
           style={{
             maxWidth: '100%',
             height: 'auto',
             objectFit: 'contain',
           }}
-          width={380}
         />
       </Flex>
       <Flex sx={{ width: '100%' }}>

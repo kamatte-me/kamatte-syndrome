@@ -8,7 +8,7 @@ export const parseBlogBody = (
   description: string;
 } => {
   const text = htmlToTextContent(blogBody);
-  const description = text.length <= 100 ? text : `${text.substring(0, 99)}…`;
+  const description = text.length <= 100 ? text : `${text.slice(0, 99)}…`;
   return {
     text,
     description,

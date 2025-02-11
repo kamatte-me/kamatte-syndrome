@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BreadcrumbJsonLd, NewsArticleJsonLd, NextSeo } from 'next-seo';
-import React, { Fragment, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, Container, Flex, Heading } from 'theme-ui';
 
 import { BlogEntriesPagination } from '@/components/pages/blog/BlogEntriesPagination';
@@ -110,6 +110,7 @@ const BlogEntryPage: NextPage<
     <>
       <NextSeo
         description={description}
+        title={entry.title}
         openGraph={{
           title: entry.title,
           images: entry.featuredImage
@@ -128,7 +129,6 @@ const BlogEntryPage: NextPage<
             authors: [author],
           },
         }}
-        title={entry.title}
       />
       <NewsArticleJsonLd
         authorName={author}
@@ -185,14 +185,14 @@ const BlogEntryPage: NextPage<
               }}
             >
               <Image
+                priority
                 alt={entry.title}
+                src={entry.featuredImage.url}
                 height={
                   entry.featuredImage.height > FEATURED_IMAGE_MAX_HEIGHT
                     ? FEATURED_IMAGE_MAX_HEIGHT
                     : entry.featuredImage.height
                 }
-                priority
-                src={entry.featuredImage.url}
                 style={{
                   maxWidth: '100%',
                   height: 'auto',

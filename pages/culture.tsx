@@ -1,6 +1,5 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import React from 'react';
 import { Grid } from 'theme-ui';
 
 import { CultureItem } from '@/components/pages/culture/CultureItem';
@@ -31,10 +30,10 @@ const CulturePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     <>
       <NextSeo
         description={`${author}を構成するもの`}
+        title={PAGE_TITLE}
         openGraph={{
           title: PAGE_TITLE,
         }}
-        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[

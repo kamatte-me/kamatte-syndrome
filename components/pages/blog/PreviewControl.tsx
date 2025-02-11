@@ -1,6 +1,7 @@
 import { keyframes } from '@emotion/react';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MdClose, MdRefresh } from 'react-icons/md';
 import { Alert, IconButton } from 'theme-ui';
 
@@ -66,7 +67,7 @@ const PreviewControl: React.FC = () => {
       <IconButton
         disabled={isLoading}
         ml={1}
-        onClick={load}
+        title="更新"
         sx={
           isLoading
             ? {
@@ -78,7 +79,7 @@ const PreviewControl: React.FC = () => {
                 },
               }
         }
-        title="更新"
+        onClick={load}
       >
         <MdRefresh
           sx={{
@@ -88,6 +89,12 @@ const PreviewControl: React.FC = () => {
         />
       </IconButton>
       <IconButton
+        title="解除"
+        sx={{
+          ':hover': {
+            color: 'secondary',
+          },
+        }}
         onClick={() => {
           // eslint-disable-next-line no-alert -- 開発向け
           const ok = window.confirm('プレビューモードを解除するぅ？');
@@ -97,12 +104,6 @@ const PreviewControl: React.FC = () => {
             });
           }
         }}
-        sx={{
-          ':hover': {
-            color: 'secondary',
-          },
-        }}
-        title="解除"
       >
         <MdClose
           sx={{

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import type React from 'react';
 import { Box, Flex, Heading } from 'theme-ui';
 
 import { formatDate } from '@/lib/date';
@@ -27,13 +27,13 @@ export const BlogListItem: React.FC<{
           alt={entry.title}
           height={120}
           src={entry.featuredImage ? entry.featuredImage.url : '/avatar.svg'}
+          width={200}
           style={{
             maxWidth: '100%',
             height: 'auto',
             objectFit: 'contain',
             objectPosition: 'center top',
           }}
-          width={200}
         />
       </Flex>
       <Box sx={{ flex: 1 }}>

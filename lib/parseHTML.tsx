@@ -14,11 +14,13 @@ import parse, {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import type { ElementType } from 'react';
-import React, { useEffect, useRef } from 'react';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
 import { Embed, Flex, Heading, Link } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
+// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 const MediaWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
@@ -33,6 +35,8 @@ interface SafeScriptProps {
   src?: string;
   children?: string;
 }
+
+// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -75,11 +79,11 @@ const parseStyleString = (styleStr?: string | null): Record<string, string> => {
     }
 
     const camelCaseProperty = style
-      .substring(0, colonPosition)
+      .slice(0, Math.max(0, colonPosition))
       .trim()
       .replace(/^-ms-/, 'ms-')
-      .replace(/-./g, (c) => c.substring(1).toUpperCase());
-    const value = style.substring(colonPosition + 1).trim();
+      .replaceAll(/-./g, (c) => c.slice(1).toUpperCase());
+    const value = style.slice(Math.max(0, colonPosition + 1)).trim();
 
     return value ? { ...acc, [camelCaseProperty]: value } : acc;
   }, {});
@@ -105,38 +109,44 @@ const parseOption: HTMLReactParserOptions = {
       return domNode;
     }
 
+    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- default case is handled
     switch (name as ElementType) {
-      case 'h1':
+      case 'h1': {
         return (
           <Heading {...attrProps} as="h2" variant="styles.h1">
             {parseChildren(children)}
           </Heading>
         );
-      case 'h2':
+      }
+      case 'h2': {
         return (
           <Heading {...attrProps} as="h3" variant="styles.h2">
             {parseChildren(children)}
           </Heading>
         );
-      case 'h3':
+      }
+      case 'h3': {
         return (
           <Heading {...attrProps} as="h4" variant="styles.h3">
             {parseChildren(children)}
           </Heading>
         );
-      case 'h4':
+      }
+      case 'h4': {
         return (
           <Heading {...attrProps} as="h5" variant="styles.h4">
             {parseChildren(children)}
           </Heading>
         );
-      case 'h5':
+      }
+      case 'h5': {
         return (
           <Heading {...attrProps} as="h6" variant="styles.h5">
             {parseChildren(children)}
           </Heading>
         );
-      case 'a':
+      }
+      case 'a': {
         if (
           attribs.href &&
           new RegExp(`^(/|${baseUrl})`).test(attribs.href) &&
@@ -149,7 +159,8 @@ const parseOption: HTMLReactParserOptions = {
           );
         }
         return <Link {...attrProps}>{parseChildren(children)}</Link>;
-      case 'img':
+      }
+      case 'img': {
         if (!attribs.src) {
           return null;
         }
@@ -160,19 +171,21 @@ const parseOption: HTMLReactParserOptions = {
               alt={attribs.alt ?? attribs.src}
               height={360}
               src={attribs.src}
+              width={480}
               style={{
                 maxWidth: '100%',
                 objectFit: 'contain',
               }}
-              width={480}
             />
           </MediaWrapper>
         );
-      case 'div':
+      }
+      case 'div': {
         if (children.some((child) => (child as Element).name === 'iframe')) {
           return <MediaWrapper>{parseChildren(children)}</MediaWrapper>;
         }
         return domNode;
+      }
       case 'iframe': {
         const elm = <Embed {...attrProps} loading="lazy" />;
         if ((domNode.parent as Element | null)?.name === 'div') {
@@ -201,7 +214,7 @@ const parseOption: HTMLReactParserOptions = {
           </SafeScript>
         );
       }
-      default:
+      default: {
         if (name in Themed) {
           // @ts-expect-error -- ThemeUIのせい
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ThemeUIのせい
@@ -216,6 +229,7 @@ const parseOption: HTMLReactParserOptions = {
           );
         }
         return domNode;
+      }
     }
   },
 };

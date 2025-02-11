@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Box, Donut, Flex, Text } from 'theme-ui';
 
 interface SkillItemProps {
@@ -17,6 +17,7 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
         }}
       >
         <Text
+          // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- no XSS risk
           dangerouslySetInnerHTML={{
             __html: name.replace('\n', '<br>'),
           }}
