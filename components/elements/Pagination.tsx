@@ -1,9 +1,11 @@
 import Link from 'next/link';
-import React, { useMemo } from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import { Flex } from 'theme-ui';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
 
+// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const ICON_SIZE = 32;
 
 export const Pagination: React.FC<{

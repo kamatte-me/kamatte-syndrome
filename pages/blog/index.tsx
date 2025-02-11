@@ -3,7 +3,6 @@ import type { ParsedUrlQuery } from 'node:querystring';
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Link from 'next/link';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import React from 'react';
 import { Box, Container } from 'theme-ui';
 
 import { Pagination } from '@/components/elements/Pagination';
@@ -12,6 +11,7 @@ import { baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import type { Blog } from '@/lib/microcms/model';
 
+// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const BLOG_ENTRIES_PER_PAGE = 5;
 
 interface BlogEntriesPageProps {
@@ -26,6 +26,7 @@ export type BlogEntriesGetStaticProps<
   T extends ParsedUrlQuery = Record<string, never>,
 > = GetStaticProps<BlogEntriesPageProps, T>;
 
+// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const blogEntriesGetStaticProps = async (
   pageNumber: number,
 ): Promise<ReturnType<BlogEntriesGetStaticProps>> => {
@@ -62,13 +63,13 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <NextSeo
+        title={pageTitle}
         description={`局所的な人気があるらしい。${
           isTopPage ? '' : `（${pageText}）`
         }`}
         openGraph={{
           title: pageTitle,
         }}
-        title={pageTitle}
       />
       <BreadcrumbJsonLd
         itemListElements={[

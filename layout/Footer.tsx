@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import React from 'react';
+import type React from 'react';
 import { Box, Flex } from 'theme-ui';
 
 import { siteName } from '@/constants/site';
 
+// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const FooterHeight = 60;
 
 const year = new Date().getFullYear();

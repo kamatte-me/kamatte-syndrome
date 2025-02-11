@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React from 'react';
+import type React from 'react';
 import { Flex } from 'theme-ui';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
