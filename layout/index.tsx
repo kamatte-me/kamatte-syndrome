@@ -1,6 +1,6 @@
 import 'destyle.css';
 
-import React from 'react';
+import type React from 'react';
 import { Container } from 'theme-ui';
 
 import { Footer, FooterHeight } from '@/layout/Footer';

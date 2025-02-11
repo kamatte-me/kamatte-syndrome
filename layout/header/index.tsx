@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback, useState } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import { Box, Flex, MenuButton } from 'theme-ui';
 
 import { siteName } from '@/constants/site';
@@ -82,12 +83,12 @@ export const Header: React.FC = () => {
                   alt={siteName}
                   height={36}
                   src="/logo.svg"
+                  width={120}
                   style={{
                     maxWidth: '100%',
                     height: 'auto',
                     objectFit: 'contain',
                   }}
-                  width={120}
                 />
               </Link>
             </Flex>
@@ -120,11 +121,11 @@ export const Header: React.FC = () => {
             >
               <MenuButton
                 aria-label="Toggle Menu"
-                onClick={() => {
-                  toggleMenuOpen();
-                }}
                 sx={{
                   cursor: 'pointer',
+                }}
+                onClick={() => {
+                  toggleMenuOpen();
                 }}
               />
             </Flex>
@@ -133,10 +134,10 @@ export const Header: React.FC = () => {
       </Flex>
 
       <SideNav
+        open={menuOpen}
         handleClose={() => {
           setMenuOpen(false);
         }}
-        open={menuOpen}
       >
         <Box as="nav">
           <ul
@@ -147,10 +148,10 @@ export const Header: React.FC = () => {
             {links.map((link) => (
               <li key={link.to} sx={{ py: 1 }}>
                 <NavLink
+                  to={link.to}
                   onClick={() => {
                     setMenuOpen(false);
                   }}
-                  to={link.to}
                 >
                   {link.title}
                 </NavLink>

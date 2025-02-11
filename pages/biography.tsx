@@ -1,7 +1,6 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Image from 'next/image';
 import { BreadcrumbJsonLd, NextSeo, SocialProfileJsonLd } from 'next-seo';
-import React from 'react';
 import { Box, Flex, Grid, Heading } from 'theme-ui';
 
 import { HistoryItem } from '@/components/pages/biography/History';
@@ -42,10 +41,10 @@ const BiographyPage: NextPage<
     <>
       <NextSeo
         description={`${author}のすべて`}
+        title={PAGE_TITLE}
         openGraph={{
           title: PAGE_TITLE,
         }}
-        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -58,12 +57,12 @@ const BiographyPage: NextPage<
       />
       <SocialProfileJsonLd
         name={author}
+        type="Person"
+        url={`${baseUrl}/biography`}
         sameAs={[
           'https://twitter.com/kamatte_me',
           'https://github.com/kamatte-me',
         ]}
-        type="Person"
-        url={`${baseUrl}/biography`}
       />
 
       <Flex
@@ -81,16 +80,16 @@ const BiographyPage: NextPage<
           }}
         >
           <Image
+            priority
             alt="me"
             height={300}
-            priority
             src="/avatar.svg"
+            width={300}
             style={{
               maxWidth: '100%',
               height: 'auto',
               objectFit: 'contain',
             }}
-            width={300}
           />
         </Flex>
         <Box>

@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import React from 'react';
 import { Box, Container, Heading, Link, Paragraph } from 'theme-ui';
 
 import { baseUrl, siteName } from '@/constants/site';
@@ -12,10 +11,10 @@ const PrivacyPolicyPage: NextPage = () => {
     <>
       <NextSeo
         description={`${siteName}のプライバシーポリシー`}
+        title={PAGE_TITLE}
         openGraph={{
           title: PAGE_TITLE,
         }}
-        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[

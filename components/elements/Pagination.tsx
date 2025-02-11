@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import React, { useMemo } from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import { Flex } from 'theme-ui';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';

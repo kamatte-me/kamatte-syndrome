@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React from 'react';
+import type React from 'react';
 import { Box, Flex } from 'theme-ui';
 
 import { siteName } from '@/constants/site';

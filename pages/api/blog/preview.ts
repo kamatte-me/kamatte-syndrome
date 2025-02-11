@@ -22,9 +22,9 @@ const handler: NextApiHandler = (req, res) => {
       res.writeHead(307, { Location: `/blog/${entry.id}` });
       res.end('Preview mode enabled');
     })
-    .catch((err: unknown) => {
+    .catch((error: unknown) => {
       // eslint-disable-next-line no-console -- designed
-      console.error(err);
+      console.error(error);
       res.status(401).json({ message: 'Invalid slug' });
     });
 };

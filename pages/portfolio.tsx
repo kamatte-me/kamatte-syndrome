@@ -1,6 +1,5 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import React from 'react';
 import { Box, Heading } from 'theme-ui';
 
 import { PortfolioItem as PortfolioItemComponent } from '@/components/pages/portfolio/PortfolioItem';
@@ -54,10 +53,10 @@ const PortfolioPage: NextPage<
     <>
       <NextSeo
         description={`${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`}
+        title={PAGE_TITLE}
         openGraph={{
           title: PAGE_TITLE,
         }}
-        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -71,40 +70,44 @@ const PortfolioPage: NextPage<
 
       {Object.keys(portfolio)
         .reverse()
-        .map((year) => (
-          <Box
-            key={year}
-            sx={{
-              ':not(:last-child)': {
-                mb: 5,
-              },
-            }}
-          >
-            <Heading
-              as="h1"
+        .map((year) => {
+          return (
+            <Box
+              key={year}
               sx={{
-                fontSize: 5,
-                mb: 4,
-                textAlign: 'center',
+                ':not(:last-child)': {
+                  mb: 5,
+                },
               }}
             >
-              {year}
-            </Heading>
-            {portfolio[Number(year)]?.map((item) => (
-              <Box
-                as="ul"
-                key={item.id}
+              <Heading
+                as="h1"
                 sx={{
-                  ':not(:last-child)': {
-                    mb: 5,
-                  },
+                  fontSize: 5,
+                  mb: 4,
+                  textAlign: 'center',
                 }}
               >
-                <PortfolioItemComponent item={item} />
-              </Box>
-            ))}
-          </Box>
-        ))}
+                {year}
+              </Heading>
+              {portfolio[Number(year)]?.map((item) => {
+                return (
+                  <Box
+                    as="ul"
+                    key={item.id}
+                    sx={{
+                      ':not(:last-child)': {
+                        mb: 5,
+                      },
+                    }}
+                  >
+                    <PortfolioItemComponent item={item} />
+                  </Box>
+                );
+              })}
+            </Box>
+          );
+        })}
     </>
   );
 };
