@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
-    "@theme-ui/mdx": "0.17.1",
+    "@theme-ui/mdx": "0.17.2",
     "destyle.css": "4.0.1",
     "domelementtype": "2.3.0",
     "feed": "4.2.2",
@@ -31,7 +31,7 @@
     "react-dom": "19.0.0",
     "react-icons": "5.4.0",
     "sitemap": "8.0.0",
-    "theme-ui": "0.17.1"
+    "theme-ui": "0.17.2"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "15.1.7",
