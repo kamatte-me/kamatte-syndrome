@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 import { CloseIcon } from '@/components/elements/Icon';
 import { Overlay } from '@/components/elements/Overlay';
@@ -45,9 +45,6 @@ export const SideNav: React.FC<SideNavProps> = ({
         }}
       >
         <CloseIcon
-          onClick={() => {
-            handleClose();
-          }}
           sx={{
             position: 'fixed',
             top: 3,
@@ -57,6 +54,9 @@ export const SideNav: React.FC<SideNavProps> = ({
             width: 32,
             cursor: 'pointer',
             zIndex: 102,
+          }}
+          onClick={() => {
+            handleClose();
           }}
         />
         {children}

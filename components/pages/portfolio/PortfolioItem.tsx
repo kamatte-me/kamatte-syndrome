@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import type React from 'react';
 import { Badge, Box, Flex, Heading, Link, Text } from 'theme-ui';
 
 import { htmlToThemed } from '@/lib/parseHTML';
@@ -14,12 +14,12 @@ const FeaturedImage: React.FC<{
         alt={item.title}
         height={item.featuredImage.height}
         src={item.featuredImage.url}
+        width={item.featuredImage.width}
         style={{
           maxWidth: '100%',
           height: 'auto',
           objectFit: 'contain',
         }}
-        width={item.featuredImage.width}
       />
     );
   }
@@ -82,7 +82,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
         }}
       >
         {item.url ? (
-          <Link href={item.url} target="_blank">
+          <Link href={item.url} target="_blank" rel="noreferrer">
             <FeaturedImage item={item} />
           </Link>
         ) : (
@@ -98,7 +98,7 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item }) => {
         >
           <Heading as="h2" sx={{ variant: 'text.headingSerif', fontSize: 4 }}>
             {item.url ? (
-              <Link href={item.url} target="_blank">
+              <Link href={item.url} target="_blank" rel="noreferrer">
                 {item.title}
               </Link>
             ) : (

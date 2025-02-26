@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "ES2022",
     "target": "ES5",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "jsx": "preserve",
     "jsxImportSource": "theme-ui",
     "plugins": [{ "name": "next" }],
-    "allowJs": false,
+    "allowJs": true,
     "composite": false,
     "declaration": false,
     "declarationMap": false,
@@ -30,6 +30,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["**/*", ".next/types/**/*.ts"],
+  "exclude": [".next/", "out/", "public/", ".vercel/"]
 }

@@ -1,17 +1,11 @@
-import { FaGithub } from 'react-icons/fa';
-import { IoPlayCircleOutline } from 'react-icons/io5';
-import { MdBrowserNotSupported, MdPublic } from 'react-icons/md';
-import { VscChevronLeft, VscChevronRight, VscClose } from 'react-icons/vsc';
-
-export const CloseIcon = VscClose;
-
-export const PlayIcon = IoPlayCircleOutline;
-
-export const GitHubIcon = FaGithub;
-
-export const ArrowLeftIcon = VscChevronLeft;
-export const ArrowRightIcon = VscChevronRight;
-
-export const EarthIcon = MdPublic;
-
-export const NotSupportedIcon = MdBrowserNotSupported;
+export { FaGithub as GitHubIcon } from 'react-icons/fa';
+export { IoPlayCircleOutline as PlayIcon } from 'react-icons/io5';
+export {
+  MdPublic as EarthIcon,
+  MdBrowserNotSupported as NotSupportedIcon,
+} from 'react-icons/md';
+export {
+  VscChevronLeft as ArrowLeftIcon,
+  VscChevronRight as ArrowRightIcon,
+  VscClose as CloseIcon,
+} from 'react-icons/vsc';

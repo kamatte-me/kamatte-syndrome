@@ -3,7 +3,6 @@ import type { ParsedUrlQuery } from 'node:querystring';
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Link from 'next/link';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import React from 'react';
 import { Box, Container } from 'theme-ui';
 
 import { Pagination } from '@/components/elements/Pagination';
@@ -62,13 +61,13 @@ const BlogPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <NextSeo
+        title={pageTitle}
         description={`局所的な人気があるらしい。${
           isTopPage ? '' : `（${pageText}）`
         }`}
         openGraph={{
           title: pageTitle,
         }}
-        title={pageTitle}
       />
       <BreadcrumbJsonLd
         itemListElements={[

@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
-import React from 'react';
 import { Box, Flex, Heading } from 'theme-ui';
 
 import { FitScreenContainer } from '@/components/elements/FitScreenContainer';
