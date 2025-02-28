@@ -1,5 +1,4 @@
 import type { GetStaticPaths, InferGetStaticPropsType, NextPage } from 'next';
-import React from 'react';
 
 import { client } from '@/lib/microcms';
 import type { BlogEntriesGetStaticProps } from '@/pages/blog';

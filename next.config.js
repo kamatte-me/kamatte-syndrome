@@ -1,5 +1,6 @@
+// @ts-check
 /** @type {import('next').NextConfig} */
-module.exports = {
+const config = {
   images: {
     remotePatterns: [
       {
@@ -22,3 +23,5 @@ module.exports = {
     defaultLocale: 'ja',
   },
 };
+
+module.exports = config;

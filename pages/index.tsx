@@ -1,7 +1,6 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { OrganizationJsonLd } from 'next-seo';
-import React from 'react';
 import { Flex } from 'theme-ui';
 
 import { FitScreenContainer } from '@/components/elements/FitScreenContainer';

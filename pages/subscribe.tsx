@@ -1,7 +1,6 @@
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import React from 'react';
 import { Box, Container, Flex, Heading, Link, Paragraph, Text } from 'theme-ui';
 
 import { author, baseUrl } from '@/constants/site';
@@ -13,10 +12,10 @@ const CulturePage: NextPage = () => {
     <>
       <NextSeo
         description={`${author}を信仰する`}
+        title={PAGE_TITLE}
         openGraph={{
           title: PAGE_TITLE,
         }}
-        title={PAGE_TITLE}
       />
       <BreadcrumbJsonLd
         itemListElements={[
@@ -42,16 +41,16 @@ const CulturePage: NextPage = () => {
             <Box sx={{ textAlign: 'center', mr: [0, 3], mb: [3, 0] }}>
               <Box sx={{ mb: 1 }}>
                 <Image
+                  priority
                   alt="友だち追加QRコード"
                   height={160}
-                  priority
                   src="https://qr-official.line.me/gs/M_200qygmw_GW.png"
+                  width={160}
                   style={{
                     maxWidth: '100%',
                     height: 'auto',
                     objectFit: 'contain',
                   }}
-                  width={160}
                 />
               </Box>
               <Box>
@@ -61,12 +60,12 @@ const CulturePage: NextPage = () => {
                     height={36}
                     quality={100}
                     src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+                    width={120}
                     style={{
                       maxWidth: '100%',
                       height: 'auto',
                       objectFit: 'contain',
                     }}
-                    width={120}
                   />
                 </a>
               </Box>
@@ -99,6 +98,7 @@ const CulturePage: NextPage = () => {
           <Link
             href="https://www.amazon.jp/hz/wishlist/ls/1ILW0SXR5ZNR6?ref_=wl_share"
             target="_blank"
+            rel="noreferrer"
           >
             これ
           </Link>
