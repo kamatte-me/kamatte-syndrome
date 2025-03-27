@@ -34,7 +34,7 @@
     "theme-ui": "0.17.2"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.2.3",
+    "@next/eslint-plugin-next": "15.2.4",
     "@types/node": "22.13.13",
     "@types/react": "19.0.12",
     "@typescript-eslint/parser": "7.18.0",
