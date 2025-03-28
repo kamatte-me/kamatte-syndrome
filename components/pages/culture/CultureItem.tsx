@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useCallback, useState } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import { Card, Flex } from 'theme-ui';
 
 import { PlayIcon } from '@/components/elements/Icon';
@@ -18,7 +19,7 @@ export const CultureItem: React.FC<{
     window.history.pushState(null, '', router.asPath);
     window.onpopstate = () => {
       setIsOpen(false);
-      // eslint-disable-next-line @typescript-eslint/no-empty-function -- clear event handler
+
       window.onpopstate = () => {};
     };
   }, [router]);
@@ -31,23 +32,23 @@ export const CultureItem: React.FC<{
     <Card>
       <dd sx={{ mb: 1 }}>
         <Flex
-          onClick={handleOpen}
           sx={{
             position: 'relative',
             cursor: 'pointer',
             bg: 'black',
           }}
+          onClick={handleOpen}
         >
           <Image
             alt={item.name}
             height={360}
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
+            width={480}
             style={{
               maxWidth: '100%',
               height: 'auto',
               objectFit: 'cover',
             }}
-            width={480}
           />
           <Flex
             sx={{

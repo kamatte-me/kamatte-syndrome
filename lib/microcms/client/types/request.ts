@@ -1,12 +1,10 @@
-type DefaultQuery = {
+export type GetContentQuery = {
   draftKey?: string;
   fields?: string;
   depth?: number;
 };
 
-export type GetContentQuery = DefaultQuery;
-
-export type GetContentsQuery = DefaultQuery & {
+export type GetContentsQuery = GetContentQuery & {
   limit?: number;
   offset?: number;
   orders?: string;

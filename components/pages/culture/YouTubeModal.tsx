@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Box, Container, Embed, Flex, Heading } from 'theme-ui';
 
 import { CloseIcon } from '@/components/elements/Icon';
@@ -19,9 +19,6 @@ export const YouTubeModal: React.FC<{
     <Box>
       <Overlay bgColor="black" handleClose={handleClose} />
       <CloseIcon
-        onClick={() => {
-          handleClose();
-        }}
         sx={{
           variant: 'styles.a',
           position: 'fixed',
@@ -33,9 +30,13 @@ export const YouTubeModal: React.FC<{
           cursor: 'pointer',
           zIndex: 102,
         }}
+        onClick={() => {
+          handleClose();
+        }}
       />
 
       <Container
+        variant="layout.youtubeModalContainer"
         sx={{
           position: 'fixed',
           top: '50%',
@@ -43,7 +44,6 @@ export const YouTubeModal: React.FC<{
           transform: 'translate(-50%, -50%)',
           zIndex: 101,
         }}
-        variant="layout.youtubeModalContainer"
       >
         <Heading
           as="h1"

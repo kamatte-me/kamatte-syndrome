@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { Flex } from 'theme-ui';
 
 interface HistoryItemProps {
