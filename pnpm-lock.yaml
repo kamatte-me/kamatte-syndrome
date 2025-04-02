@@ -24,8 +24,8 @@ importers:
         specifier: 4.2.2
         version: 4.2.2
       html-react-parser:
-        specifier: 5.2.2
-        version: 5.2.2(@types/react@19.1.0)(react@19.1.0)
+        specifier: 5.2.3
+        version: 5.2.3(@types/react@19.1.0)(react@19.1.0)
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1549,8 +1549,8 @@ packages:
   html-dom-parser@5.0.13:
     resolution: {integrity: sha512-B7JonBuAfG32I7fDouUQEogBrz3jK9gAuN1r1AaXpED6dIhtg/JwiSRhjGL7aOJwRz3HU4efowCjQBaoXiREqg==}
 
-  html-react-parser@5.2.2:
-    resolution: {integrity: sha512-yA5012CJGSFWYZsgYzfr6HXJgDap38/AEP4ra8Cw+WHIi2ZRDXRX/QVYdumRf1P8zKyScKd6YOrWYvVEiPfGKg==}
+  html-react-parser@5.2.3:
+    resolution: {integrity: sha512-y34oKTu+9T1fKdJE1cN9QWFWu8sx8Qa5tJOafUfMUF5Niah+yF6zlEHhWh7a0iZEcLRPIMw54bY14ajQF7xP7A==}
     peerDependencies:
       '@types/react': 0.14 || 15 || 16 || 17 || 18 || 19
       react: 0.14 || 15 || 16 || 17 || 18 || 19
@@ -4138,7 +4138,7 @@ snapshots:
       domhandler: 5.0.3
       htmlparser2: 10.0.0
 
-  html-react-parser@5.2.2(@types/react@19.1.0)(react@19.1.0):
+  html-react-parser@5.2.3(@types/react@19.1.0)(react@19.1.0):
     dependencies:
       domhandler: 5.0.3
       html-dom-parser: 5.0.13
