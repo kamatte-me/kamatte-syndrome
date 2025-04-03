@@ -40,7 +40,7 @@
     "@next/eslint-plugin-next": "15.2.4",
     "@types/eslint-config-prettier": "6.11.3",
     "@types/eslint-plugin-jsx-a11y": "6.10.0",
-    "@types/node": "22.13.17",
+    "@types/node": "22.14.0",
     "@types/react": "19.1.0",
     "@vitest/eslint-plugin": "1.1.38",
     "eslint": "9.23.0",
