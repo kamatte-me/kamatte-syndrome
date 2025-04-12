@@ -52,8 +52,8 @@ importers:
         version: 0.17.2(@emotion/react@11.14.0(@types/react@19.1.1)(react@19.1.0))(react@19.1.0)
     devDependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
-        specifier: 4.4.1
-        version: 4.4.1(eslint@9.24.0)
+        specifier: 4.5.0
+        version: 4.5.0(eslint@9.24.0)
       '@eslint-react/eslint-plugin':
         specifier: 1.41.0
         version: 1.41.0(eslint@9.24.0)(ts-api-utils@2.1.0(typescript@5.8.3))(typescript@5.8.3)
@@ -391,8 +391,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@eslint-community/eslint-plugin-eslint-comments@4.4.1':
-    resolution: {integrity: sha512-lb/Z/MzbTf7CaVYM9WCFNQZ4L1yi3ev2fsFPF99h31ljhSEyUoyEsKsNWiU+qD1glbYTDJdqgyaLKtyTkkqtuQ==}
+  '@eslint-community/eslint-plugin-eslint-comments@4.5.0':
+    resolution: {integrity: sha512-MAhuTKlr4y/CE3WYX26raZjy+I/kS2PLKSzvfmDCGrBLTFHOYwqROZdr4XwPgXwX3K9rjzMr4pSmUWGnzsUyMg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
@@ -3071,7 +3071,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.2':
     optional: true
 
-  '@eslint-community/eslint-plugin-eslint-comments@4.4.1(eslint@9.24.0)':
+  '@eslint-community/eslint-plugin-eslint-comments@4.5.0(eslint@9.24.0)':
     dependencies:
       escape-string-regexp: 4.0.0
       eslint: 9.24.0
