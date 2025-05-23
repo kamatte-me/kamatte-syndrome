@@ -76,8 +76,8 @@ importers:
         specifier: 19.1.5
         version: 19.1.5
       '@vitest/eslint-plugin':
-        specifier: 1.2.0
-        version: 1.2.0(eslint@9.27.0)(typescript@5.8.3)
+        specifier: 1.2.1
+        version: 1.2.1(eslint@9.27.0)(typescript@5.8.3)
       eslint:
         specifier: 9.27.0
         version: 9.27.0
@@ -822,8 +822,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@vitest/eslint-plugin@1.2.0':
-    resolution: {integrity: sha512-6vn3QDy+ysqHGkbH9fU9uyWptqNc638dgPy0uAlh/XpniTBp+0WeVlXGW74zqggex/CwYOhK8t5GVo/FH3NMPw==}
+  '@vitest/eslint-plugin@1.2.1':
+    resolution: {integrity: sha512-JQr1jdVcrsoS7Sdzn83h9sq4DvREf9Q/onTZbJCqTVlv/76qb+TZrLv/9VhjnjSMHweQH5FdpMDeCR6aDe2fgw==}
     peerDependencies:
       eslint: '>= 8.57.0'
       typescript: '>= 5.0.0'
@@ -3081,7 +3081,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.7.2':
     optional: true
 
-  '@vitest/eslint-plugin@1.2.0(eslint@9.27.0)(typescript@5.8.3)':
+  '@vitest/eslint-plugin@1.2.1(eslint@9.27.0)(typescript@5.8.3)':
     dependencies:
       '@typescript-eslint/utils': 8.32.1(eslint@9.27.0)(typescript@5.8.3)
       eslint: 9.27.0
