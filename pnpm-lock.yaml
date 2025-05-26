@@ -89,10 +89,10 @@ importers:
         version: 10.1.5(eslint@9.27.0)
       eslint-import-resolver-typescript:
         specifier: 4.4.1
-        version: 4.4.1(eslint-plugin-import-x@4.13.1(eslint@9.27.0)(typescript@5.8.3))(eslint@9.27.0)
+        version: 4.4.1(eslint-plugin-import-x@4.13.3(eslint@9.27.0)(typescript@5.8.3))(eslint@9.27.0)
       eslint-plugin-import-x:
-        specifier: 4.13.1
-        version: 4.13.1(eslint@9.27.0)(typescript@5.8.3)
+        specifier: 4.13.3
+        version: 4.13.3(eslint@9.27.0)(typescript@5.8.3)
       eslint-plugin-jsx-a11y:
         specifier: 6.10.2
         version: 6.10.2(eslint@9.27.0)
@@ -1185,15 +1185,6 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-import-context@0.1.4:
-    resolution: {integrity: sha512-x3+etvB5TPxjFIq2m4tTnpt/9Ekp5GZKzXNp5ExLaS7Qv9E5BVs/Td7jxSnRtSzrgTCExXZlc0MuOdSuDLURiQ==}
-    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      unrs-resolver: ^1.0.0
-    peerDependenciesMeta:
-      unrs-resolver:
-        optional: true
-
   eslint-import-context@0.1.5:
     resolution: {integrity: sha512-jalO1mLiEvTv0io0koz1AE4LwkHQxDBFLaSXWweWtJR0y/NC1yyxvU61Z54bghIFNeM1M4TvwRwVRhLunQJ3gw==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
@@ -1219,8 +1210,8 @@ packages:
       eslint-plugin-import-x:
         optional: true
 
-  eslint-plugin-import-x@4.13.1:
-    resolution: {integrity: sha512-Ua4HZBmG5TNr18q3Is+nT6mKCzNNpycqtv/+TkIK7E3w4LBlPlZI6vLwmDjXdIZtJPP2Z1Oh5+wksWwlcCjMpA==}
+  eslint-plugin-import-x@4.13.3:
+    resolution: {integrity: sha512-CDewJDEeYQhm94KGCDYiuwU1SdaWc/vh+SziSKkF7kichAqAFnQYtSYUvSwSBbiBjYLxV5uUxocxxQobRI9YXA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
@@ -3530,13 +3521,6 @@ snapshots:
     dependencies:
       eslint: 9.27.0
 
-  eslint-import-context@0.1.4(unrs-resolver@1.7.2):
-    dependencies:
-      get-tsconfig: 4.10.1
-      stable-hash: 0.0.5
-    optionalDependencies:
-      unrs-resolver: 1.7.2
-
   eslint-import-context@0.1.5(unrs-resolver@1.7.2):
     dependencies:
       get-tsconfig: 4.10.1
@@ -3552,7 +3536,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@4.4.1(eslint-plugin-import-x@4.13.1(eslint@9.27.0)(typescript@5.8.3))(eslint@9.27.0):
+  eslint-import-resolver-typescript@4.4.1(eslint-plugin-import-x@4.13.3(eslint@9.27.0)(typescript@5.8.3))(eslint@9.27.0):
     dependencies:
       debug: 4.4.1
       eslint: 9.27.0
@@ -3563,17 +3547,17 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.7.2
     optionalDependencies:
-      eslint-plugin-import-x: 4.13.1(eslint@9.27.0)(typescript@5.8.3)
+      eslint-plugin-import-x: 4.13.3(eslint@9.27.0)(typescript@5.8.3)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import-x@4.13.1(eslint@9.27.0)(typescript@5.8.3):
+  eslint-plugin-import-x@4.13.3(eslint@9.27.0)(typescript@5.8.3):
     dependencies:
       '@typescript-eslint/utils': 8.32.1(eslint@9.27.0)(typescript@5.8.3)
       comment-parser: 1.4.1
       debug: 4.4.1
       eslint: 9.27.0
-      eslint-import-context: 0.1.4(unrs-resolver@1.7.2)
+      eslint-import-context: 0.1.5(unrs-resolver@1.7.2)
       eslint-import-resolver-node: 0.3.9
       is-glob: 4.0.3
       minimatch: 10.0.1
