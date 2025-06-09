@@ -56,7 +56,7 @@
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-sonarjs": "3.0.2",
     "eslint-plugin-storybook": "0.12.0",
-    "eslint-plugin-testing-library": "7.4.0",
+    "eslint-plugin-testing-library": "7.5.0",
     "eslint-plugin-unicorn": "59.0.1",
     "globals": "16.2.0",
     "prettier": "3.5.3",
