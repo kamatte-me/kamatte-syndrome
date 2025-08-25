@@ -112,8 +112,8 @@ importers:
         specifier: 12.1.1
         version: 12.1.1(eslint@9.34.0)
       eslint-plugin-sonarjs:
-        specifier: 3.0.4
-        version: 3.0.4(eslint@9.34.0)
+        specifier: 3.0.5
+        version: 3.0.5(eslint@9.34.0)
       eslint-plugin-storybook:
         specifier: 0.12.0
         version: 0.12.0(eslint@9.34.0)(typescript@5.9.2)
@@ -1344,8 +1344,8 @@ packages:
     peerDependencies:
       eslint: '>=5.0.0'
 
-  eslint-plugin-sonarjs@3.0.4:
-    resolution: {integrity: sha512-ftQcP811kRJNXapqpQXHErEoVOdTPfYPPYd7n3AExIPwv4qWKKHf4slFvXmodiOnfgy1Tl3waPZZLD7lcvJOtw==}
+  eslint-plugin-sonarjs@3.0.5:
+    resolution: {integrity: sha512-dI62Ff3zMezUToi161hs2i1HX1ie8Ia2hO0jtNBfdgRBicAG4ydy2WPt0rMTrAe3ZrlqhpAO3w1jcQEdneYoFA==}
     peerDependencies:
       eslint: ^8.0.0 || ^9.0.0
 
@@ -1767,6 +1767,10 @@ packages:
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
+
+  jsx-ast-utils-x@0.1.0:
+    resolution: {integrity: sha512-eQQBjBnsVtGacsG9uJNB8qOr3yA8rga4wAaGG1qRcBzSIvfhERLrWxMAM1hp5fcS6Abo8M4+bUBTekYR0qTPQw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   jsx-ast-utils@3.3.5:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
@@ -3812,14 +3816,14 @@ snapshots:
     dependencies:
       eslint: 9.34.0
 
-  eslint-plugin-sonarjs@3.0.4(eslint@9.34.0):
+  eslint-plugin-sonarjs@3.0.5(eslint@9.34.0):
     dependencies:
       '@eslint-community/regexpp': 4.12.1
       builtin-modules: 3.3.0
       bytes: 3.1.2
       eslint: 9.34.0
       functional-red-black-tree: 1.0.1
-      jsx-ast-utils: 3.3.5
+      jsx-ast-utils-x: 0.1.0
       lodash.merge: 4.6.2
       minimatch: 9.0.5
       scslre: 0.3.0
@@ -4294,6 +4298,8 @@ snapshots:
   json-schema-traverse@0.4.1: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
+
+  jsx-ast-utils-x@0.1.0: {}
 
   jsx-ast-utils@3.3.5:
     dependencies:
