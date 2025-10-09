@@ -55,7 +55,9 @@ export const getStaticProps: GetStaticProps = async () => {
     { url: '/terms', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
     { url: '/privacy', changefreq: EnumChangefreq.YEARLY, priority: 0.1 },
   ];
-  staticPages.forEach((page) => stream.write(page));
+  staticPages.forEach((page) => {
+    stream.write(page);
+  });
 
   // ブログ
   const blogEntries = await client.getAllContents('blog', {

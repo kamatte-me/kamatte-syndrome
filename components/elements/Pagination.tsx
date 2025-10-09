@@ -5,7 +5,6 @@ import { Flex } from 'theme-ui';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const ICON_SIZE = 32;
 
 export const Pagination: React.FC<{

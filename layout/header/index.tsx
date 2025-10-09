@@ -9,7 +9,6 @@ import { SideNav } from '@/layout/header/SideNav';
 
 import { NavLink } from './NavLink';
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const HeaderHeight = 64;
 
 const links: {

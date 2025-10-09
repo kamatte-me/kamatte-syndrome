@@ -11,7 +11,6 @@ import { baseUrl } from '@/constants/site';
 import { client } from '@/lib/microcms';
 import type { Blog } from '@/lib/microcms/model';
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const BLOG_ENTRIES_PER_PAGE = 5;
 
 interface BlogEntriesPageProps {
@@ -26,7 +25,6 @@ export type BlogEntriesGetStaticProps<
   T extends ParsedUrlQuery = Record<string, never>,
 > = GetStaticProps<BlogEntriesPageProps, T>;
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const blogEntriesGetStaticProps = async (
   pageNumber: number,
 ): Promise<ReturnType<BlogEntriesGetStaticProps>> => {

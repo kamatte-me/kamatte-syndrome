@@ -31,7 +31,11 @@ export const getStaticProps: GetStaticProps<{
           ? current.technologies.trim().split('\n')
           : [],
       };
-      (tmpAcc[key] ?? (tmpAcc[key] = [])).push(item);
+      if (tmpAcc[key]) {
+        tmpAcc[key].push(item);
+      } else {
+        tmpAcc[key] = [item];
+      }
       return tmpAcc;
     },
     {},

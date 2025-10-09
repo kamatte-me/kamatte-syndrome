@@ -23,7 +23,6 @@ const handler: NextApiHandler = (req, res) => {
       res.end('Preview mode enabled');
     })
     .catch((error: unknown) => {
-      // eslint-disable-next-line no-console -- designed
       console.error(error);
       res.status(401).json({ message: 'Invalid slug' });
     });

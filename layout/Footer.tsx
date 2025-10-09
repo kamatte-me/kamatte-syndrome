@@ -4,7 +4,6 @@ import { Box, Flex } from 'theme-ui';
 
 import { siteName } from '@/constants/site';
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 export const FooterHeight = 60;
 
 const year = new Date().getFullYear();

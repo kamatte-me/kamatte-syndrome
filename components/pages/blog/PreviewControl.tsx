@@ -96,7 +96,6 @@ const PreviewControl: React.FC = () => {
           },
         }}
         onClick={() => {
-          // eslint-disable-next-line no-alert -- 開発向け
           const ok = window.confirm('プレビューモードを解除するぅ？');
           if (ok) {
             void fetch('/api/clearPreviewData').then(() => {
