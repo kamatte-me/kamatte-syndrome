@@ -17,7 +17,7 @@ export const SkillItem: React.FC<SkillItemProps> = ({ name, level }) => {
         }}
       >
         <Text
-          // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- no XSS risk
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: name is from CMS
           dangerouslySetInnerHTML={{
             __html: name.replace('\n', '<br>'),
           }}

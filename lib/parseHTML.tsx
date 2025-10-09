@@ -13,14 +13,13 @@ import parse, {
 } from 'html-react-parser';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import type { ElementType } from 'react';
 import type React from 'react';
+import type { ElementType } from 'react';
 import { useEffect, useRef } from 'react';
 import { Embed, Flex, Heading, Link } from 'theme-ui';
 
 import { baseUrl } from '@/constants/site';
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 const MediaWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
@@ -36,7 +35,6 @@ interface SafeScriptProps {
   children?: string;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components -- sometime fix
 const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -59,10 +57,9 @@ const SafeScript: React.FC<SafeScriptProps> = ({ children, src }) => {
       if (!ref.current) {
         return;
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- need cleanup
       ref.current.removeChild(script);
     };
-  }, [children, ref, src]);
+  }, [children, src]);
 
   return <div ref={ref} />;
 };
@@ -71,7 +68,7 @@ const parseStyleString = (styleStr?: string | null): Record<string, string> => {
   if (!styleStr) {
     return {};
   }
-  return styleStr.split(';').reduce((acc, style) => {
+  return styleStr.split(';').reduce<Record<string, string>>((acc, style) => {
     const colonPosition = style.indexOf(':');
 
     if (colonPosition === -1) {
@@ -85,7 +82,10 @@ const parseStyleString = (styleStr?: string | null): Record<string, string> => {
       .replaceAll(/-./g, (c) => c.slice(1).toUpperCase());
     const value = style.slice(Math.max(0, colonPosition + 1)).trim();
 
-    return value ? { ...acc, [camelCaseProperty]: value } : acc;
+    if (value) {
+      acc[camelCaseProperty] = value;
+    }
+    return acc;
   }, {});
 };
 
@@ -109,7 +109,6 @@ const parseOption: HTMLReactParserOptions = {
       return domNode;
     }
 
-    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- default case is handled
     switch (name as ElementType) {
       case 'h1': {
         return (
@@ -217,7 +216,6 @@ const parseOption: HTMLReactParserOptions = {
       default: {
         if (name in Themed) {
           // @ts-expect-error -- ThemeUIのせい
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ThemeUIのせい
           const ThemedComponent = Themed[name];
           return (
             <ThemedComponent
@@ -257,7 +255,10 @@ const parseDOMText = (dom: ReturnType<typeof htmlToDOM>): string =>
         newText = current.data;
       }
 
-      return newText === '' ? acc : [...acc, newText];
+      if (newText !== '') {
+        acc.push(newText);
+      }
+      return acc;
     }, [])
     .join(' ');
 

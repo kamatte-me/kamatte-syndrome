@@ -4,13 +4,15 @@ import type { AppType } from 'next/dist/shared/lib/utils';
 import Head from 'next/head';
 import Script from 'next/script';
 import { DefaultSeo } from 'next-seo';
+import { useId } from 'react';
 import { ThemeUIProvider } from 'theme-ui';
-
 import { baseUrl, siteName, slogan } from '@/constants/site';
 import { Layout } from '@/layout';
 import { theme } from '@/theme';
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const googleAnalyticsScriptId = useId();
+
   return (
     <ThemeUIProvider theme={theme}>
       <Themed.root>
@@ -27,7 +29,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         />
 
         {/* Google Analytics */}
-        <Script id="google-analytics-dataLayer" strategy="afterInteractive">
+        <Script id={googleAnalyticsScriptId} strategy="afterInteractive">
           {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -39,22 +41,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_TRACKING_ID}`}
           strategy="afterInteractive"
         />
-
-        {/* Unregister ServiceWorker */}
-        <Script id="unregister-service-worker" strategy="afterInteractive">
-          {`
-          if (navigator.serviceWorker) {
-            navigator.serviceWorker
-              .getRegistrations()
-              .then(function (registrations) {
-                registrations.forEach(registration => {
-                  registration.unregister();
-                });
-              })
-              .catch(() => {});
-          }
-        `}
-        </Script>
 
         <DefaultSeo
           defaultTitle={siteName}
