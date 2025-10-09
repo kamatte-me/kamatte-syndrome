@@ -24,6 +24,10 @@
     "enabled": true,
     "rules": {
       "recommended": true
+    },
+    "domains": {
+      "next": "recommended",
+      "react": "recommended"
     }
   },
   "javascript": {
