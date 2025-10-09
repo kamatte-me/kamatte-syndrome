@@ -1,6 +1,6 @@
-// @ts-check
-/** @type {import('next').NextConfig} */
-const config = {
+import type { NextConfig } from 'next';
+
+const config: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -24,4 +24,4 @@ const config = {
   },
 };
 
-module.exports = config;
+export default config;
