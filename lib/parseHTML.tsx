@@ -152,7 +152,13 @@ const parseOption: HTMLReactParserOptions = {
           !attribs.target
         ) {
           return (
-            <NextLink href={attribs.href.replace(baseUrl, '')}>
+            <NextLink
+              href={
+                attribs.href.replace(baseUrl, '') as React.ComponentProps<
+                  typeof NextLink
+                >['href']
+              }
+            >
               {parseChildren(children)}
             </NextLink>
           );

@@ -22,6 +22,7 @@ const config: NextConfig = {
     locales: ['ja'],
     defaultLocale: 'ja',
   },
+  typedRoutes: true,
 };
 
 export default config;

@@ -8,10 +8,7 @@ export const FooterHeight = 60;
 
 const year = new Date().getFullYear();
 
-const links: {
-  title: string;
-  to: string;
-}[] = [
+const links = [
   {
     title: 'Terms',
     to: '/terms',
@@ -20,7 +17,10 @@ const links: {
     title: 'Privacy',
     to: '/privacy',
   },
-];
+] as const satisfies {
+  title: string;
+  to: string;
+}[];
 
 export const Footer: React.FC = () => {
   return (
