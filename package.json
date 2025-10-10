@@ -8,7 +8,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "biome check",
-    "lint:fix": "biome check --fix",
+    "lint:fix": "biome check --write",
     "lint:ci": "biome ci",
     "start": "next start",
     "typecheck": "tsc --noEmit",
