@@ -18,7 +18,10 @@ export const NavLink: React.FC<NavLinkProps> = ({ to, onClick, children }) => {
   }, [router.pathname, to]);
 
   return (
-    <Link href={to} onClick={onClick}>
+    <Link
+      href={to as React.ComponentProps<typeof Link>['href']}
+      onClick={onClick}
+    >
       <Box
         sx={{
           variant: 'links.nav',

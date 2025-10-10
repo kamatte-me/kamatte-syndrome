@@ -2,7 +2,6 @@ import Link from 'next/link';
 import type React from 'react';
 import { useMemo } from 'react';
 import { Flex } from 'theme-ui';
-
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/elements/Icon';
 
 export const ICON_SIZE = 32;
@@ -40,7 +39,7 @@ export const Pagination: React.FC<{
     >
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {prevPath ? (
-          <Link href={prevPath}>
+          <Link href={prevPath as React.ComponentProps<typeof Link>['href']}>
             <ArrowLeftIcon
               size={ICON_SIZE}
               sx={{
@@ -56,7 +55,7 @@ export const Pagination: React.FC<{
       </Flex>
       <Flex sx={{ variant: 'styles.a', width: ICON_SIZE, height: ICON_SIZE }}>
         {nextPath ? (
-          <Link href={nextPath}>
+          <Link href={nextPath as React.ComponentProps<typeof Link>['href']}>
             <ArrowRightIcon
               size={ICON_SIZE}
               sx={{
