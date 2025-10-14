@@ -18,10 +18,6 @@ const config: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  i18n: {
-    locales: ['ja'],
-    defaultLocale: 'ja',
-  },
   typedRoutes: true,
 };
 

@@ -48,8 +48,6 @@ plz kamatte me!!!
 1. 開発サーバー起動
    ```shell
    pnpm dev
-   # or
-   pnpm vercel:dev
    ```
 
 ## デプロイ

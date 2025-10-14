@@ -14,19 +14,20 @@ jobs:
       - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6.5.0
         with:
-          node-version-file: '.node-version'
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install
       - run: pnpm lint:ci
 
-  typecheck:
+  build-and-typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5.1.0
       - uses: pnpm/action-setup@v6.0.9
       - uses: actions/setup-node@v6.5.0
         with:
-          node-version-file: '.node-version'
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install
+      - run: pnpm build
       - run: pnpm typecheck

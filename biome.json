@@ -13,17 +13,13 @@
     "enabled": true,
     "indentStyle": "space"
   },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
-  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noUnknownAtRules": "off"
+      }
     },
     "domains": {
       "next": "recommended",
@@ -33,6 +29,13 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
     }
   }
 }
