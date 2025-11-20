@@ -45,8 +45,8 @@ importers:
         specifier: 5.5.0
         version: 5.5.0(react@19.2.0)
       sitemap:
-        specifier: 8.0.1
-        version: 8.0.1
+        specifier: 8.0.2
+        version: 8.0.2
       theme-ui:
         specifier: 0.17.2
         version: 0.17.2(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(react@19.2.0)
@@ -761,8 +761,8 @@ packages:
     resolution: {integrity: sha512-FUH39xp3SBPnxWvd5iib1X8XY7J0K0X7d93sie9CJg2PO8/7gmg89Nve6OjItK53/MlAushNNxteBYfM6DEuoA==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
 
-  sitemap@8.0.1:
-    resolution: {integrity: sha512-4Y8ynSMFAy/DadeAeio8Kx4zfC8/0VcKi7TH0I1SazvBcrU2fpJaGoeWsX1FMRaHoe3VGMA53DqVoLErZrtG9Q==}
+  sitemap@8.0.2:
+    resolution: {integrity: sha512-LwktpJcyZDoa0IL6KT++lQ53pbSrx2c9ge41/SeLTyqy2XUNA6uR4+P9u5IVo5lPeL2arAcOKn1aZAxoYbCKlQ==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     hasBin: true
 
@@ -1515,7 +1515,7 @@ snapshots:
       '@img/sharp-win32-x64': 0.34.4
     optional: true
 
-  sitemap@8.0.1:
+  sitemap@8.0.2:
     dependencies:
       '@types/node': 17.0.45
       '@types/sax': 1.2.7
