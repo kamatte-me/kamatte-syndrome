@@ -1,103 +1,126 @@
 import Image from 'next/image';
+import styles from './page.module.css';
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{' '}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="relative flex flex-col gap-[32px] row-start-2  justify-center items-center p-10">
+      <Image
+        className="scale-150"
+        src="/avatar.svg"
+        alt="Next.js logo"
+        width={180}
+        height={38}
+        priority
+      />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <h1 className="text-6xl text-center font-bold sm:text-left">
+        plz
+        <br className="sm:hidden" /> kamatte
+        <br className="sm:hidden" /> me!!!
+      </h1>
+      <div className="css-1q4aftw">
+        <p className="css-1avyp1d">
+          Martin 000-28 を買った。
+          <br />
+          中古だけど傷ひとつなくほぼ新品。お値段30ﾏｿ也。ギターヤクザの後輩を御茶ノ水で引きずり回して決めてもらいました。
+          <br />
+          「いつかはマーチン」と言われているけど、アコギ1本目で手にしてしまいました。それもちゃんとしたグレードです。これでコンプレックスを抱かずに済みます。マウントも取れるし満足です。
+        </p>
+        <p className="css-1avyp1d">
+          で、世間にはまだ公表していなかったんだけど、コロナ禍に入ってすぐぐらいに実はエレキギターを始めてました。ザ・ミーハーですね。
+          <br />
+          僕はミーハーなので、初めてのエレキギターはFenderのストラトでした。
+          <br />
+          初めてでFenderかよ生意気だな、とか言われそうですが、安心してくださいMade
+          in Japanです。
+          <br />
+          値段は10万円強。だけど当時10ﾏｿ円の給付金 +
+          会社からの給付金が降ってきて、実質タダで手に入れました。
+          <br />
+          しかしながら、当時の僕も思ったわけです。安くないお金を出してギターを手に入れても、ハマらなかったらどうしよう。
+          <br />
+          それにビビってお手頃なJapanを買っていました。
+        </p>
+        <p className="css-1avyp1d">
+          そしてちゃんとハマりました。
+          <br />
+          買ってから今までチ◯ポのごとく暇さえあれば触ってます。
+          <br />
+          完全独学。教室には通う気すら無かった。だいたい僕の性格上、そういうのに通っちゃうと義務感が出てきてつまんなくなっちゃう。
+          <br />
+          そんなこんなで一人で楽しく弾いていました。
+        </p>
+        <p className="css-1avyp1d">しかしここで2つ問題が出てきた。</p>
+        <p className="css-1avyp1d">
+          まず、そこそこ弾けるようになった途端、Japanを買ったことを後悔した。
+          <br />
+          いやJapanのも気に入ってんのよ。僕の敬愛する真部脩一と同じ見た目、黒にローズウッド指板のモデルをわざわざ選んだもん。さらにはピックガードの色が真部のそれと違ったから交換したもん。買う時も友人4人と深夜にZoomつなげて買ったんだもん。パーツ交換したり改造とかしたんだもん。
+          <br />
+          でもね、真部が急にメイプル指板のストラトを使い始めしたり、改造するときにネジの規格がUSAとJapanで違うことを知ったりして、急に心から何かがフッと抜けたんだよ。あとは雑に扱いすぎていくつか深めの傷が入ったのも一因としてある。
+          <br />
+          そして何よりも、ちゃんと趣味としてやっていくのに10万円は安すぎるということ。一応値段相応の作りなんだけど、ところどころ仕様に引っかかるものがあった。それにギターは消耗品ではない。資産になる。
+        </p>
+        <p className="css-1avyp1d">
+          そんなこんなでいろいろなコンプレックスが生まれてきた。次に買うならちゃんとしたギターを買おうと思った。
+          <br />
+          「それならさっさとUSA買えばいいじゃん」と思うが、ここで次の問題に移る。
+        </p>
+        <p className="css-1avyp1d">
+          エレキギターを一人でチャカチャカ鳴らしていても寂しいんだよね。
+          <br />
+          YouTubeでエレキギターの弾いてみた系の動画を見てほしいんだけど、一様にドラムやベースが鳴ってる。エレキギターはバンド形式になってこそ本当に楽しいものである、という証明だと思うんだよね。一人でチャカチャカ鳴らしてみ？
+          まさに「咳をしても一人」状態。
+        </p>
+        <p className="css-1avyp1d">
+          そんなときに思い出したのが、大石昌良のこの動画。
+        </p>
+        <div className="css-7m1p7i">
+          <div className="css-1rspuso">
+            <div className="css-j7kvgs">
+              <iframe
+                title="大石昌良の動画"
+                src="https://www.youtube.com/embed/zJrDayOy5yw?rel=0"
+                width="560"
+                height="315"
+                frameBorder="0"
+                allowFullScreen={true}
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
+                scrolling="no"
+                loading="lazy"
+                className="css-oapqm9"
+              />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <p className="css-1avyp1d">
+          かっこええ〜〜〜〜〜！！！！しかも
+          <strong className="css-1avyp1d">一人で完結</strong>
+          しているのである。アコギすげ〜〜〜〜
+        </p>
+        <p className="css-1avyp1d">
+          という経緯で“ちゃんとしたアコースティックギター”を買いました。
+          <br />
+          年内中にこの丸の内を弾けるようになるのが目標。だいたい弾けるようになったがムズい。難なく弾けるオーイシすげ〜〜〜〜〜〜
+        </p>
+        <div className="css-7m1p7i">
+          <div className="css-1rspuso">
+            <div className="css-j7kvgs">
+              <iframe
+                title="大石昌良のアコースティックギター演奏動画"
+                src="https://www.youtube.com/embed/ugThIeV3SEY?rel=0"
+                width="560"
+                height="315"
+                frameBorder="0"
+                allowFullScreen={true}
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"
+                scrolling="no"
+                loading="lazy"
+                className="css-oapqm9"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

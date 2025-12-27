@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import CrtEffects from '@/components/RetroEffects/RetroEffects';
 import './globals.css';
 import { siteName, slogan } from '@/constants/site';
 
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <CrtEffects />
         {children}
       </body>
     </html>
