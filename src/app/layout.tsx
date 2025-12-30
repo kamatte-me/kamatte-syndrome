@@ -30,7 +30,22 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <CrtEffects />
+        <div className="blur"></div>
+        <div className="pixelate"></div>
         {children}
+
+        <svg>
+          <defs>
+            <filter id="pixelate" x="0" y="0">
+              <feFlood x="0" y="0" height="1" width="1" />
+              <feComposite width="2" height="2" />
+              <feTile result="tileResult" />
+
+              <feComposite in="SourceGraphic" in2="tileResult" operator="in" />
+              <feMorphology operator="dilate" radius="0.7" />
+            </filter>
+          </defs>
+        </svg>
       </body>
     </html>
   );

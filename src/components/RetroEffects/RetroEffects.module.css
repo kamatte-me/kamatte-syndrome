@@ -144,10 +144,10 @@
   height: 200%;
   z-index: 1000;
   pointer-events: none;
-  opacity: 0.3;
-  mix-blend-mode: hard-light;
+  opacity: 0.2;
   animation: noise-bg-move 0.15s steps(8) infinite;
   filter: url(#noise);
+  background-color: var(--background);
 }
 
 .dot {
@@ -210,8 +210,7 @@
   height: 100%;
   z-index: 10010;
   pointer-events: none;
-  backdrop-filter: blur(0.8px) sepia(0.25) contrast(1.1);
-  mix-blend-mode: overlay;
+  backdrop-filter: blur(0.4px) sepia(0.25) contrast(1.1);
 }
 
 .chromaticAberration {
@@ -220,7 +219,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 11;
   pointer-events: none;
   backdrop-filter: url(#chromaticAberration);
 }
