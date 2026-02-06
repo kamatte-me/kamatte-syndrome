@@ -33,8 +33,8 @@ importers:
         specifier: 6.8.0
         version: 6.8.0(next@15.5.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       p-limit:
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.3.0
+        version: 7.3.0
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -726,8 +726,8 @@ packages:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
-  p-limit@7.1.1:
-    resolution: {integrity: sha512-i8PyM2JnsNChVSYWLr2BAjNoLi0BAYC+wecOnZnVV+YSNJkzP7cWmvI34dk0WArWfH9KwBHNoZI3P3MppImlIA==}
+  p-limit@7.3.0:
+    resolution: {integrity: sha512-7cIXg/Z0M5WZRblrsOla88S4wAK+zOQQWeBYfV3qJuJXMr+LnbYjaadrFaS0JILfEDPVqHyKnZ1Z/1d6J9VVUw==}
     engines: {node: '>=20'}
 
   parent-module@1.0.1:
@@ -1472,7 +1472,7 @@ snapshots:
 
   object-assign@4.1.1: {}
 
-  p-limit@7.1.1:
+  p-limit@7.3.0:
     dependencies:
       yocto-queue: 1.2.2
 
