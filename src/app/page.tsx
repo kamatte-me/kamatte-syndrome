@@ -1,9 +1,8 @@
 import Image from 'next/image';
-import styles from './page.module.css';
 
 export default function Home() {
   return (
-    <main className="relative flex flex-col gap-[32px] row-start-2  justify-center items-center p-10">
+    <main className="relative row-start-2 flex flex-col items-center justify-center gap-[32px] p-10">
       <Image
         className="scale-150"
         src="/avatar.svg"
@@ -13,7 +12,7 @@ export default function Home() {
         priority
       />
 
-      <h1 className="text-6xl text-center font-bold sm:text-left">
+      <h1 className="text-center font-bold text-6xl sm:text-left">
         plz
         <br className="sm:hidden" /> kamatte
         <br className="sm:hidden" /> me!!!
@@ -102,6 +101,7 @@ export default function Home() {
           <br />
           年内中にこの丸の内を弾けるようになるのが目標。だいたい弾けるようになったがムズい。難なく弾けるオーイシすげ〜〜〜〜〜〜
         </p>
+        <a href="/">aaaaa</a>
         <div className="css-7m1p7i">
           <div className="css-1rspuso">
             <div className="css-j7kvgs">

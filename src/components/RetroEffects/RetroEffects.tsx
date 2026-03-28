@@ -5,14 +5,16 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
       {/* Background Layers */}
-      <div className={styles.bg} />
-      <div className={styles.noise} />
-      <div className={styles.dot} />
-      <div className={styles.scanlines} />
-      <div className={styles.flicker} />
-      <div className={styles.chromaticAberration} />
-      <div className={styles.sepia} />
-      <div className={styles.vignette} />
+      {/*<div className={styles.bg}></div>*/}
+      {/*<div className={styles.fuga}>トップページ</div>*/}
+
+      <div className={styles.bokeh}>
+        <div className={styles.chromaticAberration}>{children}</div>
+      </div>
+
+      {/*<div className={styles.liftBlack} />*/}
+      {/*<div className={styles.dot} />*/}
+      {/*<div className={styles.vignette} />*/}
 
       <svg width={0} height={0}>
         <filter id="noise">
@@ -32,7 +34,7 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
             type="matrix"
             values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"
           />
-          <feOffset dx="-1" dy="0" result="red" />
+          <feOffset dx="2" dy="0" result="red" />
           <feColorMatrix
             in="SourceGraphic"
             type="matrix"
@@ -44,10 +46,19 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
             type="matrix"
             values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0"
           />
-          <feOffset dx="1" dy="0" result="blue" />
+          <feOffset dx="-2" dy="0" result="blue" />
 
           <feComposite in="red" operator="lighter" />
           <feComposite in="green" operator="lighter" />
+        </filter>
+      </svg>
+      <svg width="0" height="0">
+        <filter id="liftBlack">
+          <feComponentTransfer>
+            <feFuncR type="gamma" exponent="1" amplitude="1" offset="0.3" />
+            <feFuncG type="gamma" exponent="1" amplitude="1" offset="0.3" />
+            <feFuncB type="gamma" exponent="1" amplitude="1" offset="0.3" />
+          </feComponentTransfer>
         </filter>
       </svg>
     </>
