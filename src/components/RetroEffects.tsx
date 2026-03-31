@@ -5,28 +5,16 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
       {/* Background Layers */}
-      {/*<div className={styles.bg}></div>*/}
-      {/*<div className={styles.fuga}>トップページ</div>*/}
+      <div className={styles.bg}></div>
 
       <div className={styles.bokeh}>
         <div className={styles.chromaticAberration}>{children}</div>
       </div>
 
-      {/*<div className={styles.liftBlack} />*/}
-      {/*<div className={styles.dot} />*/}
-      {/*<div className={styles.vignette} />*/}
+      <div className={styles.liftBlack} />
+      <div className={styles.dot} />
+      <div className={styles.vignette} />
 
-      <svg width={0} height={0}>
-        <filter id="noise">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.3"
-            numOctaves="3"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix type="saturate" values="1" />
-        </filter>
-      </svg>
       <svg width={0} height={0}>
         <filter id="chromaticAberration">
           <feColorMatrix
