@@ -40,15 +40,6 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
           <feComposite in="green" operator="lighter" />
         </filter>
       </svg>
-      <svg width="0" height="0">
-        <filter id="liftBlack">
-          <feComponentTransfer>
-            <feFuncR type="gamma" exponent="1" amplitude="1" offset="0.3" />
-            <feFuncG type="gamma" exponent="1" amplitude="1" offset="0.3" />
-            <feFuncB type="gamma" exponent="1" amplitude="1" offset="0.3" />
-          </feComponentTransfer>
-        </filter>
-      </svg>
     </>
   );
 };

@@ -7,7 +7,8 @@
     "defaultBranch": "main"
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": ["**", "!**/src/routeTree.gen.ts", "!**/src/styles.css"]
   },
   "formatter": {
     "enabled": true,
@@ -28,7 +29,6 @@
       }
     },
     "domains": {
-      "next": "recommended",
       "react": "recommended"
     }
   },

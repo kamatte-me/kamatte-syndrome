@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { DotGothic16, Jersey_10 } from 'next/font/google';
 import CrtEffects from '@/components/RetroEffects';
 import './globals.css';
-import { siteName, slogan } from '@/constants/site';
 import Osd from '@/components/Osd';
+import { siteName, slogan } from '@/constants/site';
 
 const dotGothic = DotGothic16({
   variable: '--font-dot-gothic',
