@@ -1,14 +1,15 @@
+'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 
-export default function Home() {
+const Home: React.FC = () => {
   return (
     <main className="relative row-start-2 flex flex-col items-center justify-center gap-8 p-10">
       <Image
-        className="scale-150"
         src="/avatar.svg"
-        alt="Next.js logo"
+        alt="kamatte"
         width={180}
-        height={38}
+        height={180}
         priority
       />
 
@@ -22,9 +23,10 @@ export default function Home() {
         <br className="sm:hidden" /> kamatte
         <br className="sm:hidden" /> me!!!
       </h1>
-
-      <a href="/">Enter</a>
+      <Link href="/biography">Enter</Link>
       <a href="https://kids.yahoo.co.jp/">Exit</a>
     </main>
   );
-}
+};
+
+export default Home;
