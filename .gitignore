@@ -8,8 +8,8 @@
 # Build output
 /dist
 .nitro
-.tanstack
-.wrangler
+/.tanstack
+/.wrangler
 
 # env files
 .env*.local

@@ -5,18 +5,15 @@
   "description": "plz kamatte me!!!",
   "author": "kamatte",
   "type": "module",
-  "imports": {
-    "#/*": "./src/*"
-  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "vite preview",
+    "preview": "vite preview",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "lint:ci": "biome ci",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest"
   },
   "dependencies": {
     "@tailwindcss/vite": "4.2.2",
@@ -33,22 +30,27 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
+    "@cloudflare/vite-plugin": "1.33.1",
     "@content-collections/core": "0.15.0",
-    "@content-collections/mdx": "0.2.2",
     "@content-collections/vite": "0.3.0",
+    "@mdx-js/rollup": "3.1.1",
     "@tailwindcss/postcss": "4.2.2",
     "@tailwindcss/typography": "0.5.19",
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "10.4.1",
     "@testing-library/react": "16.3.2",
+    "@types/mdx": "2.0.13",
     "@types/node": "24.12.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.1",
-    "jsdom": "29.0.2",
+    "@vitejs/plugin-rsc": "0.5.24",
+    "remark-frontmatter": "5.0.0",
+    "remark-mdx-frontmatter": "5.2.0",
     "typescript": "6.0.3",
     "vite": "8.0.8",
     "vitest": "4.1.4",
+    "wrangler": "4.84.1",
     "zod": "4.3.6"
   },
   "engines": {

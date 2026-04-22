@@ -4,9 +4,9 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "paths": {
-      "#/*": ["./src/*"],
+      "content-collections": ["./.content-collections/generated"],
       "@/*": ["./src/*"],
-      "content-collections": ["./.content-collections/generated"]
+      "@@/*": ["./*"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],

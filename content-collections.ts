@@ -1,13 +1,19 @@
-import { defineCollection, defineConfig } from '@content-collections/core';
-import { compileMDX } from '@content-collections/mdx';
+import {
+  createDefaultImport,
+  defineCollection,
+  defineConfig,
+} from '@content-collections/core';
+import type { MDXContent } from 'mdx/types';
 import { z } from 'zod';
+
+import { createPostExcerpt, toPostSlug } from './src/utils/posts';
 
 const contentDirectory = 'kamatte-syndrome-content/content';
 
 const posts = defineCollection({
   name: 'posts',
   directory: `${contentDirectory}/posts`,
-  include: '**/*.md',
+  include: ['**/*.md', '**/*.mdx'],
   schema: z.object({
     title: z.string(),
     publishedAt: z
@@ -21,10 +27,14 @@ const posts = defineCollection({
     featuredImage: z.string().optional(),
     content: z.string(),
   }),
-  transform: async (document, context) => {
-    const mdx = await compileMDX(context, document);
+  transform: async ({ _meta, ...post }) => {
+    const mdx = createDefaultImport<MDXContent>(
+      `@@/kamatte-syndrome-content/content/posts/${_meta.filePath}`,
+    );
     return {
-      ...document,
+      ...post,
+      slug: toPostSlug(_meta.path),
+      excerpt: createPostExcerpt(post.content),
       mdx,
     };
   },

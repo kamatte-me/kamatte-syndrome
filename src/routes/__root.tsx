@@ -1,8 +1,8 @@
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import Osd from '#/components/Osd';
-import RetroEffects from '#/components/RetroEffects';
+import Osd from '@/components/Osd';
+import RetroEffects from '@/components/RetroEffects';
 import appCss from '../styles.css?url';
 
 export const Route = createRootRoute({
@@ -37,7 +37,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <Osd />
-        <div className="max-w-5xl mx-auto">
+        <div className="mx-auto max-w-5xl">
           <RetroEffects>{children}</RetroEffects>
         </div>
         <TanStackDevtools
