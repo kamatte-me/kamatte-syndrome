@@ -1,5 +1,6 @@
+saveExact: true
+minimumReleaseAge: 1440
+
 onlyBuiltDependencies:
   - esbuild
   - lightningcss
-
-minimumReleaseAge: 1440

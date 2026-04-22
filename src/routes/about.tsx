@@ -1,3 +1,4 @@
+import { MDXContent } from '@content-collections/mdx/react';
 import { createFileRoute } from '@tanstack/react-router';
 import { allPosts } from 'content-collections';
 
@@ -6,6 +7,12 @@ export const Route = createFileRoute('/about')({
 });
 
 function About() {
+  const postsByPublishedAtDesc = [...allPosts].sort((a, b) => {
+    const aTime = a.publishedAt?.getTime() ?? Number.POSITIVE_INFINITY;
+    const bTime = b.publishedAt?.getTime() ?? Number.POSITIVE_INFINITY;
+    return bTime - aTime;
+  });
+
   return (
     <main className="page-wrap px-4 py-12">
       <section className="island-shell rounded-2xl p-6 sm:p-8">
@@ -21,11 +28,12 @@ function About() {
       </section>
 
       <ul>
-        {allPosts.map((post) => (
+        {postsByPublishedAtDesc.map((post) => (
           <li key={post._meta.path} className="mb-6">
             <a href={`/posts/${post._meta.path}`}>
               <h3>{post.title}</h3>
-              <p>{post.summary}</p>
+              <MDXContent code={post.mdx} />
+              <p>{post.publishedAt?.toDateString()}</p>
             </a>
           </li>
         ))}
