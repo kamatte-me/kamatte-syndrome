@@ -70,3 +70,14 @@
 - 既存の未コミット変更がある場合は、ユーザーの作業として扱い、勝手に戻さないでください。
 - 外部サービスや現在の仕様に依存する変更では、必要に応じて公式ドキュメントを確認してください。
 - 最終報告では、変更したファイル、実行した検証、未実行の検証があればその理由を簡潔に伝えてください。
+
+<!-- intent-skills:start -->
+# Skill mappings - load `use` with `npx @tanstack/intent@latest load <use>`.
+skills:
+  - when: "TanStack Start / React 19 / Vite の設定、React Start API、useServerFn、StartClient、StartServer を変更する"
+    use: "@tanstack/react-start#react-start"
+  - when: "TanStack Start の React Server Components、@tanstack/react-start/rsc、Composite Components、React Flight stream を実装・修正する"
+    use: "@tanstack/react-start#react-start/server-components"
+  - when: "Next.js App Router から TanStack Start へ移行する、または移行差分をレビューする"
+    use: "@tanstack/react-start#lifecycle/migrate-from-nextjs"
+<!-- intent-skills:end -->
