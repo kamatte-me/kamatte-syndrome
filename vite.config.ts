@@ -9,18 +9,24 @@ import rsc from '@vitejs/plugin-rsc';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { defineConfig } from 'vite';
+import { remarkStandaloneLinkCards } from './src/utils/remarkLinkCards';
 
 export default defineConfig(() => ({
   plugins: [
     {
       enforce: 'pre',
       ...mdx({
-        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+        remarkPlugins: [
+          remarkFrontmatter,
+          remarkMdxFrontmatter,
+          remarkStandaloneLinkCards,
+        ],
       }),
     },
-    contentCollections({
-      environment: 'ssr',
-    }),
+    process.env.VITEST !== 'true' &&
+      contentCollections({
+        environment: 'ssr',
+      }),
     devtools(),
     tailwindcss(),
     tanstackStart({

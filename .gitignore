@@ -10,6 +10,7 @@
 .nitro
 /.tanstack
 /.wrangler
+/worker-configuration.d.ts
 
 # env files
 .env*.local

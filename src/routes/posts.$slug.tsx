@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
+import { LinkCard } from '@/components/LinkCard';
 import { formatPostDate } from '@/utils/posts';
 
 const getPostBySlugServerFn = createServerFn({ method: 'GET' })
@@ -16,7 +17,9 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
 
     return {
       ...post,
-      mdx: await renderServerComponent(<MDXContent />),
+      mdx: await renderServerComponent(
+        <MDXContent components={{ LinkCard }} />,
+      ),
     };
   });
 
