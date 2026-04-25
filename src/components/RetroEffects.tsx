@@ -7,39 +7,11 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
       {/* Background Layers */}
       <div className={styles.bg}></div>
 
-      <div className={styles.bokeh}>
-        <div className={styles.chromaticAberration}>{children}</div>
-      </div>
+      {children}
 
       <div className={styles.liftBlack} />
       <div className={styles.dot} />
       <div className={styles.vignette} />
-
-      <svg width={0} height={0}>
-        <filter id="chromaticAberration">
-          <feColorMatrix
-            in="SourceGraphic"
-            type="matrix"
-            values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"
-          />
-          <feOffset dx="2" dy="0" result="red" />
-          <feColorMatrix
-            in="SourceGraphic"
-            type="matrix"
-            values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0"
-          />
-          <feOffset dx="0" dy="0" result="green" />
-          <feColorMatrix
-            in="SourceGraphic"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0"
-          />
-          <feOffset dx="-2" dy="0" result="blue" />
-
-          <feComposite in="red" operator="lighter" />
-          <feComposite in="green" operator="lighter" />
-        </filter>
-      </svg>
     </>
   );
 };

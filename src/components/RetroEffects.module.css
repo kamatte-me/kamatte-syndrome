@@ -1,84 +1,8 @@
 /* Animations */
-@keyframes flicker {
-  0% {
-    opacity: 0.25684;
-  }
-  5% {
-    opacity: 0.74134;
-  }
-  10% {
-    opacity: 0.10948;
-  }
-  15% {
-    opacity: 0.82644;
-  }
-  20% {
-    opacity: 0.82188;
-  }
-  25% {
-    opacity: 0.47724;
-  }
-  30% {
-    opacity: 0.07115;
-  }
-  35% {
-    opacity: 0.05843;
-  }
-  40% {
-    opacity: 0.88681;
-  }
-  45% {
-    opacity: 0.15473;
-  }
-  50% {
-    opacity: 0.3313;
-  }
-  55% {
-    opacity: 0.08976;
-  }
-  60% {
-    opacity: 0.78429;
-  }
-  65% {
-    opacity: 0.76016;
-  }
-  70% {
-    opacity: 0.77571;
-  }
-  75% {
-    opacity: 0.62315;
-  }
-  80% {
-    opacity: 0.59129;
-  }
-  85% {
-    opacity: 0.46409;
-  }
-  90% {
-    opacity: 0.73056;
-  }
-  95% {
-    opacity: 0.0925;
-  }
-  100% {
-    opacity: 0.20693;
-  }
-}
-
 @keyframes scanlines {
   0% {
-    background-position: 0 -50%;
+    background-position: 0 50%;
   }
-}
-
-/* Layer Classes */
-.bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--background);
 }
 
 .vignette {
@@ -139,7 +63,6 @@
     height: 100%;
     pointer-events: none;
     background: rgba(100, 100, 100, 0.02);
-    /* animation: flicker 0.15s infinite; */
     will-change: opacity;
   }
 
@@ -154,31 +77,11 @@
     background: linear-gradient(
       to bottom,
       transparent 50%,
-      rgba(0, 0, 0, 0.08) 51%
+      rgba(0, 0, 0, 0.1) 51%
     );
     background-size: 100% 6px;
-    animation: scanlines 1s steps(30) infinite;
+    animation: scanlines 4s steps(60) infinite;
     will-change: background-position;
-  }
-}
-
-.bokeh {
-  filter: blur(0.8px);
-  will-change: filter;
-
-  .chromaticAberration {
-    max-width: 1024px;
-    margin: 0 auto;
-    background-color: var(--background);
-    filter: url(#chromaticAberration);
-    will-change: filter;
-    padding: 2px;
-    clip-path: content-box;
-
-    /* for Safari */
-    iframe {
-      filter: grayscale(0.0001);
-    }
   }
 }
 
