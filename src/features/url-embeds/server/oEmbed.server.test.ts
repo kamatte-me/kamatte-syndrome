@@ -56,6 +56,17 @@ describe('fetchOEmbedMetadata', () => {
     ).resolves.toBeUndefined();
   });
 
+  it('returns undefined for unsafe source URLs before provider requests', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      fetchOEmbedMetadata('https://user@www.youtube.com/watch?v=example'),
+    ).resolves.toBeUndefined();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it('uses Googlebot user agent for provider requests', async () => {
     const fetchMock = vi.fn(async () =>
       Response.json({

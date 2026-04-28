@@ -2,15 +2,12 @@ import {
   buildOpenGraphMetadata,
   collectLinkAttributes,
   collectMetaAttributes,
+  type OpenGraphFields,
   type OpenGraphMetadata,
   parseOpenGraphHtml,
-} from './openGraph';
-import { normalizePublicHttpUrl } from './publicUrl';
-import {
-  createHashCacheRequest,
-  createJsonCacheResponse,
-  getWorkersCache,
-} from './serverCache';
+} from '../utils/openGraph';
+import { normalizePublicHttpUrl } from '../utils/publicUrl';
+import { matchJsonCache, putJsonCache } from './serverCache';
 import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
 const cacheTtlSeconds = 60 * 60 * 24 * 7;
@@ -23,24 +20,16 @@ const openGraphFetchHeaders = {
 };
 
 export async function fetchOpenGraphMetadata(url: string) {
-  const cache = getWorkersCache();
-  const cacheRequest = cache
-    ? await createHashCacheRequest(cacheKeyPrefix, url)
-    : undefined;
-  const cached =
-    cache && cacheRequest ? await cache.match(cacheRequest) : undefined;
+  const cached = await matchJsonCache<OpenGraphMetadata>(cacheKeyPrefix, url);
 
-  if (cached) {
-    return cached.json() as Promise<OpenGraphMetadata>;
+  if (cached.value) {
+    return cached.value;
   }
 
   const metadata = await fetchAndParseOpenGraphMetadata(url);
 
-  if (cache && cacheRequest && isCacheableMetadata(metadata)) {
-    await cache.put(
-      cacheRequest,
-      createJsonCacheResponse(metadata, cacheTtlSeconds),
-    );
+  if (isCacheableMetadata(metadata)) {
+    await putJsonCache(cached, metadata, cacheTtlSeconds);
   }
 
   return metadata;
@@ -50,14 +39,14 @@ async function fetchAndParseOpenGraphMetadata(url: string) {
   const fetchedAt = new Date().toISOString();
 
   try {
-    const response = await fetchWithValidatedRedirects(url);
+    const { response, finalUrl } = await fetchWithValidatedRedirects(url);
 
     const contentType = response.headers.get('content-type') ?? '';
     if (!response.ok || !isHtmlContentType(contentType)) {
       return buildOpenGraphMetadata({}, url, fetchedAt);
     }
 
-    return parseOpenGraphResponse(response, url, fetchedAt);
+    return parseOpenGraphResponse(response, url, fetchedAt, finalUrl);
   } catch {
     return buildOpenGraphMetadata({}, url, fetchedAt);
   }
@@ -74,12 +63,12 @@ async function fetchWithValidatedRedirects(url: string) {
     });
 
     if (!isRedirectResponse(response)) {
-      return response;
+      return { response, finalUrl: currentUrl };
     }
 
     const location = response.headers.get('location');
     if (!location) {
-      return response;
+      return { response, finalUrl: currentUrl };
     }
 
     currentUrl = normalizePublicHttpUrl(new URL(location, currentUrl).href);
@@ -92,13 +81,19 @@ async function parseOpenGraphResponse(
   response: Response,
   url: string,
   fetchedAt: string,
+  metadataBaseUrl: string,
 ) {
   const HtmlRewriter = getHtmlRewriter();
   if (!HtmlRewriter) {
-    return parseOpenGraphHtml(await response.text(), url, fetchedAt);
+    return parseOpenGraphHtml(
+      await response.text(),
+      url,
+      fetchedAt,
+      metadataBaseUrl,
+    );
   }
 
-  const fields: Parameters<typeof buildOpenGraphMetadata>[0] = {};
+  const fields: OpenGraphFields = {};
   let title = '';
 
   await new HtmlRewriter()
@@ -127,7 +122,7 @@ async function parseOpenGraphResponse(
     .transform(response)
     .text();
 
-  return buildOpenGraphMetadata(fields, url, fetchedAt, title);
+  return buildOpenGraphMetadata(fields, url, fetchedAt, title, metadataBaseUrl);
 }
 
 function getHtmlRewriter() {

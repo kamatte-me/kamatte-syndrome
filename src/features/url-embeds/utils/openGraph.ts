@@ -14,7 +14,7 @@ export type OpenGraphMetadata = {
   fetchedAt: string;
 };
 
-type OpenGraphFields = {
+export type OpenGraphFields = {
   title?: string;
   description?: string;
   image?: string;
@@ -47,6 +47,7 @@ export function parseOpenGraphHtml(
   html: string,
   url: string,
   fetchedAt = new Date().toISOString(),
+  metadataBaseUrl = url,
 ): OpenGraphMetadata {
   const fields: OpenGraphFields = {};
   const fallbackTitle = extractTitle(html);
@@ -59,7 +60,13 @@ export function parseOpenGraphHtml(
     collectLinkAttributes(fields, attributes);
   }
 
-  return buildOpenGraphMetadata(fields, url, fetchedAt, fallbackTitle);
+  return buildOpenGraphMetadata(
+    fields,
+    url,
+    fetchedAt,
+    fallbackTitle,
+    metadataBaseUrl,
+  );
 }
 
 export function buildOpenGraphMetadata(
@@ -67,14 +74,15 @@ export function buildOpenGraphMetadata(
   url: string,
   fetchedAt = new Date().toISOString(),
   fallbackTitle?: string,
+  metadataBaseUrl = url,
 ): OpenGraphMetadata {
   return {
     url,
     title: cleanText(fields.title) ?? cleanText(fallbackTitle),
     description: cleanText(fields.description),
-    image: resolveMetadataUrl(fields.image, url),
+    image: resolveMetadataUrl(fields.image, metadataBaseUrl),
     siteName: cleanText(fields.siteName),
-    favicon: resolveMetadataUrl(fields.favicon, url),
+    favicon: resolveMetadataUrl(fields.favicon, metadataBaseUrl),
     fetchedAt,
   };
 }

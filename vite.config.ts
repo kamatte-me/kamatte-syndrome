@@ -11,7 +11,7 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
-import { remarkStandaloneLinkCards } from './src/utils/remarkLinkCards';
+import { remarkStandaloneUrlEmbed } from './src/features/url-embeds/remark/remarkStandaloneUrlEmbed';
 
 export default defineConfig(() => ({
   plugins: [
@@ -21,7 +21,7 @@ export default defineConfig(() => ({
         remarkPlugins: [
           remarkFrontmatter,
           remarkMdxFrontmatter,
-          remarkStandaloneLinkCards,
+          remarkStandaloneUrlEmbed,
         ],
       }),
     },

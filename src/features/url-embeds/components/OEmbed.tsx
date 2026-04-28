@@ -1,4 +1,4 @@
-import { fetchOEmbedMetadata } from '@/utils/oEmbed.server';
+import { fetchOEmbedMetadata } from '../server/oEmbed.server';
 import { LinkCard } from './LinkCard';
 import { OEmbedView } from './OEmbedView';
 

@@ -141,7 +141,7 @@ function getProviderRuntime(src: string) {
 }
 
 function normalizeScriptSrc(src: string) {
-  return src.replace('&amp;', '&');
+  return src.replaceAll('&amp;', '&');
 }
 
 function loadScript(src: string) {

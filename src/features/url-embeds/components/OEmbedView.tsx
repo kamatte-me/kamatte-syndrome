@@ -1,4 +1,4 @@
-import type { OEmbedMetadata } from '@/utils/oEmbed';
+import type { OEmbedMetadata } from '../utils/oEmbed';
 import { OEmbedHtml } from './OEmbedHtml';
 
 type OEmbedViewProps = {
@@ -29,7 +29,7 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
     (metadata.type === 'video' || metadata.type === 'rich') &&
     metadata.html
   ) {
-    const fixedAspect = hasInitialIframe(metadata.html);
+    const fixedAspect = hasIframe(metadata.html);
 
     return (
       <div
@@ -66,6 +66,6 @@ function getEmbedAspectRatio(metadata: OEmbedMetadata) {
   return '16 / 9';
 }
 
-function hasInitialIframe(html: string) {
+function hasIframe(html: string) {
   return /<iframe\b/i.test(html);
 }

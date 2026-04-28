@@ -1,15 +1,12 @@
-import type { OEmbedMetadata } from './oEmbed';
 import {
   createOEmbedRequestUrl,
   getOEmbedCacheTtlSeconds,
   normalizeOEmbedResponse,
-} from './oEmbed';
-import { resolveOEmbedEndpoint } from './oEmbedProviders';
-import {
-  createHashCacheRequest,
-  createJsonCacheResponse,
-  getWorkersCache,
-} from './serverCache';
+  type OEmbedMetadata,
+} from '../utils/oEmbed';
+import { resolveOEmbedEndpoint } from '../utils/oEmbedProviders';
+import { normalizePublicHttpUrl } from '../utils/publicUrl';
+import { matchJsonCache, putJsonCache } from './serverCache';
 import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
 const cacheKeyPrefix = 'https://kamatte.me/__cache/oembed/';
@@ -19,27 +16,35 @@ const oEmbedFetchHeaders = {
 };
 
 export async function fetchOEmbedMetadata(url: string) {
-  const cache = getWorkersCache();
-  const cacheRequest = cache
-    ? await createHashCacheRequest(cacheKeyPrefix, url)
-    : undefined;
-  const cached =
-    cache && cacheRequest ? await cache.match(cacheRequest) : undefined;
-
-  if (cached) {
-    return cached.json() as Promise<OEmbedMetadata>;
+  const normalizedUrl = getSafeOEmbedUrl(url);
+  if (!normalizedUrl) {
+    return undefined;
   }
 
-  const metadata = await fetchAndParseOEmbedMetadata(url);
+  const cached = await matchJsonCache<OEmbedMetadata>(
+    cacheKeyPrefix,
+    normalizedUrl,
+  );
 
-  if (cache && cacheRequest && metadata) {
-    await cache.put(
-      cacheRequest,
-      createJsonCacheResponse(metadata, getOEmbedCacheTtlSeconds(metadata)),
-    );
+  if (cached.value) {
+    return cached.value;
+  }
+
+  const metadata = await fetchAndParseOEmbedMetadata(normalizedUrl);
+
+  if (metadata) {
+    await putJsonCache(cached, metadata, getOEmbedCacheTtlSeconds(metadata));
   }
 
   return metadata;
+}
+
+function getSafeOEmbedUrl(url: string) {
+  try {
+    return normalizePublicHttpUrl(url);
+  } catch {
+    return undefined;
+  }
 }
 
 async function fetchAndParseOEmbedMetadata(url: string) {

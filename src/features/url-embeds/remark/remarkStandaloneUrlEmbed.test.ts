@@ -1,14 +1,14 @@
 import type { Root } from 'mdast';
 import { describe, expect, it } from 'vitest';
-import { remarkStandaloneLinkCards } from './remarkLinkCards';
+import { remarkStandaloneUrlEmbed } from './remarkStandaloneUrlEmbed';
 
 function transform(tree: Root) {
-  const transformer = remarkStandaloneLinkCards();
+  const transformer = remarkStandaloneUrlEmbed();
   transformer(tree);
   return tree;
 }
 
-describe('remarkStandaloneLinkCards', () => {
+describe('remarkStandaloneUrlEmbed', () => {
   it('converts an oEmbed URL paragraph into an OEmbed MDX element', () => {
     const tree = transform({
       type: 'root',

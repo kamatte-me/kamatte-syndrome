@@ -2,8 +2,8 @@ import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
-import { LinkCard } from '@/components/LinkCard';
-import { OEmbed } from '@/components/OEmbed';
+import { LinkCard } from '@/features/url-embeds/components/LinkCard';
+import { OEmbed } from '@/features/url-embeds/components/OEmbed';
 import { formatPostDate } from '@/utils/posts';
 
 const getPostBySlugServerFn = createServerFn({ method: 'GET' })

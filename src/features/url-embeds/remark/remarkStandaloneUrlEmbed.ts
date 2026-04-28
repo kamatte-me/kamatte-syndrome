@@ -1,10 +1,10 @@
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
-import { isOEmbedUrl } from './oEmbedProviders';
+import { isOEmbedUrl } from '../utils/oEmbedProviders';
 
 const standaloneUrlPattern = /^https?:\/\/[^\s<>"']+$/i;
 
-export function remarkStandaloneLinkCards() {
+export function remarkStandaloneUrlEmbed() {
   return (tree: Root) => {
     tree.children = tree.children.map((child): RootContent => {
       const url = getStandaloneParagraphUrl(child);

@@ -1,4 +1,4 @@
-import type { OpenGraphMetadata } from '@/utils/openGraph';
+import type { OpenGraphMetadata } from '../utils/openGraph';
 
 export type LinkCardState =
   | { status: 'loading' }

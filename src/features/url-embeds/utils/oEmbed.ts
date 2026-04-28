@@ -1,5 +1,4 @@
 import type { OEmbedEndpointMatch } from './oEmbedProviders';
-import { normalizePublicHttpUrl } from './publicUrl';
 
 export type OEmbedType = 'photo' | 'video' | 'link' | 'rich';
 
@@ -22,16 +21,6 @@ export type OEmbedMetadata = {
   photoUrl?: string;
   fetchedAt: string;
 };
-
-export function validateOEmbedRequest(input: unknown) {
-  if (!isRecord(input) || typeof input.url !== 'string') {
-    throw new Error('A URL is required.');
-  }
-
-  return {
-    url: normalizePublicHttpUrl(input.url),
-  };
-}
 
 export function normalizeOEmbedResponse(
   input: unknown,

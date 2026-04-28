@@ -2,7 +2,7 @@
 
 import { useServerFn } from '@tanstack/react-start';
 import { useEffect, useState } from 'react';
-import { getOpenGraph } from '@/utils/openGraph.functions';
+import { getOpenGraph } from '../api/openGraph.functions';
 import { type LinkCardState, LinkCardView } from './LinkCardView';
 
 type LinkCardProps = {
