@@ -2,6 +2,7 @@ import {
   buildOpenGraphMetadata,
   collectLinkAttributes,
   collectMetaAttributes,
+  normalizeOpenGraphUrl,
   type OpenGraphMetadata,
   parseOpenGraphHtml,
 } from './openGraph';
@@ -13,6 +14,13 @@ type WorkersCacheStorage = CacheStorage & {
 const cacheTtlSeconds = 60 * 60 * 24 * 7;
 const cacheNamespace = 'https://kamatte-syndrome.local/open-graph/';
 const fetchTimeoutMs = 8000;
+const maxRedirects = 5;
+const openGraphFetchHeaders = {
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+  'User-Agent':
+    'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+};
 
 export async function fetchOpenGraphMetadata(url: string) {
   const cache = getWorkersCache();
@@ -45,14 +53,7 @@ async function fetchAndParseOpenGraphMetadata(url: string) {
   const fetchedAt = new Date().toISOString();
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        Accept: 'text/html,application/xhtml+xml',
-        'User-Agent': 'kamatte-syndrome-ogp-bot/1.0',
-      },
-      redirect: 'follow',
-      signal: AbortSignal.timeout(fetchTimeoutMs),
-    });
+    const response = await fetchWithValidatedRedirects(url);
 
     const contentType = response.headers.get('content-type') ?? '';
     if (!response.ok || !isHtmlContentType(contentType)) {
@@ -63,6 +64,31 @@ async function fetchAndParseOpenGraphMetadata(url: string) {
   } catch {
     return buildOpenGraphMetadata({}, url, fetchedAt);
   }
+}
+
+async function fetchWithValidatedRedirects(url: string) {
+  let currentUrl = normalizeOpenGraphUrl(url);
+
+  for (let redirectCount = 0; redirectCount <= maxRedirects; redirectCount++) {
+    const response = await fetch(currentUrl, {
+      headers: openGraphFetchHeaders,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(fetchTimeoutMs),
+    });
+
+    if (!isRedirectResponse(response)) {
+      return response;
+    }
+
+    const location = response.headers.get('location');
+    if (!location) {
+      return response;
+    }
+
+    currentUrl = normalizeOpenGraphUrl(new URL(location, currentUrl).href);
+  }
+
+  throw new Error('Too many redirects.');
 }
 
 async function parseOpenGraphResponse(
@@ -144,4 +170,8 @@ function isHtmlContentType(contentType: string) {
     contentType.includes('text/html') ||
     contentType.includes('application/xhtml+xml')
   );
+}
+
+function isRedirectResponse(response: Response) {
+  return response.status >= 300 && response.status < 400;
 }
