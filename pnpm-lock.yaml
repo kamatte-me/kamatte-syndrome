@@ -35,6 +35,9 @@ importers:
       lucide-react:
         specifier: 1.8.0
         version: 1.8.0(react@19.2.5)
+      oembed-providers:
+        specifier: 1.0.20260421
+        version: 1.0.20260421
       react:
         specifier: 19.2.5
         version: 19.2.5
@@ -2565,6 +2568,9 @@ packages:
 
   obug@2.1.1:
     resolution: {integrity: sha512-uTqF9MuPraAQ+IsnPf366RG4cP9RtUi7MLO1N3KEc+wb0a6yKpeL0lmk2IB1jY5KHPAlTc6T/JRdC/YqxHNwkQ==}
+
+  oembed-providers@1.0.20260421:
+    resolution: {integrity: sha512-RCm1lal2knoGQ4hI35edjE9v+HJWRc9q856ijcoRKIBAK9bgvfeb4dTafo6gncmF8bNpSGi1eGIcN3g2EaGYiA==}
 
   p-limit@6.2.0:
     resolution: {integrity: sha512-kuUqqHNUqoIWp/c467RI4X6mmyuojY5jGutNU0wVTmEOOfcuwLqyMVoAi9MKi2Ak+5i9+nhmrK4ufZE8069kHA==}
@@ -5579,6 +5585,8 @@ snapshots:
       boolbase: 1.0.0
 
   obug@2.1.1: {}
+
+  oembed-providers@1.0.20260421: {}
 
   p-limit@6.2.0:
     dependencies:

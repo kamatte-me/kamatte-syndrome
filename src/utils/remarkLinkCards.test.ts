@@ -9,7 +9,36 @@ function transform(tree: Root) {
 }
 
 describe('remarkStandaloneLinkCards', () => {
-  it('converts a standalone URL paragraph into a LinkCard MDX element', () => {
+  it('converts an oEmbed URL paragraph into an OEmbed MDX element', () => {
+    const tree = transform({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'https://www.youtube.com/watch?v=GTjO6EuUcbY',
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(tree.children?.[0]).toMatchObject({
+      type: 'mdxJsxFlowElement',
+      name: 'OEmbed',
+      attributes: [
+        {
+          type: 'mdxJsxAttribute',
+          name: 'url',
+          value: 'https://www.youtube.com/watch?v=GTjO6EuUcbY',
+        },
+      ],
+    });
+  });
+
+  it('converts a non-oEmbed standalone URL paragraph into a LinkCard MDX element', () => {
     const tree = transform({
       type: 'root',
       children: [

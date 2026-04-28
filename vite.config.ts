@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { cloudflare } from '@cloudflare/vite-plugin';
 import contentCollections from '@content-collections/vite';
 import mdx from '@mdx-js/rollup';
@@ -9,6 +10,7 @@ import rsc from '@vitejs/plugin-rsc';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { defineConfig } from 'vite';
+import { configDefaults } from 'vitest/config';
 import { remarkStandaloneLinkCards } from './src/utils/remarkLinkCards';
 
 export default defineConfig(() => ({
@@ -46,5 +48,8 @@ export default defineConfig(() => ({
   ],
   resolve: {
     tsconfigPaths: true,
+  },
+  test: {
+    exclude: [...configDefaults.exclude, 'kamatte-syndrome-content/**'],
   },
 }));

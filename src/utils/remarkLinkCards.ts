@@ -1,5 +1,6 @@
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
+import { isOEmbedUrl } from './oEmbed';
 
 const standaloneUrlPattern = /^https?:\/\/[^\s<>"']+$/i;
 
@@ -7,7 +8,7 @@ export function remarkStandaloneLinkCards() {
   return (tree: Root) => {
     tree.children = tree.children.map((child): RootContent => {
       const url = getStandaloneParagraphUrl(child);
-      return url ? createLinkCardElement(url) : child;
+      return url ? createStandaloneUrlElement(url) : child;
     });
   };
 }
@@ -26,7 +27,14 @@ function getStandaloneParagraphUrl(node: RootContent) {
   return standaloneUrlPattern.test(value) ? value : undefined;
 }
 
-function createLinkCardElement(url: string): MdxJsxFlowElement {
+function createStandaloneUrlElement(url: string): MdxJsxFlowElement {
+  return createUrlElement(isOEmbedUrl(url) ? 'OEmbed' : 'LinkCard', url);
+}
+
+function createUrlElement(
+  name: 'LinkCard' | 'OEmbed',
+  url: string,
+): MdxJsxFlowElement {
   const urlAttribute: MdxJsxAttribute = {
     type: 'mdxJsxAttribute',
     name: 'url',
@@ -35,7 +43,7 @@ function createLinkCardElement(url: string): MdxJsxFlowElement {
 
   return {
     type: 'mdxJsxFlowElement',
-    name: 'LinkCard',
+    name,
     attributes: [urlAttribute],
     children: [],
   };
