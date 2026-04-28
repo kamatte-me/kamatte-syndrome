@@ -24,9 +24,9 @@ export const OEmbedHtml = memo(
         return;
       }
 
-      renderEmbeds(html, container);
+      hydrateProviderEmbeds(html, container);
 
-      const handlePageShow = () => renderEmbeds(html, container);
+      const handlePageShow = () => hydrateProviderEmbeds(html, container);
       window.addEventListener('pageshow', handlePageShow);
 
       return () => {
@@ -53,12 +53,12 @@ const fittedHtmlClassName =
 const flowHtmlClassName =
   'my-3 w-full [&_iframe]:max-w-full [&_iframe]:border-0 [&_img]:max-w-full';
 
-type EmbedProfile = {
+type ProviderRuntime = {
   isLoaded: () => boolean;
   reload: (container: HTMLElement) => void;
 };
 
-const embedProfiles: Record<string, EmbedProfile> = {
+const providerRuntimes: Record<string, ProviderRuntime> = {
   'connect.facebook.net': {
     isLoaded: () => {
       ensureFacebookRoot();
@@ -87,23 +87,23 @@ const embedProfiles: Record<string, EmbedProfile> = {
   },
 };
 
-function renderEmbeds(html: string, container: HTMLElement) {
-  for (const src of getScriptUrls(html)) {
-    const profile = getEmbedProfile(src);
+function hydrateProviderEmbeds(html: string, container: HTMLElement) {
+  for (const src of getProviderScriptUrls(html)) {
+    const runtime = getProviderRuntime(src);
 
-    if (profile?.isLoaded()) {
-      profile.reload(container);
+    if (runtime?.isLoaded()) {
+      runtime.reload(container);
       continue;
     }
 
     const load = loadScript(src);
-    if (profile) {
-      void load.then(() => profile.reload(container));
+    if (runtime) {
+      void load.then(() => runtime.reload(container));
     }
   }
 }
 
-function getScriptUrls(html: string) {
+function getProviderScriptUrls(html: string) {
   const scripts = html.match(anyScriptPattern);
   if (!scripts) {
     return [];
@@ -134,8 +134,10 @@ function isString(value: string | null): value is string {
   return typeof value === 'string';
 }
 
-function getEmbedProfile(src: string) {
-  return Object.entries(embedProfiles).find(([key]) => src.includes(key))?.[1];
+function getProviderRuntime(src: string) {
+  return Object.entries(providerRuntimes).find(([key]) =>
+    src.includes(key),
+  )?.[1];
 }
 
 function normalizeScriptSrc(src: string) {

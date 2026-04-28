@@ -1,6 +1,6 @@
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
-import { isOEmbedUrl } from './oEmbed';
+import { isOEmbedUrl } from './oEmbedProviders';
 
 const standaloneUrlPattern = /^https?:\/\/[^\s<>"']+$/i;
 

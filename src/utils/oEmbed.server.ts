@@ -3,19 +3,26 @@ import {
   createOEmbedRequestUrl,
   getOEmbedCacheTtlSeconds,
   normalizeOEmbedResponse,
-  resolveOEmbedEndpoint,
 } from './oEmbed';
+import { resolveOEmbedEndpoint } from './oEmbedProviders';
+import {
+  createHashCacheRequest,
+  createJsonCacheResponse,
+  getWorkersCache,
+} from './serverCache';
+import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
-type WorkersCacheStorage = CacheStorage & {
-  readonly default: Cache;
+const cacheKeyPrefix = 'https://kamatte.me/__cache/oembed/';
+const oEmbedFetchHeaders = {
+  Accept: 'application/json',
+  'User-Agent': googlebotUserAgent,
 };
-
-const cacheNamespace = 'https://kamatte-syndrome.local/oembed/';
-const fetchTimeoutMs = 8000;
 
 export async function fetchOEmbedMetadata(url: string) {
   const cache = getWorkersCache();
-  const cacheRequest = cache ? await createCacheRequest(url) : undefined;
+  const cacheRequest = cache
+    ? await createHashCacheRequest(cacheKeyPrefix, url)
+    : undefined;
   const cached =
     cache && cacheRequest ? await cache.match(cacheRequest) : undefined;
 
@@ -28,12 +35,7 @@ export async function fetchOEmbedMetadata(url: string) {
   if (cache && cacheRequest && metadata) {
     await cache.put(
       cacheRequest,
-      new Response(JSON.stringify(metadata), {
-        headers: {
-          'Cache-Control': `public, max-age=${getOEmbedCacheTtlSeconds(metadata)}`,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-      }),
+      createJsonCacheResponse(metadata, getOEmbedCacheTtlSeconds(metadata)),
     );
   }
 
@@ -48,12 +50,9 @@ async function fetchAndParseOEmbedMetadata(url: string) {
 
   try {
     const response = await fetch(createOEmbedRequestUrl(endpoint, url), {
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': 'kamatte-syndrome-oembed-bot/1.0',
-      },
+      headers: oEmbedFetchHeaders,
       redirect: 'follow',
-      signal: AbortSignal.timeout(fetchTimeoutMs),
+      signal: AbortSignal.timeout(serverFetchTimeoutMs),
     });
 
     if (
@@ -67,24 +66,6 @@ async function fetchAndParseOEmbedMetadata(url: string) {
   } catch {
     return undefined;
   }
-}
-
-function getWorkersCache() {
-  return typeof caches === 'undefined'
-    ? undefined
-    : (caches as WorkersCacheStorage).default;
-}
-
-async function createCacheRequest(url: string) {
-  return new Request(`${cacheNamespace}${await sha256(url)}`);
-}
-
-async function sha256(value: string) {
-  const input = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest('SHA-256', input);
-  return [...new Uint8Array(digest)]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
 }
 
 function isJsonContentType(contentType: string | null) {

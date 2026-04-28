@@ -1,20 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeOpenGraphUrl, parseOpenGraphHtml } from './openGraph';
-
-describe('normalizeOpenGraphUrl', () => {
-  it('accepts public http and https URLs and removes hashes', () => {
-    expect(normalizeOpenGraphUrl('https://example.com/post#section')).toBe(
-      'https://example.com/post',
-    );
-  });
-
-  it('rejects unsupported, credentialed, and local URLs', () => {
-    expect(() => normalizeOpenGraphUrl('ftp://example.com')).toThrow();
-    expect(() => normalizeOpenGraphUrl('https://user@example.com')).toThrow();
-    expect(() => normalizeOpenGraphUrl('http://localhost:3000')).toThrow();
-    expect(() => normalizeOpenGraphUrl('http://192.168.0.1')).toThrow();
-  });
-});
+import { parseOpenGraphHtml } from './openGraph';
 
 describe('parseOpenGraphHtml', () => {
   it('prefers OGP fields over document fallbacks', () => {

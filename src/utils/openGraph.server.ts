@@ -2,29 +2,31 @@ import {
   buildOpenGraphMetadata,
   collectLinkAttributes,
   collectMetaAttributes,
-  normalizeOpenGraphUrl,
   type OpenGraphMetadata,
   parseOpenGraphHtml,
 } from './openGraph';
-
-type WorkersCacheStorage = CacheStorage & {
-  readonly default: Cache;
-};
+import { normalizePublicHttpUrl } from './publicUrl';
+import {
+  createHashCacheRequest,
+  createJsonCacheResponse,
+  getWorkersCache,
+} from './serverCache';
+import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
 const cacheTtlSeconds = 60 * 60 * 24 * 7;
-const cacheNamespace = 'https://kamatte-syndrome.local/open-graph/';
-const fetchTimeoutMs = 8000;
+const cacheKeyPrefix = 'https://kamatte.me/__cache/open-graph/';
 const maxRedirects = 5;
 const openGraphFetchHeaders = {
   Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
-  'User-Agent':
-    'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+  'User-Agent': googlebotUserAgent,
 };
 
 export async function fetchOpenGraphMetadata(url: string) {
   const cache = getWorkersCache();
-  const cacheRequest = cache ? await createCacheRequest(url) : undefined;
+  const cacheRequest = cache
+    ? await createHashCacheRequest(cacheKeyPrefix, url)
+    : undefined;
   const cached =
     cache && cacheRequest ? await cache.match(cacheRequest) : undefined;
 
@@ -37,12 +39,7 @@ export async function fetchOpenGraphMetadata(url: string) {
   if (cache && cacheRequest && isCacheableMetadata(metadata)) {
     await cache.put(
       cacheRequest,
-      new Response(JSON.stringify(metadata), {
-        headers: {
-          'Cache-Control': `public, max-age=${cacheTtlSeconds}`,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-      }),
+      createJsonCacheResponse(metadata, cacheTtlSeconds),
     );
   }
 
@@ -67,13 +64,13 @@ async function fetchAndParseOpenGraphMetadata(url: string) {
 }
 
 async function fetchWithValidatedRedirects(url: string) {
-  let currentUrl = normalizeOpenGraphUrl(url);
+  let currentUrl = normalizePublicHttpUrl(url);
 
   for (let redirectCount = 0; redirectCount <= maxRedirects; redirectCount++) {
     const response = await fetch(currentUrl, {
       headers: openGraphFetchHeaders,
       redirect: 'manual',
-      signal: AbortSignal.timeout(fetchTimeoutMs),
+      signal: AbortSignal.timeout(serverFetchTimeoutMs),
     });
 
     if (!isRedirectResponse(response)) {
@@ -85,7 +82,7 @@ async function fetchWithValidatedRedirects(url: string) {
       return response;
     }
 
-    currentUrl = normalizeOpenGraphUrl(new URL(location, currentUrl).href);
+    currentUrl = normalizePublicHttpUrl(new URL(location, currentUrl).href);
   }
 
   throw new Error('Too many redirects.');
@@ -145,24 +142,6 @@ function isCacheableMetadata(metadata: OpenGraphMetadata) {
       metadata.siteName ||
       metadata.favicon,
   );
-}
-
-function getWorkersCache() {
-  return typeof caches === 'undefined'
-    ? undefined
-    : (caches as WorkersCacheStorage).default;
-}
-
-async function createCacheRequest(url: string) {
-  return new Request(`${cacheNamespace}${await sha256(url)}`);
-}
-
-async function sha256(value: string) {
-  const input = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest('SHA-256', input);
-  return [...new Uint8Array(digest)]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
 }
 
 function isHtmlContentType(contentType: string) {

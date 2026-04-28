@@ -3,6 +3,7 @@ import { fetchOEmbedMetadata } from './oEmbed.server';
 
 describe('fetchOEmbedMetadata', () => {
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -53,5 +54,29 @@ describe('fetchOEmbedMetadata', () => {
     await expect(
       fetchOEmbedMetadata('https://www.youtube.com/watch?v=invalid'),
     ).resolves.toBeUndefined();
+  });
+
+  it('uses Googlebot user agent for provider requests', async () => {
+    const fetchMock = vi.fn(async () =>
+      Response.json({
+        version: '1.0',
+        type: 'video',
+        html: '<iframe src="https://www.youtube.com/embed/example"></iframe>',
+      }),
+    );
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    await fetchOEmbedMetadata('https://www.youtube.com/watch?v=example');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('https://www.youtube.com/oembed?'),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Accept: 'application/json',
+          'User-Agent': expect.stringContaining('Googlebot/2.1'),
+        }),
+      }),
+    );
   });
 });

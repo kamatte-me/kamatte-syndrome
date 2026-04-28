@@ -1,3 +1,5 @@
+import { normalizePublicHttpUrl } from './publicUrl';
+
 export type OpenGraphRequest = {
   url: string;
 };
@@ -31,43 +33,14 @@ type LinkAttributes = {
   href?: string;
 };
 
-const blockedIpv4Ranges = [
-  /^0\./,
-  /^10\./,
-  /^127\./,
-  /^169\.254\./,
-  /^192\.168\./,
-  /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./,
-  /^172\.(1[6-9]|2\d|3[01])\./,
-];
-
 export function validateOpenGraphRequest(input: unknown): OpenGraphRequest {
   if (!isRecord(input) || typeof input.url !== 'string') {
     throw new Error('A URL is required.');
   }
 
   return {
-    url: normalizeOpenGraphUrl(input.url),
+    url: normalizePublicHttpUrl(input.url),
   };
-}
-
-export function normalizeOpenGraphUrl(value: string) {
-  const url = new URL(value.trim());
-
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    throw new Error('Only http and https URLs are supported.');
-  }
-
-  if (url.username || url.password) {
-    throw new Error('URLs with credentials are not supported.');
-  }
-
-  if (isBlockedHostname(url.hostname)) {
-    throw new Error('This URL host is not allowed.');
-  }
-
-  url.hash = '';
-  return url.href;
 }
 
 export function parseOpenGraphHtml(
@@ -276,20 +249,6 @@ function decodeCodePoint(codePoint: number, fallback: string) {
   } catch {
     return fallback;
   }
-}
-
-function isBlockedHostname(hostname: string) {
-  const normalized = hostname.toLowerCase();
-
-  if (
-    normalized === 'localhost' ||
-    normalized.endsWith('.localhost') ||
-    normalized.includes(':')
-  ) {
-    return true;
-  }
-
-  return blockedIpv4Ranges.some((pattern) => pattern.test(normalized));
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -3,27 +3,8 @@ import {
   createOEmbedRequestUrl,
   getOEmbedCacheTtlSeconds,
   normalizeOEmbedResponse,
-  resolveOEmbedEndpoint,
 } from './oEmbed';
-
-describe('resolveOEmbedEndpoint', () => {
-  it('matches registry schemes for YouTube URLs', () => {
-    const endpoint = resolveOEmbedEndpoint(
-      'https://www.youtube.com/watch?v=GTjO6EuUcbY',
-    );
-
-    expect(endpoint).toMatchObject({
-      providerName: 'YouTube',
-      endpointUrl: 'https://www.youtube.com/oembed',
-    });
-  });
-
-  it('does not match ordinary article URLs', () => {
-    expect(
-      resolveOEmbedEndpoint('https://example.com/posts/hello'),
-    ).toBeUndefined();
-  });
-});
+import { resolveOEmbedEndpoint } from './oEmbedProviders';
 
 describe('createOEmbedRequestUrl', () => {
   it('builds a provider request URL without accepting a client endpoint', () => {
