@@ -48,6 +48,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.1",
     "@vitejs/plugin-rsc": "0.5.24",
+    "happy-dom": "20.9.0",
     "mdast-util-mdx-jsx": "3.2.0",
     "msw": "2.13.6",
     "nitro": "3.0.260415-beta",
