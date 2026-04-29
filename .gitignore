@@ -7,13 +7,20 @@
 
 # Build output
 /dist
+.output
+.next
 .nitro
 /.tanstack
 /.wrangler
 /worker-configuration.d.ts
+next-env.d.ts
+*.tsbuildinfo
 
 # env files
 .env*.local
+
+# Vercel
+.vercel
 
 # Testing
 /coverage

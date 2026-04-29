@@ -1,4 +1,3 @@
-import { cloudflare } from '@cloudflare/vite-plugin';
 import contentCollections from '@content-collections/vite';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
@@ -6,6 +5,7 @@ import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import react from '@vitejs/plugin-react';
 import rsc from '@vitejs/plugin-rsc';
+import { nitro } from 'nitro/vite';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 /// <reference types="vitest/config" />
@@ -36,15 +36,9 @@ export default defineConfig(() => ({
         enabled: true,
       },
     }),
+    process.env.VITEST !== 'true' && nitro(),
     rsc(),
     react({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
-    process.env.VITEST !== 'true' &&
-      cloudflare({
-        viteEnvironment: {
-          name: 'ssr',
-          childEnvironments: ['rsc'],
-        },
-      }),
   ],
   resolve: {
     tsconfigPaths: true,

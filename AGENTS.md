@@ -8,7 +8,7 @@
 - ルーティングは TanStack Router の file-based routing です。ルートは `src/routes/` に置きます。
 - 記事などのコンテンツは `@content-collections/*` で収集され、設定は `content-collections.ts` にあります。
 - スタイルは Tailwind CSS v4 を基本に、Tailwind だけでは表現しにくい場合に CSS Modules を使います。グローバル CSS は `src/styles.css` です。
-- デプロイ対象は Cloudflare Workers/Vite 構成です。`wrangler.jsonc` に Workers 設定があります。
+- デプロイ対象は Vercel です。TanStack Start は Nitro 経由で Vercel にデプロイします。
 
 ## セットアップとコマンド
 
@@ -17,7 +17,7 @@
 - よく使うコマンド:
   - `pnpm dev`: 開発サーバー
   - `pnpm build`: 本番ビルド
-  - `pnpm preview`: ビルド結果のプレビュー
+  - `pnpm start`: ビルド結果の Node サーバー起動
   - `pnpm lint`: Biome によるチェック
   - `pnpm lint:fix`: Biome の自動修正
   - `pnpm typecheck`: TypeScript 型チェック
@@ -61,7 +61,7 @@
 
 ## 生成物と依存関係
 
-- `dist/`、`.content-collections/`、`src/routeTree.gen.ts`、lockfile などの生成物は、必要がある場合だけ更新してください。
+- `dist/`、`.output/`、`.content-collections/`、`src/routeTree.gen.ts`、lockfile などの生成物は、必要がある場合だけ更新してください。
 - 依存関係を追加する前に、既存の React / TanStack / Tailwind / lucide-react で解決できるか確認してください。
 - lockfile を更新する場合は `pnpm install` を使ってください。
 

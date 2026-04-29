@@ -1,15 +1,11 @@
 import {
   createOEmbedRequestUrl,
-  getOEmbedCacheTtlSeconds,
   normalizeOEmbedResponse,
-  type OEmbedMetadata,
 } from '../utils/oEmbed';
 import { resolveOEmbedEndpoint } from '../utils/oEmbedProviders';
 import { normalizePublicHttpUrl } from '../utils/publicUrl';
-import { matchJsonCache, putJsonCache } from './serverCache';
 import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
-const cacheKeyPrefix = 'https://kamatte.me/__cache/oembed/';
 const oEmbedFetchHeaders = {
   Accept: 'application/json',
   'User-Agent': googlebotUserAgent,
@@ -21,22 +17,7 @@ export async function fetchOEmbedMetadata(url: string) {
     return undefined;
   }
 
-  const cached = await matchJsonCache<OEmbedMetadata>(
-    cacheKeyPrefix,
-    normalizedUrl,
-  );
-
-  if (cached.value) {
-    return cached.value;
-  }
-
-  const metadata = await fetchAndParseOEmbedMetadata(normalizedUrl);
-
-  if (metadata) {
-    await putJsonCache(cached, metadata, getOEmbedCacheTtlSeconds(metadata));
-  }
-
-  return metadata;
+  return fetchAndParseOEmbedMetadata(normalizedUrl);
 }
 
 function getSafeOEmbedUrl(url: string) {

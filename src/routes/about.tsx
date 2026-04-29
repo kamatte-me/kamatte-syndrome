@@ -16,9 +16,8 @@ function About() {
         </h1>
         <p className="max-w-3xl text-base text-white/78 leading-8">
           `content-collections/mdx` で記事をビルド時に集約しつつ、 TanStack
-          Start のルーティングと Cloudflare Workers の実行基盤へ
-          乗せ替えた構成です。コンテンツは既存の `kamatte-syndrome-content`
-          をそのまま参照します。
+          Start のルーティングと Vercel の実行基盤へ乗せた構成です。
+          コンテンツは既存の `kamatte-syndrome-content` をそのまま参照します。
         </p>
       </section>
 
@@ -33,8 +32,7 @@ function About() {
         <div className="rounded-2xl border border-white/10 bg-black/25 p-5">
           <h2 className="mb-3 font-semibold text-xl">Runtime</h2>
           <p className="text-sm text-white/70 leading-7">
-            Vite 側には Cloudflare プラグインを追加し、Workers 向けの
-            `wrangler.jsonc` と型生成スクリプトを揃えています。
+            Vite 側には Nitro を追加し、Vercel 向けのビルド出力を生成します。
           </p>
         </div>
       </section>

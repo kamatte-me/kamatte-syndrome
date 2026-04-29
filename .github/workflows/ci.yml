@@ -7,28 +7,16 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5.1.0
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6.5.0
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install
       - run: pnpm lint:ci
-
-  build-and-typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5.1.0
-      - uses: pnpm/action-setup@v6.0.9
-      - uses: actions/setup-node@v6.5.0
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm codegen
       - run: pnpm build
       - run: pnpm typecheck
