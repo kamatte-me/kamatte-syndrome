@@ -1,17 +1,13 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { HttpResponse, http } from 'msw';
+import { describe, expect, it } from 'vitest';
+import { server } from '@/test/msw';
 import { fetchOEmbedMetadata } from './oEmbed.server';
 
 describe('fetchOEmbedMetadata', () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.restoreAllMocks();
-  });
-
   it('returns normalized metadata for successful provider responses', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () =>
-        Response.json({
+    server.use(
+      http.get('https://www.youtube.com/oembed', () =>
+        HttpResponse.json({
           version: '1.0',
           type: 'video',
           html: '<iframe src="https://www.youtube.com/embed/example"></iframe>',
@@ -30,9 +26,10 @@ describe('fetchOEmbedMetadata', () => {
   });
 
   it('returns undefined for failed provider responses', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => new Response('not found', { status: 404 })),
+    server.use(
+      http.get('https://www.youtube.com/oembed', () =>
+        HttpResponse.text('not found', { status: 404 }),
+      ),
     );
 
     await expect(
@@ -41,11 +38,11 @@ describe('fetchOEmbedMetadata', () => {
   });
 
   it('returns undefined for invalid provider JSON', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(
-        async () =>
-          new Response('{', {
+    server.use(
+      http.get(
+        'https://www.youtube.com/oembed',
+        () =>
+          new HttpResponse('{', {
             headers: { 'Content-Type': 'application/json' },
           }),
       ),
@@ -57,37 +54,58 @@ describe('fetchOEmbedMetadata', () => {
   });
 
   it('returns undefined for unsafe source URLs before provider requests', async () => {
-    const fetchMock = vi.fn();
-    vi.stubGlobal('fetch', fetchMock);
+    const requests: string[] = [];
+
+    server.use(
+      http.get('https://www.youtube.com/oembed', ({ request }) => {
+        requests.push(request.url);
+
+        return HttpResponse.json({
+          version: '1.0',
+          type: 'video',
+          html: '<iframe src="https://www.youtube.com/embed/example"></iframe>',
+        });
+      }),
+    );
 
     await expect(
       fetchOEmbedMetadata('https://user@www.youtube.com/watch?v=example'),
     ).resolves.toBeUndefined();
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(requests).toHaveLength(0);
   });
 
   it('uses Googlebot user agent for provider requests', async () => {
-    const fetchMock = vi.fn(async () =>
-      Response.json({
-        version: '1.0',
-        type: 'video',
-        html: '<iframe src="https://www.youtube.com/embed/example"></iframe>',
+    const requests: Array<{
+      accept: string | null;
+      url: string;
+      userAgent: string | null;
+    }> = [];
+
+    server.use(
+      http.get('https://www.youtube.com/oembed', ({ request }) => {
+        requests.push({
+          accept: request.headers.get('accept'),
+          url: request.url,
+          userAgent: request.headers.get('user-agent'),
+        });
+
+        return HttpResponse.json({
+          version: '1.0',
+          type: 'video',
+          html: '<iframe src="https://www.youtube.com/embed/example"></iframe>',
+        });
       }),
     );
-
-    vi.stubGlobal('fetch', fetchMock);
 
     await fetchOEmbedMetadata('https://www.youtube.com/watch?v=example');
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('https://www.youtube.com/oembed?'),
+    expect(requests).toEqual([
       expect.objectContaining({
-        headers: expect.objectContaining({
-          Accept: 'application/json',
-          'User-Agent': expect.stringContaining('Googlebot/2.1'),
-        }),
+        accept: 'application/json',
+        url: expect.stringContaining('https://www.youtube.com/oembed?'),
+        userAgent: expect.stringContaining('Googlebot/2.1'),
       }),
-    );
+    ]);
   });
 });

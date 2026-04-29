@@ -50,6 +50,7 @@
     "@vitejs/plugin-react": "6.0.1",
     "@vitejs/plugin-rsc": "0.5.24",
     "mdast-util-mdx-jsx": "3.2.0",
+    "msw": "2.13.6",
     "remark-frontmatter": "5.0.0",
     "remark-mdx-frontmatter": "5.2.0",
     "typescript": "6.0.3",

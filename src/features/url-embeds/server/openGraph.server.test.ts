@@ -1,33 +1,29 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { HttpResponse, http } from 'msw';
+import { describe, expect, it } from 'vitest';
+import { server } from '@/test/msw';
 import { fetchOpenGraphMetadata } from './openGraph.server';
 
 describe('fetchOpenGraphMetadata', () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.restoreAllMocks();
-  });
-
   it('follows public redirects after validating each location', async () => {
-    const fetchMock = vi.fn(async (url: string | URL | Request) => {
-      const href = String(url);
+    const requests: string[] = [];
 
-      if (href === 'https://example.com/redirect') {
-        return new Response(null, {
+    server.use(
+      http.get('https://example.com/redirect', ({ request }) => {
+        requests.push(request.url);
+
+        return new HttpResponse(null, {
           headers: { Location: '/target' },
           status: 302,
         });
-      }
+      }),
+      http.get('https://example.com/target', ({ request }) => {
+        requests.push(request.url);
 
-      if (href === 'https://example.com/target') {
-        return new Response('<title>Redirect target</title>', {
+        return new HttpResponse('<title>Redirect target</title>', {
           headers: { 'Content-Type': 'text/html' },
         });
-      }
-
-      throw new Error(`Unexpected fetch: ${href}`);
-    });
-
-    vi.stubGlobal('fetch', fetchMock);
+      }),
+    );
 
     await expect(
       fetchOpenGraphMetadata('https://example.com/redirect'),
@@ -35,37 +31,37 @@ describe('fetchOpenGraphMetadata', () => {
       title: 'Redirect target',
     });
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(requests).toEqual([
+      'https://example.com/redirect',
+      'https://example.com/target',
+    ]);
   });
 
   it('resolves relative metadata URLs against the final redirect target', async () => {
-    const fetchMock = vi.fn(async (url: string | URL | Request) => {
-      const href = String(url);
-
-      if (href === 'https://example.com/redirect') {
-        return new Response(null, {
-          headers: { Location: 'https://target.example/posts/final' },
-          status: 302,
-        });
-      }
-
-      if (href === 'https://target.example/posts/final') {
-        return new Response(
-          `
+    server.use(
+      http.get(
+        'https://example.com/redirect',
+        () =>
+          new HttpResponse(null, {
+            headers: { Location: 'https://target.example/posts/final' },
+            status: 302,
+          }),
+      ),
+      http.get(
+        'https://target.example/posts/final',
+        () =>
+          new HttpResponse(
+            `
             <title>Redirect target</title>
             <meta property="og:image" content="/card.png">
             <link rel="icon" href="favicon.ico">
           `,
-          {
-            headers: { 'Content-Type': 'text/html' },
-          },
-        );
-      }
-
-      throw new Error(`Unexpected fetch: ${href}`);
-    });
-
-    vi.stubGlobal('fetch', fetchMock);
+            {
+              headers: { 'Content-Type': 'text/html' },
+            },
+          ),
+      ),
+    );
 
     await expect(
       fetchOpenGraphMetadata('https://example.com/redirect'),
@@ -77,44 +73,53 @@ describe('fetchOpenGraphMetadata', () => {
   });
 
   it('uses browser-like request headers for Open Graph fetches', async () => {
-    const fetchMock = vi.fn(
-      async () =>
-        new Response('<title>Preview</title>', {
-          headers: { 'Content-Type': 'text/html' },
-        }),
-    );
+    const requests: Array<{
+      accept: string | null;
+      acceptLanguage: string | null;
+      url: string;
+      userAgent: string | null;
+    }> = [];
 
-    vi.stubGlobal('fetch', fetchMock);
+    server.use(
+      http.get('https://example.com/product', ({ request }) => {
+        requests.push({
+          accept: request.headers.get('accept'),
+          acceptLanguage: request.headers.get('accept-language'),
+          url: request.url,
+          userAgent: request.headers.get('user-agent'),
+        });
+
+        return new HttpResponse('<title>Preview</title>', {
+          headers: { 'Content-Type': 'text/html' },
+        });
+      }),
+    );
 
     await fetchOpenGraphMetadata('https://example.com/product');
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://example.com/product',
+    expect(requests).toEqual([
       expect.objectContaining({
-        headers: expect.objectContaining({
-          Accept: expect.stringContaining('text/html'),
-          'Accept-Language': expect.stringContaining('ja'),
-          'User-Agent': expect.stringContaining('Googlebot/2.1'),
-        }),
+        accept: expect.stringContaining('text/html'),
+        acceptLanguage: expect.stringContaining('ja'),
+        url: 'https://example.com/product',
+        userAgent: expect.stringContaining('Googlebot/2.1'),
       }),
-    );
+    ]);
   });
 
   it('does not follow redirects to blocked hosts', async () => {
-    const fetchMock = vi.fn(async (url: string | URL | Request) => {
-      const href = String(url);
+    const requests: string[] = [];
 
-      if (href === 'https://example.com/redirect') {
-        return new Response(null, {
+    server.use(
+      http.get('https://example.com/redirect', ({ request }) => {
+        requests.push(request.url);
+
+        return new HttpResponse(null, {
           headers: { Location: 'http://169.254.169.254/latest/meta-data' },
           status: 302,
         });
-      }
-
-      throw new Error(`Unexpected fetch: ${href}`);
-    });
-
-    vi.stubGlobal('fetch', fetchMock);
+      }),
+    );
 
     await expect(
       fetchOpenGraphMetadata('https://example.com/redirect'),
@@ -122,6 +127,6 @@ describe('fetchOpenGraphMetadata', () => {
       url: 'https://example.com/redirect',
     });
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(requests).toEqual(['https://example.com/redirect']);
   });
 });
