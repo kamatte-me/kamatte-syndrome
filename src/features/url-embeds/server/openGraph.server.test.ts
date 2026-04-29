@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { server } from '@/test/msw';
+import { server } from '@/testing/msw';
 import { fetchOpenGraphMetadata } from './openGraph.server';
 
 describe('fetchOpenGraphMetadata', () => {

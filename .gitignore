@@ -1,5 +1,5 @@
 # Dependencies
-/node_modules
+node_modules
 
 # Content
 /kamatte-syndrome-content
@@ -11,9 +11,6 @@
 .next
 .nitro
 /.tanstack
-/.wrangler
-/worker-configuration.d.ts
-next-env.d.ts
 *.tsbuildinfo
 
 # env files

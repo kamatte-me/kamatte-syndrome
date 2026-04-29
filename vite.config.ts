@@ -36,7 +36,7 @@ export default defineConfig(() => ({
         enabled: true,
       },
     }),
-    process.env.VITEST !== 'true' && nitro(),
+    nitro(),
     rsc(),
     react({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
   ],
@@ -45,6 +45,6 @@ export default defineConfig(() => ({
   },
   test: {
     exclude: [...configDefaults.exclude, 'kamatte-syndrome-content/**'],
-    setupFiles: ['./src/test/msw.ts'],
+    setupFiles: ['./src/testing/msw.ts'],
   },
 }));
