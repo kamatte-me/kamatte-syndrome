@@ -1,15 +1,14 @@
 {
-  "extends": "@kamatte-syndrome/tsconfig/react.json",
+  "files": [],
   "compilerOptions": {
     "paths": {
-      "content-collections": [
-        "./.content-collections/generated",
-        "./src/types/content-collections.d.ts"
-      ],
+      "content-collections": ["./.content-collections/generated"],
       "@/*": ["./src/*"],
       "@@/*": ["./*"]
-    },
-    "types": ["vite/client"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
