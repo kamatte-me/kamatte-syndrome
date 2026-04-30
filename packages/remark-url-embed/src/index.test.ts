@@ -1,6 +1,17 @@
 import type { Root } from 'mdast';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { remarkUrlEmbed } from './index.ts';
+
+vi.mock('@kamatte-syndrome/oembed-endpoint-resolver', () => ({
+  resolveOEmbedEndpoint: (url: string) =>
+    url === 'https://oembed.example/watch/1'
+      ? {
+          providerName: 'Mock Video',
+          providerUrl: 'https://oembed.example',
+          endpointUrl: 'https://oembed.example/oembed',
+        }
+      : undefined,
+}));
 
 function transform(tree: Root) {
   const transformer = remarkUrlEmbed();
@@ -18,7 +29,7 @@ describe('remarkUrlEmbed', () => {
           children: [
             {
               type: 'text',
-              value: 'https://www.youtube.com/watch?v=GTjO6EuUcbY',
+              value: 'https://oembed.example/watch/1',
             },
           ],
         },
@@ -32,7 +43,7 @@ describe('remarkUrlEmbed', () => {
         {
           type: 'mdxJsxAttribute',
           name: 'url',
-          value: 'https://www.youtube.com/watch?v=GTjO6EuUcbY',
+          value: 'https://oembed.example/watch/1',
         },
       ],
     });
