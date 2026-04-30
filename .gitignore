@@ -1,5 +1,6 @@
 # Dependencies
 node_modules
+.pnpm-store
 
 # Content
 /apps/web/kamatte-syndrome-content
