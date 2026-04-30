@@ -7,7 +7,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {

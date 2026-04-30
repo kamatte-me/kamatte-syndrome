@@ -8,14 +8,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!**/src/routeTree.gen.ts",
-      "!apps/web/.content-collections",
-      "!apps/web/.output",
-      "!apps/web/.tanstack",
-      "!apps/web/kamatte-syndrome-content"
-    ]
+    "includes": ["**", "!**/src/routeTree.gen.ts"]
   },
   "formatter": {
     "enabled": true,
