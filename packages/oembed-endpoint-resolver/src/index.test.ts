@@ -1,26 +1,53 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { resolveOEmbedEndpoint } from './index.ts';
 
+vi.mock('oembed-providers/providers.json', () => ({
+  default: [
+    {
+      provider_name: 'Mock Video',
+      provider_url: 'https://video.example',
+      endpoints: [
+        {
+          schemes: ['https://video.example/watch/*'],
+          url: 'https://video.example/oembed',
+          formats: ['json'],
+        },
+      ],
+    },
+    {
+      provider_name: 'Mock Wildcard',
+      provider_url: 'https://embed.example',
+      endpoints: [
+        {
+          schemes: ['https://*.embed.example/videos/*'],
+          url: 'https://embed.example/oembed',
+          formats: ['json'],
+        },
+      ],
+    },
+  ],
+}));
+
 describe('resolveOEmbedEndpoint', () => {
-  it('matches registry schemes for YouTube URLs', () => {
+  it('matches provider schemes for literal hosts', () => {
     const endpoint = resolveOEmbedEndpoint(
-      'https://www.youtube.com/watch?v=GTjO6EuUcbY',
+      'https://video.example/watch/GTjO6EuUcbY',
     );
 
     expect(endpoint).toMatchObject({
-      providerName: 'YouTube',
-      endpointUrl: 'https://www.youtube.com/oembed',
+      providerName: 'Mock Video',
+      endpointUrl: 'https://video.example/oembed',
     });
   });
 
-  it('matches registry schemes with wildcard hosts', () => {
+  it('matches provider schemes with wildcard hosts', () => {
     const endpoint = resolveOEmbedEndpoint(
-      'https://player.hopvue.com/videos/1',
+      'https://player.embed.example/videos/1',
     );
 
     expect(endpoint).toMatchObject({
-      providerName: 'Hopvue',
-      endpointUrl: 'https://portal.hopvue.com/api/oembed/',
+      providerName: 'Mock Wildcard',
+      endpointUrl: 'https://embed.example/oembed',
     });
   });
 
