@@ -13,6 +13,17 @@ describe('resolveOEmbedEndpoint', () => {
     });
   });
 
+  it('matches registry schemes with wildcard hosts', () => {
+    const endpoint = resolveOEmbedEndpoint(
+      'https://player.hopvue.com/videos/1',
+    );
+
+    expect(endpoint).toMatchObject({
+      providerName: 'Hopvue',
+      endpointUrl: 'https://portal.hopvue.com/api/oembed/',
+    });
+  });
+
   it('does not match ordinary article URLs', () => {
     expect(
       resolveOEmbedEndpoint('https://example.com/posts/hello'),

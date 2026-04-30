@@ -1,4 +1,4 @@
-import { isOEmbedUrl } from '@kamatte-syndrome/oembed-endpoint-resolver';
+import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-endpoint-resolver';
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
 
@@ -28,7 +28,8 @@ function getStandaloneParagraphUrl(node: RootContent) {
 }
 
 function createStandaloneUrlElement(url: string): MdxJsxFlowElement {
-  return createUrlElement(isOEmbedUrl(url) ? 'OEmbed' : 'LinkCard', url);
+  const elementName = resolveOEmbedEndpoint(url) ? 'OEmbed' : 'LinkCard';
+  return createUrlElement(elementName, url);
 }
 
 function createUrlElement(
