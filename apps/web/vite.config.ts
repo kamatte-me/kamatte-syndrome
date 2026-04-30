@@ -1,5 +1,5 @@
 import contentCollections from '@content-collections/vite';
-import { remarkStandaloneUrlEmbed } from '@kamatte-syndrome/remark-url-embed';
+import { remarkUrlEmbed } from '@kamatte-syndrome/remark-url-embed';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
           remarkPlugins: [
             remarkFrontmatter,
             remarkMdxFrontmatter,
-            remarkStandaloneUrlEmbed,
+            remarkUrlEmbed,
           ],
         }),
       },

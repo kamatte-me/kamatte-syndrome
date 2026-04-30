@@ -4,7 +4,7 @@ import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
 
 const standaloneUrlPattern = /^https?:\/\/[^\s<>"']+$/i;
 
-export function remarkStandaloneUrlEmbed() {
+export function remarkUrlEmbed() {
   return (tree: Root) => {
     tree.children = tree.children.map((child): RootContent => {
       const url = getStandaloneParagraphUrl(child);
