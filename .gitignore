@@ -1,34 +1,24 @@
 # Dependencies
-node_modules
-.pnpm-store
+node_modules/
+.pnpm-store/
 
-# Content
-/apps/web/kamatte-syndrome-content
-/apps/web/.content-collections
-/apps/web/public/media
-
-# Build output
-dist
-.output
-.next
-.nitro
-.tanstack
+# TypeScript output
 *.tsbuildinfo
 
-# env files
+# Environment files
 .env*.local
 
-# Vercel
-.vercel
+# Deployment state
+.vercel/
 
 # Testing
-/coverage
+coverage/
 
-# Misc
+# Local machine files
 .DS_Store
 *.pem
 
-# Debug
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
