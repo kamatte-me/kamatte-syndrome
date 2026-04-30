@@ -62,6 +62,32 @@ describe('remarkUrlEmbed', () => {
     });
   });
 
+  it('trims standalone URL text before converting it', () => {
+    const tree = transform({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            { type: 'text', value: '  https://example.com/posts/2  ' },
+          ],
+        },
+      ],
+    });
+
+    expect(tree.children?.[0]).toMatchObject({
+      type: 'mdxJsxFlowElement',
+      name: 'LinkCard',
+      attributes: [
+        {
+          type: 'mdxJsxAttribute',
+          name: 'url',
+          value: 'https://example.com/posts/2',
+        },
+      ],
+    });
+  });
+
   it('does not convert regular markdown links or mixed text', () => {
     const tree = transform({
       type: 'root',
@@ -88,6 +114,30 @@ describe('remarkUrlEmbed', () => {
 
     expect(tree.children?.[0]?.type).toBe('paragraph');
     expect(tree.children?.[1]?.type).toBe('paragraph');
+  });
+
+  it('does not convert non-HTTP or invalid URL text', () => {
+    const tree = transform({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'ftp://example.com/file.zip' }],
+        },
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'https://' }],
+        },
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'https://example.com/a b' }],
+        },
+      ],
+    });
+
+    expect(tree.children?.[0]?.type).toBe('paragraph');
+    expect(tree.children?.[1]?.type).toBe('paragraph');
+    expect(tree.children?.[2]?.type).toBe('paragraph');
   });
 
   it('does not convert URLs nested in blockquotes or lists', () => {

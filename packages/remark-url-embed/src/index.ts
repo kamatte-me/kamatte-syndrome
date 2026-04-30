@@ -2,7 +2,9 @@ import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-endpoint-resolve
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
 
-const standaloneUrlPattern = /^https?:\/\/[^\s<>"']+$/i;
+const invalidStandaloneUrlCharacters = /[\s<>"']/;
+
+type UrlEmbedElementName = 'LinkCard' | 'OEmbed';
 
 export function remarkUrlEmbed() {
   return (tree: Root) => {
@@ -13,7 +15,7 @@ export function remarkUrlEmbed() {
   };
 }
 
-function getStandaloneParagraphUrl(node: RootContent) {
+function getStandaloneParagraphUrl(node: RootContent): string | undefined {
   if (node.type !== 'paragraph' || node.children.length !== 1) {
     return undefined;
   }
@@ -24,7 +26,7 @@ function getStandaloneParagraphUrl(node: RootContent) {
   }
 
   const value = child.value.trim();
-  return standaloneUrlPattern.test(value) ? value : undefined;
+  return isStandaloneHttpUrl(value) ? value : undefined;
 }
 
 function createStandaloneUrlElement(url: string): MdxJsxFlowElement {
@@ -33,7 +35,7 @@ function createStandaloneUrlElement(url: string): MdxJsxFlowElement {
 }
 
 function createUrlElement(
-  name: 'LinkCard' | 'OEmbed',
+  name: UrlEmbedElementName,
   url: string,
 ): MdxJsxFlowElement {
   const urlAttribute: MdxJsxAttribute = {
@@ -52,4 +54,20 @@ function createUrlElement(
 
 function isTextNode(node: Paragraph['children'][number]): node is Text {
   return node.type === 'text';
+}
+
+function isStandaloneHttpUrl(value: string) {
+  if (invalidStandaloneUrlCharacters.test(value)) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      url.hostname.length > 0
+    );
+  } catch {
+    return false;
+  }
 }
