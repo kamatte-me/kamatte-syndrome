@@ -11,6 +11,7 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { configDefaults } from 'vitest/config';
 
 const sharedTestExclude = [
@@ -37,6 +38,18 @@ export default defineConfig(({ mode }) => {
       !isTest &&
         contentCollections({
           environment: 'ssr',
+        }),
+      !isTest &&
+        viteStaticCopy({
+          targets: [
+            {
+              src: 'kamatte-syndrome-content/media/',
+              dest: '../public/media',
+              rename: {
+                stripBase: true,
+              },
+            },
+          ],
         }),
       !isTest && devtools(),
       tailwindcss(),

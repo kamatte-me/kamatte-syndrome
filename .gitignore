@@ -5,6 +5,7 @@ node_modules
 # Content
 /apps/web/kamatte-syndrome-content
 /apps/web/.content-collections
+/apps/web/public/media
 
 # Build output
 dist
