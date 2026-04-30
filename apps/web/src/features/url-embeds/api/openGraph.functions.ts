@@ -1,11 +1,9 @@
 import { createServerFn } from '@tanstack/react-start';
+import { fetchOpenGraphMetadata } from '../server/openGraph.server';
 import { validateOpenGraphRequest } from '../utils/openGraph';
 
 export const getOpenGraph = createServerFn({ method: 'GET' })
   .inputValidator(validateOpenGraphRequest)
   .handler(async ({ data }) => {
-    const { fetchOpenGraphMetadata } = await import(
-      '../server/openGraph.server'
-    );
     return fetchOpenGraphMetadata(data.url);
   });
