@@ -48,10 +48,10 @@
     "nitro": "3.0.260415-beta",
     "remark-frontmatter": "5.0.0",
     "remark-mdx-frontmatter": "5.2.0",
-    "typescript": "6.0.3",
+    "typescript": "catalog:",
     "vite": "8.0.8",
     "vite-plugin-static-copy": "4.1.0",
-    "vitest": "4.1.4",
+    "vitest": "catalog:",
     "zod": "4.3.6"
   },
   "engines": {
