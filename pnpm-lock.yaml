@@ -14,9 +14,9 @@ importers:
 
   apps/web:
     dependencies:
-      '@kamatte-syndrome/oembed-resolver':
+      '@kamatte-syndrome/oembed-endpoint-resolver':
         specifier: workspace:*
-        version: link:../../packages/oembed-resolver
+        version: link:../../packages/oembed-endpoint-resolver
       '@kamatte-syndrome/remark-url-embed':
         specifier: workspace:*
         version: link:../../packages/remark-url-embed
@@ -130,7 +130,7 @@ importers:
         specifier: 4.3.6
         version: 4.3.6
 
-  packages/oembed-resolver:
+  packages/oembed-endpoint-resolver:
     dependencies:
       oembed-providers:
         specifier: 1.0.20260421
@@ -148,9 +148,9 @@ importers:
 
   packages/remark-url-embed:
     dependencies:
-      '@kamatte-syndrome/oembed-resolver':
+      '@kamatte-syndrome/oembed-endpoint-resolver':
         specifier: workspace:*
-        version: link:../oembed-resolver
+        version: link:../oembed-endpoint-resolver
     devDependencies:
       '@kamatte-syndrome/tsconfig':
         specifier: workspace:*

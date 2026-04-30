@@ -1,4 +1,4 @@
-import { isOEmbedUrl } from '@kamatte-syndrome/oembed-resolver';
+import { isOEmbedUrl } from '@kamatte-syndrome/oembed-endpoint-resolver';
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
 

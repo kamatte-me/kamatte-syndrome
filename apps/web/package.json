@@ -12,7 +12,7 @@
     "vercel:env:pull": "vercel env pull .env.local"
   },
   "dependencies": {
-    "@kamatte-syndrome/oembed-resolver": "workspace:*",
+    "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*",
     "@kamatte-syndrome/remark-url-embed": "workspace:*",
     "@tailwindcss/vite": "4.2.2",
     "@tanstack/intent": "0.0.34",

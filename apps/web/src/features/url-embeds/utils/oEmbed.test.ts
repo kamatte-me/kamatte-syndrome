@@ -1,4 +1,4 @@
-import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-resolver';
+import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-endpoint-resolver';
 import { describe, expect, it } from 'vitest';
 import {
   createOEmbedRequestUrl,

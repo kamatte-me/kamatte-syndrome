@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/oembed-resolver",
+  "name": "@kamatte-syndrome/oembed-endpoint-resolver",
   "version": "0.0.0",
   "private": true,
   "type": "module",

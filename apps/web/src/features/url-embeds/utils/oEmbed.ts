@@ -1,4 +1,4 @@
-import type { OEmbedEndpointMatch } from '@kamatte-syndrome/oembed-resolver';
+import type { OEmbedEndpointMatch } from '@kamatte-syndrome/oembed-endpoint-resolver';
 
 export type OEmbedType = 'photo' | 'video' | 'link' | 'rich';
 

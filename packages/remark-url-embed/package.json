@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@kamatte-syndrome/oembed-resolver": "workspace:*"
+    "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
