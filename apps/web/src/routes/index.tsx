@@ -19,10 +19,10 @@ function App() {
       </h1>
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Link
-          to="/posts"
+          to="/blog"
           className="rounded-full border border-white/30 bg-white/10 px-5 py-2 font-semibold text-sm transition hover:bg-white/20"
         >
-          Enter Posts
+          Enter Blog
         </Link>
         <Link
           to="/about"

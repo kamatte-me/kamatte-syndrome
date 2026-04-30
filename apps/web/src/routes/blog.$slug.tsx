@@ -24,7 +24,7 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
     };
   });
 
-export const Route = createFileRoute('/posts/$slug')({
+export const Route = createFileRoute('/blog/$slug')({
   loader: ({ params: { slug } }) => getPostBySlugServerFn({ data: slug }),
   component: PostDetailPage,
   pendingComponent: () => <div>Loading...</div>,
@@ -37,10 +37,10 @@ function PostDetailPage() {
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-4 py-12">
       <div className="flex items-center gap-3 text-sm text-white/60">
         <Link
-          to="/posts"
+          to="/blog"
           className="rounded-full border border-white/20 px-4 py-1.5 transition hover:border-white/40 hover:text-white"
         >
-          Back to Posts
+          Back to Blog
         </Link>
         <span>{formatPostDate(post.publishedAt)}</span>
       </div>

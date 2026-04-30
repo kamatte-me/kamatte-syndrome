@@ -3,25 +3,25 @@ import { createServerFn } from '@tanstack/react-start';
 import { allPosts } from 'content-collections';
 import { formatPostDate, sortPostsByPublishedAtDesc } from '@/utils/posts';
 
-const getPostsIndex = createServerFn({ method: 'GET' }).handler(async () => {
+const getBlogIndex = createServerFn({ method: 'GET' }).handler(async () => {
   return sortPostsByPublishedAtDesc(allPosts).map(
     ({ mdx: _mdx, content: _content, ...post }) => post,
   );
 });
 
-export const Route = createFileRoute('/posts/')({
-  loader: async () => getPostsIndex(),
-  component: PostsPage,
+export const Route = createFileRoute('/blog/')({
+  loader: async () => getBlogIndex(),
+  component: BlogPage,
 });
 
-function PostsPage() {
+function BlogPage() {
   const posts = Route.useLoaderData();
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-12">
       <section className="rounded-3xl border border-white/15 bg-white/8 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur">
         <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
-          Posts
+          Blog
         </p>
         <h1 className="mb-4 font-bold text-4xl sm:text-5xl">記事一覧</h1>
         <p className="max-w-3xl text-base text-white/78 leading-8">
@@ -35,7 +35,7 @@ function PostsPage() {
         {posts.map((post) => (
           <li key={post.slug}>
             <Link
-              to="/posts/$slug"
+              to="/blog/$slug"
               params={{ slug: post.slug }}
               className="block rounded-3xl border border-white/10 bg-black/25 p-6 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/35"
             >

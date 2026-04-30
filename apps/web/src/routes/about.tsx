@@ -25,7 +25,7 @@ function About() {
         <div className="rounded-2xl border border-white/10 bg-black/25 p-5">
           <h2 className="mb-3 font-semibold text-xl">What changed</h2>
           <p className="text-sm text-white/70 leading-7">
-            投稿一覧を `/posts`、個別記事を `/posts/$slug` に分離し、MDX は
+            投稿一覧を `/blog`、個別記事を `/blog/$slug` に分離し、MDX は
             `content-collections` が型付きで生成します。
           </p>
         </div>
@@ -39,10 +39,10 @@ function About() {
 
       <div className="flex flex-wrap gap-3">
         <Link
-          to="/posts"
+          to="/blog"
           className="rounded-full border border-white/30 bg-white/10 px-5 py-2 font-semibold text-sm transition hover:bg-white/20"
         >
-          Browse Posts
+          Browse Blog
         </Link>
         <Link
           to="/"
