@@ -1,0 +1,21 @@
+{
+  "name": "@kamatte-syndrome/oembed-resolver",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "oembed-providers": "1.0.20260421"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "typescript": "6.0.3",
+    "vitest": "4.1.4"
+  }
+}

@@ -1,4 +1,4 @@
-import providers from 'oembed-providers/providers.json';
+import providers from 'oembed-providers/providers.json' with { type: 'json' };
 
 type OEmbedProviderEndpoint = {
   schemes?: string[];

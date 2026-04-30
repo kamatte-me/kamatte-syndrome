@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveOEmbedEndpoint } from './oEmbedProviders';
+import { resolveOEmbedEndpoint } from './index.ts';
 
 describe('resolveOEmbedEndpoint', () => {
   it('matches registry schemes for YouTube URLs', () => {

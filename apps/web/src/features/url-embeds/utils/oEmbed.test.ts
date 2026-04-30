@@ -1,10 +1,10 @@
+import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-resolver';
 import { describe, expect, it } from 'vitest';
 import {
   createOEmbedRequestUrl,
   getOEmbedCacheTtlSeconds,
   normalizeOEmbedResponse,
 } from './oEmbed';
-import { resolveOEmbedEndpoint } from './oEmbedProviders';
 
 describe('createOEmbedRequestUrl', () => {
   it('builds a provider request URL without accepting a client endpoint', () => {

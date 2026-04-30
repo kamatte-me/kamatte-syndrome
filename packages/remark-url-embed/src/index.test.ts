@@ -1,6 +1,6 @@
 import type { Root } from 'mdast';
 import { describe, expect, it } from 'vitest';
-import { remarkStandaloneUrlEmbed } from './remarkStandaloneUrlEmbed';
+import { remarkStandaloneUrlEmbed } from './index.ts';
 
 function transform(tree: Root) {
   const transformer = remarkStandaloneUrlEmbed();

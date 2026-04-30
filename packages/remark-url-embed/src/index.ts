@@ -1,6 +1,6 @@
+import { isOEmbedUrl } from '@kamatte-syndrome/oembed-resolver';
 import type { Paragraph, Root, RootContent, Text } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
-import { isOEmbedUrl } from '../utils/oEmbedProviders';
 
 const standaloneUrlPattern = /^https?:\/\/[^\s<>"']+$/i;
 

@@ -7,7 +7,19 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.4.12
+        version: 2.4.12
+
+  apps/web:
     dependencies:
+      '@kamatte-syndrome/oembed-resolver':
+        specifier: workspace:*
+        version: link:../../packages/oembed-resolver
+      '@kamatte-syndrome/remark-url-embed':
+        specifier: workspace:*
+        version: link:../../packages/remark-url-embed
       '@tailwindcss/vite':
         specifier: 4.2.2
         version: 4.2.2(vite@8.0.8(@types/node@24.12.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
@@ -35,9 +47,6 @@ importers:
       lucide-react:
         specifier: 1.8.0
         version: 1.8.0(react@19.2.5)
-      oembed-providers:
-        specifier: 1.0.20260421
-        version: 1.0.20260421
       react:
         specifier: 19.2.5
         version: 19.2.5
@@ -48,15 +57,15 @@ importers:
         specifier: 4.2.2
         version: 4.2.2
     devDependencies:
-      '@biomejs/biome':
-        specifier: 2.4.12
-        version: 2.4.12
       '@content-collections/core':
         specifier: 0.15.0
         version: 0.15.0(typescript@6.0.3)
       '@content-collections/vite':
         specifier: 0.3.0
         version: 0.3.0(@content-collections/core@0.15.0(typescript@6.0.3))(vite@8.0.8(@types/node@24.12.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@mdx-js/rollup':
         specifier: 3.1.1
         version: 3.1.1(rollup@4.60.2)
@@ -75,9 +84,6 @@ importers:
       '@testing-library/react':
         specifier: 16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@types/mdast':
-        specifier: 4.0.4
-        version: 4.0.4
       '@types/mdx':
         specifier: 2.0.13
         version: 2.0.13
@@ -99,9 +105,6 @@ importers:
       happy-dom:
         specifier: 20.9.0
         version: 20.9.0
-      mdast-util-mdx-jsx:
-        specifier: 3.2.0
-        version: 3.2.0
       msw:
         specifier: 2.13.6
         version: 2.13.6(@types/node@24.12.0)(typescript@6.0.3)
@@ -126,6 +129,46 @@ importers:
       zod:
         specifier: 4.3.6
         version: 4.3.6
+
+  packages/oembed-resolver:
+    dependencies:
+      oembed-providers:
+        specifier: 1.0.20260421
+        version: 1.0.20260421
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: 4.1.4
+        version: 4.1.4(@types/node@24.12.0)(happy-dom@20.9.0)(jsdom@29.0.2)(msw@2.13.6(@types/node@24.12.0)(typescript@6.0.3))(vite@8.0.8(@types/node@24.12.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
+
+  packages/remark-url-embed:
+    dependencies:
+      '@kamatte-syndrome/oembed-resolver':
+        specifier: workspace:*
+        version: link:../oembed-resolver
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
+      mdast-util-mdx-jsx:
+        specifier: 3.2.0
+        version: 3.2.0
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: 4.1.4
+        version: 4.1.4(@types/node@24.12.0)(happy-dom@20.9.0)(jsdom@29.0.2)(msw@2.13.6(@types/node@24.12.0)(typescript@6.0.3))(vite@8.0.8(@types/node@24.12.0)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.3))
+
+  packages/tsconfig: {}
 
 packages:
 
@@ -2965,10 +3008,6 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@7.24.7:
-    resolution: {integrity: sha512-H/nlJ/h0ggGC+uRL3ovD+G0i4bqhvsDOpbDv7At5eFLlj2b41L8QliGbnl2H7SnDiYhENphh1tQFJZf+MyfLsQ==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.24.8:
     resolution: {integrity: sha512-6KQ/+QxK49Z/p3HO6E5ZCZWNnCasyZLa5ExaVYyvPxUwKtbCPMKELJOqh7EqOle0t9cH/7d2TaaTRRa6Nhs4YQ==}
     engines: {node: '>=20.18.1'}
@@ -4831,7 +4870,7 @@ snapshots:
       parse5: 7.3.0
       parse5-htmlparser2-tree-adapter: 7.1.0
       parse5-parser-stream: 7.1.2
-      undici: 7.24.7
+      undici: 7.24.8
       whatwg-mimetype: 4.0.0
 
   chokidar@3.6.0:
@@ -6285,10 +6324,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.24.7: {}
-
-  undici@7.24.8:
-    optional: true
+  undici@7.24.8: {}
 
   unenv@2.0.0-rc.24:
     dependencies:

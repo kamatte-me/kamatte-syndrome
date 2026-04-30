@@ -1,0 +1,23 @@
+{
+  "name": "@kamatte-syndrome/remark-url-embed",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kamatte-syndrome/oembed-resolver": "workspace:*"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@types/mdast": "4.0.4",
+    "mdast-util-mdx-jsx": "3.2.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.4"
+  }
+}

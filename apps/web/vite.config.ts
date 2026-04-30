@@ -1,4 +1,5 @@
 import contentCollections from '@content-collections/vite';
+import { remarkStandaloneUrlEmbed } from '@kamatte-syndrome/remark-url-embed';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
@@ -11,7 +12,6 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
-import { remarkStandaloneUrlEmbed } from './src/features/url-embeds/remark/remarkStandaloneUrlEmbed';
 
 const sharedTestExclude = [
   ...configDefaults.exclude,

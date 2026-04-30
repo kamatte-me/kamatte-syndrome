@@ -2,15 +2,15 @@
 node_modules
 
 # Content
-/kamatte-syndrome-content
-/.content-collections
+/apps/web/kamatte-syndrome-content
+/apps/web/.content-collections
 
 # Build output
-/dist
+dist
 .output
 .next
 .nitro
-/.tanstack
+.tanstack
 *.tsbuildinfo
 
 # env files

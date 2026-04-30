@@ -1,8 +1,8 @@
+import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-resolver';
 import {
   createOEmbedRequestUrl,
   normalizeOEmbedResponse,
 } from '../utils/oEmbed';
-import { resolveOEmbedEndpoint } from '../utils/oEmbedProviders';
 import { normalizePublicHttpUrl } from '../utils/publicUrl';
 import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 

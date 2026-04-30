@@ -1,0 +1,4 @@
+{
+  "extends": "@kamatte-syndrome/tsconfig/browser.json",
+  "include": ["src/**/*.ts"]
+}

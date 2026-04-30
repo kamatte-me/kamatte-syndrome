@@ -1,0 +1,10 @@
+{
+  "extends": "@kamatte-syndrome/tsconfig/node.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "@@/*": ["./*"]
+    }
+  },
+  "include": ["vite.config.ts", "content-collections.ts"]
+}
