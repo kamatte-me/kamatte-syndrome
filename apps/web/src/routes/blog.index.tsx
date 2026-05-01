@@ -45,10 +45,7 @@ function BlogPage() {
                   {post.slug}
                 </span>
               </div>
-              <h2 className="mb-3 font-semibold text-2xl">{post.title}</h2>
-              <p className="line-clamp-3 text-white/72 leading-7">
-                {post.excerpt}
-              </p>
+              <h2 className="font-semibold text-2xl">{post.title}</h2>
             </Link>
           </li>
         ))}

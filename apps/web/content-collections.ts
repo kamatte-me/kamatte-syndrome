@@ -6,8 +6,6 @@ import {
 import type { MDXContent } from 'mdx/types';
 import { z } from 'zod';
 
-import { createPostExcerpt } from './src/utils/posts';
-
 const contentDirectory = 'kamatte-syndrome-content/content';
 
 const posts = defineCollection({
@@ -34,7 +32,6 @@ const posts = defineCollection({
     return {
       ...post,
       slug: _meta.path,
-      excerpt: createPostExcerpt(post.content),
       mdx,
     };
   },

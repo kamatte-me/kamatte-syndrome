@@ -1,23 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { createPostExcerpt, sortPostsByPublishedAtDesc } from './posts';
+import { sortPostsByPublishedAtDesc } from './posts';
 
 describe('posts helpers', () => {
-  it('extracts the first readable paragraph as the excerpt', () => {
-    const content = `
-# Title
-
-![hero](/hero.png)
-
-はじめまして。かまってっていいます。
-
-二つ目の段落です。
-`;
-
-    expect(createPostExcerpt(content)).toBe(
-      'はじめまして。かまってっていいます。',
-    );
-  });
-
   it('sorts newer posts first and leaves missing dates last', () => {
     const posts = sortPostsByPublishedAtDesc([
       { publishedAt: undefined, title: 'missing' },
