@@ -17,10 +17,10 @@
     "vercel:env:pull": "pnpm -r vercel:env:pull"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.12"
+    "@biomejs/biome": "2.4.13"
   },
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.2"
 }
