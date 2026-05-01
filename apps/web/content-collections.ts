@@ -71,40 +71,52 @@ const skills = defineCollection({
 
 const portfolio = defineCollection({
   name: 'portfolio',
-  directory: contentDirectory,
-  include: 'portfolio.json',
-  parser: 'json',
+  directory: `${contentDirectory}/portfolio`,
+  include: ['**/*.md', '**/*.mdx'],
   schema: z.object({
-    portfolio: z.array(
-      z.object({
-        year: z.number(),
-        name: z.string(),
-        link: z.string().optional(),
-        image: z.string().optional(),
-        category: z.string(),
-        description: z.string(),
-        technologies: z.array(z.string()),
-      }),
-    ),
+    order: z.number(),
+    year: z.number(),
+    name: z.string(),
+    link: z.string().optional(),
+    image: z.string().optional(),
+    category: z.string(),
+    technologies: z.array(z.string()),
     revisedAt: z.string().transform((str) => new Date(str)),
+    content: z.string(),
   }),
+  transform: async ({ _meta, ...portfolioItem }) => {
+    const mdx = createDefaultImport<MDXContent>(
+      `@@/kamatte-syndrome-content/content/portfolio/${_meta.filePath}`,
+    );
+    return {
+      ...portfolioItem,
+      slug: _meta.path,
+      mdx,
+    };
+  },
 });
 
 const cultures = defineCollection({
   name: 'cultures',
-  directory: contentDirectory,
-  include: 'cultures.json',
-  parser: 'json',
+  directory: `${contentDirectory}/cultures`,
+  include: ['**/*.md', '**/*.mdx'],
   schema: z.object({
-    cultures: z.array(
-      z.object({
-        name: z.string(),
-        youtubeVideoId: z.string(),
-        description: z.string(),
-      }),
-    ),
+    order: z.number(),
+    name: z.string(),
+    youtubeVideoId: z.string(),
     revisedAt: z.string().transform((str) => new Date(str)),
+    content: z.string(),
   }),
+  transform: async ({ _meta, ...culture }) => {
+    const mdx = createDefaultImport<MDXContent>(
+      `@@/kamatte-syndrome-content/content/cultures/${_meta.filePath}`,
+    );
+    return {
+      ...culture,
+      slug: _meta.path,
+      mdx,
+    };
+  },
 });
 
 export default defineConfig({
