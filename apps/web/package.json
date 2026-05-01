@@ -14,7 +14,7 @@
   "dependencies": {
     "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*",
     "@kamatte-syndrome/remark-gfm-subset": "workspace:*",
-    "@kamatte-syndrome/remark-url-embed": "workspace:*",
+    "@kamatte-syndrome/remark-mdx-url-embed": "workspace:*",
     "@tailwindcss/vite": "4.2.4",
     "@tanstack/intent": "0.0.36",
     "@tanstack/react-devtools": "0.10.2",

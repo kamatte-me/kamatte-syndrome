@@ -6,7 +6,7 @@ const invalidStandaloneUrlCharacters = /[\s<>"']/;
 
 type UrlEmbedElementName = 'LinkCard' | 'OEmbed';
 
-export function remarkUrlEmbed() {
+export function remarkMdxUrlEmbed() {
   return (tree: Root) => {
     tree.children = tree.children.map((child): RootContent => {
       const url = getStandaloneParagraphUrl(child);

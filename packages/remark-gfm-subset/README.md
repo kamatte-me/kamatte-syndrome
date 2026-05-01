@@ -17,20 +17,20 @@
 
 `remark-gfm`をそのまま使うと、Markdown中のURL単独行がGFM autolink literalとして`link` nodeに変換されます。
 
-このサイトでは、URL単独行を`@kamatte-syndrome/remark-url-embed`が`LinkCard` / `OEmbed`に変換します。`remark-url-embed`はURL単独行が`text` nodeのまま残っていることを前提にしているため、autolink literalは有効化しません。
+このサイトでは、URL単独行を`@kamatte-syndrome/remark-mdx-url-embed`が`LinkCard` / `OEmbed`に変換します。`remark-mdx-url-embed`はURL単独行が`text` nodeのまま残っていることを前提にしているため、autolink literalは有効化しません。
 
 ## Usage
 
 ```ts
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
-import { remarkUrlEmbed } from '@kamatte-syndrome/remark-url-embed';
+import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
 
 export default {
-  remarkPlugins: [remarkGfmSubset, remarkUrlEmbed],
+  remarkPlugins: [remarkGfmSubset, remarkMdxUrlEmbed],
 };
 ```
 
-`remark-url-embed`と併用する場合は、`remarkGfmSubset`を`remarkUrlEmbed`より前に指定します。
+`remark-mdx-url-embed`と併用する場合は、`remarkGfmSubset`を`remarkMdxUrlEmbed`より前に指定します。
 
 ## Enabled Syntax
 

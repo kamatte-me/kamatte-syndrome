@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/remark-url-embed",
+  "name": "@kamatte-syndrome/remark-mdx-url-embed",
   "version": "0.0.0",
   "private": true,
   "type": "module",

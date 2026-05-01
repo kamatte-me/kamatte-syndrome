@@ -1,6 +1,6 @@
 import type { Root } from 'mdast';
 import { describe, expect, it, vi } from 'vitest';
-import { remarkUrlEmbed } from './index.ts';
+import { remarkMdxUrlEmbed } from './index.ts';
 
 vi.mock('@kamatte-syndrome/oembed-endpoint-resolver', () => ({
   resolveOEmbedEndpoint: (url: string) =>
@@ -14,12 +14,12 @@ vi.mock('@kamatte-syndrome/oembed-endpoint-resolver', () => ({
 }));
 
 function transform(tree: Root) {
-  const transformer = remarkUrlEmbed();
+  const transformer = remarkMdxUrlEmbed();
   transformer(tree);
   return tree;
 }
 
-describe('remarkUrlEmbed', () => {
+describe('remarkMdxUrlEmbed', () => {
   it('converts an oEmbed URL paragraph into an OEmbed MDX element', () => {
     const tree = transform({
       type: 'root',
