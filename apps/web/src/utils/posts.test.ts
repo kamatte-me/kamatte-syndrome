@@ -1,15 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import {
-  createPostExcerpt,
-  sortPostsByPublishedAtDesc,
-  toPostSlug,
-} from './posts';
+import { createPostExcerpt, sortPostsByPublishedAtDesc } from './posts';
 
 describe('posts helpers', () => {
-  it('keeps the meta path as the slug', () => {
-    expect(toPostSlug('hello-kamatte')).toBe('hello-kamatte');
-  });
-
   it('extracts the first readable paragraph as the excerpt', () => {
     const content = `
 # Title

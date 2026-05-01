@@ -8,10 +8,6 @@ const markdownLinkPattern = /\[([^\]]+)\]\([^)]+\)/g;
 const markdownImagePattern = /!\[[^\]]*]\([^)]+\)/g;
 const markdownDecorationPattern = /[*_~`>#-]+/g;
 
-export function toPostSlug(metaPath: string) {
-  return metaPath;
-}
-
 export function createPostExcerpt(content: string, maxLength = 180) {
   const paragraphs = content.split(blankLinePattern);
 
