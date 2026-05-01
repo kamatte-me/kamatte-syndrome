@@ -28,14 +28,15 @@
     "tailwindcss": "4.2.4"
   },
   "devDependencies": {
-    "@kamatte-syndrome/tsconfig": "workspace:*",
     "@content-collections/core": "0.15.0",
     "@content-collections/vite": "0.3.0",
+    "@kamatte-syndrome/tsconfig": "workspace:*",
     "@mdx-js/rollup": "3.1.1",
     "@tailwindcss/postcss": "4.2.4",
     "@tailwindcss/typography": "0.5.19",
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/mdx": "2.0.13",
     "@types/node": "24.12.0",

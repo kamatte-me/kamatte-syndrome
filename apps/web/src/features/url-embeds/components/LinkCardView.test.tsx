@@ -1,22 +1,25 @@
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { LinkCardView } from './LinkCardView';
 
 describe('LinkCardView', () => {
   it('renders a loading fallback with the destination domain', () => {
-    const html = renderToStaticMarkup(
+    render(
       <LinkCardView
         state={{ status: 'loading' }}
         url="https://example.com/posts/hello"
       />,
     );
 
-    expect(html).toContain('example.com');
-    expect(html).toContain('Loading');
+    const link = screen.getByRole('link', { name: /example\.com/i });
+    expect(link).toHaveAttribute('href', 'https://example.com/posts/hello');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(screen.getAllByText('example.com')).toHaveLength(2);
+    expect(screen.getByText('Loading')).toBeInTheDocument();
   });
 
   it('renders fetched OGP metadata', () => {
-    const html = renderToStaticMarkup(
+    const { container } = render(
       <LinkCardView
         state={{
           status: 'success',
@@ -34,21 +37,27 @@ describe('LinkCardView', () => {
       />,
     );
 
-    expect(html).toContain('Example title');
-    expect(html).toContain('Example description');
-    expect(html).toContain('Example Site');
-    expect(html).toContain('https://example.com/card.png');
+    const link = screen.getByRole('link', { name: /Example title/i });
+    expect(link).toHaveAttribute('href', 'https://example.com/posts/hello');
+    expect(screen.getByText('Example title')).toBeInTheDocument();
+    expect(screen.getByText('Example description')).toBeInTheDocument();
+    expect(screen.getByText('Example Site')).toBeInTheDocument();
+    expect(
+      container.querySelector('img[src="https://example.com/card.png"]'),
+    ).not.toBeNull();
   });
 
   it('renders a stable fallback when OGP fetching fails', () => {
-    const html = renderToStaticMarkup(
+    render(
       <LinkCardView
         state={{ status: 'error', message: 'Network error' }}
         url="https://example.net/"
       />,
     );
 
-    expect(html).toContain('example.net');
-    expect(html).toContain('Preview unavailable');
+    const link = screen.getByRole('link', { name: /Preview unavailable/i });
+    expect(link).toHaveAttribute('href', 'https://example.net/');
+    expect(screen.getAllByText('example.net')).toHaveLength(2);
+    expect(screen.getByText('Preview unavailable')).toBeInTheDocument();
   });
 });

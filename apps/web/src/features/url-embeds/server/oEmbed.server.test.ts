@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it, vi } from 'vitest';
-import { server } from '@/testing/msw';
+import { server } from '@/testing/setup-tests';
 import { fetchOEmbedMetadata } from './oEmbed.server';
 
 vi.mock('@kamatte-syndrome/oembed-endpoint-resolver', () => ({

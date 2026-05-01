@@ -12,13 +12,6 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import { configDefaults } from 'vitest/config';
-
-const sharedTestExclude = [
-  ...configDefaults.exclude,
-  'kamatte-syndrome-content/**',
-];
-const serverTestFiles = ['src/**/*.server.test.{ts,tsx}'];
 
 export default defineConfig(({ mode }) => {
   const isTest = process.env.VITEST === 'true' || mode === 'test';
@@ -67,15 +60,14 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths: true,
     },
     test: {
-      exclude: sharedTestExclude,
-      setupFiles: ['./src/testing/msw.ts'],
+      setupFiles: ['src/testing/setup-tests.ts'],
       projects: [
         {
           extends: true,
           test: {
             name: 'node',
             environment: 'node',
-            include: serverTestFiles,
+            include: ['src/**/*.server.test.{ts,tsx}'],
           },
         },
         {
@@ -84,7 +76,7 @@ export default defineConfig(({ mode }) => {
             name: 'dom',
             environment: 'happy-dom',
             include: ['src/**/*.test.{ts,tsx}'],
-            exclude: [...sharedTestExclude, ...serverTestFiles],
+            exclude: ['src/**/*.server.test.{ts,tsx}'],
           },
         },
       ],
