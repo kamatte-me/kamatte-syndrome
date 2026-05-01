@@ -8,6 +8,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import react from '@vitejs/plugin-react';
 import rsc from '@vitejs/plugin-rsc';
 import { nitro } from 'nitro/vite';
+import remarkBreaks from 'remark-breaks';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 /// <reference types="vitest/config" />
@@ -25,6 +26,7 @@ export default defineConfig(({ mode }) => {
           remarkPlugins: [
             remarkFrontmatter,
             remarkMdxFrontmatter,
+            remarkBreaks,
             remarkGfmSubset,
             remarkUrlEmbed,
           ],

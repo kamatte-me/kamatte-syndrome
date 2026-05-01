@@ -48,6 +48,7 @@
     "happy-dom": "20.9.0",
     "msw": "2.14.2",
     "nitro": "3.0.260429-beta",
+    "remark-breaks": "4.0.0",
     "remark-frontmatter": "5.0.0",
     "remark-mdx-frontmatter": "5.2.0",
     "typescript": "catalog:",
