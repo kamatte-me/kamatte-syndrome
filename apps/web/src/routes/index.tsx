@@ -25,10 +25,10 @@ function App() {
           Enter Blog
         </Link>
         <Link
-          to="/about"
+          to="/biography"
           className="rounded-full border border-white/20 px-5 py-2 text-sm text-white/80 transition hover:border-white/40 hover:text-white"
         >
-          About
+          Biography
         </Link>
         <a
           href="https://kids.yahoo.co.jp/"
