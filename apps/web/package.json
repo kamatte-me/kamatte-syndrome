@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*",
+    "@kamatte-syndrome/remark-gfm-subset": "workspace:*",
     "@kamatte-syndrome/remark-url-embed": "workspace:*",
     "@tailwindcss/vite": "4.2.4",
     "@tanstack/intent": "0.0.36",

@@ -1,4 +1,5 @@
 import contentCollections from '@content-collections/vite';
+import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
 import { remarkUrlEmbed } from '@kamatte-syndrome/remark-url-embed';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
@@ -24,6 +25,7 @@ export default defineConfig(({ mode }) => {
           remarkPlugins: [
             remarkFrontmatter,
             remarkMdxFrontmatter,
+            remarkGfmSubset,
             remarkUrlEmbed,
           ],
         }),
