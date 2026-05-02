@@ -96,9 +96,9 @@ const portfolio = defineCollection({
   },
 });
 
-const cultures = defineCollection({
-  name: 'cultures',
-  directory: `${contentDirectory}/cultures`,
+const culture = defineCollection({
+  name: 'culture',
+  directory: `${contentDirectory}/culture`,
   include: ['**/*.md', '**/*.mdx'],
   schema: z.object({
     order: z.number(),
@@ -109,7 +109,7 @@ const cultures = defineCollection({
   }),
   transform: async ({ _meta, ...culture }) => {
     const mdx = createDefaultImport<MDXContent>(
-      `@@/kamatte-syndrome-content/content/cultures/${_meta.filePath}`,
+      `@@/kamatte-syndrome-content/content/culture/${_meta.filePath}`,
     );
     return {
       ...culture,
@@ -120,5 +120,5 @@ const cultures = defineCollection({
 });
 
 export default defineConfig({
-  content: [posts, biography, skills, portfolio, cultures],
+  content: [posts, biography, skills, portfolio, culture],
 });

@@ -36,6 +36,12 @@ function App() {
         >
           Portfolio
         </Link>
+        <Link
+          to="/culture"
+          className="rounded-full border border-white/20 px-5 py-2 text-sm text-white/80 transition hover:border-white/40 hover:text-white"
+        >
+          Culture
+        </Link>
         <a
           href="https://kids.yahoo.co.jp/"
           className="rounded-full border border-white/20 px-5 py-2 text-sm text-white/60 transition hover:border-white/40 hover:text-white"
