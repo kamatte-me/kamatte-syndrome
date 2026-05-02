@@ -170,15 +170,12 @@ function BlogPage() {
               </div>
 
               <div className="min-w-0 flex-1">
-                <div className="mb-3 flex flex-wrap items-center gap-3 text-sm text-white/55">
-                  <span>{formatPostDate(post.publishedAt)}</span>
-                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] uppercase tracking-[0.2em]">
-                    {post.slug}
-                  </span>
-                </div>
                 <h2 className="font-semibold text-2xl leading-snug">
                   {post.title}
                 </h2>
+                <div className="mt-2 text-sm text-white/55">
+                  {formatPostDate(post.publishedAt)}
+                </div>
               </div>
             </Link>
           </li>

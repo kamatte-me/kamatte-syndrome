@@ -42,22 +42,15 @@ function PostDetailPage() {
         >
           Back to Blog
         </Link>
-        <span>{formatPostDate(post.publishedAt)}</span>
       </div>
 
       <article className="rounded-3xl border border-white/12 bg-white/8 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur sm:p-9">
         <header className="mb-8 border-white/10 border-b pb-6">
-          <p className="mb-3 font-semibold text-white/45 text-xs uppercase tracking-[0.3em]">
-            {post.slug}
-          </p>
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
             {post.title}
           </h1>
-          <div className="mt-4 flex flex-wrap gap-3 text-sm text-white/60">
-            <span>Published: {formatPostDate(post.publishedAt)}</span>
-            {post.revisedAt ? (
-              <span>Updated: {formatPostDate(post.revisedAt)}</span>
-            ) : null}
+          <div className="mt-4 text-sm text-white/60">
+            {formatPostDate(post.publishedAt)}
           </div>
         </header>
 
