@@ -1,7 +1,7 @@
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { Layout } from '@/components/layout/Layout';
+import { GlobalLayout } from '@/components/layouts/GlobalLayout';
 import { getOpenGraph } from '@/features/url-embeds/api/openGraph.functions';
 import '../styles.css';
 
@@ -34,7 +34,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <Layout>{children}</Layout>
+        <GlobalLayout>{children}</GlobalLayout>
         <TanStackDevtools
           config={{
             position: 'bottom-right',

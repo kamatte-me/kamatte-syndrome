@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';
 import { OEmbed } from '@/features/url-embeds/components/OEmbed';
 import { formatPostDate, sortPostsByPublishedAtDesc } from '@/utils/posts';
@@ -88,9 +89,7 @@ function PostDetailPage() {
           </div>
         ) : null}
 
-        <div className="prose prose-invert max-w-none prose-a:text-cyan-300 prose-code:text-cyan-200 prose-headings:text-white prose-p:text-white/82">
-          {post.mdx}
-        </div>
+        <MarkdownContent>{post.mdx}</MarkdownContent>
 
         <BlogEntryNavigation
           next={post.nextPost}

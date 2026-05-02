@@ -6,6 +6,7 @@ import { allCultures } from 'content-collections';
 import { Play, X } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 type RenderedServerComponent = RenderableServerComponent<ReactElement>;
 
@@ -288,9 +289,12 @@ function CultureModal({
               </h2>
             </header>
 
-            <div className="prose prose-invert prose-p:my-0 min-h-0 max-w-none flex-1 overflow-y-auto pr-1 prose-a:text-cyan-300 text-base text-white/78 leading-8">
+            <MarkdownContent
+              className="min-h-0 flex-1 overflow-y-auto pr-1"
+              variant="compact"
+            >
               {item.body}
-            </div>
+            </MarkdownContent>
           </div>
         </div>
       </section>

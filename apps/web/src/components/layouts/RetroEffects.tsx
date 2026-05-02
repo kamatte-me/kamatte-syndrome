@@ -1,7 +1,6 @@
-/** biome-ignore-all lint/a11y/noSvgWithoutTitle: svg filters only */
 import styles from './RetroEffects.module.css';
 
-const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
+const RetroEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
       {/* Background Layers */}
@@ -16,4 +15,4 @@ const CrtEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
   );
 };
 
-export default CrtEffects;
+export default RetroEffects;

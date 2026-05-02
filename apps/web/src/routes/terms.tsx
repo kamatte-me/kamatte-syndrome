@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allTerms } from 'content-collections';
+import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 const PAGE_TITLE = '免責事項';
 
@@ -50,9 +51,7 @@ function TermsPage() {
           </h1>
         </header>
 
-        <div className="prose prose-invert max-w-none prose-a:text-cyan-300 prose-code:text-cyan-200 prose-headings:text-white prose-li:text-white/82 prose-p:text-white/82">
-          {body}
-        </div>
+        <MarkdownContent>{body}</MarkdownContent>
       </article>
     </main>
   );

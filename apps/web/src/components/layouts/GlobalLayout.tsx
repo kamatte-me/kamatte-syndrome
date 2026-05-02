@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import RetroEffects from '@/components/RetroEffects';
+import RetroEffects from './RetroEffects';
 
-export function Layout({ children }: { children: ReactNode }) {
+export function GlobalLayout({ children }: { children: ReactNode }) {
   return (
     <div className="mx-auto flex min-h-screen max-w-5xl flex-col">
       <RetroEffects>

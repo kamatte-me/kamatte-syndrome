@@ -5,6 +5,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import { ExternalLink } from 'lucide-react';
 import type { ReactElement } from 'react';
+import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 type RenderedServerComponent = RenderableServerComponent<ReactElement>;
 
@@ -158,9 +159,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
             </h3>
           </header>
 
-          <div className="prose prose-invert prose-p:my-0 prose-ul:my-0 max-w-none prose-a:text-cyan-300 prose-p:text-white/78 text-[15px] leading-7 prose-li:marker:text-cyan-200">
-            {item.body}
-          </div>
+          <MarkdownContent variant="compact">{item.body}</MarkdownContent>
 
           <ul className="flex flex-wrap gap-2">
             {item.technologies.map((technology) => (
