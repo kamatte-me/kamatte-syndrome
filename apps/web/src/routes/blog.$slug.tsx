@@ -115,14 +115,14 @@ function BlogEntryNavigation({
   return (
     <nav
       aria-label="前後の記事"
-      className="mt-10 grid gap-5 border-white/10 border-t pt-6 sm:grid-cols-2"
+      className="mt-10 grid grid-cols-2 gap-3 border-white/10 border-t pt-6 sm:gap-5"
     >
-      <div className="min-w-0">
+      <div className="flex min-w-0 items-start">
         {previous ? (
           <AdjacentPostLink direction="previous" post={previous} />
         ) : null}
       </div>
-      <div className="min-w-0 sm:flex sm:justify-end">
+      <div className="flex min-w-0 items-start justify-end">
         {next ? <AdjacentPostLink direction="next" post={next} /> : null}
       </div>
     </nav>
@@ -143,21 +143,21 @@ function AdjacentPostLink({
   return (
     <Link
       aria-label={`${label}: ${post.title}`}
-      className="group inline-flex max-w-full items-center gap-3 text-white/72 transition hover:text-white"
+      className="group inline-flex h-full max-w-full items-start gap-2 text-white/72 transition hover:text-white sm:gap-3"
       params={{ slug: post.slug }}
       to="/blog/$slug"
     >
       {isPrevious ? (
-        <Icon aria-hidden="true" className="size-5 shrink-0" />
+        <Icon aria-hidden="true" className="size-5 shrink-0 self-center" />
       ) : null}
       <span className={isPrevious ? 'min-w-0' : 'min-w-0 text-right'}>
         <span className="block text-white/42 text-xs">{label}</span>
-        <span className="block font-medium [overflow-wrap:anywhere] group-hover:underline">
+        <span className="block font-medium text-sm [overflow-wrap:anywhere] group-hover:underline sm:text-base">
           {post.title}
         </span>
       </span>
       {!isPrevious ? (
-        <Icon aria-hidden="true" className="size-5 shrink-0" />
+        <Icon aria-hidden="true" className="size-5 shrink-0 self-center" />
       ) : null}
     </Link>
   );
