@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as CultureRouteImport } from './routes/culture'
 import { Route as BiographyRouteImport } from './routes/biography'
@@ -16,6 +18,16 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortfolioRoute = PortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
@@ -52,6 +64,8 @@ export interface FileRoutesByFullPath {
   '/biography': typeof BiographyRoute
   '/culture': typeof CultureRoute
   '/portfolio': typeof PortfolioRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
 }
@@ -60,6 +74,8 @@ export interface FileRoutesByTo {
   '/biography': typeof BiographyRoute
   '/culture': typeof CultureRoute
   '/portfolio': typeof PortfolioRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
 }
@@ -69,6 +85,8 @@ export interface FileRoutesById {
   '/biography': typeof BiographyRoute
   '/culture': typeof CultureRoute
   '/portfolio': typeof PortfolioRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
 }
@@ -79,16 +97,28 @@ export interface FileRouteTypes {
     | '/biography'
     | '/culture'
     | '/portfolio'
+    | '/privacy'
+    | '/terms'
     | '/blog/$slug'
     | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/biography' | '/culture' | '/portfolio' | '/blog/$slug' | '/blog'
+  to:
+    | '/'
+    | '/biography'
+    | '/culture'
+    | '/portfolio'
+    | '/privacy'
+    | '/terms'
+    | '/blog/$slug'
+    | '/blog'
   id:
     | '__root__'
     | '/'
     | '/biography'
     | '/culture'
     | '/portfolio'
+    | '/privacy'
+    | '/terms'
     | '/blog/$slug'
     | '/blog/'
   fileRoutesById: FileRoutesById
@@ -98,12 +128,28 @@ export interface RootRouteChildren {
   BiographyRoute: typeof BiographyRoute
   CultureRoute: typeof CultureRoute
   PortfolioRoute: typeof PortfolioRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portfolio': {
       id: '/portfolio'
       path: '/portfolio'
@@ -154,6 +200,8 @@ const rootRouteChildren: RootRouteChildren = {
   BiographyRoute: BiographyRoute,
   CultureRoute: CultureRoute,
   PortfolioRoute: PortfolioRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
 }

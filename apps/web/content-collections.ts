@@ -27,7 +27,7 @@ const posts = defineCollection({
   }),
   transform: async ({ _meta, ...post }) => {
     const mdx = createDefaultImport<MDXContent>(
-      `@@/kamatte-syndrome-content/content/posts/${_meta.filePath}`,
+      `@@/${contentDirectory}/posts/${_meta.filePath}`,
     );
     return {
       ...post,
@@ -69,6 +69,46 @@ const skills = defineCollection({
   }),
 });
 
+const terms = defineCollection({
+  name: 'terms',
+  directory: contentDirectory,
+  include: 'terms.md',
+  schema: z.object({
+    revisedAt: z.string().transform((str) => new Date(str)),
+    content: z.string(),
+  }),
+  transform: async ({ _meta, ...terms }) => {
+    const mdx = createDefaultImport<MDXContent>(
+      `@@/${contentDirectory}/${_meta.filePath}`,
+    );
+    return {
+      ...terms,
+      slug: _meta.path,
+      mdx,
+    };
+  },
+});
+
+const privacyPolicy = defineCollection({
+  name: 'privacyPolicy',
+  directory: contentDirectory,
+  include: 'privacy_policy.md',
+  schema: z.object({
+    revisedAt: z.string().transform((str) => new Date(str)),
+    content: z.string(),
+  }),
+  transform: async ({ _meta, ...privacyPolicy }) => {
+    const mdx = createDefaultImport<MDXContent>(
+      `@@/${contentDirectory}/${_meta.filePath}`,
+    );
+    return {
+      ...privacyPolicy,
+      slug: _meta.path,
+      mdx,
+    };
+  },
+});
+
 const portfolio = defineCollection({
   name: 'portfolio',
   directory: `${contentDirectory}/portfolio`,
@@ -86,7 +126,7 @@ const portfolio = defineCollection({
   }),
   transform: async ({ _meta, ...portfolioItem }) => {
     const mdx = createDefaultImport<MDXContent>(
-      `@@/kamatte-syndrome-content/content/portfolio/${_meta.filePath}`,
+      `@@/${contentDirectory}/portfolio/${_meta.filePath}`,
     );
     return {
       ...portfolioItem,
@@ -109,7 +149,7 @@ const culture = defineCollection({
   }),
   transform: async ({ _meta, ...culture }) => {
     const mdx = createDefaultImport<MDXContent>(
-      `@@/kamatte-syndrome-content/content/culture/${_meta.filePath}`,
+      `@@/${contentDirectory}/culture/${_meta.filePath}`,
     );
     return {
       ...culture,
@@ -120,5 +160,5 @@ const culture = defineCollection({
 });
 
 export default defineConfig({
-  content: [posts, biography, skills, portfolio, culture],
+  content: [posts, biography, skills, terms, privacyPolicy, portfolio, culture],
 });

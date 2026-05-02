@@ -1,7 +1,7 @@
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import RetroEffects from '@/components/RetroEffects';
+import { Layout } from '@/components/layout/Layout';
 import { getOpenGraph } from '@/features/url-embeds/api/openGraph.functions';
 import '../styles.css';
 
@@ -34,9 +34,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div className="mx-auto max-w-5xl">
-          <RetroEffects>{children}</RetroEffects>
-        </div>
+        <Layout>{children}</Layout>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
