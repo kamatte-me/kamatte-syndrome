@@ -7,8 +7,7 @@
     "defaultBranch": "main"
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["**", "!**/src/routeTree.gen.ts"]
+    "ignoreUnknown": true
   },
   "formatter": {
     "enabled": true,
@@ -16,33 +15,16 @@
   },
   "linter": {
     "enabled": true,
-    "rules": {
-      "recommended": true,
-      "nursery": {
-        "useSortedClasses": {
-          "level": "error",
-          "fix": "safe"
-        },
-        "useBaseline": {
-          "level": "error",
-          "options": {
-            "available": 2024
-          }
-        }
-      }
-    },
     "domains": {
-      "react": "recommended"
+      "test": "recommended"
+    },
+    "rules": {
+      "recommended": true
     }
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
-    }
-  },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
     }
   },
   "assist": {
