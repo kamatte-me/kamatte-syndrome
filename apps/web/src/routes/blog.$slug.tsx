@@ -61,6 +61,16 @@ function PostDetailPage() {
           </div>
         </header>
 
+        {post.featuredImage ? (
+          <div className="mb-8 flex justify-center">
+            <img
+              src={post.featuredImage}
+              alt={post.title}
+              className="max-h-[400px] max-w-full object-contain"
+            />
+          </div>
+        ) : null}
+
         <div className="prose prose-invert max-w-none prose-a:text-cyan-300 prose-code:text-cyan-200 prose-headings:text-white prose-p:text-white/82">
           {post.mdx}
         </div>

@@ -157,15 +157,29 @@ function BlogPage() {
             <Link
               to="/blog/$slug"
               params={{ slug: post.slug }}
-              className="block rounded-3xl border border-white/10 bg-black/25 p-6 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/35"
+              className="flex gap-4 rounded-3xl border border-white/10 bg-black/25 p-5 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/35 sm:gap-6 sm:p-6"
             >
-              <div className="mb-3 flex flex-wrap items-center gap-3 text-sm text-white/55">
-                <span>{formatPostDate(post.publishedAt)}</span>
-                <span className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] uppercase tracking-[0.2em]">
-                  {post.slug}
-                </span>
+              <div className="flex h-20 w-20 shrink-0 items-start justify-center sm:h-[120px] sm:w-[200px]">
+                <img
+                  src={post.featuredImage ?? '/avatar.svg'}
+                  alt={post.title}
+                  width={200}
+                  height={120}
+                  className="max-h-full max-w-full object-contain object-top"
+                />
               </div>
-              <h2 className="font-semibold text-2xl">{post.title}</h2>
+
+              <div className="min-w-0 flex-1">
+                <div className="mb-3 flex flex-wrap items-center gap-3 text-sm text-white/55">
+                  <span>{formatPostDate(post.publishedAt)}</span>
+                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] uppercase tracking-[0.2em]">
+                    {post.slug}
+                  </span>
+                </div>
+                <h2 className="font-semibold text-2xl leading-snug">
+                  {post.title}
+                </h2>
+              </div>
             </Link>
           </li>
         ))}
