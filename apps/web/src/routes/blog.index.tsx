@@ -159,13 +159,13 @@ function BlogPage() {
               params={{ slug: post.slug }}
               className="flex gap-4 rounded-3xl border border-white/10 bg-black/25 p-5 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/35 sm:gap-6 sm:p-6"
             >
-              <div className="flex h-20 w-20 shrink-0 items-start justify-center sm:h-[120px] sm:w-[200px]">
+              <div className="size-20 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/25 sm:size-[120px]">
                 <img
                   src={post.featuredImage ?? '/avatar.svg'}
                   alt={post.title}
-                  width={200}
+                  width={120}
                   height={120}
-                  className="max-h-full max-w-full object-contain object-top"
+                  className="size-full object-cover"
                 />
               </div>
 
