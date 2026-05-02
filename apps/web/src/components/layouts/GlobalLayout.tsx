@@ -4,10 +4,12 @@ import RetroEffects from './RetroEffects';
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto flex min-h-screen max-w-5xl flex-col">
+    <div className="mx-auto min-h-screen max-w-5xl">
       <RetroEffects>
-        <div className="flex-1">{children}</div>
-        <SiteFooter />
+        <div className="flex min-h-screen flex-col">
+          <div className="flex-1">{children}</div>
+          <SiteFooter />
+        </div>
       </RetroEffects>
     </div>
   );
