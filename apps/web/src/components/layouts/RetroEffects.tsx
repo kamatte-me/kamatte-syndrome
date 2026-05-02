@@ -8,9 +8,9 @@ const RetroEffects: React.FC<React.PropsWithChildren> = ({ children }) => {
 
       <div className={styles.contentLayer}>{children}</div>
 
-      <div className={styles.liftBlack} />
-      <div className={styles.dot} />
-      <div className={styles.vignette} />
+      {/* <div className={styles.liftBlack} /> */}
+      {/* <div className={styles.dot} /> */}
+      {/* <div className={styles.vignette} /> */}
     </>
   );
 };

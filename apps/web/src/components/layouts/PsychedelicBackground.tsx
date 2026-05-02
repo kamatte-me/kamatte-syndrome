@@ -3,8 +3,10 @@
 import { useEffect, useRef } from 'react';
 import styles from './RetroEffects.module.css';
 
-const MAX_PIXEL_RATIO = 1.5;
+const FRAME_INTERVAL_MS = 1000 / 30;
+const MAX_PIXEL_RATIO = 1;
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+const RENDER_SCALE = 0.72;
 const STATIC_TIME = 38;
 
 const vertexShader = `
@@ -61,10 +63,10 @@ float fbm(vec2 position) {
   float value = 0.0;
   float amplitude = 0.5;
 
-  for (int index = 0; index < 5; index++) {
+  for (int index = 0; index < 4; index++) {
     value += amplitude * noise(position);
     position = mat2(1.62, 1.18, -1.18, 1.62) * position;
-    amplitude *= 0.52;
+    amplitude *= 0.54;
   }
 
   return value;
@@ -94,7 +96,7 @@ void main() {
   float voltage = fbm((rotate(domain + (slowWarp * 0.5), cloudy * 3.14) * 18.0) + seed.yx + vec2(-time * 1.7, time * 1.13));
   float contour = ridged(fbm((domain * 30.0) + (quickWarp * 8.0) + seed + vec2(time * 2.4, -time * 1.9)));
   float dust = fbm((domain * 92.0) + seed.yx + vec2(time * 9.1, -time * 6.7));
-  float grit = fbm((rotate(domain, voltage * 2.4) * 150.0) + seed + vec2(-time * 13.0, time * 8.8));
+  float grit = noise((rotate(domain, voltage * 2.4) * 150.0) + seed + vec2(-time * 13.0, time * 8.8));
   float grain = hash(gl_FragCoord.xy + floor(uTime * 22.0) + seed) - 0.5;
   float spark = smoothstep(
     0.985,
@@ -116,7 +118,7 @@ void main() {
     (grain * 0.18);
 
   vec3 color = palette(value + (time * 0.09) + (uSeed * 0.013));
-  vec3 acid = palette(fbm((domain * 9.0) + seed.yx + (quickWarp * 4.0) - (time * 0.7)) + 0.26);
+  vec3 acid = palette(((cloudy + voltage + contour) * 0.33) + 0.26);
   color = mix(color, acid, 0.28 + (voltage * 0.28));
   color = mix(color, vec3(0.0, 1.0, 0.82), smoothstep(0.64, 1.0, voltage) * 0.24);
   color = mix(color, vec3(1.0, 0.02, 0.55), smoothstep(0.68, 1.0, contour) * 0.2);
@@ -215,6 +217,7 @@ export function PsychedelicBackground() {
       });
       const mesh = new Mesh(geometry, material);
       const clock = new Clock();
+      let lastRenderTime = 0;
 
       scene.add(mesh);
       renderer.domElement.className = styles.psychedelicCanvas;
@@ -231,21 +234,27 @@ export function PsychedelicBackground() {
           window.devicePixelRatio || 1,
           MAX_PIXEL_RATIO,
         );
+        const renderWidth = Math.max(1, Math.round(width * RENDER_SCALE));
+        const renderHeight = Math.max(1, Math.round(height * RENDER_SCALE));
 
         renderer.setPixelRatio(pixelRatio);
-        renderer.setSize(width, height, false);
+        renderer.setSize(renderWidth, renderHeight, false);
         renderer.getDrawingBufferSize(resolution);
         renderScene();
       };
 
-      const tick = () => {
+      const tick = (currentTime: number) => {
         if (document.hidden || reducedMotionQuery.matches) {
           frameId = null;
           return;
         }
 
-        uniforms.uTime.value = clock.getElapsedTime();
-        renderScene();
+        if (currentTime - lastRenderTime >= FRAME_INTERVAL_MS) {
+          uniforms.uTime.value = clock.getElapsedTime();
+          renderScene();
+          lastRenderTime = currentTime;
+        }
+
         frameId = window.requestAnimationFrame(tick);
       };
 
@@ -258,6 +267,7 @@ export function PsychedelicBackground() {
       };
 
       const renderStaticFrame = () => {
+        lastRenderTime = 0;
         uniforms.uTime.value = STATIC_TIME;
         renderScene();
       };
