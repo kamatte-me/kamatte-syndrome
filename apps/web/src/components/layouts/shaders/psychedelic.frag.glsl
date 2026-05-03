@@ -97,12 +97,10 @@ void main() {
   color += palette(value + 0.58) * softSpark * 0.16;
 
   float centerGlow = pow(1.0 - smoothstep(0.0, 1.45, radius), 1.2);
-  float edgeFade = smoothstep(1.82, 0.18, radius);
   float dropout = smoothstep(0.66, 1.0, tear) * smoothstep(0.18, 1.32, radius);
 
   color *= 0.62 + (cloudy * 0.36) + (voltage * 0.28) + (centerGlow * 0.42);
   color = mix(color, vec3(0.006, 0.0, 0.02), dropout * 0.24);
-  color = mix(vec3(0.01, 0.0, 0.032), color, edgeFade);
   // Quantize time so the grain flickers in place instead of drifting.
   float grainFrame = floor(uTime * 18.0);
   color += (screenGrain(gl_FragCoord.xy, grainFrame) - 0.5) * 0.035;

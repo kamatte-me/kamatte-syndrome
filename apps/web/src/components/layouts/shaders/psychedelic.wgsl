@@ -123,12 +123,10 @@ fn fragmentMain(@builtin(position) fragmentPosition: vec4<f32>) -> @location(0) 
   color = color + (palette(value + 0.58) * softSpark * 0.16);
 
   let centerGlow = pow(1.0 - smoothstep(0.0, 1.45, radius), 1.2);
-  let edgeFade = smoothstep(1.82, 0.18, radius);
   let dropout = smoothstep(0.66, 1.0, tear) * smoothstep(0.18, 1.32, radius);
 
   color = color * (0.62 + (cloudy * 0.36) + (voltage * 0.28) + (centerGlow * 0.42));
   color = mix(color, vec3<f32>(0.006, 0.0, 0.02), dropout * 0.24);
-  color = mix(vec3<f32>(0.01, 0.0, 0.032), color, edgeFade);
 
   let grainFrame = floor(uniforms.time * 18.0);
   color = color + ((screenGrain(coord, grainFrame) - 0.5) * 0.035);
