@@ -95,15 +95,8 @@ void main() {
   float cloudy = fbm((domain * 5.5) + (seed * 0.31) + vec2(time * 0.67, -time * 0.43));
   float voltage = fbm((rotate(domain + (slowWarp * 0.5), cloudy * 3.14) * 18.0) + seed.yx + vec2(-time * 1.7, time * 1.13));
   float contour = ridged(fbm((domain * 30.0) + (quickWarp * 8.0) + seed + vec2(time * 2.4, -time * 1.9)));
-  float dust = fbm((domain * 92.0) + seed.yx + vec2(time * 9.1, -time * 6.7));
-  float grit = noise((rotate(domain, voltage * 2.4) * 150.0) + seed + vec2(-time * 13.0, time * 8.8));
-  float grain = hash(gl_FragCoord.xy + floor(uTime * 22.0) + seed) - 0.5;
-  float spark = smoothstep(
-    0.985,
-    1.0,
-    hash(floor((domain + quickWarp) * 78.0) + floor(vec2(time * 7.1, time * 5.3)) + seed) + ((dust - 0.5) * 0.12)
-  );
-  float fleck = smoothstep(0.72, 1.0, dust) * (0.45 + (hash(gl_FragCoord.xy + seed) * 0.55));
+  float dust = fbm((domain * 24.0) + (quickWarp * 4.0) + seed.yx + vec2(time * 3.4, -time * 2.7));
+  float softSpark = smoothstep(0.78, 1.0, contour) * smoothstep(0.56, 1.0, voltage);
   float tear = smoothstep(
     0.58,
     0.98,
@@ -113,23 +106,20 @@ void main() {
     (cloudy * 0.44) +
     (voltage * 0.34) +
     (contour * 0.24) +
-    (dust * 0.14) +
-    (grit * 0.1) +
-    (grain * 0.18);
+    (dust * 0.08);
 
   vec3 color = palette(value + (time * 0.09) + (uSeed * 0.013));
   vec3 acid = palette(((cloudy + voltage + contour) * 0.33) + 0.26);
   color = mix(color, acid, 0.28 + (voltage * 0.28));
   color = mix(color, vec3(0.0, 1.0, 0.82), smoothstep(0.64, 1.0, voltage) * 0.24);
   color = mix(color, vec3(1.0, 0.02, 0.55), smoothstep(0.68, 1.0, contour) * 0.2);
-  color += palette(value + 0.58) * spark * 0.56;
-  color += vec3(0.88, 1.0, 0.2) * fleck * 0.08;
+  color += palette(value + 0.58) * softSpark * 0.22;
 
   float centerGlow = pow(1.0 - smoothstep(0.0, 1.45, radius), 1.2);
   float edgeFade = smoothstep(1.82, 0.18, radius);
   float dropout = smoothstep(0.66, 1.0, tear) * smoothstep(0.18, 1.32, radius);
 
-  color *= 0.62 + (cloudy * 0.36) + (voltage * 0.28) + (centerGlow * 0.42) + (grain * 0.26);
+  color *= 0.62 + (cloudy * 0.36) + (voltage * 0.28) + (centerGlow * 0.42);
   color = mix(color, vec3(0.006, 0.0, 0.02), dropout * 0.24);
   color = mix(vec3(0.01, 0.0, 0.032), color, edgeFade);
 
