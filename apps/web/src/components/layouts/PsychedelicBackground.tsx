@@ -94,6 +94,7 @@ void main() {
 
   float cloudy = fbm((domain * 5.5) + (seed * 0.31) + vec2(time * 0.67, -time * 0.43));
   float voltage = fbm((rotate(domain + (slowWarp * 0.5), cloudy * 3.14) * 18.0) + seed.yx + vec2(-time * 1.7, time * 1.13));
+  // TODO: Try removing contour again if the design should feel softer and less electric.
   float contour = ridged(fbm((domain * 30.0) + (quickWarp * 8.0) + seed + vec2(time * 2.4, -time * 1.9)));
   float dust = fbm((domain * 24.0) + (quickWarp * 4.0) + seed.yx + vec2(time * 3.4, -time * 2.7));
   float softSpark = smoothstep(0.78, 1.0, contour) * smoothstep(0.56, 1.0, voltage);
