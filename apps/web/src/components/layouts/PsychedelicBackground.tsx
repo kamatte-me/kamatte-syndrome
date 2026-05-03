@@ -8,13 +8,13 @@ const MAX_PIXEL_RATIO = 1;
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const RENDER_SCALE = 1;
 const STATIC_TIME = 38;
+const FULLSCREEN_TRIANGLE = new Float32Array([-1, -1, 3, -1, -1, 3]);
 
 const vertexShader = `
-varying vec2 vUv;
+attribute vec2 aPosition;
 
 void main() {
-  vUv = uv;
-  gl_Position = vec4(position.xy, 0.0, 1.0);
+  gl_Position = vec4(aPosition, 0.0, 1.0);
 }
 `;
 
@@ -24,8 +24,6 @@ precision highp float;
 uniform float uSeed;
 uniform float uTime;
 uniform vec2 uResolution;
-
-varying vec2 vUv;
 
 vec3 palette(float value) {
   return 0.5 + 0.5 * cos(6.28318 * (vec3(0.92, 0.48, 0.08) + value));
@@ -135,6 +133,62 @@ void main() {
 }
 `;
 
+function createShader(gl: WebGLRenderingContext, type: number, source: string) {
+  const shader = gl.createShader(type);
+
+  if (!shader) {
+    return null;
+  }
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+}
+
+function createProgram(gl: WebGLRenderingContext) {
+  const vertex = createShader(gl, gl.VERTEX_SHADER, vertexShader);
+  const fragment = createShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
+
+  if (!vertex || !fragment) {
+    if (vertex) {
+      gl.deleteShader(vertex);
+    }
+
+    if (fragment) {
+      gl.deleteShader(fragment);
+    }
+
+    return null;
+  }
+
+  const program = gl.createProgram();
+
+  if (!program) {
+    gl.deleteShader(vertex);
+    gl.deleteShader(fragment);
+    return null;
+  }
+
+  gl.attachShader(program, vertex);
+  gl.attachShader(program, fragment);
+  gl.linkProgram(program);
+  gl.deleteShader(vertex);
+  gl.deleteShader(fragment);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    gl.deleteProgram(program);
+    return null;
+  }
+
+  return program;
+}
+
 export function PsychedelicBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -145,8 +199,6 @@ export function PsychedelicBackground() {
       return;
     }
 
-    let isDisposed = false;
-    let cleanupWebgl: (() => void) | null = null;
     let frameId: number | null = null;
 
     const stop = () => {
@@ -158,171 +210,173 @@ export function PsychedelicBackground() {
       frameId = null;
     };
 
-    const initialize = async () => {
-      const threeModules = await Promise.all([
-        import('three/src/renderers/WebGLRenderer.js'),
-        import('three/src/scenes/Scene.js'),
-        import('three/src/cameras/OrthographicCamera.js'),
-        import('three/src/math/Vector2.js'),
-        import('three/src/geometries/PlaneGeometry.js'),
-        import('three/src/materials/ShaderMaterial.js'),
-        import('three/src/objects/Mesh.js'),
-        import('three/src/core/Clock.js'),
-      ]).catch(() => null);
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl', {
+      alpha: true,
+      antialias: false,
+      premultipliedAlpha: false,
+      powerPreference: 'low-power',
+    });
 
-      if (!threeModules || isDisposed) {
+    if (!gl) {
+      return;
+    }
+
+    const program = createProgram(gl);
+
+    if (!program) {
+      return;
+    }
+
+    const positionLocation = gl.getAttribLocation(program, 'aPosition');
+    const resolutionLocation = gl.getUniformLocation(program, 'uResolution');
+    const seedLocation = gl.getUniformLocation(program, 'uSeed');
+    const timeLocation = gl.getUniformLocation(program, 'uTime');
+
+    if (
+      positionLocation < 0 ||
+      resolutionLocation === null ||
+      seedLocation === null ||
+      timeLocation === null
+    ) {
+      gl.deleteProgram(program);
+      return;
+    }
+
+    const vertexBuffer = gl.createBuffer();
+
+    if (!vertexBuffer) {
+      gl.deleteProgram(program);
+      return;
+    }
+
+    const reducedMotionQuery = window.matchMedia(REDUCED_MOTION_QUERY);
+    const seed = Math.random() * 1000;
+    const startTime = window.performance.now();
+    let drawingWidth = 0;
+    let drawingHeight = 0;
+    let lastRenderTime = 0;
+    let timeValue = reducedMotionQuery.matches ? STATIC_TIME : 0;
+    const activateProgram = gl.useProgram.bind(gl);
+
+    canvas.className = styles.psychedelicCanvas;
+    container.appendChild(canvas);
+
+    activateProgram(program);
+    gl.disable(gl.CULL_FACE);
+    gl.disable(gl.DEPTH_TEST);
+    gl.clearColor(0, 0, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, FULLSCREEN_TRIANGLE, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform1f(seedLocation, seed);
+
+    const renderScene = () => {
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform1f(timeLocation, timeValue);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
+    const resize = () => {
+      const width = container.clientWidth || window.innerWidth;
+      const height = container.clientHeight || window.innerHeight;
+      const pixelRatio = Math.min(
+        window.devicePixelRatio || 1,
+        MAX_PIXEL_RATIO,
+      );
+      const renderWidth = Math.max(
+        1,
+        Math.round(width * RENDER_SCALE * pixelRatio),
+      );
+      const renderHeight = Math.max(
+        1,
+        Math.round(height * RENDER_SCALE * pixelRatio),
+      );
+
+      if (drawingWidth !== renderWidth || drawingHeight !== renderHeight) {
+        drawingWidth = renderWidth;
+        drawingHeight = renderHeight;
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
+        gl.viewport(0, 0, renderWidth, renderHeight);
+        gl.uniform2f(resolutionLocation, renderWidth, renderHeight);
+      }
+
+      renderScene();
+    };
+
+    const tick = (currentTime: number) => {
+      if (document.hidden || reducedMotionQuery.matches) {
+        frameId = null;
         return;
       }
 
-      const [
-        { WebGLRenderer },
-        { Scene },
-        { OrthographicCamera },
-        { Vector2 },
-        { PlaneGeometry },
-        { ShaderMaterial },
-        { Mesh },
-        { Clock },
-      ] = threeModules;
-      const reducedMotionQuery = window.matchMedia(REDUCED_MOTION_QUERY);
-      let renderer: InstanceType<typeof WebGLRenderer>;
+      if (currentTime - lastRenderTime >= FRAME_INTERVAL_MS) {
+        timeValue = (currentTime - startTime) / 1000;
+        renderScene();
+        lastRenderTime = currentTime;
+      }
 
-      try {
-        renderer = new WebGLRenderer({
-          alpha: true,
-          antialias: false,
-          powerPreference: 'low-power',
-        });
-      } catch {
+      frameId = window.requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (frameId !== null || document.hidden || reducedMotionQuery.matches) {
         return;
       }
 
-      const scene = new Scene();
-      const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-      const resolution = new Vector2(1, 1);
-      const uniforms = {
-        uResolution: { value: resolution },
-        uSeed: { value: Math.random() * 1000 },
-        uTime: { value: reducedMotionQuery.matches ? STATIC_TIME : 0 },
-      };
-      const geometry = new PlaneGeometry(2, 2);
-      const material = new ShaderMaterial({
-        depthTest: false,
-        depthWrite: false,
-        fragmentShader,
-        uniforms,
-        vertexShader,
-      });
-      const mesh = new Mesh(geometry, material);
-      const clock = new Clock();
-      let lastRenderTime = 0;
+      frameId = window.requestAnimationFrame(tick);
+    };
 
-      scene.add(mesh);
-      renderer.domElement.className = styles.psychedelicCanvas;
-      container.appendChild(renderer.domElement);
+    const renderStaticFrame = () => {
+      lastRenderTime = 0;
+      timeValue = STATIC_TIME;
+      renderScene();
+    };
 
-      const renderScene = () => {
-        renderer.render(scene, camera);
-      };
-
-      const resize = () => {
-        const width = container.clientWidth || window.innerWidth;
-        const height = container.clientHeight || window.innerHeight;
-        const pixelRatio = Math.min(
-          window.devicePixelRatio || 1,
-          MAX_PIXEL_RATIO,
-        );
-        const renderWidth = Math.max(1, Math.round(width * RENDER_SCALE));
-        const renderHeight = Math.max(1, Math.round(height * RENDER_SCALE));
-
-        renderer.setPixelRatio(pixelRatio);
-        renderer.setSize(renderWidth, renderHeight, false);
-        renderer.getDrawingBufferSize(resolution);
-        renderScene();
-      };
-
-      const tick = (currentTime: number) => {
-        if (document.hidden || reducedMotionQuery.matches) {
-          frameId = null;
-          return;
-        }
-
-        if (currentTime - lastRenderTime >= FRAME_INTERVAL_MS) {
-          uniforms.uTime.value = clock.getElapsedTime();
-          renderScene();
-          lastRenderTime = currentTime;
-        }
-
-        frameId = window.requestAnimationFrame(tick);
-      };
-
-      const start = () => {
-        if (frameId !== null || document.hidden || reducedMotionQuery.matches) {
-          return;
-        }
-
-        frameId = window.requestAnimationFrame(tick);
-      };
-
-      const renderStaticFrame = () => {
-        lastRenderTime = 0;
-        uniforms.uTime.value = STATIC_TIME;
-        renderScene();
-      };
-
-      const handleMotionChange = () => {
-        stop();
-
-        if (reducedMotionQuery.matches) {
-          renderStaticFrame();
-          return;
-        }
-
-        start();
-      };
-
-      const handleVisibilityChange = () => {
-        if (document.hidden) {
-          stop();
-          return;
-        }
-
-        handleMotionChange();
-      };
-
-      resize();
+    const handleMotionChange = () => {
+      stop();
 
       if (reducedMotionQuery.matches) {
         renderStaticFrame();
-      } else {
-        start();
+        return;
       }
 
-      window.addEventListener('resize', resize);
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-      reducedMotionQuery.addEventListener('change', handleMotionChange);
-
-      cleanupWebgl = () => {
-        stop();
-        window.removeEventListener('resize', resize);
-        document.removeEventListener(
-          'visibilitychange',
-          handleVisibilityChange,
-        );
-        reducedMotionQuery.removeEventListener('change', handleMotionChange);
-        mesh.removeFromParent();
-        material.dispose();
-        geometry.dispose();
-        renderer.dispose();
-        renderer.domElement.remove();
-      };
+      timeValue = (window.performance.now() - startTime) / 1000;
+      renderScene();
+      start();
     };
 
-    void initialize();
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stop();
+        return;
+      }
+
+      handleMotionChange();
+    };
+
+    resize();
+
+    if (reducedMotionQuery.matches) {
+      renderStaticFrame();
+    } else {
+      start();
+    }
+
+    window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    reducedMotionQuery.addEventListener('change', handleMotionChange);
 
     return () => {
-      isDisposed = true;
-      cleanupWebgl?.();
+      stop();
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      reducedMotionQuery.removeEventListener('change', handleMotionChange);
+      gl.deleteBuffer(vertexBuffer);
+      gl.deleteProgram(program);
+      canvas.remove();
     };
   }, []);
 
