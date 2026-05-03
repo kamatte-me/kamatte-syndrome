@@ -45,6 +45,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.1",
     "@vitejs/plugin-rsc": "0.5.25",
+    "@webgpu/types": "0.1.69",
     "happy-dom": "20.9.0",
     "msw": "2.14.2",
     "nitro": "3.0.260429-beta",
