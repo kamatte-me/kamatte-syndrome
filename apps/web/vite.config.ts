@@ -21,6 +21,34 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       {
+        // Handle .glsl/.wgsl ?raw imports before TanStack Start's dev
+        // middleware so LAN dev URLs do not fall through to the app as 404s.
+        name: 'gpu-source-raw-dev-middleware',
+        configureServer(server) {
+          server.middlewares.use(async (req, res, next) => {
+            if (!req.url || !/\.(?:glsl|wgsl)(?:\?.*)?$/.test(req.url)) {
+              return next();
+            }
+            const requestUrl = new URL(req.url, 'http://vite.local');
+            if (!requestUrl.searchParams.has('raw')) {
+              return next();
+            }
+            let result: Awaited<ReturnType<typeof server.transformRequest>>;
+            try {
+              result = await server.transformRequest(req.url);
+            } catch (error) {
+              return next(error);
+            }
+            if (!result) {
+              return next();
+            }
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/javascript');
+            res.end(result.code);
+          });
+        },
+      },
+      {
         enforce: 'pre',
         ...mdx({
           remarkPlugins: [
