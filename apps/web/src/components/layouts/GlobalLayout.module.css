@@ -1,3 +1,16 @@
+.contentLayer {
+  position: relative;
+  z-index: 1;
+}
+
+.cutoutFilterSvg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .framedFooter {
   position: relative;
   overflow: hidden;
@@ -28,14 +41,14 @@
   color: #fff;
 }
 
-@supports (filter: url("#index-text-cutout-filter")) {
+@supports (filter: url("#text-cutout-filter")) {
   .framedFooter {
     background: transparent;
   }
 
   .footerCutoutLayer {
     display: block;
-    filter: url("#index-text-cutout-filter");
+    filter: url("#text-cutout-filter");
   }
 
   .footerTextHole {

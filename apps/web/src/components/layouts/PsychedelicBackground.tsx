@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import styles from './RetroEffects.module.css';
+import styles from './PsychedelicBackground.module.css';
 import fragmentShader from './shaders/psychedelic.frag.glsl?raw';
 import vertexShader from './shaders/psychedelic.vert.glsl?raw';
 import webgpuShader from './shaders/psychedelic.wgsl?raw';

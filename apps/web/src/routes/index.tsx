@@ -58,25 +58,6 @@ function App() {
     <main
       className={`${styles.stage} relative row-start-2 flex min-h-0 flex-1 flex-col items-center justify-center gap-8 p-10 text-center`}
     >
-      <svg
-        aria-hidden="true"
-        className={styles.cutoutFilterSvg}
-        focusable="false"
-      >
-        <defs>
-          <filter
-            id="index-text-cutout-filter"
-            colorInterpolationFilters="sRGB"
-          >
-            <feColorMatrix
-              in="SourceGraphic"
-              type="matrix"
-              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.333 0.333 0.333 0 0"
-            />
-          </filter>
-        </defs>
-      </svg>
-
       <div aria-hidden="true" className={styles.whiteCutoutLayer}>
         <div className="flex h-full min-h-0 flex-col items-center justify-center gap-8 p-10 text-center">
           <div className={styles.avatarSpacer} />

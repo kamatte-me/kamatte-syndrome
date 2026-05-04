@@ -10,14 +10,6 @@
   background-size: calc(100% - 40px) calc(100% - 20px);
 }
 
-.cutoutFilterSvg {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
 .whiteCutoutLayer {
   display: none;
   position: absolute;
@@ -52,14 +44,14 @@
   background: #000;
 }
 
-@supports (filter: url("#index-text-cutout-filter")) {
+@supports (filter: url("#text-cutout-filter")) {
   .stage {
     background: none;
   }
 
   .whiteCutoutLayer {
     display: block;
-    filter: url("#index-text-cutout-filter");
+    filter: url("#text-cutout-filter");
   }
 
   .whiteCutoutLayer > div {
