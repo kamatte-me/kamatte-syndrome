@@ -18,15 +18,61 @@ const policyLinks = [
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-dvh p-2 sm:p-5">
+    <div className="ks-cutout-shell relative min-h-dvh p-2 sm:p-5">
       <PsychedelicBackground />
-      <div className="relative z-[1] flex min-h-[calc(100dvh-16px)] flex-col overflow-hidden bg-black text-white sm:min-h-[calc(100dvh-40px)]">
-        <SiteHeader />
-        <div className="flex min-h-0 flex-1 [&>*]:w-full [&>main]:min-h-0">
-          {children}
+      <CutoutFilter />
+      <div className="ks-cutout-surface relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-white sm:min-h-[calc(100dvh-40px)]">
+        <div
+          aria-hidden="true"
+          className="ks-cutout-stencil-layer pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          data-nosnippet
+          inert
+        >
+          <LayoutFrame>{children}</LayoutFrame>
         </div>
-        <SiteFooter />
+        <div className="ks-cutout-content relative z-10">
+          <LayoutFrame>{children}</LayoutFrame>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function CutoutFilter() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="absolute size-0 overflow-hidden"
+      focusable="false"
+    >
+      <defs>
+        <filter
+          colorInterpolationFilters="sRGB"
+          height="100%"
+          id="ks-global-cutout-filter"
+          width="100%"
+          x="0"
+          y="0"
+        >
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.333 0.333 0.333 0 0"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+
+function LayoutFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex min-h-[calc(100dvh-16px)] flex-col sm:min-h-[calc(100dvh-40px)]">
+      <SiteHeader />
+      <div className="flex min-h-0 flex-1 [&>*]:w-full [&>main]:min-h-0">
+        {children}
+      </div>
+      <SiteFooter />
     </div>
   );
 }
@@ -43,6 +89,7 @@ function SiteHeader() {
             activeOptions={link.to === '/' ? { exact: true } : undefined}
             activeProps={{
               className: 'bg-white text-black',
+              'data-cutout-active': true,
             }}
             key={link.to}
             to={link.to}

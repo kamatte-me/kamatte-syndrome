@@ -20,3 +20,138 @@ body {
   font-size: 18px;
   overflow-x: hidden;
 }
+
+.ks-cutout-shell {
+  --ks-cutout-inset: 8px;
+}
+
+.ks-cutout-surface {
+  background: #000;
+}
+
+.ks-cutout-stencil-layer {
+  display: none;
+}
+
+@supports (filter: url("#ks-global-cutout-filter")) {
+  .ks-cutout-surface {
+    background: transparent;
+  }
+
+  .ks-cutout-stencil-layer {
+    display: block;
+    background: #fff;
+    color: #000;
+    filter: url("#ks-global-cutout-filter");
+    -webkit-text-fill-color: #000;
+  }
+
+  .ks-cutout-stencil-layer :where(*) {
+    border-color: #000;
+    color: #000;
+    text-decoration-color: #000;
+    -webkit-text-fill-color: #000;
+  }
+
+  .ks-cutout-stencil-layer :where([class*="bg-black"]) {
+    background-color: transparent;
+  }
+
+  .ks-cutout-stencil-layer :where([class*="bg-white"]) {
+    background-color: #000;
+  }
+
+  .ks-cutout-stencil-layer :where(.fixed) {
+    position: absolute;
+  }
+
+  .ks-cutout-stencil-layer :where([data-cutout-modal]) {
+    top: calc(var(--ks-modal-scroll-y, 0px) - var(--ks-cutout-inset));
+    right: auto;
+    bottom: auto;
+    left: calc(-1 * var(--ks-cutout-inset));
+    width: 100vw;
+    height: 100dvh;
+  }
+
+  .ks-cutout-stencil-layer :where([data-cutout-modal] [class*="bg-black"]) {
+    background-color: #fff;
+  }
+
+  .ks-cutout-stencil-layer
+    :where([data-cutout-active], [data-cutout-active] *) {
+    color: #fff;
+    text-decoration-color: #fff;
+    -webkit-text-fill-color: #fff;
+  }
+
+  .ks-cutout-stencil-layer :where(img, video, iframe, canvas) {
+    visibility: hidden;
+  }
+
+  .ks-cutout-stencil-layer :where(svg, svg *) {
+    color: #000;
+    fill: currentColor;
+    stroke: currentColor;
+    -webkit-text-fill-color: #000;
+  }
+
+  .ks-cutout-content :where(*) {
+    background-color: transparent;
+    border-color: transparent;
+    color: transparent;
+    text-decoration-color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .ks-cutout-content :where(img, video, iframe, canvas) {
+    visibility: visible;
+  }
+
+  .ks-cutout-content
+    :where([data-culture-modal-open] [data-culture-card-media]) {
+    visibility: hidden;
+  }
+
+  .ks-cutout-content :where(svg, svg *) {
+    color: transparent;
+    fill: transparent;
+    stroke: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .ks-cutout-content :where([data-cutout-active], [data-cutout-active] *) {
+    color: #000;
+    text-decoration-color: #000;
+    -webkit-text-fill-color: #000;
+  }
+
+  .ks-cutout-content :where([data-cutout-normal], [data-cutout-normal] *) {
+    border-color: #fff;
+    color: #fff;
+    text-decoration-color: #fff;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .ks-cutout-content :where([data-cutout-normal] [class*="bg-black"]) {
+    background-color: #000;
+  }
+
+  .ks-cutout-content :where([data-cutout-normal] [class*="bg-white"]) {
+    background-color: #fff;
+  }
+
+  .ks-cutout-content
+    :where([data-cutout-normal] svg, [data-cutout-normal] svg *) {
+    color: currentColor;
+    fill: currentColor;
+    stroke: currentColor;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+@media (width >= 40rem) {
+  .ks-cutout-shell {
+    --ks-cutout-inset: 20px;
+  }
+}

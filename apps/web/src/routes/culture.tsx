@@ -4,7 +4,7 @@ import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allCultures } from 'content-collections';
 import { Play, X } from 'lucide-react';
-import type { ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
@@ -17,6 +17,8 @@ type CultureListItem = {
   slug: string;
   youtubeVideoId: string;
 };
+
+const cultureModalChangeEvent = 'ks-culture-modal-change';
 
 const getCulturePageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -60,7 +62,9 @@ export const Route = createFileRoute('/culture')({
 
 function CulturePage() {
   const cultureItems = Route.useLoaderData();
+  const pageRef = useRef<HTMLElement>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [isStencilPage, setIsStencilPage] = useState(false);
 
   const selectedItem = useMemo(
     () => cultureItems.find((item) => item.slug === selectedSlug),
@@ -79,6 +83,11 @@ function CulturePage() {
         '',
         window.location.href,
       );
+      window.dispatchEvent(
+        new CustomEvent<{ slug: string | null }>(cultureModalChangeEvent, {
+          detail: { slug },
+        }),
+      );
     },
     [selectedSlug],
   );
@@ -92,19 +101,33 @@ function CulturePage() {
   }, [selectedSlug]);
 
   useEffect(() => {
+    setIsStencilPage(
+      Boolean(pageRef.current?.closest('.ks-cutout-stencil-layer')),
+    );
+  }, []);
+
+  useEffect(() => {
     const handlePopState = () => {
       setSelectedSlug(null);
     };
 
+    const handleModalChange = (event: Event) => {
+      setSelectedSlug(
+        (event as CustomEvent<{ slug: string | null }>).detail.slug,
+      );
+    };
+
     window.addEventListener('popstate', handlePopState);
+    window.addEventListener(cultureModalChangeEvent, handleModalChange);
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener(cultureModalChangeEvent, handleModalChange);
     };
   }, []);
 
   useEffect(() => {
-    if (!selectedItem) {
+    if (!selectedItem || isStencilPage) {
       return;
     }
 
@@ -114,10 +137,10 @@ function CulturePage() {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [selectedItem]);
+  }, [isStencilPage, selectedItem]);
 
   useEffect(() => {
-    if (!selectedItem) {
+    if (!selectedItem || isStencilPage) {
       return;
     }
 
@@ -135,10 +158,14 @@ function CulturePage() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [closeModal, selectedItem]);
+  }, [closeModal, isStencilPage, selectedItem]);
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
+    <main
+      ref={pageRef}
+      className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12"
+      data-culture-modal-open={selectedItem ? true : undefined}
+    >
       <section className="border-white border-b pb-8">
         <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
           Culture
@@ -194,6 +221,7 @@ function CultureCard({
             width={480}
             height={360}
             loading="lazy"
+            data-culture-card-media
             className="size-full object-cover opacity-90"
           />
           <span className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-100">
@@ -221,14 +249,38 @@ function CultureModal({
   item: CultureListItem;
   onClose: () => void;
 }) {
+  const modalRootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const [renderMedia, setRenderMedia] = useState(false);
+  const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
 
   useEffect(() => {
-    dialogRef.current?.focus();
+    const isStencilModal = Boolean(
+      modalRootRef.current?.closest('.ks-cutout-stencil-layer'),
+    );
+
+    setRenderMedia(!isStencilModal);
+    setStencilScrollY(isStencilModal ? window.scrollY : null);
+
+    if (!isStencilModal) {
+      dialogRef.current?.focus();
+    }
   }, []);
 
+  const modalStyle =
+    stencilScrollY === null
+      ? undefined
+      : ({
+          '--ks-modal-scroll-y': `${stencilScrollY}px`,
+        } as CSSProperties);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      ref={modalRootRef}
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      data-cutout-modal
+      style={modalStyle}
+    >
       <button
         type="button"
         aria-label="モーダルを閉じる"
@@ -257,13 +309,17 @@ function CultureModal({
         <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
           <div className="shrink-0 border-white border-b bg-black/35 p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
             <div className="mx-auto aspect-video w-full bg-black md:max-w-2xl lg:max-w-none">
-              <iframe
-                title={`${item.name} - YouTube`}
-                src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1`}
-                className="size-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
+              {renderMedia ? (
+                <iframe
+                  title={`${item.name} - YouTube`}
+                  src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1`}
+                  className="size-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : (
+                <div aria-hidden="true" className="size-full" />
+              )}
             </div>
           </div>
 
