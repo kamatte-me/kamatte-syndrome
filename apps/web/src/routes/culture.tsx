@@ -131,6 +131,105 @@ function CulturePage() {
       return;
     }
 
+    const clearObscuredMedia = () => {
+      for (const media of document.querySelectorAll<HTMLElement>(
+        '.ks-cutout-content [data-culture-card-media]',
+      )) {
+        delete media.dataset.cultureModalObscured;
+        delete media.dataset.cultureModalCutout;
+        media.style.removeProperty('--ks-culture-modal-mask-height');
+        media.style.removeProperty('--ks-culture-modal-mask-left');
+        media.style.removeProperty('--ks-culture-modal-mask-top');
+        media.style.removeProperty('--ks-culture-modal-mask-width');
+      }
+    };
+
+    const updateObscuredMedia = () => {
+      const dialog = document.querySelector<HTMLElement>(
+        '.ks-cutout-content [data-cutout-modal] [role="dialog"]',
+      );
+
+      if (!dialog) {
+        return;
+      }
+
+      const dialogRect = dialog.getBoundingClientRect();
+
+      for (const media of document.querySelectorAll<HTMLElement>(
+        '.ks-cutout-content [data-culture-card-media]',
+      )) {
+        const mediaRect = media.getBoundingClientRect();
+        const overlapLeft = Math.max(0, dialogRect.left - mediaRect.left);
+        const overlapTop = Math.max(0, dialogRect.top - mediaRect.top);
+        const overlapRight = Math.min(
+          mediaRect.width,
+          dialogRect.right - mediaRect.left,
+        );
+        const overlapBottom = Math.min(
+          mediaRect.height,
+          dialogRect.bottom - mediaRect.top,
+        );
+        const overlapWidth = Math.max(0, overlapRight - overlapLeft);
+        const overlapHeight = Math.max(0, overlapBottom - overlapTop);
+
+        delete media.dataset.cultureModalObscured;
+        delete media.dataset.cultureModalCutout;
+        media.style.removeProperty('--ks-culture-modal-mask-height');
+        media.style.removeProperty('--ks-culture-modal-mask-left');
+        media.style.removeProperty('--ks-culture-modal-mask-top');
+        media.style.removeProperty('--ks-culture-modal-mask-width');
+
+        if (overlapWidth <= 0 || overlapHeight <= 0) {
+          continue;
+        }
+
+        const coversImage =
+          overlapLeft <= 0.5 &&
+          overlapTop <= 0.5 &&
+          overlapRight >= mediaRect.width - 0.5 &&
+          overlapBottom >= mediaRect.height - 0.5;
+
+        if (coversImage) {
+          media.dataset.cultureModalObscured = 'true';
+          continue;
+        }
+
+        media.dataset.cultureModalCutout = 'true';
+        media.style.setProperty(
+          '--ks-culture-modal-mask-height',
+          `${overlapHeight}px`,
+        );
+        media.style.setProperty(
+          '--ks-culture-modal-mask-left',
+          `${overlapLeft}px`,
+        );
+        media.style.setProperty(
+          '--ks-culture-modal-mask-top',
+          `${overlapTop}px`,
+        );
+        media.style.setProperty(
+          '--ks-culture-modal-mask-width',
+          `${overlapWidth}px`,
+        );
+      }
+    };
+
+    const animationFrame = window.requestAnimationFrame(updateObscuredMedia);
+
+    window.addEventListener('resize', updateObscuredMedia);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener('resize', updateObscuredMedia);
+      clearObscuredMedia();
+    };
+  }, [isStencilPage, selectedItem]);
+
+  useEffect(() => {
+    if (!selectedItem || isStencilPage) {
+      return;
+    }
+
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
