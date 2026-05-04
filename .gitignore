@@ -17,6 +17,8 @@ coverage/
 # Local machine files
 .DS_Store
 *.pem
+.playwright-cli
+tmp
 
 # Debug logs
 npm-debug.log*
