@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
@@ -138,12 +138,12 @@ function CulturePage() {
   }, [closeModal, selectedItem]);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-12">
-      <section className="border-white/15 border-b pb-8">
+    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
+      <section className="border-white border-b pb-8">
         <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
           Culture
         </p>
-        <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
+        <div className="grid gap-5">
           <div>
             <h1
               className="font-bold text-5xl leading-none sm:text-6xl"
@@ -157,12 +157,6 @@ function CulturePage() {
               ぼくを構成する音楽、動画、いろいろ。
             </p>
           </div>
-          <Link
-            to="/"
-            className="w-fit rounded-full border border-white/20 px-5 py-2 text-sm text-white/75 transition hover:border-white/40 hover:text-white"
-          >
-            Back Home
-          </Link>
         </div>
       </section>
 
@@ -190,20 +184,20 @@ function CultureCard({
     <li>
       <button
         type="button"
-        className="group grid h-full w-full overflow-hidden rounded-3xl border border-white/10 bg-black/30 text-left shadow-[0_18px_54px_rgba(0,0,0,0.28)] transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200"
+        className="grid h-full w-full overflow-hidden border border-white text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
         onClick={() => onOpen(item.slug)}
       >
-        <span className="relative block aspect-[4/3] overflow-hidden bg-white/5">
+        <span className="relative block aspect-[4/3] overflow-hidden bg-black">
           <img
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             alt=""
             width={480}
             height={360}
             loading="lazy"
-            className="size-full object-cover opacity-90 transition duration-300 group-hover:scale-105 group-hover:opacity-100"
+            className="size-full object-cover opacity-90"
           />
-          <span className="absolute inset-0 flex items-center justify-center bg-black/12 opacity-100 transition group-hover:bg-black/0">
-            <span className="flex size-14 items-center justify-center rounded-full border border-white/35 bg-black/45 text-white shadow-[0_0_28px_rgba(0,0,0,0.45)] backdrop-blur">
+          <span className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-100">
+            <span className="flex size-14 items-center justify-center rounded-full border border-white bg-black/55 text-white">
               <Play
                 aria-hidden="true"
                 className="ml-0.5 size-7 fill-current"
@@ -245,15 +239,15 @@ function CultureModal({
         ref={dialogRef}
         aria-labelledby="culture-modal-title"
         aria-modal="true"
-        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden rounded-3xl border border-white/15 bg-black/85 shadow-[0_28px_96px_rgba(0,0,0,0.62)] outline-none backdrop-blur-sm"
+        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border border-white bg-black outline-none"
         role="dialog"
         tabIndex={-1}
       >
-        <div className="flex shrink-0 justify-end border-white/10 border-b bg-black/70 p-2">
+        <div className="flex shrink-0 justify-end border-white border-b bg-black/70 p-2">
           <button
             type="button"
             aria-label="モーダルを閉じる"
-            className="flex size-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200"
+            className="flex size-11 items-center justify-center rounded-full border border-white text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             onClick={onClose}
           >
             <X aria-hidden="true" className="size-5" strokeWidth={2} />
@@ -261,7 +255,7 @@ function CultureModal({
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-          <div className="shrink-0 border-white/10 border-b bg-black/35 p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
+          <div className="shrink-0 border-white border-b bg-black/35 p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
             <div className="mx-auto aspect-video w-full bg-black md:max-w-2xl lg:max-w-none">
               <iframe
                 title={`${item.name} - YouTube`}
@@ -274,7 +268,7 @@ function CultureModal({
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-hidden p-5 sm:p-7 lg:p-8">
-            <header className="shrink-0 border-white/10 border-b pb-4">
+            <header className="shrink-0 border-white border-b pb-4">
               <p className="mb-2 font-semibold text-white/45 text-xs uppercase tracking-[0.28em]">
                 Now Playing
               </p>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import styles from './PsychedelicBackground.module.css';
 import fragmentShader from './shaders/psychedelic.frag.glsl?raw';
 import vertexShader from './shaders/psychedelic.vert.glsl?raw';
 import webgpuShader from './shaders/psychedelic.wgsl?raw';
@@ -143,7 +142,7 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   let drawingHeight = 0;
   let drawingWidth = 0;
 
-  canvas.className = styles.psychedelicCanvas;
+  canvas.className = 'absolute inset-0 block size-full opacity-[0.94]';
   container.appendChild(canvas);
 
   const resize = () => {
@@ -266,7 +265,7 @@ function createWebglRenderer(container: HTMLDivElement) {
   let drawingWidth = 0;
   const activateProgram = gl.useProgram.bind(gl);
 
-  canvas.className = styles.psychedelicCanvas;
+  canvas.className = 'absolute inset-0 block size-full opacity-[0.94]';
   container.appendChild(canvas);
 
   activateProgram(program);
@@ -454,7 +453,7 @@ export function PsychedelicBackground() {
   return (
     <div
       aria-hidden="true"
-      className={styles.psychedelicBackground}
+      className="pointer-events-none fixed inset-0 z-0 h-[100lvh] w-full overflow-hidden bg-black"
       ref={containerRef}
     />
   );

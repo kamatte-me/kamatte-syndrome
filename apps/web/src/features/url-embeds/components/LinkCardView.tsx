@@ -20,7 +20,7 @@ export function LinkCardView({ url, state }: LinkCardViewProps) {
 
   return (
     <a
-      className="not-prose my-6 grid overflow-hidden rounded-lg border border-white/15 bg-black/40 text-white no-underline shadow-[0_18px_50px_rgba(0,0,0,0.3)] transition hover:-translate-y-0.5 hover:border-cyan-200/50 hover:bg-black/55 sm:grid-cols-[minmax(0,1fr)_180px]"
+      className="not-prose my-6 grid overflow-hidden border border-white text-white no-underline sm:grid-cols-[minmax(0,1fr)_180px]"
       href={url}
       rel="noreferrer"
       target="_blank"
@@ -46,7 +46,7 @@ export function LinkCardView({ url, state }: LinkCardViewProps) {
           ) : null}
           <span className="truncate">{siteName}</span>
           {state.status === 'loading' ? (
-            <span className="shrink-0 text-cyan-200/70">Loading</span>
+            <span className="shrink-0 text-white/62">Loading</span>
           ) : null}
           {state.status === 'error' ? (
             <span className="shrink-0 text-white/38">Preview unavailable</span>

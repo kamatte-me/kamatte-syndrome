@@ -59,18 +59,18 @@ function PostDetailPage() {
   const post = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-4 py-12">
+    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
       <div className="flex items-center gap-3 text-sm text-white/60">
         <Link
           to="/blog"
-          className="rounded-full border border-white/20 px-4 py-1.5 transition hover:border-white/40 hover:text-white"
+          className="rounded-full border border-white px-4 py-1.5 hover:text-white"
         >
           Back to Blog
         </Link>
       </div>
 
-      <article className="rounded-3xl border border-white/12 bg-white/8 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur sm:p-9">
-        <header className="mb-8 border-white/10 border-b pb-6">
+      <article className="border border-white p-7 sm:p-9">
+        <header className="mb-8 border-white border-b pb-6">
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
             {post.title}
           </h1>
@@ -114,7 +114,7 @@ function BlogEntryNavigation({
   return (
     <nav
       aria-label="前後の記事"
-      className="mt-10 grid grid-cols-2 gap-3 border-white/10 border-t pt-6 sm:gap-5"
+      className="mt-10 grid grid-cols-2 gap-3 border-white border-t pt-6 sm:gap-5"
     >
       <div className="flex min-w-0 items-start">
         {previous ? (
@@ -142,7 +142,7 @@ function AdjacentPostLink({
   return (
     <Link
       aria-label={`${label}: ${post.title}`}
-      className="group inline-flex h-full max-w-full items-start gap-2 text-white/72 transition hover:text-white sm:gap-3"
+      className="group inline-flex h-full max-w-full items-start gap-2 text-white/72 hover:text-white sm:gap-3"
       params={{ slug: post.slug }}
       to="/blog/$slug"
     >

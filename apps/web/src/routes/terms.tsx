@@ -40,9 +40,9 @@ function TermsPage() {
   const { body } = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-4 py-12">
-      <article className="rounded-3xl border border-white/12 bg-white/8 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur sm:p-9">
-        <header className="mb-8 border-white/10 border-b pb-6">
+    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
+      <article className="border border-white p-7 sm:p-9">
+        <header className="mb-8 border-white border-b pb-6">
           <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
             Terms
           </p>

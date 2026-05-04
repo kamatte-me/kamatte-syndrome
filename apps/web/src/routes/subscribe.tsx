@@ -20,8 +20,8 @@ export const Route = createFileRoute('/subscribe')({
 
 function SubscribePage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-8 px-4 py-12">
-      <section className="rounded-3xl border border-white/12 bg-white/8 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur sm:p-9">
+    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
+      <section className="border border-white p-7 sm:p-9">
         <h1 className="mb-6 font-bold text-4xl leading-tight sm:text-5xl">
           LINE公式アカウント
         </h1>
@@ -38,7 +38,7 @@ function SubscribePage() {
             />
             <a
               href="https://lin.ee/ZsmmUMP"
-              className="inline-flex transition hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200"
+              className="inline-flex hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
             >
               <img
                 src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
@@ -69,7 +69,7 @@ function SubscribePage() {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-white/10 bg-black/25 p-7 sm:p-9">
+      <section className="border border-white p-7 sm:p-9">
         <h2 className="mb-5 font-bold text-4xl leading-tight sm:text-5xl">
           お布施
         </h2>
@@ -81,7 +81,7 @@ function SubscribePage() {
             href="https://www.amazon.jp/hz/wishlist/ls/1ILW0SXR5ZNR6?ref_=wl_share"
             target="_blank"
             rel="noreferrer"
-            className="text-cyan-300 underline decoration-cyan-300/40 underline-offset-4 transition hover:text-cyan-100"
+            className="text-white underline decoration-white/45 underline-offset-4 hover:text-white/75"
           >
             これ
           </a>

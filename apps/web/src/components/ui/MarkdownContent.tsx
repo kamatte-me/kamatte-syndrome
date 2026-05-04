@@ -7,7 +7,7 @@ type MarkdownContentProps = {
 };
 
 const baseClassName =
-  'prose prose-invert max-w-none prose-a:text-cyan-300 prose-code:text-cyan-200 prose-headings:text-white prose-li:text-white/82 prose-li:marker:text-cyan-200 prose-p:text-white/82 prose-strong:text-white prose-blockquote:border-cyan-200/40 prose-blockquote:text-white/72 prose-hr:border-white/12 prose-pre:border prose-pre:border-white/10 prose-pre:bg-black/45';
+  'prose prose-invert max-w-none prose-a:text-white prose-a:decoration-white/45 prose-code:text-white prose-headings:text-white prose-li:text-white/82 prose-li:marker:text-white/65 prose-p:text-white/82 prose-strong:text-white prose-blockquote:border-white prose-blockquote:text-white/72 prose-hr:border-white prose-pre:border prose-pre:border-white prose-pre:bg-black';
 
 const variantClassNames = {
   default:

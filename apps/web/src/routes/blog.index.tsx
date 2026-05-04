@@ -97,12 +97,12 @@ function BlogPagination({
           search={getBlogPageSearch(currentPage - 1)}
           activeOptions={paginationLinkActiveOptions}
           aria-label="前のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white/75 transition hover:-translate-x-0.5 hover:border-white/30 hover:bg-black/45 hover:text-white"
+          className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/30 text-white/75 hover:bg-black/45 hover:text-white"
         >
           <ChevronLeft aria-hidden="true" size={22} />
         </Link>
       ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-white/8 bg-black/15 text-white/25">
+        <span className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/15 text-white/25">
           <ChevronLeft aria-hidden="true" size={22} />
         </span>
       )}
@@ -118,12 +118,12 @@ function BlogPagination({
           search={getBlogPageSearch(currentPage + 1)}
           activeOptions={paginationLinkActiveOptions}
           aria-label="次のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white/75 transition hover:translate-x-0.5 hover:border-white/30 hover:bg-black/45 hover:text-white"
+          className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/30 text-white/75 hover:bg-black/45 hover:text-white"
         >
           <ChevronRight aria-hidden="true" size={22} />
         </Link>
       ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-white/8 bg-black/15 text-white/25">
+        <span className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/15 text-white/25">
           <ChevronRight aria-hidden="true" size={22} />
         </span>
       )}
@@ -135,8 +135,8 @@ function BlogPage() {
   const { pageInfo, posts } = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-12">
-      <section className="rounded-3xl border border-white/15 bg-white/8 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur">
+    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
+      <section className="border-white border-b pb-8">
         <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
           Blog
         </p>
@@ -157,9 +157,9 @@ function BlogPage() {
             <Link
               to="/blog/$slug"
               params={{ slug: post.slug }}
-              className="flex gap-4 rounded-3xl border border-white/10 bg-black/25 p-5 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-black/35 sm:gap-6 sm:p-6"
+              className="flex gap-4 border border-white p-5 sm:gap-6 sm:p-6"
             >
-              <div className="size-20 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/25 sm:size-[120px]">
+              <div className="size-20 shrink-0 overflow-hidden border border-white bg-black sm:size-[120px]">
                 <img
                   src={post.featuredImage ?? '/avatar.svg'}
                   alt={post.title}
