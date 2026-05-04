@@ -1,8 +1,6 @@
-import type { ReactNode } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 
-type MarkdownContentProps = {
-  children: ReactNode;
-  className?: string;
+type MarkdownContentProps = ComponentPropsWithoutRef<'div'> & {
   variant?: 'default' | 'compact';
 };
 
@@ -20,9 +18,11 @@ export function MarkdownContent({
   children,
   className,
   variant = 'default',
+  ...props
 }: MarkdownContentProps) {
   return (
     <div
+      {...props}
       className={[baseClassName, variantClassNames[variant], className]
         .filter(Boolean)
         .join(' ')}

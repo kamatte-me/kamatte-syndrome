@@ -61,6 +61,28 @@
 - 既存の見た目は黒背景、白文字、半透明パネル、レトロ風エフェクトが基調です。新規 UI もこの雰囲気に合わせてください。
 - `apps/web/src/components/RetroEffects.tsx` と `RetroEffects.module.css` は全体演出に関わります。変更時はトップページと記事ページの両方を確認してください。
 
+### 透過ステンシル演出
+
+#### 見た目の要求
+
+- `PsychedelicBackground` はサイト最背面に常時表示し、黒いレイアウト面の外側や透過部分から見える状態を維持してください。
+- テキスト、border、白背景風の面、SVGアイコンなどは、黒い面をくり抜いたように背景が見える表現を基本にします。
+- 画像、動画、iframeなどのメディアは透過させず、通常の見た目で表示してください。
+- ヘッダーのアクティブリンクは例外として、白背景に黒文字で読める状態を維持してください。
+- モーダルも通常コンテンツと同じ透過ポリシーを適用しつつ、本文スクロール、閉じるボタン、埋め込みメディアが操作できることを優先してください。
+- 透過演出よりも可読性、操作性、SEO、アクセシビリティを優先してください。演出のために実コンテンツDOMを検索不能・操作不能にしないでください。
+
+#### 実装上の注意
+
+- 現在のグローバル透過演出は `apps/web/src/components/layouts/GlobalLayout.tsx` と `apps/web/src/styles.css` にあります。`PsychedelicBackground` の上に、ステンシル用の `.ks-cutout-stencil-layer` と実操作用の `.ks-cutout-content` を重ねる方式です。
+- `.ks-cutout-stencil-layer` は見た目用の複製レイヤーで、`aria-hidden`、`inert`、`data-nosnippet` を付けています。SEOやアクセシビリティ上の実体は `.ks-cutout-content` 側のDOMです。テキストやリンクを増やすためだけに追加の複製DOMを作らないでください。
+- `.ks-cutout-content` 側ではテキスト、border、SVGなどを透明化し、画像、動画、iframe、canvasなどのメディアは通常表示します。透過対象と通常表示対象の切り分けを変える場合は、`styles.css` の `.ks-cutout-*` ルールを確認してください。
+- `filter: url("#ks-global-cutout-filter")` を使うステンシル方式が前提です。Canvasマスク、`mix-blend-mode`、白色ピクセル除去などの別方式へ戻す場合は、チラつき、アンチエイリアス、SEO、メディア表示の副作用を実機確認してから判断してください。
+- モーダルなど `position: fixed` を使うUIは、ステンシル側では `.ks-cutout-stencil-layer :where(.fixed)` により `absolute` に置き換わります。GlobalLayout配下のモーダルには必要に応じて `data-cutout-modal` を付け、`--ks-modal-scroll-y` など既存の位置合わせを壊さないでください。
+- スクロール可能なモーダル内コンテンツは、実操作レイヤーとステンシルレイヤーの `scrollTop` を同期する必要があります。Cultureモーダルでは `data-culture-modal-body` を同期対象にしているため、スクロール領域を移動する場合は同期処理も一緒に更新してください。
+- Cultureページのカード画像は実DOM側の画像として表示し、モーダルと重なる部分だけ `data-culture-modal-obscured` / `data-culture-modal-cutout` とCSS maskで調整しています。モーダルやカード画像の寸法、配置、z-indexを変える場合は、モバイル縦、モバイル横、デスクトップで画像の消え方を確認してください。
+- 透過演出を触った後は、最低限 `pnpm lint`、`pnpm typecheck`、`pnpm build` を実行し、可能なら Playwright で `/culture` のモーダル開閉、本文スクロール、背景画像表示を確認してください。
+
 ## 生成物と依存関係
 
 - `apps/web/dist/`、`apps/web/.output/`、`apps/web/.content-collections/`、`apps/web/src/routeTree.gen.ts`、lockfile などの生成物は、必要がある場合だけ更新してください。

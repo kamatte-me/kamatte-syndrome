@@ -366,6 +366,58 @@ function CultureModal({
     }
   }, []);
 
+  useEffect(() => {
+    const modalRoot = modalRootRef.current;
+    const isStencilModal = Boolean(
+      modalRoot?.closest('.ks-cutout-stencil-layer'),
+    );
+
+    if (!modalRoot || isStencilModal) {
+      return;
+    }
+
+    const sourceBody = modalRoot.querySelector<HTMLElement>(
+      '[data-culture-modal-body]',
+    );
+
+    if (!sourceBody) {
+      return;
+    }
+
+    let stencilBody: HTMLElement | null = null;
+    const getStencilBody = () => {
+      stencilBody ??= document.querySelector<HTMLElement>(
+        '.ks-cutout-stencil-layer [data-cutout-modal] [data-culture-modal-body]',
+      );
+
+      return stencilBody;
+    };
+
+    const syncStencilScroll = () => {
+      const targetBody = getStencilBody();
+
+      if (!targetBody) {
+        return;
+      }
+
+      targetBody.scrollTop = sourceBody.scrollTop;
+      targetBody.scrollLeft = sourceBody.scrollLeft;
+    };
+
+    const animationFrame = window.requestAnimationFrame(syncStencilScroll);
+
+    sourceBody.addEventListener('scroll', syncStencilScroll, {
+      passive: true,
+    });
+    window.addEventListener('resize', syncStencilScroll);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      sourceBody.removeEventListener('scroll', syncStencilScroll);
+      window.removeEventListener('resize', syncStencilScroll);
+    };
+  }, []);
+
   const modalStyle =
     stencilScrollY === null
       ? undefined
@@ -390,22 +442,29 @@ function CultureModal({
         ref={dialogRef}
         aria-labelledby="culture-modal-title"
         aria-modal="true"
-        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border border-white bg-black outline-none"
+        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border-8 border-white bg-black outline-none"
         role="dialog"
         tabIndex={-1}
       >
-        <div className="flex shrink-0 justify-end border-white border-b bg-black/70 p-2">
+        <div className="flex shrink-0 justify-end border-white border-b bg-black/70 p-1.5 sm:p-2">
           <button
             type="button"
             aria-label="モーダルを閉じる"
-            className="flex size-11 items-center justify-center rounded-full border border-white text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            className="flex size-9 items-center justify-center rounded-full border border-white text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:size-11 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
             onClick={onClose}
           >
-            <X aria-hidden="true" className="size-5" strokeWidth={2} />
+            <X
+              aria-hidden="true"
+              className="size-4 sm:size-5 [@media_(orientation:landscape)_and_(max-height:500px)]:size-4"
+              strokeWidth={2}
+            />
           </button>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <div
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row"
+          data-culture-modal-body
+        >
           <div className="shrink-0 border-white border-b bg-black/35 p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
             <div className="mx-auto aspect-video w-full bg-black md:max-w-2xl lg:max-w-none">
               {renderMedia ? (
@@ -422,7 +481,7 @@ function CultureModal({
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-hidden p-5 sm:p-7 lg:p-8">
+          <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8">
             <header className="shrink-0 border-white border-b pb-4">
               <p className="mb-2 font-semibold text-white/45 text-xs uppercase tracking-[0.28em]">
                 Now Playing
@@ -438,10 +497,7 @@ function CultureModal({
               </h2>
             </header>
 
-            <MarkdownContent
-              className="min-h-0 flex-1 overflow-y-auto pr-1"
-              variant="compact"
-            >
+            <MarkdownContent className="pr-1" variant="compact">
               {item.body}
             </MarkdownContent>
           </div>
