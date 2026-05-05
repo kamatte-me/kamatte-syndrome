@@ -74,7 +74,7 @@ function PostDetailPage() {
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
             {post.title}
           </h1>
-          <div className="mt-4 text-sm text-white/60">
+          <div className="mt-4 text-sm text-white/60" data-cutout-muted>
             {formatPostDate(post.publishedAt)}
           </div>
         </header>

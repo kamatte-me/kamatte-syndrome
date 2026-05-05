@@ -67,6 +67,7 @@
 
 - `PsychedelicBackground` はサイト最背面に常時表示し、黒いレイアウト面の外側や透過部分から見える状態を維持してください。
 - テキスト、border、白背景風の面、SVGアイコンなどは、黒い面をくり抜いたように背景が見える表現を基本にします。
+- 本文や説明文など、読みやすさが必要な長めのテキストは、背景透過を維持したまま半透明白を重ねる表現を使います。現在の可読用テキスト色は `rgb(255 255 255 / 0.65)` です。
 - 画像、動画、iframeなどのメディアは透過させず、通常の見た目で表示してください。
 - ヘッダーのアクティブリンクは例外として、白背景に黒文字で読める状態を維持してください。
 - モーダルも通常コンテンツと同じ透過ポリシーを適用しつつ、本文スクロール、閉じるボタン、埋め込みメディアが操作できることを優先してください。
@@ -77,6 +78,9 @@
 - 現在のグローバル透過演出は `apps/web/src/components/layouts/GlobalLayout.tsx` と `apps/web/src/styles.css` にあります。`PsychedelicBackground` の上に、ステンシル用の `.ks-cutout-stencil-layer` と実操作用の `.ks-cutout-content` を重ねる方式です。
 - `.ks-cutout-stencil-layer` は見た目用の複製レイヤーで、`aria-hidden`、`inert`、`data-nosnippet` を付けています。SEOやアクセシビリティ上の実体は `.ks-cutout-content` 側のDOMです。テキストやリンクを増やすためだけに追加の複製DOMを作らないでください。
 - `.ks-cutout-content` 側ではテキスト、border、SVGなどを透明化し、画像、動画、iframe、canvasなどのメディアは通常表示します。透過対象と通常表示対象の切り分けを変える場合は、`styles.css` の `.ks-cutout-*` ルールを確認してください。
+- `data-cutout-readable` は「背景をくり抜きつつ、実操作レイヤーに半透明白文字を重ねる」ための属性です。Biographyの説明文のように、完全な透明文字だと読みづらいが背景透過は残したいテキストに使ってください。
+- `data-cutout-muted` は「背景をくり抜きつつ、実操作レイヤーに半透明黒文字を重ねる」ための属性です。公開日など、読めるが強調したくないメタ情報に使ってください。現在の色は `rgb(0 0 0 / 0.4)` です。
+- `MarkdownContent` は本文全体に `data-cutout-markdown` を付けます。Markdown本文は背景透過を維持しつつ半透明白で読みやすくし、見出しとリンクは従来どおり強い透過表現に寄せる方針です。
 - `filter: url("#ks-global-cutout-filter")` を使うステンシル方式が前提です。Canvasマスク、`mix-blend-mode`、白色ピクセル除去などの別方式へ戻す場合は、チラつき、アンチエイリアス、SEO、メディア表示の副作用を実機確認してから判断してください。
 - モーダルなど `position: fixed` を使うUIは、ステンシル側では `.ks-cutout-stencil-layer :where(.fixed)` により `absolute` に置き換わります。GlobalLayout配下のモーダルには必要に応じて `data-cutout-modal` を付け、`--ks-modal-scroll-y` など既存の位置合わせを壊さないでください。
 - スクロール可能なモーダル内コンテンツは、実操作レイヤーとステンシルレイヤーの `scrollTop` を同期する必要があります。Cultureモーダルでは `data-culture-modal-body` を同期対象にしているため、スクロール領域を移動する場合は同期処理も一緒に更新してください。

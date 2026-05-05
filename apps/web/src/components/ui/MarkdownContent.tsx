@@ -22,6 +22,7 @@ export function MarkdownContent({
 }: MarkdownContentProps) {
   return (
     <div
+      data-cutout-markdown
       {...props}
       className={[baseClassName, variantClassNames[variant], className]
         .filter(Boolean)

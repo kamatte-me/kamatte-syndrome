@@ -89,7 +89,10 @@ function BiographyPage() {
               className="grid gap-2 border border-white p-4 sm:grid-cols-[96px_1fr] sm:items-baseline"
             >
               <dt className="font-bold text-white text-xl">{item.year}</dt>
-              <dd className="text-base text-white/78 leading-7">
+              <dd
+                className="text-base text-white/78 leading-7"
+                data-cutout-readable
+              >
                 {item.description}
               </dd>
             </div>
@@ -120,10 +123,12 @@ function BiographyPage() {
                 aria-valuemin={0}
                 aria-valuenow={skill.level}
                 className="h-2.5 overflow-hidden rounded-full bg-white/15"
+                data-cutout-progress-track
                 role="progressbar"
               >
                 <div
                   className="h-full rounded-full bg-white"
+                  data-cutout-progress-value
                   style={{ width: `${skill.level}%` }}
                 />
               </div>

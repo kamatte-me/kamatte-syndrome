@@ -173,7 +173,7 @@ function BlogPage() {
                 <h2 className="font-semibold text-2xl leading-snug">
                   {post.title}
                 </h2>
-                <div className="mt-2 text-sm text-white/55">
+                <div className="mt-2 text-sm text-white/55" data-cutout-muted>
                   {formatPostDate(post.publishedAt)}
                 </div>
               </div>
