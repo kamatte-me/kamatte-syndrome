@@ -97,13 +97,6 @@ body {
     visibility: hidden;
   }
 
-  .ks-cutout-stencil-layer :where(svg, svg *) {
-    color: #000;
-    fill: currentColor;
-    stroke: currentColor;
-    -webkit-text-fill-color: #000;
-  }
-
   .ks-cutout-stencil-layer
     :where([data-cutout-markdown], [data-cutout-markdown] *) {
     border-color: #000;
@@ -145,14 +138,6 @@ body {
     background-color: #000;
   }
 
-  .ks-cutout-stencil-layer
-    :where([data-cutout-readable] svg, [data-cutout-readable] svg *) {
-    color: #000;
-    fill: currentColor;
-    stroke: currentColor;
-    -webkit-text-fill-color: #000;
-  }
-
   .ks-cutout-stencil-layer :where([data-cutout-muted], [data-cutout-muted] *) {
     border-color: #000;
     color: #000;
@@ -168,14 +153,6 @@ body {
       [data-cutout-muted] [class*="bg-white"]
     ) {
     background-color: #000;
-  }
-
-  .ks-cutout-stencil-layer
-    :where([data-cutout-muted] svg, [data-cutout-muted] svg *) {
-    color: #000;
-    fill: currentColor;
-    stroke: currentColor;
-    -webkit-text-fill-color: #000;
   }
 
   .ks-cutout-content :where(*) {
@@ -215,13 +192,6 @@ body {
     -webkit-mask-size:
       100% 100%,
       var(--ks-culture-modal-mask-width) var(--ks-culture-modal-mask-height);
-  }
-
-  .ks-cutout-content :where(svg, svg *) {
-    color: transparent;
-    fill: transparent;
-    stroke: transparent;
-    -webkit-text-fill-color: transparent;
   }
 
   .ks-cutout-content :where([data-cutout-progress-value]) {
@@ -275,14 +245,6 @@ body {
     background-color: transparent;
   }
 
-  .ks-cutout-content
-    :where([data-cutout-readable] svg, [data-cutout-readable] svg *) {
-    color: currentColor;
-    fill: currentColor;
-    stroke: currentColor;
-    -webkit-text-fill-color: currentColor;
-  }
-
   .ks-cutout-content :where([data-cutout-muted], [data-cutout-muted] *) {
     --ks-cutout-muted-color: rgb(127 127 127 / 0.7);
     border-color: var(--ks-cutout-muted-color);
@@ -299,14 +261,6 @@ body {
       [data-cutout-muted] [class*="bg-white"]
     ) {
     background-color: transparent;
-  }
-
-  .ks-cutout-content
-    :where([data-cutout-muted] svg, [data-cutout-muted] svg *) {
-    color: currentColor;
-    fill: currentColor;
-    stroke: currentColor;
-    -webkit-text-fill-color: currentColor;
   }
 }
 
