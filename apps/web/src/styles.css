@@ -229,7 +229,7 @@ body {
   }
 
   .ks-cutout-content :where([data-cutout-markdown], [data-cutout-markdown] *) {
-    --ks-cutout-readable-color: rgb(255 255 255 / 0.65);
+    --ks-cutout-readable-color: rgb(234 234 234 / 0.75);
     border-color: var(--ks-cutout-readable-color);
     color: var(--ks-cutout-readable-color);
     text-decoration-color: var(--ks-cutout-readable-color);
@@ -258,7 +258,7 @@ body {
   }
 
   .ks-cutout-content :where([data-cutout-readable], [data-cutout-readable] *) {
-    --ks-cutout-readable-color: rgb(255 255 255 / 0.65);
+    --ks-cutout-readable-color: rgb(234 234 234 / 0.75);
     border-color: var(--ks-cutout-readable-color);
     color: var(--ks-cutout-readable-color);
     text-decoration-color: var(--ks-cutout-readable-color);
@@ -284,7 +284,7 @@ body {
   }
 
   .ks-cutout-content :where([data-cutout-muted], [data-cutout-muted] *) {
-    --ks-cutout-muted-color: rgb(0 0 0 / 0.4);
+    --ks-cutout-muted-color: rgb(127 127 127 / 0.7);
     border-color: var(--ks-cutout-muted-color);
     color: var(--ks-cutout-muted-color);
     text-decoration-color: var(--ks-cutout-muted-color);
