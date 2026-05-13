@@ -440,7 +440,7 @@ function CultureModal({
         ref={dialogRef}
         aria-labelledby="culture-modal-title"
         aria-modal="true"
-        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border-8 border-cutout-hole outline-none"
+        className={`${cultureStyles.modalPanel} relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border-8 border-cutout-hole outline-none`}
         role="dialog"
         tabIndex={-1}
       >

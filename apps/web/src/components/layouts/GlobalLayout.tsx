@@ -9,9 +9,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
     <div className={`${styles.shell} relative min-h-dvh p-2 sm:p-5`}>
       <PsychedelicBackground />
       <CutoutFilter />
-      <div
-        className={`${styles.surface} relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-cutout-hole sm:min-h-[calc(100dvh-40px)]`}
-      >
+      <div className="relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-cutout-hole sm:min-h-[calc(100dvh-40px)]">
         <div
           aria-hidden="true"
           className={`${styles.stencilLayer} pointer-events-none absolute inset-0 z-0 overflow-hidden`}

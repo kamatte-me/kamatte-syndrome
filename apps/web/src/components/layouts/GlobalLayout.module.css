@@ -2,10 +2,6 @@
   --cutout-inset: 8px;
 }
 
-.surface {
-  background: transparent;
-}
-
 .stencilLayer {
   --cutout-hole: #000;
   --cutout-muted: #000;
