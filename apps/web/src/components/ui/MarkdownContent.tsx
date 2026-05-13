@@ -1,11 +1,12 @@
 import type { ComponentPropsWithoutRef } from 'react';
+import styles from './MarkdownContent.module.css';
 
 type MarkdownContentProps = ComponentPropsWithoutRef<'div'> & {
   variant?: 'default' | 'compact';
 };
 
 const baseClassName =
-  'prose prose-invert max-w-none prose-a:text-white prose-a:decoration-white/45 prose-code:text-white prose-headings:text-white prose-li:text-white/82 prose-li:marker:text-white/65 prose-p:text-white/82 prose-strong:text-white prose-blockquote:border-white prose-blockquote:text-white/72 prose-hr:border-white prose-pre:border prose-pre:border-white prose-pre:bg-black';
+  'prose prose-invert max-w-none prose-li:marker:text-cutout-readable prose-pre:border';
 
 const variantClassNames = {
   default:
@@ -22,9 +23,13 @@ export function MarkdownContent({
 }: MarkdownContentProps) {
   return (
     <div
-      data-cutout-markdown
       {...props}
-      className={[baseClassName, variantClassNames[variant], className]
+      className={[
+        styles.root,
+        baseClassName,
+        variantClassNames[variant],
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
     >

@@ -10,7 +10,7 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
   if (metadata.type === 'photo' && metadata.photoUrl) {
     return (
       <a
-        className="not-prose my-6 block overflow-hidden border border-white no-underline"
+        className="not-prose my-6 block overflow-hidden border border-cutout-hole no-underline"
         href={url}
         rel="noreferrer"
         target="_blank"
@@ -49,9 +49,9 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
 }
 
 const fixedAspectShellClassName =
-  'not-prose my-6 overflow-hidden border border-white p-4';
+  'not-prose my-6 overflow-hidden border border-cutout-hole p-4';
 
-const flowShellClassName = 'not-prose my-6 border border-white p-4';
+const flowShellClassName = 'not-prose my-6 border border-cutout-hole p-4';
 
 function getEmbedTitle(metadata: OEmbedMetadata, fallback: string) {
   return metadata.title ?? metadata.providerName ?? fallback;

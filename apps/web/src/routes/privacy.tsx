@@ -43,9 +43,9 @@ function PrivacyPage() {
 
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
-      <article className="border border-white p-7 sm:p-9">
-        <header className="mb-8 border-white border-b pb-6">
-          <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
+      <article className="border border-cutout-hole p-7 sm:p-9">
+        <header className="mb-8 border-cutout-hole border-b pb-6">
+          <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
             Privacy
           </p>
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">

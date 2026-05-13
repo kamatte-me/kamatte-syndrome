@@ -1,0 +1,52 @@
+.shell {
+  --cutout-inset: 8px;
+}
+
+.surface {
+  background: transparent;
+}
+
+.stencilLayer {
+  --cutout-hole: #000;
+  --cutout-muted: #000;
+  --cutout-readable: #000;
+
+  display: block;
+  background: #fff;
+  color: var(--cutout-hole);
+  filter: url("#global-cutout-filter");
+  -webkit-text-fill-color: currentColor;
+}
+
+.contentLayer {
+  --cutout-hole: transparent;
+
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.stencilLayer :where(*) {
+  border-color: var(--cutout-hole);
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.stencilLayer :where([class~="fixed"]) {
+  position: absolute;
+}
+
+.stencilLayer :where(img, video, iframe, canvas) {
+  visibility: hidden;
+}
+
+.contentLayer :where(img, video, iframe, canvas) {
+  visibility: visible;
+}
+
+@media (width >= 40rem) {
+  .shell {
+    --cutout-inset: 20px;
+  }
+}

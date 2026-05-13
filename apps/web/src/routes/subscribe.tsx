@@ -21,7 +21,7 @@ export const Route = createFileRoute('/subscribe')({
 function SubscribePage() {
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
-      <section className="border border-white p-7 sm:p-9">
+      <section className="border border-cutout-hole p-7 sm:p-9">
         <h1 className="mb-6 font-bold text-4xl leading-tight sm:text-5xl">
           LINE公式アカウント
         </h1>
@@ -38,7 +38,7 @@ function SubscribePage() {
             />
             <a
               href="https://lin.ee/ZsmmUMP"
-              className="inline-flex hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+              className="inline-flex hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
             >
               <img
                 src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
@@ -50,7 +50,7 @@ function SubscribePage() {
             </a>
           </div>
 
-          <div className="text-base text-white/82 leading-8 md:pt-2">
+          <div className="text-base text-cutout-readable leading-8 md:pt-2">
             <p className="mb-4">
               めったに更新されないことで一定の評価を得ているこのブログ。
               <br />
@@ -58,7 +58,7 @@ function SubscribePage() {
             </p>
             <p>
               そんなキミのために、LINEで
-              <b className="font-bold text-white">ブログの更新を通知</b>
+              <b className="font-bold text-cutout-hole">ブログの更新を通知</b>
               するぞ！！！
               <br />
               登録してライバルに差をつけろ！！！
@@ -69,11 +69,11 @@ function SubscribePage() {
         </div>
       </section>
 
-      <section className="border border-white p-7 sm:p-9">
+      <section className="border border-cutout-hole p-7 sm:p-9">
         <h2 className="mb-5 font-bold text-4xl leading-tight sm:text-5xl">
           お布施
         </h2>
-        <p className="text-base text-white/82 leading-8">
+        <p className="text-base text-cutout-readable leading-8">
           え、ぼくを信仰してる？
           <br />
           特に何の関係もないのですが、
@@ -81,7 +81,7 @@ function SubscribePage() {
             href="https://www.amazon.jp/hz/wishlist/ls/1ILW0SXR5ZNR6?ref_=wl_share"
             target="_blank"
             rel="noreferrer"
-            className="text-white underline decoration-white/45 underline-offset-4 hover:text-white/75"
+            className="text-cutout-hole underline decoration-cutout-hole underline-offset-4 hover:text-cutout-hole"
           >
             これ
           </a>

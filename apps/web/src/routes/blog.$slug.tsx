@@ -60,21 +60,21 @@ function PostDetailPage() {
 
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
-      <div className="flex items-center gap-3 text-sm text-white/60">
+      <div className="flex items-center gap-3 text-cutout-hole text-sm">
         <Link
           to="/blog"
-          className="rounded-full border border-white px-4 py-1.5 hover:text-white"
+          className="rounded-full border border-cutout-hole px-4 py-1.5 hover:text-cutout-hole"
         >
           Back to Blog
         </Link>
       </div>
 
-      <article className="border border-white p-7 sm:p-9">
-        <header className="mb-8 border-white border-b pb-6">
+      <article className="border border-cutout-hole p-7 sm:p-9">
+        <header className="mb-8 border-cutout-hole border-b pb-6">
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
             {post.title}
           </h1>
-          <div className="mt-4 text-sm text-white/60" data-cutout-muted>
+          <div className="mt-4 text-cutout-muted text-sm">
             {formatPostDate(post.publishedAt)}
           </div>
         </header>
@@ -114,7 +114,7 @@ function BlogEntryNavigation({
   return (
     <nav
       aria-label="前後の記事"
-      className="mt-10 grid grid-cols-2 gap-3 border-white border-t pt-6 sm:gap-5"
+      className="mt-10 grid grid-cols-2 gap-3 border-cutout-hole border-t pt-6 sm:gap-5"
     >
       <div className="flex min-w-0 items-start">
         {previous ? (
@@ -142,7 +142,7 @@ function AdjacentPostLink({
   return (
     <Link
       aria-label={`${label}: ${post.title}`}
-      className="group inline-flex h-full max-w-full items-start gap-2 text-white/72 hover:text-white sm:gap-3"
+      className="group inline-flex h-full max-w-full items-start gap-2 text-cutout-hole hover:text-cutout-hole sm:gap-3"
       params={{ slug: post.slug }}
       to="/blog/$slug"
     >
@@ -150,7 +150,7 @@ function AdjacentPostLink({
         <Icon aria-hidden="true" className="size-5 shrink-0 self-center" />
       ) : null}
       <span className={isPrevious ? 'min-w-0' : 'min-w-0 text-right'}>
-        <span className="block text-white/42 text-xs">{label}</span>
+        <span className="block text-cutout-muted text-xs">{label}</span>
         <span className="block font-medium text-sm [overflow-wrap:anywhere] group-hover:underline sm:text-base">
           {post.title}
         </span>

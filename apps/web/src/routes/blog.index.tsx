@@ -97,19 +97,19 @@ function BlogPagination({
           search={getBlogPageSearch(currentPage - 1)}
           activeOptions={paginationLinkActiveOptions}
           aria-label="前のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/30 text-white/75 hover:bg-black/45 hover:text-white"
+          className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
         >
           <ChevronLeft aria-hidden="true" size={22} />
         </Link>
       ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/15 text-white/25">
+        <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
           <ChevronLeft aria-hidden="true" size={22} />
         </span>
       )}
 
-      <p className="min-w-20 text-center font-semibold text-white/72">
-        <span className="text-2xl text-white">{currentPage}</span>
-        <span className="ml-1 text-sm text-white/45">/ {totalPages}</span>
+      <p className="min-w-20 text-center font-semibold text-cutout-hole">
+        <span className="text-2xl">{currentPage}</span>
+        <span className="ml-1 text-cutout-muted text-sm">/ {totalPages}</span>
       </p>
 
       {hasNext ? (
@@ -118,12 +118,12 @@ function BlogPagination({
           search={getBlogPageSearch(currentPage + 1)}
           activeOptions={paginationLinkActiveOptions}
           aria-label="次のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/30 text-white/75 hover:bg-black/45 hover:text-white"
+          className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
         >
           <ChevronRight aria-hidden="true" size={22} />
         </Link>
       ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-white bg-black/15 text-white/25">
+        <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
           <ChevronRight aria-hidden="true" size={22} />
         </span>
       )}
@@ -136,17 +136,17 @@ function BlogPage() {
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
-      <section className="border-white border-b pb-8">
-        <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
+      <section className="border-cutout-hole border-b pb-8">
+        <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
           Blog
         </p>
         <h1 className="mb-4 font-bold text-4xl sm:text-5xl">記事一覧</h1>
-        <p className="max-w-3xl text-base text-white/78 leading-8">
+        <p className="max-w-3xl text-base text-cutout-readable leading-8">
           `content-collections/mdx` で収集した記事を、RSC
           経由で公開日順に描画しています。 URL は既存ファイル名ベースの `slug`
           をそのまま使います。
         </p>
-        <p className="mt-5 text-sm text-white/50">
+        <p className="mt-5 text-cutout-muted text-sm">
           {pageInfo.totalItems} entries / page {pageInfo.currentPage}
         </p>
       </section>
@@ -157,9 +157,9 @@ function BlogPage() {
             <Link
               to="/blog/$slug"
               params={{ slug: post.slug }}
-              className="flex gap-4 border border-white p-5 sm:gap-6 sm:p-6"
+              className="flex gap-4 border border-cutout-hole p-5 sm:gap-6 sm:p-6"
             >
-              <div className="size-20 shrink-0 overflow-hidden border border-white bg-black sm:size-[120px]">
+              <div className="size-20 shrink-0 overflow-hidden border border-cutout-hole sm:size-[120px]">
                 <img
                   src={post.featuredImage ?? '/avatar.svg'}
                   alt={post.title}
@@ -173,7 +173,7 @@ function BlogPage() {
                 <h2 className="font-semibold text-2xl leading-snug">
                   {post.title}
                 </h2>
-                <div className="mt-2 text-sm text-white/55" data-cutout-muted>
+                <div className="mt-2 text-cutout-muted text-sm">
                   {formatPostDate(post.publishedAt)}
                 </div>
               </div>

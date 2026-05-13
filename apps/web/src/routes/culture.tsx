@@ -7,6 +7,7 @@ import { Play, X } from 'lucide-react';
 import type { CSSProperties, ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import cultureStyles from './culture.module.css';
 
 type RenderedServerComponent = RenderableServerComponent<ReactElement>;
 
@@ -18,7 +19,8 @@ type CultureListItem = {
   youtubeVideoId: string;
 };
 
-const cultureModalChangeEvent = 'ks-culture-modal-change';
+const cultureModalChangeEvent = 'culture-modal-change';
+const modalRootSelector = `.${cultureStyles.modalRoot}`;
 
 const getCulturePageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -102,7 +104,7 @@ function CulturePage() {
 
   useEffect(() => {
     setIsStencilPage(
-      Boolean(pageRef.current?.closest('.ks-cutout-stencil-layer')),
+      Boolean(pageRef.current?.closest('[data-cutout-layer="stencil"]')),
     );
   }, []);
 
@@ -133,20 +135,20 @@ function CulturePage() {
 
     const clearObscuredMedia = () => {
       for (const media of document.querySelectorAll<HTMLElement>(
-        '.ks-cutout-content [data-culture-card-media]',
+        '[data-cutout-layer="content"] [data-culture-card-media]',
       )) {
         delete media.dataset.cultureModalObscured;
         delete media.dataset.cultureModalCutout;
-        media.style.removeProperty('--ks-culture-modal-mask-height');
-        media.style.removeProperty('--ks-culture-modal-mask-left');
-        media.style.removeProperty('--ks-culture-modal-mask-top');
-        media.style.removeProperty('--ks-culture-modal-mask-width');
+        media.style.removeProperty('--culture-modal-mask-height');
+        media.style.removeProperty('--culture-modal-mask-left');
+        media.style.removeProperty('--culture-modal-mask-top');
+        media.style.removeProperty('--culture-modal-mask-width');
       }
     };
 
     const updateObscuredMedia = () => {
       const dialog = document.querySelector<HTMLElement>(
-        '.ks-cutout-content [data-cutout-modal] [role="dialog"]',
+        `[data-cutout-layer="content"] ${modalRootSelector} [role="dialog"]`,
       );
 
       if (!dialog) {
@@ -156,7 +158,7 @@ function CulturePage() {
       const dialogRect = dialog.getBoundingClientRect();
 
       for (const media of document.querySelectorAll<HTMLElement>(
-        '.ks-cutout-content [data-culture-card-media]',
+        '[data-cutout-layer="content"] [data-culture-card-media]',
       )) {
         const mediaRect = media.getBoundingClientRect();
         const overlapLeft = Math.max(0, dialogRect.left - mediaRect.left);
@@ -174,10 +176,10 @@ function CulturePage() {
 
         delete media.dataset.cultureModalObscured;
         delete media.dataset.cultureModalCutout;
-        media.style.removeProperty('--ks-culture-modal-mask-height');
-        media.style.removeProperty('--ks-culture-modal-mask-left');
-        media.style.removeProperty('--ks-culture-modal-mask-top');
-        media.style.removeProperty('--ks-culture-modal-mask-width');
+        media.style.removeProperty('--culture-modal-mask-height');
+        media.style.removeProperty('--culture-modal-mask-left');
+        media.style.removeProperty('--culture-modal-mask-top');
+        media.style.removeProperty('--culture-modal-mask-width');
 
         if (overlapWidth <= 0 || overlapHeight <= 0) {
           continue;
@@ -196,19 +198,16 @@ function CulturePage() {
 
         media.dataset.cultureModalCutout = 'true';
         media.style.setProperty(
-          '--ks-culture-modal-mask-height',
+          '--culture-modal-mask-height',
           `${overlapHeight}px`,
         );
         media.style.setProperty(
-          '--ks-culture-modal-mask-left',
+          '--culture-modal-mask-left',
           `${overlapLeft}px`,
         );
+        media.style.setProperty('--culture-modal-mask-top', `${overlapTop}px`);
         media.style.setProperty(
-          '--ks-culture-modal-mask-top',
-          `${overlapTop}px`,
-        );
-        media.style.setProperty(
-          '--ks-culture-modal-mask-width',
+          '--culture-modal-mask-width',
           `${overlapWidth}px`,
         );
       }
@@ -265,8 +264,8 @@ function CulturePage() {
       className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12"
       data-culture-modal-open={selectedItem ? true : undefined}
     >
-      <section className="border-white border-b pb-8">
-        <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
+      <section className="border-cutout-hole border-b pb-8">
+        <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
           Culture
         </p>
         <div className="grid gap-5">
@@ -279,7 +278,7 @@ function CulturePage() {
             >
               カルチャー
             </h1>
-            <p className="mt-4 max-w-2xl text-base text-white/72 leading-8">
+            <p className="mt-4 max-w-2xl text-base text-cutout-readable leading-8">
               ぼくを構成する音楽、動画、いろいろ。
             </p>
           </div>
@@ -310,10 +309,10 @@ function CultureCard({
     <li>
       <button
         type="button"
-        className="grid h-full w-full overflow-hidden border border-white text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+        className="grid h-full w-full overflow-hidden border border-cutout-hole text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
         onClick={() => onOpen(item.slug)}
       >
-        <span className="relative block aspect-[4/3] overflow-hidden bg-black">
+        <span className="relative block aspect-[4/3] overflow-hidden">
           <img
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             alt=""
@@ -321,10 +320,10 @@ function CultureCard({
             height={360}
             loading="lazy"
             data-culture-card-media
-            className="size-full object-cover opacity-90"
+            className={`${cultureStyles.cardMedia} size-full object-cover opacity-90`}
           />
-          <span className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-100">
-            <span className="flex size-14 items-center justify-center rounded-full border border-white bg-black/55 text-white">
+          <span className="absolute inset-0 flex items-center justify-center opacity-100">
+            <span className="flex size-14 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole">
               <Play
                 aria-hidden="true"
                 className="ml-0.5 size-7 fill-current"
@@ -333,7 +332,7 @@ function CultureCard({
             </span>
           </span>
         </span>
-        <span className="flex min-h-20 items-center px-4 py-3 font-bold text-lg text-white leading-snug">
+        <span className="flex min-h-20 items-center px-4 py-3 font-bold text-cutout-hole text-lg leading-snug">
           {item.name}
         </span>
       </button>
@@ -355,7 +354,7 @@ function CultureModal({
 
   useEffect(() => {
     const isStencilModal = Boolean(
-      modalRootRef.current?.closest('.ks-cutout-stencil-layer'),
+      modalRootRef.current?.closest('[data-cutout-layer="stencil"]'),
     );
 
     setRenderMedia(!isStencilModal);
@@ -369,7 +368,7 @@ function CultureModal({
   useEffect(() => {
     const modalRoot = modalRootRef.current;
     const isStencilModal = Boolean(
-      modalRoot?.closest('.ks-cutout-stencil-layer'),
+      modalRoot?.closest('[data-cutout-layer="stencil"]'),
     );
 
     if (!modalRoot || isStencilModal) {
@@ -387,7 +386,7 @@ function CultureModal({
     let stencilBody: HTMLElement | null = null;
     const getStencilBody = () => {
       stencilBody ??= document.querySelector<HTMLElement>(
-        '.ks-cutout-stencil-layer [data-cutout-modal] [data-culture-modal-body]',
+        `[data-cutout-layer="stencil"] ${modalRootSelector} [data-culture-modal-body]`,
       );
 
       return stencilBody;
@@ -422,14 +421,13 @@ function CultureModal({
     stencilScrollY === null
       ? undefined
       : ({
-          '--ks-modal-scroll-y': `${stencilScrollY}px`,
+          '--modal-scroll-y': `${stencilScrollY}px`,
         } as CSSProperties);
 
   return (
     <div
       ref={modalRootRef}
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      data-cutout-modal
+      className={`${cultureStyles.modalRoot} fixed inset-0 z-50 flex items-center justify-center`}
       style={modalStyle}
     >
       <button
@@ -442,15 +440,15 @@ function CultureModal({
         ref={dialogRef}
         aria-labelledby="culture-modal-title"
         aria-modal="true"
-        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border-8 border-white bg-black outline-none"
+        className="relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border-8 border-cutout-hole outline-none"
         role="dialog"
         tabIndex={-1}
       >
-        <div className="flex shrink-0 justify-end border-white border-b bg-black/70 p-1.5 sm:p-2">
+        <div className="flex shrink-0 justify-end border-cutout-hole border-b p-1.5 sm:p-2">
           <button
             type="button"
             aria-label="モーダルを閉じる"
-            className="flex size-9 items-center justify-center rounded-full border border-white text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:size-11 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
+            className="flex size-9 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-11 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
             onClick={onClose}
           >
             <X
@@ -465,8 +463,8 @@ function CultureModal({
           className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row"
           data-culture-modal-body
         >
-          <div className="shrink-0 border-white border-b bg-black/35 p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
-            <div className="mx-auto aspect-video w-full bg-black md:max-w-2xl lg:max-w-none">
+          <div className="shrink-0 border-cutout-hole border-b p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
+            <div className="mx-auto aspect-video w-full md:max-w-2xl lg:max-w-none">
               {renderMedia ? (
                 <iframe
                   title={`${item.name} - YouTube`}
@@ -482,8 +480,8 @@ function CultureModal({
           </div>
 
           <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8">
-            <header className="shrink-0 border-white border-b pb-4">
-              <p className="mb-2 font-semibold text-white/45 text-xs uppercase tracking-[0.28em]">
+            <header className="shrink-0 border-cutout-hole border-b pb-4">
+              <p className="mb-2 font-semibold text-cutout-hole text-xs uppercase tracking-[0.28em]">
                 Now Playing
               </p>
               <h2

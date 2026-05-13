@@ -20,7 +20,7 @@ export function LinkCardView({ url, state }: LinkCardViewProps) {
 
   return (
     <a
-      className="not-prose my-6 grid overflow-hidden border border-white text-white no-underline sm:grid-cols-[minmax(0,1fr)_180px]"
+      className="not-prose my-6 grid overflow-hidden border border-cutout-hole text-cutout-hole no-underline sm:grid-cols-[minmax(0,1fr)_180px]"
       href={url}
       rel="noreferrer"
       target="_blank"
@@ -30,11 +30,11 @@ export function LinkCardView({ url, state }: LinkCardViewProps) {
           {title}
         </span>
         {description ? (
-          <span className="line-clamp-2 text-sm text-white/68 leading-6">
+          <span className="line-clamp-2 text-cutout-readable text-sm leading-6">
             {description}
           </span>
         ) : null}
-        <span className="flex min-w-0 items-center gap-2 text-white/48 text-xs">
+        <span className="flex min-w-0 items-center gap-2 text-cutout-muted text-xs">
           {metadata?.favicon ? (
             <img
               alt=""
@@ -46,15 +46,17 @@ export function LinkCardView({ url, state }: LinkCardViewProps) {
           ) : null}
           <span className="truncate">{siteName}</span>
           {state.status === 'loading' ? (
-            <span className="shrink-0 text-white/62">Loading</span>
+            <span className="shrink-0 text-cutout-muted">Loading</span>
           ) : null}
           {state.status === 'error' ? (
-            <span className="shrink-0 text-white/38">Preview unavailable</span>
+            <span className="shrink-0 text-cutout-muted">
+              Preview unavailable
+            </span>
           ) : null}
         </span>
       </span>
       {image ? (
-        <span className="hidden min-h-full bg-white/5 sm:block">
+        <span className="hidden min-h-full bg-transparent sm:block">
           <img
             alt=""
             className="h-full w-full object-cover"

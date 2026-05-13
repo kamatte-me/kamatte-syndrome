@@ -1,0 +1,21 @@
+[data-cutout-layer="stencil"] .activeNavLink {
+  background-color: #000;
+}
+
+[data-cutout-layer="stencil"] .activeNavLink,
+[data-cutout-layer="stencil"] .activeNavLink :where(*) {
+  color: #fff;
+  text-decoration-color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+[data-cutout-layer="content"] .activeNavLink {
+  background-color: transparent;
+}
+
+[data-cutout-layer="content"] .activeNavLink,
+[data-cutout-layer="content"] .activeNavLink :where(*) {
+  color: #000;
+  text-decoration-color: #000;
+  -webkit-text-fill-color: #000;
+}

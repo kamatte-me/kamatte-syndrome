@@ -73,8 +73,8 @@ function PortfolioPage() {
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
-      <section className="border-white border-b pb-8">
-        <p className="mb-3 font-semibold text-white/55 text-xs uppercase tracking-[0.3em]">
+      <section className="border-cutout-hole border-b pb-8">
+        <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
           Portfolio
         </p>
         <div className="grid gap-5">
@@ -87,7 +87,7 @@ function PortfolioPage() {
             >
               ポートフォリオ
             </h1>
-            <p className="mt-4 max-w-2xl text-base text-white/72 leading-8">
+            <p className="mt-4 max-w-2xl text-base text-cutout-readable leading-8">
               つくったもの、関わったもの、なぜか賞をもらったもの。
             </p>
           </div>
@@ -100,7 +100,7 @@ function PortfolioPage() {
             key={group.year}
             className="grid gap-5 md:grid-cols-[112px_1fr]"
           >
-            <h2 className="sticky top-6 h-fit font-bold text-4xl text-white sm:text-5xl">
+            <h2 className="sticky top-6 h-fit font-bold text-4xl text-cutout-hole sm:text-5xl">
               {group.year}
             </h2>
 
@@ -120,14 +120,14 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
   const link = item.link || undefined;
 
   return (
-    <li className="overflow-hidden border border-white">
+    <li className="overflow-hidden border border-cutout-hole">
       <div className="grid gap-0 md:grid-cols-[220px_1fr]">
         <PortfolioImage item={item} link={link} />
 
         <div className="flex flex-col gap-5 p-5 sm:p-6">
           <header className="grid gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-white px-3 py-1 font-semibold text-white/75 text-xs">
+              <span className="rounded-full border border-cutout-hole px-3 py-1 font-semibold text-cutout-hole text-xs">
                 {item.category}
               </span>
             </div>
@@ -138,7 +138,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
                   href={link}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-white hover:text-white/72"
+                  className="inline-flex items-center gap-2 text-cutout-hole hover:text-cutout-hole"
                 >
                   {item.name}
                   <ExternalLink
@@ -159,7 +159,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
             {item.technologies.map((technology) => (
               <li
                 key={technology}
-                className="rounded-full border border-white px-3 py-1 text-white/70 text-xs"
+                className="rounded-full border border-cutout-hole px-3 py-1 text-cutout-hole text-xs"
               >
                 {technology}
               </li>
@@ -189,9 +189,9 @@ function PortfolioImage({
       className="h-full min-h-48 w-full object-cover md:min-h-full"
     />
   ) : (
-    <div className="flex h-full min-h-48 w-full items-center justify-center border-white border-b p-6 text-center md:min-h-full md:border-r md:border-b-0">
+    <div className="flex h-full min-h-48 w-full items-center justify-center border-cutout-hole border-b p-6 text-center md:min-h-full md:border-r md:border-b-0">
       <span
-        className="font-bold text-2xl text-white/30"
+        className="font-bold text-2xl text-cutout-muted"
         style={{
           fontFamily: 'var(--font-latin-dot-gothic)',
         }}
@@ -203,7 +203,7 @@ function PortfolioImage({
 
   if (!link) {
     return (
-      <div className="border-white border-b md:border-r md:border-b-0">
+      <div className="border-cutout-hole border-b md:border-r md:border-b-0">
         {imageContent}
       </div>
     );
@@ -214,7 +214,7 @@ function PortfolioImage({
       href={link}
       target="_blank"
       rel="noreferrer"
-      className="block border-white border-b hover:opacity-80 md:border-r md:border-b-0"
+      className="block border-cutout-hole border-b hover:opacity-80 md:border-r md:border-b-0"
       aria-label={`${item.name} を開く`}
     >
       {imageContent}

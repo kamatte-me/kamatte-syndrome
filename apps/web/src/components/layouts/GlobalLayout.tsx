@@ -1,36 +1,30 @@
-import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
+import styles from './GlobalLayout.module.css';
 import { PsychedelicBackground } from './PsychedelicBackground';
-
-const navigationLinks = [
-  { label: 'HOME', to: '/' },
-  { label: 'Biography', to: '/biography' },
-  { label: 'Portfolio', to: '/portfolio' },
-  { label: 'Culture', to: '/culture' },
-  { label: 'Blog', to: '/blog' },
-  { label: 'Subscribe', to: '/subscribe' },
-] as const;
-
-const policyLinks = [
-  { label: 'Terms', to: '/terms' },
-  { label: 'Privacy', to: '/privacy' },
-] as const;
+import { SiteFooter } from './SiteFooter';
+import { SiteHeader } from './SiteHeader';
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="ks-cutout-shell relative min-h-dvh p-2 sm:p-5">
+    <div className={`${styles.shell} relative min-h-dvh p-2 sm:p-5`}>
       <PsychedelicBackground />
       <CutoutFilter />
-      <div className="ks-cutout-surface relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-white sm:min-h-[calc(100dvh-40px)]">
+      <div
+        className={`${styles.surface} relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-cutout-hole sm:min-h-[calc(100dvh-40px)]`}
+      >
         <div
           aria-hidden="true"
-          className="ks-cutout-stencil-layer pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          className={`${styles.stencilLayer} pointer-events-none absolute inset-0 z-0 overflow-hidden`}
+          data-cutout-layer="stencil"
           data-nosnippet
           inert
         >
           <LayoutFrame>{children}</LayoutFrame>
         </div>
-        <div className="ks-cutout-content relative z-10">
+        <div
+          className={`${styles.contentLayer} relative z-10`}
+          data-cutout-layer="content"
+        >
           <LayoutFrame>{children}</LayoutFrame>
         </div>
       </div>
@@ -49,7 +43,7 @@ function CutoutFilter() {
         <filter
           colorInterpolationFilters="sRGB"
           height="100%"
-          id="ks-global-cutout-filter"
+          id="global-cutout-filter"
           width="100%"
           x="0"
           y="0"
@@ -74,55 +68,5 @@ function LayoutFrame({ children }: { children: ReactNode }) {
       </div>
       <SiteFooter />
     </div>
-  );
-}
-
-function SiteHeader() {
-  return (
-    <header className="flex shrink-0 justify-center px-[clamp(16px,4vw,40px)] pt-[22px] pb-[14px]">
-      <nav
-        aria-label="Primary navigation"
-        className="flex flex-wrap justify-center gap-[10px]"
-      >
-        {navigationLinks.map((link) => (
-          <Link
-            activeOptions={link.to === '/' ? { exact: true } : undefined}
-            activeProps={{
-              className: 'bg-white text-black',
-              'data-cutout-active': true,
-            }}
-            key={link.to}
-            to={link.to}
-            className="inline-flex min-h-10 items-center justify-center rounded-full border border-white px-[18px] font-bold text-[0.78rem] leading-none no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
-          >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
-    </header>
-  );
-}
-
-function SiteFooter() {
-  return (
-    <footer className="grid shrink-0 justify-items-center gap-3 px-[clamp(16px,4vw,40px)] pt-[18px] pb-[26px] text-center">
-      <p className="m-0 font-bold text-[0.9rem] text-white leading-normal">
-        © 2026 かまって☆しんどろ〜む
-      </p>
-      <nav
-        aria-label="サイトポリシー"
-        className="flex flex-wrap justify-center gap-x-5 gap-y-2"
-      >
-        {policyLinks.map((link) => (
-          <Link
-            key={link.to}
-            to={link.to}
-            className="font-bold text-[0.78rem] text-white leading-none underline-offset-4 hover:underline hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
-          >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
-    </footer>
   );
 }

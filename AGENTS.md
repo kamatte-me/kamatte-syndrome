@@ -67,22 +67,26 @@
 
 - `PsychedelicBackground` はサイト最背面に常時表示し、黒いレイアウト面の外側や透過部分から見える状態を維持してください。
 - テキスト、border、白背景風の面、SVGアイコンなどは、黒い面をくり抜いたように背景が見える表現を基本にします。
-- 本文や説明文など、読みやすさが必要な長めのテキストは、背景透過を維持したまま半透明白を重ねる表現を使います。現在の可読用テキスト色は `rgb(255 255 255 / 0.65)` です。
+- 本文や説明文など、読みやすさが必要な長めのテキストは、背景透過を維持したまま半透明白を重ねる表現を使います。現在の可読用テキスト色は `rgb(234 234 234 / 0.75)` です。
 - 画像、動画、iframeなどのメディアは透過させず、通常の見た目で表示してください。
-- ヘッダーのアクティブリンクは例外として、白背景に黒文字で読める状態を維持してください。
+- ヘッダーのアクティブリンクは例外として、背景を透過穴にしつつ実操作レイヤーの黒文字で読める状態を維持してください。
 - モーダルも通常コンテンツと同じ透過ポリシーを適用しつつ、本文スクロール、閉じるボタン、埋め込みメディアが操作できることを優先してください。
 - 透過演出よりも可読性、操作性、SEO、アクセシビリティを優先してください。演出のために実コンテンツDOMを検索不能・操作不能にしないでください。
 
 #### 実装上の注意
 
-- 現在のグローバル透過演出は `apps/web/src/components/layouts/GlobalLayout.tsx` と `apps/web/src/styles.css` にあります。`PsychedelicBackground` の上に、ステンシル用の `.ks-cutout-stencil-layer` と実操作用の `.ks-cutout-content` を重ねる方式です。
-- `.ks-cutout-stencil-layer` は見た目用の複製レイヤーで、`aria-hidden`、`inert`、`data-nosnippet` を付けています。SEOやアクセシビリティ上の実体は `.ks-cutout-content` 側のDOMです。テキストやリンクを増やすためだけに追加の複製DOMを作らないでください。
-- `.ks-cutout-content` 側ではテキスト、border、SVGなどを透明化し、画像、動画、iframe、canvasなどのメディアは通常表示します。透過対象と通常表示対象の切り分けを変える場合は、`styles.css` の `.ks-cutout-*` ルールを確認してください。
-- `data-cutout-readable` は「背景をくり抜きつつ、実操作レイヤーに半透明白文字を重ねる」ための属性です。Biographyの説明文のように、完全な透明文字だと読みづらいが背景透過は残したいテキストに使ってください。
-- `data-cutout-muted` は「背景をくり抜きつつ、実操作レイヤーに半透明黒文字を重ねる」ための属性です。公開日など、読めるが強調したくないメタ情報に使ってください。現在の色は `rgb(0 0 0 / 0.4)` です。
-- `MarkdownContent` は本文全体に `data-cutout-markdown` を付けます。Markdown本文は背景透過を維持しつつ半透明白で読みやすくし、見出しとリンクは従来どおり強い透過表現に寄せる方針です。
-- `filter: url("#ks-global-cutout-filter")` を使うステンシル方式が前提です。Canvasマスク、`mix-blend-mode`、白色ピクセル除去などの別方式へ戻す場合は、チラつき、アンチエイリアス、SEO、メディア表示の副作用を実機確認してから判断してください。
-- モーダルなど `position: fixed` を使うUIは、ステンシル側では `.ks-cutout-stencil-layer :where(.fixed)` により `absolute` に置き換わります。GlobalLayout配下のモーダルには必要に応じて `data-cutout-modal` を付け、`--ks-modal-scroll-y` など既存の位置合わせを壊さないでください。
+- 現在のグローバル透過演出は `apps/web/src/components/layouts/GlobalLayout.tsx` と `apps/web/src/components/layouts/GlobalLayout.module.css` にあります。`PsychedelicBackground` の上に、ステンシル用レイヤーと実操作用レイヤーを重ねる方式です。
+- ステンシルレイヤーは見た目用の複製レイヤーで、`aria-hidden`、`inert`、`data-nosnippet`、`data-cutout-layer="stencil"` を付けています。SEOやアクセシビリティ上の実体は `data-cutout-layer="content"` 側のDOMです。テキストやリンクを増やすためだけに追加の複製DOMを作らないでください。
+- 実操作レイヤー側ではテキスト、border、SVGなどを透明化し、画像、動画、iframe、canvasなどのメディアは通常表示します。透過対象と通常表示対象の切り分けを変える場合は、`GlobalLayout.module.css` の透過ルールを確認してください。
+- `GlobalLayout.module.css` は透過レイヤー基盤だけを持ちます。ヘッダーのアクティブ表示は `SiteHeader.module.css`、Cultureモーダルやカード画像maskは `culture.module.css` のように、コンポーネント固有・ページ固有のCSS Moduleへ置いてください。
+- 見た目の透過指定に独自 `data-*` 属性は使わず、Tailwind theme color と CSS Modules を使ってください。透過穴は `text-cutout-hole`、`border-cutout-hole`、`bg-cutout-hole`、`decoration-cutout-hole`、`outline-cutout-hole` を使い、可読テキストは `text-cutout-readable`、弱いメタ情報は `text-cutout-muted` を使います。透過穴の意味で `text-white`、`border-white`、`bg-white` は使わないでください。
+- readable/muted の見た目は Tailwind utility で明示してください。`GlobalLayout.module.css` では `text-cutout-readable` / `text-cutout-muted` に対する包括的な `border-color` や `color` の補正は行わず、border や underline の色が必要な場合は `border-cutout-*` / `decoration-cutout-*` を個別に付けてください。
+- 透過演出内では `bg-black` を黒面目的で使わないでください。黒いレイアウト面はステンシルレイヤーが作ります。背景自体を穴として描きたい場合だけ `bg-cutout-hole` を使い、`body` と `PsychedelicBackground` の黒背景は例外として維持してください。
+- 透過用の色は `apps/web/src/styles.css` の Tailwind theme token で管理します。レイヤーごとの実体は `GlobalLayout.module.css` のステンシルレイヤーと実操作レイヤーで切り替えます。
+- `MarkdownContent` の本文、見出し、リンク、code、blockquote などのMarkdown固有スタイルは `apps/web/src/components/ui/MarkdownContent.module.css` で管理します。Markdown本文は背景透過を維持しつつ半透明白で読みやすくし、見出しとリンクは従来どおり強い透過表現に寄せる方針です。
+- `filter: url("#global-cutout-filter")` を使うステンシル方式が前提です。`@supports` による通常白文字フォールバックは置かず、このフィルターに対応するブラウザを前提にします。フォールバックやCanvasマスク、`mix-blend-mode`、白色ピクセル除去などの別方式へ戻す場合は、チラつき、アンチエイリアス、SEO、メディア表示の副作用を実機確認してから判断してください。
+- モーダルなど `position: fixed` を使うUIは、ステンシル側ではCSS Modules内の透過ルールにより `absolute` に置き換わります。GlobalLayout配下のモーダルはページ側のCSS Module classで扱い、JS連携は `data-cutout-layer` と `--modal-scroll-y` など既存の位置合わせを使ってください。
+- `data-*` は `data-cutout-layer`、`data-culture-*`、`data-nosnippet` のようなJS連携やSEO目的に限定してください。
 - スクロール可能なモーダル内コンテンツは、実操作レイヤーとステンシルレイヤーの `scrollTop` を同期する必要があります。Cultureモーダルでは `data-culture-modal-body` を同期対象にしているため、スクロール領域を移動する場合は同期処理も一緒に更新してください。
 - Cultureページのカード画像は実DOM側の画像として表示し、モーダルと重なる部分だけ `data-culture-modal-obscured` / `data-culture-modal-cutout` とCSS maskで調整しています。モーダルやカード画像の寸法、配置、z-indexを変える場合は、モバイル縦、モバイル横、デスクトップで画像の消え方を確認してください。
 - 透過演出を触った後は、最低限 `pnpm lint`、`pnpm typecheck`、`pnpm build` を実行し、可能なら Playwright で `/culture` のモーダル開閉、本文スクロール、背景画像表示を確認してください。
