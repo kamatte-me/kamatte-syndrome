@@ -6,6 +6,8 @@
   --cutout-hole: transparent;
   --cutout-muted: rgb(127 127 127 / 0.7);
   --cutout-readable: rgb(234 234 234 / 0.75);
+  --cutout-stencil-hole-source: #000;
+  --cutout-stencil-surface-source: #fff;
 }
 
 @theme inline {

@@ -83,6 +83,7 @@
 - readable/muted の見た目は Tailwind utility で明示してください。`GlobalLayout.module.css` では `text-cutout-readable` / `text-cutout-muted` に対する包括的な `border-color` や `color` の補正は行わず、border や underline の色が必要な場合は `border-cutout-*` / `decoration-cutout-*` を個別に付けてください。
 - 透過演出内では `bg-black` を黒面目的で使わないでください。黒いレイアウト面はステンシルレイヤーが作ります。背景自体を穴として描きたい場合だけ `bg-cutout-hole` を使い、`body` と `PsychedelicBackground` の黒背景は例外として維持してください。
 - 透過用の色は `apps/web/src/styles.css` の Tailwind theme token で管理します。レイヤーごとの実体は `GlobalLayout.module.css` のステンシルレイヤーと実操作レイヤーで切り替えます。
+- ステンシル側の白黒は `--cutout-stencil-hole-source` / `--cutout-stencil-surface-source` を使ってください。CSS mask の `linear-gradient(#000 0 0)` のような不透明mask用の黒は、色トークンではなく技術的なmask値として直書きで構いません。
 - `MarkdownContent` の本文、見出し、リンク、code、blockquote などのMarkdown固有スタイルは `apps/web/src/components/ui/MarkdownContent.module.css` で管理します。Markdown本文は背景透過を維持しつつ半透明白で読みやすくし、見出しとリンクは従来どおり強い透過表現に寄せる方針です。
 - `filter: url("#global-cutout-filter")` を使うステンシル方式が前提です。`@supports` による通常白文字フォールバックは置かず、このフィルターに対応するブラウザを前提にします。フォールバックやCanvasマスク、`mix-blend-mode`、白色ピクセル除去などの別方式へ戻す場合は、チラつき、アンチエイリアス、SEO、メディア表示の副作用を実機確認してから判断してください。
 - モーダルなど `position: fixed` を使うUIは、ステンシル側ではCSS Modules内の透過ルールにより `absolute` に置き換わります。GlobalLayout配下のモーダルはページ側のCSS Module classで扱い、JS連携は `data-cutout-layer` と `--modal-scroll-y` など既存の位置合わせを使ってください。

@@ -3,12 +3,12 @@
 }
 
 .stencilLayer {
-  --cutout-hole: #000;
-  --cutout-muted: #000;
-  --cutout-readable: #000;
+  --cutout-hole: var(--cutout-stencil-hole-source);
+  --cutout-muted: var(--cutout-stencil-hole-source);
+  --cutout-readable: var(--cutout-stencil-hole-source);
 
   display: block;
-  background: #fff;
+  background: var(--cutout-stencil-surface-source);
   color: var(--cutout-hole);
   filter: url("#global-cutout-filter");
   -webkit-text-fill-color: currentColor;

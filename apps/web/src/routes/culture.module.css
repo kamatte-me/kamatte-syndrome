@@ -8,7 +8,7 @@
 }
 
 [data-cutout-layer="stencil"] .modalPanel {
-  background-color: #fff;
+  background-color: var(--cutout-stencil-surface-source);
 }
 
 [data-cutout-layer="content"] .modalPanel {

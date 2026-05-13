@@ -1,12 +1,12 @@
 [data-cutout-layer="stencil"] .activeNavLink {
-  background-color: #000;
+  background-color: var(--cutout-stencil-hole-source);
 }
 
 [data-cutout-layer="stencil"] .activeNavLink,
 [data-cutout-layer="stencil"] .activeNavLink :where(*) {
-  color: #fff;
-  text-decoration-color: #fff;
-  -webkit-text-fill-color: #fff;
+  color: var(--cutout-stencil-surface-source);
+  text-decoration-color: var(--cutout-stencil-surface-source);
+  -webkit-text-fill-color: var(--cutout-stencil-surface-source);
 }
 
 [data-cutout-layer="content"] .activeNavLink {
@@ -15,7 +15,7 @@
 
 [data-cutout-layer="content"] .activeNavLink,
 [data-cutout-layer="content"] .activeNavLink :where(*) {
-  color: #000;
-  text-decoration-color: #000;
-  -webkit-text-fill-color: #000;
+  color: var(--cutout-stencil-hole-source);
+  text-decoration-color: var(--cutout-stencil-hole-source);
+  -webkit-text-fill-color: var(--cutout-stencil-hole-source);
 }
