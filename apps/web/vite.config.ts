@@ -11,12 +11,13 @@ import { nitro } from 'nitro/vite';
 import remarkBreaks from 'remark-breaks';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig(({ mode }) => {
-  const isTest = process.env.VITEST === 'true' || mode === 'test';
+  const isTest = process.env.VITEST === 'true';
 
   return {
     plugins: [
@@ -87,6 +88,10 @@ export default defineConfig(({ mode }) => {
       !isTest && nitro(),
       !isTest && rsc(),
       react({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
+      mode === 'analyze' && {
+        ...(visualizer() as Plugin),
+        applyToEnvironment: (environment) => environment.name === 'client',
+      },
     ],
     resolve: {
       tsconfigPaths: true,
