@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allCultures } from 'content-collections';
-import { Play, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import type { CSSProperties, ReactElement } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
@@ -134,15 +134,15 @@ function CulturePage() {
     }
 
     const clearObscuredMedia = () => {
-      for (const media of document.querySelectorAll<HTMLElement>(
-        '[data-cutout-layer="content"] [data-culture-card-media]',
+      for (const frame of document.querySelectorAll<HTMLElement>(
+        '[data-cutout-layer="content"] [data-culture-card-frame]',
       )) {
-        delete media.dataset.cultureModalObscured;
-        delete media.dataset.cultureModalCutout;
-        media.style.removeProperty('--culture-modal-mask-height');
-        media.style.removeProperty('--culture-modal-mask-left');
-        media.style.removeProperty('--culture-modal-mask-top');
-        media.style.removeProperty('--culture-modal-mask-width');
+        delete frame.dataset.cultureModalObscured;
+        delete frame.dataset.cultureModalCutout;
+        frame.style.removeProperty('--culture-modal-mask-height');
+        frame.style.removeProperty('--culture-modal-mask-left');
+        frame.style.removeProperty('--culture-modal-mask-top');
+        frame.style.removeProperty('--culture-modal-mask-width');
       }
     };
 
@@ -157,56 +157,56 @@ function CulturePage() {
 
       const dialogRect = dialog.getBoundingClientRect();
 
-      for (const media of document.querySelectorAll<HTMLElement>(
-        '[data-cutout-layer="content"] [data-culture-card-media]',
+      for (const frame of document.querySelectorAll<HTMLElement>(
+        '[data-cutout-layer="content"] [data-culture-card-frame]',
       )) {
-        const mediaRect = media.getBoundingClientRect();
-        const overlapLeft = Math.max(0, dialogRect.left - mediaRect.left);
-        const overlapTop = Math.max(0, dialogRect.top - mediaRect.top);
+        const frameRect = frame.getBoundingClientRect();
+        const overlapLeft = Math.max(0, dialogRect.left - frameRect.left);
+        const overlapTop = Math.max(0, dialogRect.top - frameRect.top);
         const overlapRight = Math.min(
-          mediaRect.width,
-          dialogRect.right - mediaRect.left,
+          frameRect.width,
+          dialogRect.right - frameRect.left,
         );
         const overlapBottom = Math.min(
-          mediaRect.height,
-          dialogRect.bottom - mediaRect.top,
+          frameRect.height,
+          dialogRect.bottom - frameRect.top,
         );
         const overlapWidth = Math.max(0, overlapRight - overlapLeft);
         const overlapHeight = Math.max(0, overlapBottom - overlapTop);
 
-        delete media.dataset.cultureModalObscured;
-        delete media.dataset.cultureModalCutout;
-        media.style.removeProperty('--culture-modal-mask-height');
-        media.style.removeProperty('--culture-modal-mask-left');
-        media.style.removeProperty('--culture-modal-mask-top');
-        media.style.removeProperty('--culture-modal-mask-width');
+        delete frame.dataset.cultureModalObscured;
+        delete frame.dataset.cultureModalCutout;
+        frame.style.removeProperty('--culture-modal-mask-height');
+        frame.style.removeProperty('--culture-modal-mask-left');
+        frame.style.removeProperty('--culture-modal-mask-top');
+        frame.style.removeProperty('--culture-modal-mask-width');
 
         if (overlapWidth <= 0 || overlapHeight <= 0) {
           continue;
         }
 
-        const coversImage =
+        const coversFrame =
           overlapLeft <= 0.5 &&
           overlapTop <= 0.5 &&
-          overlapRight >= mediaRect.width - 0.5 &&
-          overlapBottom >= mediaRect.height - 0.5;
+          overlapRight >= frameRect.width - 0.5 &&
+          overlapBottom >= frameRect.height - 0.5;
 
-        if (coversImage) {
-          media.dataset.cultureModalObscured = 'true';
+        if (coversFrame) {
+          frame.dataset.cultureModalObscured = 'true';
           continue;
         }
 
-        media.dataset.cultureModalCutout = 'true';
-        media.style.setProperty(
+        frame.dataset.cultureModalCutout = 'true';
+        frame.style.setProperty(
           '--culture-modal-mask-height',
           `${overlapHeight}px`,
         );
-        media.style.setProperty(
+        frame.style.setProperty(
           '--culture-modal-mask-left',
           `${overlapLeft}px`,
         );
-        media.style.setProperty('--culture-modal-mask-top', `${overlapTop}px`);
-        media.style.setProperty(
+        frame.style.setProperty('--culture-modal-mask-top', `${overlapTop}px`);
+        frame.style.setProperty(
           '--culture-modal-mask-width',
           `${overlapWidth}px`,
         );
@@ -312,7 +312,10 @@ function CultureCard({
         className="grid h-full w-full overflow-hidden border border-cutout-hole text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
         onClick={() => onOpen(item.slug)}
       >
-        <span className="relative block aspect-[4/3] overflow-hidden">
+        <span
+          className={`${cultureStyles.cardFrame} relative block aspect-[4/3] overflow-hidden`}
+          data-culture-card-frame
+        >
           <img
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
             alt=""
@@ -322,15 +325,7 @@ function CultureCard({
             data-culture-card-media
             className={`${cultureStyles.cardMedia} size-full object-cover opacity-90`}
           />
-          <span className="absolute inset-0 flex items-center justify-center opacity-100">
-            <span className="flex size-14 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole">
-              <Play
-                aria-hidden="true"
-                className="ml-0.5 size-7 fill-current"
-                strokeWidth={1.8}
-              />
-            </span>
-          </span>
+          <span aria-hidden="true" className={cultureStyles.playIndicator} />
         </span>
         <span className="flex min-h-20 items-center px-4 py-3 font-bold text-cutout-hole text-lg leading-snug">
           {item.name}

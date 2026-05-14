@@ -1,3 +1,53 @@
+.cardFrame {
+  --culture-play-icon-size: 3.75rem;
+  --culture-play-icon-mask: url("../assets/icons/play-circle.svg?no-inline");
+}
+
+.playIndicator {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--cutout-hole);
+  pointer-events: none;
+}
+
+.playIndicator::before {
+  width: var(--culture-play-icon-size);
+  height: var(--culture-play-icon-size);
+  background-color: currentColor;
+  content: "";
+  mask-image: var(--culture-play-icon-mask);
+  mask-mode: alpha;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-image: var(--culture-play-icon-mask);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+}
+
+[data-cutout-layer="content"] .cardMedia {
+  mask-composite: exclude;
+  mask-image: linear-gradient(#000 0 0), var(--culture-play-icon-mask);
+  mask-mode: alpha, alpha;
+  mask-position:
+    0 0,
+    50% 50%;
+  mask-repeat: no-repeat, no-repeat;
+  mask-size:
+    100% 100%,
+    var(--culture-play-icon-size) var(--culture-play-icon-size);
+  -webkit-mask-composite: xor;
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--culture-play-icon-mask);
+  -webkit-mask-position:
+    0 0,
+    50% 50%;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-size:
+    100% 100%,
+    var(--culture-play-icon-size) var(--culture-play-icon-size);
+}
+
 [data-cutout-layer="stencil"] .modalRoot {
   top: calc(var(--modal-scroll-y, 0px) - var(--cutout-inset));
   right: auto;
@@ -15,13 +65,14 @@
   background-color: transparent;
 }
 
-[data-cutout-layer="content"] .cardMedia[data-culture-modal-obscured] {
-  visibility: hidden;
+[data-cutout-layer="content"] .cardFrame[data-culture-modal-obscured] {
+  opacity: 0;
 }
 
-[data-cutout-layer="content"] .cardMedia[data-culture-modal-cutout] {
+[data-cutout-layer="content"] .cardFrame[data-culture-modal-cutout] {
   mask-composite: exclude;
   mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-mode: alpha, alpha;
   mask-position:
     0 0,
     var(--culture-modal-mask-left) var(--culture-modal-mask-top);
