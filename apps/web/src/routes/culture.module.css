@@ -48,28 +48,7 @@
     var(--culture-play-icon-size) var(--culture-play-icon-size);
 }
 
-[data-cutout-layer="stencil"] .modalRoot {
-  top: calc(var(--modal-scroll-y, 0px) - var(--cutout-inset));
-  right: auto;
-  bottom: auto;
-  left: calc(-1 * var(--cutout-inset));
-  width: 100vw;
-  height: 100dvh;
-}
-
-[data-cutout-layer="stencil"] .modalPanel {
-  background-color: var(--cutout-stencil-surface-source);
-}
-
-[data-cutout-layer="content"] .modalPanel {
-  background-color: transparent;
-}
-
-[data-cutout-layer="content"] .cardFrame[data-culture-modal-obscured] {
-  opacity: 0;
-}
-
-[data-cutout-layer="content"] .cardFrame[data-culture-modal-cutout] {
+[data-cutout-layer="content"] .pageContent[data-culture-modal-cutout] {
   mask-composite: exclude;
   mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
   mask-mode: alpha, alpha;
@@ -89,4 +68,21 @@
   -webkit-mask-size:
     100% 100%,
     var(--culture-modal-mask-width) var(--culture-modal-mask-height);
+}
+
+[data-cutout-layer="stencil"] .modalRoot {
+  top: calc(var(--modal-scroll-y, 0px) - var(--cutout-inset));
+  right: auto;
+  bottom: auto;
+  left: calc(-1 * var(--cutout-inset));
+  width: 100vw;
+  height: 100dvh;
+}
+
+[data-cutout-layer="stencil"] .modalPanel {
+  background-color: var(--cutout-stencil-surface-source);
+}
+
+[data-cutout-layer="content"] .modalPanel {
+  background-color: transparent;
 }

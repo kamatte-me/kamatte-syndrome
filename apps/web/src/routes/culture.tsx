@@ -5,7 +5,14 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allCultures } from 'content-collections';
 import { X } from 'lucide-react';
 import type { CSSProperties, ReactElement } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import cultureStyles from './culture.module.css';
 
@@ -21,6 +28,8 @@ type CultureListItem = {
 
 const cultureModalChangeEvent = 'culture-modal-change';
 const modalRootSelector = `.${cultureStyles.modalRoot}`;
+const useBrowserLayoutEffect =
+  typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 const getCulturePageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -65,6 +74,7 @@ export const Route = createFileRoute('/culture')({
 function CulturePage() {
   const cultureItems = Route.useLoaderData();
   const pageRef = useRef<HTMLElement>(null);
+  const pageContentRef = useRef<HTMLDivElement>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [isStencilPage, setIsStencilPage] = useState(false);
 
@@ -102,7 +112,7 @@ function CulturePage() {
     window.history.back();
   }, [selectedSlug]);
 
-  useEffect(() => {
+  useBrowserLayoutEffect(() => {
     setIsStencilPage(
       Boolean(pageRef.current?.closest('[data-cutout-layer="stencil"]')),
     );
@@ -128,99 +138,134 @@ function CulturePage() {
     };
   }, []);
 
-  useEffect(() => {
+  useBrowserLayoutEffect(() => {
     if (!selectedItem || isStencilPage) {
       return;
     }
 
-    const clearObscuredMedia = () => {
-      for (const frame of document.querySelectorAll<HTMLElement>(
-        '[data-cutout-layer="content"] [data-culture-card-frame]',
-      )) {
-        delete frame.dataset.cultureModalObscured;
-        delete frame.dataset.cultureModalCutout;
-        frame.style.removeProperty('--culture-modal-mask-height');
-        frame.style.removeProperty('--culture-modal-mask-left');
-        frame.style.removeProperty('--culture-modal-mask-top');
-        frame.style.removeProperty('--culture-modal-mask-width');
+    let updateFrame: number | null = null;
+
+    const clearObscuredPageContent = () => {
+      const pageContent = pageContentRef.current;
+
+      if (!pageContent) {
+        return;
       }
+
+      delete pageContent.dataset.cultureModalCutout;
+      pageContent.style.removeProperty('--culture-modal-mask-height');
+      pageContent.style.removeProperty('--culture-modal-mask-left');
+      pageContent.style.removeProperty('--culture-modal-mask-top');
+      pageContent.style.removeProperty('--culture-modal-mask-width');
     };
 
-    const updateObscuredMedia = () => {
+    const updateObscuredPageContent = () => {
+      updateFrame = null;
+
+      const pageContent = pageContentRef.current;
       const dialog = document.querySelector<HTMLElement>(
         `[data-cutout-layer="content"] ${modalRootSelector} [role="dialog"]`,
       );
 
-      if (!dialog) {
+      if (!pageContent || !dialog) {
         return;
       }
 
       const dialogRect = dialog.getBoundingClientRect();
+      const pageContentRect = pageContent.getBoundingClientRect();
+      const overlapLeft = Math.max(0, dialogRect.left - pageContentRect.left);
+      const overlapTop = Math.max(0, dialogRect.top - pageContentRect.top);
+      const overlapRight = Math.min(
+        pageContentRect.width,
+        dialogRect.right - pageContentRect.left,
+      );
+      const overlapBottom = Math.min(
+        pageContentRect.height,
+        dialogRect.bottom - pageContentRect.top,
+      );
+      const overlapWidth = Math.max(0, overlapRight - overlapLeft);
+      const overlapHeight = Math.max(0, overlapBottom - overlapTop);
 
-      for (const frame of document.querySelectorAll<HTMLElement>(
-        '[data-cutout-layer="content"] [data-culture-card-frame]',
-      )) {
-        const frameRect = frame.getBoundingClientRect();
-        const overlapLeft = Math.max(0, dialogRect.left - frameRect.left);
-        const overlapTop = Math.max(0, dialogRect.top - frameRect.top);
-        const overlapRight = Math.min(
-          frameRect.width,
-          dialogRect.right - frameRect.left,
-        );
-        const overlapBottom = Math.min(
-          frameRect.height,
-          dialogRect.bottom - frameRect.top,
-        );
-        const overlapWidth = Math.max(0, overlapRight - overlapLeft);
-        const overlapHeight = Math.max(0, overlapBottom - overlapTop);
+      clearObscuredPageContent();
 
-        delete frame.dataset.cultureModalObscured;
-        delete frame.dataset.cultureModalCutout;
-        frame.style.removeProperty('--culture-modal-mask-height');
-        frame.style.removeProperty('--culture-modal-mask-left');
-        frame.style.removeProperty('--culture-modal-mask-top');
-        frame.style.removeProperty('--culture-modal-mask-width');
-
-        if (overlapWidth <= 0 || overlapHeight <= 0) {
-          continue;
-        }
-
-        const coversFrame =
-          overlapLeft <= 0.5 &&
-          overlapTop <= 0.5 &&
-          overlapRight >= frameRect.width - 0.5 &&
-          overlapBottom >= frameRect.height - 0.5;
-
-        if (coversFrame) {
-          frame.dataset.cultureModalObscured = 'true';
-          continue;
-        }
-
-        frame.dataset.cultureModalCutout = 'true';
-        frame.style.setProperty(
-          '--culture-modal-mask-height',
-          `${overlapHeight}px`,
-        );
-        frame.style.setProperty(
-          '--culture-modal-mask-left',
-          `${overlapLeft}px`,
-        );
-        frame.style.setProperty('--culture-modal-mask-top', `${overlapTop}px`);
-        frame.style.setProperty(
-          '--culture-modal-mask-width',
-          `${overlapWidth}px`,
-        );
+      if (overlapWidth <= 0 || overlapHeight <= 0) {
+        return;
       }
+
+      pageContent.dataset.cultureModalCutout = 'true';
+      pageContent.style.setProperty(
+        '--culture-modal-mask-height',
+        `${overlapHeight}px`,
+      );
+      pageContent.style.setProperty(
+        '--culture-modal-mask-left',
+        `${overlapLeft}px`,
+      );
+      pageContent.style.setProperty(
+        '--culture-modal-mask-top',
+        `${overlapTop}px`,
+      );
+      pageContent.style.setProperty(
+        '--culture-modal-mask-width',
+        `${overlapWidth}px`,
+      );
     };
 
-    const animationFrame = window.requestAnimationFrame(updateObscuredMedia);
+    const scheduleObscuredPageContentUpdate = () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
 
-    window.addEventListener('resize', updateObscuredMedia);
+      updateFrame = window.requestAnimationFrame(updateObscuredPageContent);
+    };
+
+    const resizeObserver = new ResizeObserver(
+      scheduleObscuredPageContentUpdate,
+    );
+    const dialog = document.querySelector<HTMLElement>(
+      `[data-cutout-layer="content"] ${modalRootSelector} [role="dialog"]`,
+    );
+
+    if (pageContentRef.current) {
+      resizeObserver.observe(pageContentRef.current);
+    }
+
+    if (dialog) {
+      resizeObserver.observe(dialog);
+    }
+
+    updateObscuredPageContent();
+
+    window.addEventListener('resize', scheduleObscuredPageContentUpdate);
+    window.addEventListener('scroll', scheduleObscuredPageContentUpdate, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener(
+      'resize',
+      scheduleObscuredPageContentUpdate,
+    );
+    window.visualViewport?.addEventListener(
+      'scroll',
+      scheduleObscuredPageContentUpdate,
+    );
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener('resize', updateObscuredMedia);
-      clearObscuredMedia();
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', scheduleObscuredPageContentUpdate);
+      window.removeEventListener('scroll', scheduleObscuredPageContentUpdate);
+      window.visualViewport?.removeEventListener(
+        'resize',
+        scheduleObscuredPageContentUpdate,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        scheduleObscuredPageContentUpdate,
+      );
+      clearObscuredPageContent();
     };
   }, [isStencilPage, selectedItem]);
 
@@ -264,32 +309,37 @@ function CulturePage() {
       className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12"
       data-culture-modal-open={selectedItem ? true : undefined}
     >
-      <section className="border-cutout-hole border-b pb-8">
-        <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
-          Culture
-        </p>
-        <div className="grid gap-5">
-          <div>
-            <h1
-              className="font-bold text-5xl leading-none sm:text-6xl"
-              style={{
-                fontFamily: 'var(--font-latin-dot-gothic)',
-              }}
-            >
-              カルチャー
-            </h1>
-            <p className="mt-4 max-w-2xl text-base text-cutout-readable leading-8">
-              ぼくを構成する音楽、動画、いろいろ。
-            </p>
+      <div
+        ref={pageContentRef}
+        className={`${cultureStyles.pageContent} flex flex-col gap-8`}
+      >
+        <section className="border-cutout-hole border-b pb-8">
+          <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
+            Culture
+          </p>
+          <div className="grid gap-5">
+            <div>
+              <h1
+                className="font-bold text-5xl leading-none sm:text-6xl"
+                style={{
+                  fontFamily: 'var(--font-latin-dot-gothic)',
+                }}
+              >
+                カルチャー
+              </h1>
+              <p className="mt-4 max-w-2xl text-base text-cutout-readable leading-8">
+                ぼくを構成する音楽、動画、いろいろ。
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {cultureItems.map((item) => (
-          <CultureCard item={item} key={item.slug} onOpen={openModal} />
-        ))}
-      </ul>
+        <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {cultureItems.map((item) => (
+            <CultureCard item={item} key={item.slug} onOpen={openModal} />
+          ))}
+        </ul>
+      </div>
 
       {selectedItem ? (
         <CultureModal item={selectedItem} onClose={closeModal} />
@@ -314,7 +364,6 @@ function CultureCard({
       >
         <span
           className={`${cultureStyles.cardFrame} relative block aspect-[4/3] overflow-hidden`}
-          data-culture-card-frame
         >
           <img
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
@@ -347,17 +396,66 @@ function CultureModal({
   const [renderMedia, setRenderMedia] = useState(false);
   const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
 
-  useEffect(() => {
+  useBrowserLayoutEffect(() => {
     const isStencilModal = Boolean(
       modalRootRef.current?.closest('[data-cutout-layer="stencil"]'),
     );
 
     setRenderMedia(!isStencilModal);
-    setStencilScrollY(isStencilModal ? window.scrollY : null);
 
     if (!isStencilModal) {
+      setStencilScrollY(null);
       dialogRef.current?.focus();
+
+      return;
     }
+
+    let updateFrame: number | null = null;
+
+    const updateStencilScrollY = () => {
+      updateFrame = null;
+      setStencilScrollY(window.scrollY);
+    };
+
+    const scheduleStencilScrollYUpdate = () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      updateFrame = window.requestAnimationFrame(updateStencilScrollY);
+    };
+
+    updateStencilScrollY();
+
+    window.addEventListener('resize', scheduleStencilScrollYUpdate);
+    window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener(
+      'resize',
+      scheduleStencilScrollYUpdate,
+    );
+    window.visualViewport?.addEventListener(
+      'scroll',
+      scheduleStencilScrollYUpdate,
+    );
+
+    return () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      window.removeEventListener('resize', scheduleStencilScrollYUpdate);
+      window.removeEventListener('scroll', scheduleStencilScrollYUpdate);
+      window.visualViewport?.removeEventListener(
+        'resize',
+        scheduleStencilScrollYUpdate,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        scheduleStencilScrollYUpdate,
+      );
+    };
   }, []);
 
   useEffect(() => {
@@ -422,7 +520,7 @@ function CultureModal({
   return (
     <div
       ref={modalRootRef}
-      className={`${cultureStyles.modalRoot} fixed inset-0 z-50 flex items-center justify-center`}
+      className={`${cultureStyles.modalRoot} fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4`}
       style={modalStyle}
     >
       <button
@@ -435,7 +533,7 @@ function CultureModal({
         ref={dialogRef}
         aria-labelledby="culture-modal-title"
         aria-modal="true"
-        className={`${cultureStyles.modalPanel} relative flex h-[80dvh] w-[80vw] flex-col overflow-hidden border-8 border-cutout-hole outline-none`}
+        className={`${cultureStyles.modalPanel} relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[80dvh] sm:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]`}
         role="dialog"
         tabIndex={-1}
       >
@@ -455,10 +553,10 @@ function CultureModal({
         </div>
 
         <div
-          className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row"
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row [@media_(orientation:landscape)_and_(max-height:500px)]:flex-row"
           data-culture-modal-body
         >
-          <div className="shrink-0 border-cutout-hole border-b p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6">
+          <div className="shrink-0 border-cutout-hole border-b p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:border-r [@media_(orientation:landscape)_and_(max-height:500px)]:border-b-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4">
             <div className="mx-auto aspect-video w-full md:max-w-2xl lg:max-w-none">
               {renderMedia ? (
                 <iframe
@@ -474,7 +572,7 @@ function CultureModal({
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8">
+          <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8 [@media_(orientation:landscape)_and_(max-height:500px)]:min-h-0 [@media_(orientation:landscape)_and_(max-height:500px)]:flex-1 [@media_(orientation:landscape)_and_(max-height:500px)]:p-5">
             <header className="shrink-0 border-cutout-hole border-b pb-4">
               <p className="mb-2 font-semibold text-cutout-hole text-xs uppercase tracking-[0.28em]">
                 Now Playing
