@@ -3,8 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allCultures } from 'content-collections';
-import { X } from 'lucide-react';
-import type { CSSProperties, ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import {
   useCallback,
   useEffect,
@@ -14,6 +13,7 @@ import {
   useState,
 } from 'react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { Modal, modalDialogSelector } from '@/components/ui/Modal';
 import cultureStyles from './culture.module.css';
 
 type RenderedServerComponent = RenderableServerComponent<ReactElement>;
@@ -27,7 +27,6 @@ type CultureListItem = {
 };
 
 const cultureModalChangeEvent = 'culture-modal-change';
-const modalRootSelector = `.${cultureStyles.modalRoot}`;
 const useBrowserLayoutEffect =
   typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
@@ -164,7 +163,7 @@ function CulturePage() {
 
       const pageContent = pageContentRef.current;
       const dialog = document.querySelector<HTMLElement>(
-        `[data-cutout-layer="content"] ${modalRootSelector} [role="dialog"]`,
+        `[data-cutout-layer="content"] ${modalDialogSelector}`,
       );
 
       if (!pageContent || !dialog) {
@@ -223,7 +222,7 @@ function CulturePage() {
       scheduleObscuredPageContentUpdate,
     );
     const dialog = document.querySelector<HTMLElement>(
-      `[data-cutout-layer="content"] ${modalRootSelector} [role="dialog"]`,
+      `[data-cutout-layer="content"] ${modalDialogSelector}`,
     );
 
     if (pageContentRef.current) {
@@ -268,40 +267,6 @@ function CulturePage() {
       clearObscuredPageContent();
     };
   }, [isStencilPage, selectedItem]);
-
-  useEffect(() => {
-    if (!selectedItem || isStencilPage) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isStencilPage, selectedItem]);
-
-  useEffect(() => {
-    if (!selectedItem || isStencilPage) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return;
-      }
-
-      event.preventDefault();
-      closeModal();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [closeModal, isStencilPage, selectedItem]);
 
   return (
     <main
@@ -391,174 +356,13 @@ function CultureModal({
   item: CultureListItem;
   onClose: () => void;
 }) {
-  const modalRootRef = useRef<HTMLDivElement>(null);
-  const dialogRef = useRef<HTMLElement>(null);
-  const [renderMedia, setRenderMedia] = useState(false);
-  const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
-
-  useBrowserLayoutEffect(() => {
-    const isStencilModal = Boolean(
-      modalRootRef.current?.closest('[data-cutout-layer="stencil"]'),
-    );
-
-    setRenderMedia(!isStencilModal);
-
-    if (!isStencilModal) {
-      setStencilScrollY(null);
-      dialogRef.current?.focus();
-
-      return;
-    }
-
-    let updateFrame: number | null = null;
-
-    const updateStencilScrollY = () => {
-      updateFrame = null;
-      setStencilScrollY(window.scrollY);
-    };
-
-    const scheduleStencilScrollYUpdate = () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
-      updateFrame = window.requestAnimationFrame(updateStencilScrollY);
-    };
-
-    updateStencilScrollY();
-
-    window.addEventListener('resize', scheduleStencilScrollYUpdate);
-    window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
-      passive: true,
-    });
-    window.visualViewport?.addEventListener(
-      'resize',
-      scheduleStencilScrollYUpdate,
-    );
-    window.visualViewport?.addEventListener(
-      'scroll',
-      scheduleStencilScrollYUpdate,
-    );
-
-    return () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
-      window.removeEventListener('resize', scheduleStencilScrollYUpdate);
-      window.removeEventListener('scroll', scheduleStencilScrollYUpdate);
-      window.visualViewport?.removeEventListener(
-        'resize',
-        scheduleStencilScrollYUpdate,
-      );
-      window.visualViewport?.removeEventListener(
-        'scroll',
-        scheduleStencilScrollYUpdate,
-      );
-    };
-  }, []);
-
-  useEffect(() => {
-    const modalRoot = modalRootRef.current;
-    const isStencilModal = Boolean(
-      modalRoot?.closest('[data-cutout-layer="stencil"]'),
-    );
-
-    if (!modalRoot || isStencilModal) {
-      return;
-    }
-
-    const sourceBody = modalRoot.querySelector<HTMLElement>(
-      '[data-culture-modal-body]',
-    );
-
-    if (!sourceBody) {
-      return;
-    }
-
-    let stencilBody: HTMLElement | null = null;
-    const getStencilBody = () => {
-      stencilBody ??= document.querySelector<HTMLElement>(
-        `[data-cutout-layer="stencil"] ${modalRootSelector} [data-culture-modal-body]`,
-      );
-
-      return stencilBody;
-    };
-
-    const syncStencilScroll = () => {
-      const targetBody = getStencilBody();
-
-      if (!targetBody) {
-        return;
-      }
-
-      targetBody.scrollTop = sourceBody.scrollTop;
-      targetBody.scrollLeft = sourceBody.scrollLeft;
-    };
-
-    const animationFrame = window.requestAnimationFrame(syncStencilScroll);
-
-    sourceBody.addEventListener('scroll', syncStencilScroll, {
-      passive: true,
-    });
-    window.addEventListener('resize', syncStencilScroll);
-
-    return () => {
-      window.cancelAnimationFrame(animationFrame);
-      sourceBody.removeEventListener('scroll', syncStencilScroll);
-      window.removeEventListener('resize', syncStencilScroll);
-    };
-  }, []);
-
-  const modalStyle =
-    stencilScrollY === null
-      ? undefined
-      : ({
-          '--modal-scroll-y': `${stencilScrollY}px`,
-        } as CSSProperties);
-
   return (
-    <div
-      ref={modalRootRef}
-      className={`${cultureStyles.modalRoot} fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4`}
-      style={modalStyle}
-    >
-      <button
-        type="button"
-        aria-label="モーダルを閉じる"
-        className="fixed inset-0 size-full cursor-default"
-        onClick={onClose}
-      />
-      <section
-        ref={dialogRef}
-        aria-labelledby="culture-modal-title"
-        aria-modal="true"
-        className={`${cultureStyles.modalPanel} relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[80dvh] sm:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]`}
-        role="dialog"
-        tabIndex={-1}
-      >
-        <div className="flex shrink-0 justify-end border-cutout-hole border-b p-1.5 sm:p-2">
-          <button
-            type="button"
-            aria-label="モーダルを閉じる"
-            className="flex size-9 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-11 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
-            onClick={onClose}
-          >
-            <X
-              aria-hidden="true"
-              className="size-4 sm:size-5 [@media_(orientation:landscape)_and_(max-height:500px)]:size-4"
-              strokeWidth={2}
-            />
-          </button>
-        </div>
-
-        <div
-          className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row [@media_(orientation:landscape)_and_(max-height:500px)]:flex-row"
-          data-culture-modal-body
-        >
+    <Modal onClose={onClose} titleId="culture-modal-title">
+      {({ isContentLayer }) => (
+        <>
           <div className="shrink-0 border-cutout-hole border-b p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:border-r [@media_(orientation:landscape)_and_(max-height:500px)]:border-b-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4">
             <div className="mx-auto aspect-video w-full md:max-w-2xl lg:max-w-none">
-              {renderMedia ? (
+              {isContentLayer ? (
                 <iframe
                   title={`${item.name} - YouTube`}
                   src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1`}
@@ -592,8 +396,8 @@ function CultureModal({
               {item.body}
             </MarkdownContent>
           </div>
-        </div>
-      </section>
-    </div>
+        </>
+      )}
+    </Modal>
   );
 }

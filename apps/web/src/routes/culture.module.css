@@ -69,20 +69,3 @@
     100% 100%,
     var(--culture-modal-mask-width) var(--culture-modal-mask-height);
 }
-
-[data-cutout-layer="stencil"] .modalRoot {
-  top: calc(var(--modal-scroll-y, 0px) - var(--cutout-inset));
-  right: auto;
-  bottom: auto;
-  left: calc(-1 * var(--cutout-inset));
-  width: 100vw;
-  height: 100dvh;
-}
-
-[data-cutout-layer="stencil"] .modalPanel {
-  background-color: var(--cutout-stencil-surface-source);
-}
-
-[data-cutout-layer="content"] .modalPanel {
-  background-color: transparent;
-}
