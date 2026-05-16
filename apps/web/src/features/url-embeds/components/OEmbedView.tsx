@@ -1,3 +1,4 @@
+import { cn } from '@/utils/classNames';
 import type { OEmbedMetadata } from '../utils/oEmbed';
 import { OEmbedHtml } from './OEmbedHtml';
 
@@ -33,7 +34,10 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
 
     return (
       <div
-        className={fixedAspect ? fixedAspectShellClassName : flowShellClassName}
+        className={cn(
+          'not-prose my-6 border border-cutout-hole p-4',
+          fixedAspect && 'overflow-hidden',
+        )}
         style={
           fixedAspect
             ? { aspectRatio: getEmbedAspectRatio(metadata) }
@@ -47,11 +51,6 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
 
   return null;
 }
-
-const fixedAspectShellClassName =
-  'not-prose my-6 overflow-hidden border border-cutout-hole p-4';
-
-const flowShellClassName = 'not-prose my-6 border border-cutout-hole p-4';
 
 function getEmbedTitle(metadata: OEmbedMetadata, fallback: string) {
   return metadata.title ?? metadata.providerName ?? fallback;

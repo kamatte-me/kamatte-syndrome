@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { cn } from '@/utils/classNames';
 import styles from './SiteHeader.module.css';
 
 const navigationLinks = [
@@ -21,7 +22,7 @@ export function SiteHeader() {
           <Link
             activeOptions={link.to === '/' ? { exact: true } : undefined}
             activeProps={{
-              className: `${styles.activeNavLink} bg-cutout-hole text-black`,
+              className: cn(styles.activeNavLink, 'bg-cutout-hole text-black'),
             }}
             key={link.to}
             to={link.to}

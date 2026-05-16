@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';
 import { OEmbed } from '@/features/url-embeds/components/OEmbed';
+import { cn } from '@/utils/classNames';
 import { formatPostDate, sortPostsByPublishedAtDesc } from '@/utils/posts';
 
 type AdjacentPost = {
@@ -149,7 +150,7 @@ function AdjacentPostLink({
       {isPrevious ? (
         <Icon aria-hidden="true" className="size-5 shrink-0 self-center" />
       ) : null}
-      <span className={isPrevious ? 'min-w-0' : 'min-w-0 text-right'}>
+      <span className={cn('min-w-0', !isPrevious && 'text-right')}>
         <span className="block text-cutout-muted text-xs">{label}</span>
         <span className="block font-medium text-sm [overflow-wrap:anywhere] group-hover:underline sm:text-base">
           {post.title}

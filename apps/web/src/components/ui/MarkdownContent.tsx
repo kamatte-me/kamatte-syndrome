@@ -1,19 +1,10 @@
 import type { ComponentPropsWithoutRef } from 'react';
+import { cn } from '@/utils/classNames';
 import styles from './MarkdownContent.module.css';
 
 type MarkdownContentProps = ComponentPropsWithoutRef<'div'> & {
   variant?: 'default' | 'compact';
 };
-
-const baseClassName =
-  'prose prose-invert max-w-none prose-li:marker:text-cutout-readable prose-pre:border';
-
-const variantClassNames = {
-  default:
-    'text-base leading-8 prose-p:my-5 prose-ul:my-5 prose-ol:my-5 prose-li:my-1.5',
-  compact:
-    'text-[15px] leading-7 prose-headings:mt-5 prose-headings:mb-2 prose-p:my-3 prose-ul:my-3 prose-ol:my-3 prose-li:my-1',
-} satisfies Record<NonNullable<MarkdownContentProps['variant']>, string>;
 
 export function MarkdownContent({
   children,
@@ -24,14 +15,14 @@ export function MarkdownContent({
   return (
     <div
       {...props}
-      className={[
+      className={cn(
         styles.root,
-        baseClassName,
-        variantClassNames[variant],
+        'prose prose-invert max-w-none prose-pre:border prose-li:marker:text-cutout-readable',
+        variant === 'compact'
+          ? 'prose-li:my-1 prose-ol:my-3 prose-p:my-3 prose-ul:my-3 prose-headings:mt-5 prose-headings:mb-2 text-[15px] leading-7'
+          : 'prose-li:my-1.5 prose-ol:my-5 prose-p:my-5 prose-ul:my-5 text-base leading-8',
         className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      )}
     >
       {children}
     </div>

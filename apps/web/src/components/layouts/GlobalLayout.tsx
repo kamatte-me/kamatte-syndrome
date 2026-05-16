@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { cn } from '@/utils/classNames';
 import styles from './GlobalLayout.module.css';
 import { PsychedelicBackground } from './PsychedelicBackground';
 import { SiteFooter } from './SiteFooter';
@@ -6,13 +7,16 @@ import { SiteHeader } from './SiteHeader';
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   return (
-    <div className={`${styles.shell} relative min-h-dvh p-2 sm:p-5`}>
+    <div className={cn(styles.shell, 'relative min-h-dvh p-2 sm:p-5')}>
       <PsychedelicBackground />
       <CutoutFilter />
       <div className="relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-cutout-hole sm:min-h-[calc(100dvh-40px)]">
         <div
           aria-hidden="true"
-          className={`${styles.stencilLayer} pointer-events-none absolute inset-0 z-0 overflow-hidden`}
+          className={cn(
+            styles.stencilLayer,
+            'pointer-events-none absolute inset-0 z-0 overflow-hidden',
+          )}
           data-cutout-layer="stencil"
           data-nosnippet
           inert
@@ -20,7 +24,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           <LayoutFrame>{children}</LayoutFrame>
         </div>
         <div
-          className={`${styles.contentLayer} relative z-10`}
+          className={cn(styles.contentLayer, 'relative z-10')}
           data-cutout-layer="content"
         >
           <LayoutFrame>{children}</LayoutFrame>

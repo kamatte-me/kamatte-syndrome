@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { cn } from '@/utils/classNames';
 import styles from './Modal.module.css';
 
 type ModalRenderState = {
@@ -19,13 +20,6 @@ export type ModalProps = {
 export const modalDialogSelector = '[data-ui-modal-dialog]';
 
 const modalBodySelector = '[data-ui-modal-body]';
-
-const rootClassName =
-  'fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4';
-const dialogClassName =
-  'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[80dvh] sm:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]';
-const bodyClassName =
-  'flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row [@media_(orientation:landscape)_and_(max-height:500px)]:flex-row';
 
 export function Modal({
   bodyClassName: customBodyClassName,
@@ -184,7 +178,10 @@ export function Modal({
   return (
     <div
       ref={modalRootRef}
-      className={[styles.root, rootClassName].join(' ')}
+      className={cn(
+        styles.root,
+        'fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4',
+      )}
       style={modalStyle}
     >
       <button
@@ -197,9 +194,11 @@ export function Modal({
         ref={dialogRef}
         aria-labelledby={titleId}
         aria-modal="true"
-        className={[styles.panel, dialogClassName, customDialogClassName]
-          .filter(Boolean)
-          .join(' ')}
+        className={cn(
+          styles.panel,
+          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[80dvh] sm:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]',
+          customDialogClassName,
+        )}
         data-ui-modal-dialog=""
         role="dialog"
         tabIndex={-1}
@@ -220,9 +219,10 @@ export function Modal({
         </div>
 
         <div
-          className={[bodyClassName, customBodyClassName]
-            .filter(Boolean)
-            .join(' ')}
+          className={cn(
+            'flex min-h-0 flex-1 flex-col overflow-y-auto lg:flex-row [@media_(orientation:landscape)_and_(max-height:500px)]:flex-row',
+            customBodyClassName,
+          )}
           data-ui-modal-body=""
         >
           {renderedChildren}

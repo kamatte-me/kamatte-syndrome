@@ -14,6 +14,7 @@ import {
 } from 'react';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { Modal, modalDialogSelector } from '@/components/ui/Modal';
+import { cn } from '@/utils/classNames';
 import cultureStyles from './culture.module.css';
 
 type RenderedServerComponent = RenderableServerComponent<ReactElement>;
@@ -276,7 +277,7 @@ function CulturePage() {
     >
       <div
         ref={pageContentRef}
-        className={`${cultureStyles.pageContent} flex flex-col gap-8`}
+        className={cn(cultureStyles.pageContent, 'flex flex-col gap-8')}
       >
         <section className="border-cutout-hole border-b pb-8">
           <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
@@ -328,7 +329,10 @@ function CultureCard({
         onClick={() => onOpen(item.slug)}
       >
         <span
-          className={`${cultureStyles.cardFrame} relative block aspect-[4/3] overflow-hidden`}
+          className={cn(
+            cultureStyles.cardFrame,
+            'relative block aspect-[4/3] overflow-hidden',
+          )}
         >
           <img
             src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
@@ -337,7 +341,10 @@ function CultureCard({
             height={360}
             loading="lazy"
             data-culture-card-media
-            className={`${cultureStyles.cardMedia} size-full object-cover opacity-90`}
+            className={cn(
+              cultureStyles.cardMedia,
+              'size-full object-cover opacity-90',
+            )}
           />
           <span aria-hidden="true" className={cultureStyles.playIndicator} />
         </span>

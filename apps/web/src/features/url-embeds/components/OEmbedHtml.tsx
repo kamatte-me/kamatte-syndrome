@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useEffect, useRef } from 'react';
+import { cn } from '@/utils/classNames';
 
 type OEmbedHtmlProps = {
   fitIframes: boolean;
@@ -36,7 +37,12 @@ export const OEmbedHtml = memo(
 
     return (
       <div
-        className={fitIframes ? fittedHtmlClassName : flowHtmlClassName}
+        className={cn(
+          'w-full [&_iframe]:max-w-full [&_iframe]:border-0 [&_img]:max-w-full',
+          fitIframes
+            ? 'h-full [&_iframe]:h-full [&_iframe]:max-h-full [&_iframe]:w-full [&_img]:max-h-full'
+            : 'my-3',
+        )}
         // biome-ignore lint/security/noDangerouslySetInnerHtml: oEmbed provider HTML is trusted by product choice and provider scripts are executed deliberately.
         dangerouslySetInnerHTML={{ __html: html }}
         ref={containerRef}
@@ -46,12 +52,6 @@ export const OEmbedHtml = memo(
   (previous, next) =>
     previous.fitIframes === next.fitIframes && previous.html === next.html,
 );
-
-const fittedHtmlClassName =
-  'h-full w-full [&_iframe]:h-full [&_iframe]:max-h-full [&_iframe]:w-full [&_iframe]:max-w-full [&_iframe]:border-0 [&_img]:max-h-full [&_img]:max-w-full';
-
-const flowHtmlClassName =
-  'my-3 w-full [&_iframe]:max-w-full [&_iframe]:border-0 [&_img]:max-w-full';
 
 type ProviderRuntime = {
   isLoaded: () => boolean;
