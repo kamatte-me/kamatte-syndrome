@@ -19,8 +19,6 @@ export type ModalProps = {
 export const modalDialogSelector = '[data-ui-modal-dialog]';
 
 const modalBodySelector = '[data-ui-modal-body]';
-const useBrowserLayoutEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 const rootClassName =
   'fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4';
@@ -42,7 +40,7 @@ export function Modal({
   const [isContentLayer, setIsContentLayer] = useState(false);
   const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
 
-  useBrowserLayoutEffect(() => {
+  useLayoutEffect(() => {
     const isStencilModal = Boolean(
       modalRootRef.current?.closest('[data-cutout-layer="stencil"]'),
     );
