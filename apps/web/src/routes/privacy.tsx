@@ -1,19 +1,13 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
-import { allPrivacyPolicies } from 'content-collections';
+import { privacyPolicy } from 'content-collections';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 const PAGE_TITLE = 'プライバシーポリシー';
 
 const getPrivacyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const privacyPolicy = allPrivacyPolicies[0];
-
-    if (!privacyPolicy) {
-      throw notFound();
-    }
-
     const MDXContent = privacyPolicy.mdx;
 
     return {

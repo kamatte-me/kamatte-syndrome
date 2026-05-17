@@ -1,17 +1,10 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { allBiographies, allSkills } from 'content-collections';
+import { biography, skills as skillSet } from 'content-collections';
 import githubIconUrl from '@/assets/icons/github.svg';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const biography = allBiographies[0];
-    const skillSet = allSkills[0];
-
-    if (!biography || !skillSet) {
-      throw notFound();
-    }
-
     return {
       history: biography.history,
       skills: skillSet.skills,

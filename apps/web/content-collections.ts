@@ -2,6 +2,7 @@ import {
   createDefaultImport,
   defineCollection,
   defineConfig,
+  defineSingleton,
 } from '@content-collections/core';
 import type { MDXContent } from 'mdx/types';
 import { z } from 'zod';
@@ -37,10 +38,9 @@ const posts = defineCollection({
   },
 });
 
-const biography = defineCollection({
+const biography = defineSingleton({
   name: 'biography',
-  directory: contentDirectory,
-  include: 'biography.json',
+  filePath: `${contentDirectory}/biography.json`,
   parser: 'json',
   schema: z.object({
     history: z.array(
@@ -53,10 +53,10 @@ const biography = defineCollection({
   }),
 });
 
-const skills = defineCollection({
+const skills = defineSingleton({
   name: 'skills',
-  directory: contentDirectory,
-  include: 'skills.json',
+  typeName: 'Skills',
+  filePath: `${contentDirectory}/skills.json`,
   parser: 'json',
   schema: z.object({
     skills: z.array(
@@ -69,10 +69,10 @@ const skills = defineCollection({
   }),
 });
 
-const terms = defineCollection({
+const terms = defineSingleton({
   name: 'terms',
-  directory: contentDirectory,
-  include: 'terms.md',
+  typeName: 'Terms',
+  filePath: `${contentDirectory}/terms.md`,
   schema: z.object({
     revisedAt: z.string().transform((str) => new Date(str)),
     content: z.string(),
@@ -89,10 +89,9 @@ const terms = defineCollection({
   },
 });
 
-const privacyPolicy = defineCollection({
+const privacyPolicy = defineSingleton({
   name: 'privacyPolicy',
-  directory: contentDirectory,
-  include: 'privacy_policy.md',
+  filePath: `${contentDirectory}/privacy_policy.md`,
   schema: z.object({
     revisedAt: z.string().transform((str) => new Date(str)),
     content: z.string(),

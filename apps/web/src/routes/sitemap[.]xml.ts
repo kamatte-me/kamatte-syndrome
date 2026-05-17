@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import {
-  allBiographies,
   allCultures,
   allPortfolios,
   allPosts,
-  allPrivacyPolicies,
-  allSkills,
-  allTerms,
+  biography,
+  privacyPolicy,
+  skills,
+  terms,
 } from 'content-collections';
 import { baseUrl } from '@/constants/site';
 import { sortPostsByPublishedAtDesc } from '@/utils/posts';
@@ -43,10 +43,7 @@ function createStaticPageEntries(): Array<SitemapEntry> {
     {
       path: '/biography',
       changefreq: 'yearly',
-      lastmod: latestDate(
-        allBiographies[0]?.revisedAt,
-        allSkills[0]?.revisedAt,
-      ),
+      lastmod: latestDate(biography.revisedAt, skills.revisedAt),
       priority: 0.8,
     },
     {
@@ -69,13 +66,13 @@ function createStaticPageEntries(): Array<SitemapEntry> {
     {
       path: '/terms',
       changefreq: 'yearly',
-      lastmod: allTerms[0]?.revisedAt,
+      lastmod: terms.revisedAt,
       priority: 0.1,
     },
     {
       path: '/privacy',
       changefreq: 'yearly',
-      lastmod: allPrivacyPolicies[0]?.revisedAt,
+      lastmod: privacyPolicy.revisedAt,
       priority: 0.1,
     },
   ];
