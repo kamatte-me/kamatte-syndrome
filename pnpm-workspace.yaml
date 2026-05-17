@@ -8,6 +8,6 @@ catalog:
 
 saveExact: true
 minimumReleaseAge: 1440
-onlyBuiltDependencies:
-  - esbuild
-  - lightningcss
+allowBuilds:
+  esbuild: true
+  msw: false
