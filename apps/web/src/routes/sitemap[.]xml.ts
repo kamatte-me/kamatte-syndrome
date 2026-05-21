@@ -9,8 +9,11 @@ import {
   terms,
 } from 'content-collections';
 import { baseUrl } from '@/constants/site';
+import {
+  createSitemapXml,
+  type SitemapEntry,
+} from '@/features/sitemap/sitemap';
 import { sortPostsByPublishedAtDesc } from '@/utils/posts';
-import { createSitemapXml, type SitemapEntry } from '@/utils/sitemap';
 
 export const Route = createFileRoute('/sitemap.xml')({
   server: {

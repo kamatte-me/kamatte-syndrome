@@ -5,7 +5,7 @@ import { author, baseUrl, siteName, slogan } from '@/constants/site';
 import {
   createFeedSummaryFromHtml,
   renderFeedContentHtml,
-} from '@/utils/feedContent.server';
+} from '@/features/feed/server/feedContent.server';
 import { sortPostsByPublishedAtDesc } from '@/utils/posts';
 
 const feedItemLimit = 10;
