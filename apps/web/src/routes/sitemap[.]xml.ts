@@ -1,3 +1,7 @@
+import {
+  generateSitemapXml,
+  type SitemapEntry,
+} from '@kamatte-syndrome/sitemap-generator';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   allCultures,
@@ -9,10 +13,6 @@ import {
   terms,
 } from 'content-collections';
 import { baseUrl } from '@/constants/site';
-import {
-  createSitemapXml,
-  type SitemapEntry,
-} from '@/features/sitemap/sitemap';
 import { sortPostsByPublishedAtDesc } from '@/utils/posts';
 
 export const Route = createFileRoute('/sitemap.xml')({
@@ -20,7 +20,7 @@ export const Route = createFileRoute('/sitemap.xml')({
     handlers: {
       GET: async () =>
         new Response(
-          createSitemapXml(baseUrl, [
+          generateSitemapXml(baseUrl, [
             ...createStaticPageEntries(),
             createBlogIndexEntry(),
             ...createBlogPostEntries(),
@@ -36,7 +36,7 @@ export const Route = createFileRoute('/sitemap.xml')({
   },
 });
 
-function createStaticPageEntries(): Array<SitemapEntry> {
+function createStaticPageEntries(): SitemapEntry[] {
   return [
     {
       path: '/',
@@ -94,7 +94,7 @@ function createBlogIndexEntry(): SitemapEntry {
   };
 }
 
-function createBlogPostEntries(): Array<SitemapEntry> {
+function createBlogPostEntries(): SitemapEntry[] {
   return sortPostsByPublishedAtDesc(allPosts).map((post) => ({
     path: `/blog/${post.slug}`,
     changefreq: 'yearly',
@@ -103,7 +103,7 @@ function createBlogPostEntries(): Array<SitemapEntry> {
   }));
 }
 
-function latestDate(...dates: Array<Date | undefined>) {
+function latestDate(...dates: (Date | undefined)[]) {
   return dates.reduce<Date | undefined>((latest, date) => {
     if (!date) {
       return latest;

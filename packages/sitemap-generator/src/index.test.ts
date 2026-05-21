@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createSitemapXml } from './sitemap';
+import { generateSitemapXml } from './index.ts';
 
-describe('createSitemapXml', () => {
+describe('generateSitemapXml', () => {
   it('renders absolute loc values from site-relative paths', () => {
-    const sitemap = createSitemapXml('https://example.com', [
+    const sitemap = generateSitemapXml('https://example.com', [
       { path: '/', priority: 1 },
       { path: '/blog/hello' },
     ]);
@@ -13,7 +13,7 @@ describe('createSitemapXml', () => {
   });
 
   it('escapes XML-sensitive characters in URLs and string lastmod values', () => {
-    const sitemap = createSitemapXml('https://example.com', [
+    const sitemap = generateSitemapXml('https://example.com', [
       {
         path: '/blog?page=2&tag=<music>',
         lastmod: '2026-05-17T00:00:00+09:00',
@@ -27,7 +27,7 @@ describe('createSitemapXml', () => {
   });
 
   it('formats Date lastmod values as ISO strings', () => {
-    const sitemap = createSitemapXml('https://example.com', [
+    const sitemap = generateSitemapXml('https://example.com', [
       {
         path: '/blog/hello',
         lastmod: new Date('2026-05-17T00:00:00+09:00'),
@@ -38,7 +38,7 @@ describe('createSitemapXml', () => {
   });
 
   it('omits optional fields when they are not provided', () => {
-    const sitemap = createSitemapXml('https://example.com', [{ path: '/' }]);
+    const sitemap = generateSitemapXml('https://example.com', [{ path: '/' }]);
 
     expect(sitemap).not.toContain('<lastmod>');
     expect(sitemap).not.toContain('<changefreq>');
@@ -46,7 +46,7 @@ describe('createSitemapXml', () => {
   });
 
   it('renders entries in order with changefreq and priority', () => {
-    const sitemap = createSitemapXml('https://example.com', [
+    const sitemap = generateSitemapXml('https://example.com', [
       { path: '/', changefreq: 'yearly', priority: 1 },
       { path: '/blog', changefreq: 'weekly', priority: 0.5 },
     ]);

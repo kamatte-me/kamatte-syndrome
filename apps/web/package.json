@@ -16,6 +16,7 @@
     "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*",
     "@kamatte-syndrome/remark-gfm-subset": "workspace:*",
     "@kamatte-syndrome/remark-mdx-url-embed": "workspace:*",
+    "@kamatte-syndrome/sitemap-generator": "workspace:*",
     "@tailwindcss/vite": "4.3.0",
     "@tanstack/intent": "0.0.41",
     "@tanstack/react-devtools": "0.10.5",
