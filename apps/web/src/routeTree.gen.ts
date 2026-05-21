@@ -14,6 +14,7 @@ import { Route as SubscribeRouteImport } from './routes/subscribe'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as CultureRouteImport } from './routes/culture'
 import { Route as BiographyRouteImport } from './routes/biography'
 import { Route as IndexRouteImport } from './routes/index'
@@ -43,6 +44,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PortfolioRoute = PortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
+  id: '/feed.xml',
+  path: '/feed.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CultureRoute = CultureRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/biography': typeof BiographyRoute
   '/culture': typeof CultureRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/portfolio': typeof PortfolioRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/biography': typeof BiographyRoute
   '/culture': typeof CultureRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/portfolio': typeof PortfolioRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/biography': typeof BiographyRoute
   '/culture': typeof CultureRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/portfolio': typeof PortfolioRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/biography'
     | '/culture'
+    | '/feed.xml'
     | '/portfolio'
     | '/privacy'
     | '/sitemap.xml'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/biography'
     | '/culture'
+    | '/feed.xml'
     | '/portfolio'
     | '/privacy'
     | '/sitemap.xml'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/biography'
     | '/culture'
+    | '/feed.xml'
     | '/portfolio'
     | '/privacy'
     | '/sitemap.xml'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BiographyRoute: typeof BiographyRoute
   CultureRoute: typeof CultureRoute
+  FeedDotxmlRoute: typeof FeedDotxmlRoute
   PortfolioRoute: typeof PortfolioRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortfolioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feed.xml': {
+      id: '/feed.xml'
+      path: '/feed.xml'
+      fullPath: '/feed.xml'
+      preLoaderRoute: typeof FeedDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/culture': {
       id: '/culture'
       path: '/culture'
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BiographyRoute: BiographyRoute,
   CultureRoute: CultureRoute,
+  FeedDotxmlRoute: FeedDotxmlRoute,
   PortfolioRoute: PortfolioRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
