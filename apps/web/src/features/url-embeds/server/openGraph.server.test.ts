@@ -73,12 +73,12 @@ describe('fetchOpenGraphMetadata', () => {
   });
 
   it('uses browser-like request headers for Open Graph fetches', async () => {
-    const requests: Array<{
+    const requests: {
       accept: string | null;
       acceptLanguage: string | null;
       url: string;
       userAgent: string | null;
-    }> = [];
+    }[] = [];
 
     server.use(
       http.get('https://example.com/product', ({ request }) => {

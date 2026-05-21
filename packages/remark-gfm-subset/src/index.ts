@@ -31,22 +31,22 @@ export type RemarkGfmSubsetOptions = GfmFootnoteToMarkdownOptions &
   };
 
 type MarkdownExtensionData = {
-  micromarkExtensions?: Array<unknown>;
-  fromMarkdownExtensions?: Array<unknown>;
-  toMarkdownExtensions?: Array<unknown>;
+  micromarkExtensions?: unknown[];
+  fromMarkdownExtensions?: unknown[];
+  toMarkdownExtensions?: unknown[];
 };
 
 function getExtensionList(
   data: MarkdownExtensionData,
   key: keyof MarkdownExtensionData,
-): Array<unknown> {
+): unknown[] {
   const existingList = data[key];
 
   if (existingList) {
     return existingList;
   }
 
-  const nextList: Array<unknown> = [];
+  const nextList: unknown[] = [];
   data[key] = nextList;
 
   return nextList;

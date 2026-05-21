@@ -23,7 +23,7 @@ const xml = generateSitemapXml('https://example.com', [
 ```ts
 function generateSitemapXml(
   baseUrl: string,
-  entries: Array<SitemapEntry>,
+  entries: SitemapEntry[],
 ): string;
 
 type SitemapEntry = {

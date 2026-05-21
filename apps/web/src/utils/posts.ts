@@ -18,7 +18,7 @@ export function parseBlogPageSearchParam(value: unknown) {
 }
 
 export function paginateItems<T>(
-  items: Array<T>,
+  items: T[],
   currentPage: number,
   perPage = BLOG_POSTS_PER_PAGE,
 ) {
@@ -48,9 +48,7 @@ export function formatPostDate(date?: Date) {
   }).format(date);
 }
 
-export function sortPostsByPublishedAtDesc<T extends PostWithDate>(
-  posts: Array<T>,
-) {
+export function sortPostsByPublishedAtDesc<T extends PostWithDate>(posts: T[]) {
   return [...posts].sort((a, b) => {
     const aTime = a.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;
     const bTime = b.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;

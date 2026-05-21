@@ -87,11 +87,11 @@ describe('fetchOEmbedMetadata', () => {
   });
 
   it('uses Googlebot user agent for provider requests', async () => {
-    const requests: Array<{
+    const requests: {
       accept: string | null;
       url: string;
       userAgent: string | null;
-    }> = [];
+    }[] = [];
 
     server.use(
       http.get('https://oembed.example/oembed', ({ request }) => {

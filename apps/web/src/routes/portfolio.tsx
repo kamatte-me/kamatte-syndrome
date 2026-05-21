@@ -17,12 +17,12 @@ type PortfolioListItem = {
   name: string;
   order: number;
   slug: string;
-  technologies: Array<string>;
+  technologies: string[];
   year: number;
 };
 
 type PortfolioYearGroup = {
-  items: Array<PortfolioListItem>;
+  items: PortfolioListItem[];
   year: number;
 };
 
@@ -222,8 +222,8 @@ function PortfolioImage({
   );
 }
 
-function groupPortfolioItemsByYear(items: Array<PortfolioListItem>) {
-  const groups = new Map<number, Array<PortfolioListItem>>();
+function groupPortfolioItemsByYear(items: PortfolioListItem[]) {
+  const groups = new Map<number, PortfolioListItem[]>();
 
   for (const item of items) {
     const group = groups.get(item.year);
