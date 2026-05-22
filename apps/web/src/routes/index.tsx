@@ -6,12 +6,17 @@ function App() {
   return (
     <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-6 px-6 py-14 text-center">
       <h1
-        className="font-bold text-5xl leading-tight sm:text-7xl"
-        style={{
-          fontFamily: 'var(--font-latin-dot-gothic)',
-        }}
+        aria-label="かまって☆しんどろ〜む"
+        className="flex w-full justify-center"
       >
-        かまって☆しんどろ〜む
+        <span
+          aria-hidden="true"
+          className="block h-48 w-full max-w-96 bg-cutout-hole sm:h-72 sm:max-w-[34rem]"
+          style={{
+            WebkitMask: 'url("/logo.svg") center / contain no-repeat',
+            mask: 'url("/logo.svg") center / contain no-repeat',
+          }}
+        />
       </h1>
 
       <img
