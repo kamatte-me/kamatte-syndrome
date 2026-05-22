@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Matemasie&display=block");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -11,6 +11,8 @@
 }
 
 @theme inline {
+  --font-display: "Matemasie", sans-serif;
+
   --color-cutout-hole: var(--cutout-hole);
   --color-cutout-muted: var(--cutout-muted);
   --color-cutout-readable: var(--cutout-readable);

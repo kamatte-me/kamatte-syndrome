@@ -27,12 +27,7 @@ function App() {
         className="size-40 sm:size-48"
       />
 
-      <p
-        className="font-bold text-4xl leading-tight sm:text-6xl"
-        style={{
-          fontFamily: 'var(--font-latin-dot-gothic)',
-        }}
-      >
+      <p className="font-display font-normal text-4xl leading-tight sm:text-6xl">
         plz kamatte me!!!
       </p>
     </main>
