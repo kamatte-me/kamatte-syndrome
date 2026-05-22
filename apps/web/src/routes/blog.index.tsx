@@ -137,18 +137,13 @@ function BlogPage() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
       <section className="border-cutout-hole border-b pb-8">
-        <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
-          Blog
-        </p>
-        <h1 className="mb-4 font-bold text-4xl sm:text-5xl">記事一覧</h1>
-        <p className="max-w-3xl text-base text-cutout-readable leading-8">
-          `content-collections/mdx` で収集した記事を、RSC
-          経由で公開日順に描画しています。 URL は既存ファイル名ベースの `slug`
-          をそのまま使います。
-        </p>
-        <p className="mt-5 text-cutout-muted text-sm">
-          {pageInfo.totalItems} entries / page {pageInfo.currentPage}
-        </p>
+        <div className="grid gap-5">
+          <div>
+            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
+              Blog
+            </h1>
+          </div>
+        </div>
       </section>
 
       <ul className="grid gap-5">

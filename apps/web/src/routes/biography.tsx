@@ -22,6 +22,16 @@ function BiographyPage() {
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
+      <section className="border-cutout-hole border-b pb-8">
+        <div className="grid gap-5">
+          <div>
+            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
+              Biography
+            </h1>
+          </div>
+        </div>
+      </section>
+
       <section className="grid gap-8 border-cutout-hole border-b pb-8 md:grid-cols-[240px_1fr] md:items-center">
         <div className="flex justify-center md:justify-start">
           <img
@@ -35,9 +45,9 @@ function BiographyPage() {
 
         <div className="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
           <div>
-            <h1 className="font-display font-normal text-6xl leading-none sm:text-7xl">
+            <h2 className="font-display font-normal text-6xl leading-none sm:text-7xl">
               kamatte
-            </h1>
+            </h2>
           </div>
 
           <a

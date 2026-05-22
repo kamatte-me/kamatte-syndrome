@@ -21,10 +21,20 @@ export const Route = createFileRoute('/subscribe')({
 function SubscribePage() {
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
+      <section className="border-cutout-hole border-b pb-8">
+        <div className="grid gap-5">
+          <div>
+            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
+              Subscribe
+            </h1>
+          </div>
+        </div>
+      </section>
+
       <section className="border border-cutout-hole p-7 sm:p-9">
-        <h1 className="mb-6 font-bold text-4xl leading-tight sm:text-5xl">
+        <h2 className="mb-6 font-bold text-4xl leading-tight sm:text-5xl">
           LINE公式アカウント
-        </h1>
+        </h2>
 
         <div className="grid gap-6 md:grid-cols-[180px_1fr] md:items-start">
           <div className="flex flex-col items-center gap-3">

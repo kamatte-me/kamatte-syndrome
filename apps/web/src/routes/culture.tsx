@@ -280,22 +280,11 @@ function CulturePage() {
         className={cn(cultureStyles.pageContent, 'flex flex-col gap-8')}
       >
         <section className="border-cutout-hole border-b pb-8">
-          <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
-            Culture
-          </p>
           <div className="grid gap-5">
             <div>
-              <h1
-                className="font-bold text-5xl leading-none sm:text-6xl"
-                style={{
-                  fontFamily: 'var(--font-latin-dot-gothic)',
-                }}
-              >
-                カルチャー
+              <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
+                Culture
               </h1>
-              <p className="mt-4 max-w-2xl text-base text-cutout-readable leading-8">
-                ぼくを構成する音楽、動画、いろいろ。
-              </p>
             </div>
           </div>
         </section>

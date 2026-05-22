@@ -74,22 +74,11 @@ function PortfolioPage() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
       <section className="border-cutout-hole border-b pb-8">
-        <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
-          Portfolio
-        </p>
         <div className="grid gap-5">
           <div>
-            <h1
-              className="font-bold text-5xl leading-none sm:text-6xl"
-              style={{
-                fontFamily: 'var(--font-latin-dot-gothic)',
-              }}
-            >
-              ポートフォリオ
+            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
+              Portfolio
             </h1>
-            <p className="mt-4 max-w-2xl text-base text-cutout-readable leading-8">
-              つくったもの、関わったもの、なぜか賞をもらったもの。
-            </p>
           </div>
         </div>
       </section>
