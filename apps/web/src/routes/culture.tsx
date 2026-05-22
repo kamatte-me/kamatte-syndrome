@@ -374,9 +374,6 @@ function CultureModal({
 
           <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8 [@media_(orientation:landscape)_and_(max-height:500px)]:min-h-0 [@media_(orientation:landscape)_and_(max-height:500px)]:flex-1 [@media_(orientation:landscape)_and_(max-height:500px)]:p-5">
             <header className="shrink-0 border-cutout-hole border-b pb-4">
-              <p className="mb-2 font-semibold text-cutout-hole text-xs uppercase tracking-[0.28em]">
-                Now Playing
-              </p>
               <h2
                 className="font-bold text-3xl leading-tight sm:text-4xl"
                 id="culture-modal-title"
