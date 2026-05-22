@@ -377,9 +377,6 @@ function CultureModal({
               <h2
                 className="font-bold text-3xl leading-tight sm:text-4xl"
                 id="culture-modal-title"
-                style={{
-                  fontFamily: 'var(--font-latin-dot-gothic)',
-                }}
               >
                 {item.name}
               </h2>
