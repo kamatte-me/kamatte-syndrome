@@ -89,7 +89,7 @@ function PortfolioPage() {
             key={group.year}
             className="grid gap-5 md:grid-cols-[112px_1fr]"
           >
-            <h2 className="sticky top-6 h-fit font-bold text-4xl text-cutout-hole sm:text-5xl">
+            <h2 className="sticky top-6 h-fit font-display font-normal text-4xl text-cutout-hole sm:text-5xl">
               {group.year}
             </h2>
 
@@ -178,13 +178,11 @@ function PortfolioImage({
       className="h-full min-h-48 w-full object-cover md:min-h-full"
     />
   ) : (
-    <div className="flex h-full min-h-48 w-full items-center justify-center border-cutout-hole border-b p-6 text-center md:min-h-full md:border-r md:border-b-0">
-      <span
-        className="font-bold text-2xl text-cutout-muted"
-        style={{
-          fontFamily: 'var(--font-latin-dot-gothic)',
-        }}
-      >
+    <div className="flex h-full min-h-48 w-full flex-col items-center justify-center gap-1 border-cutout-hole border-b p-6 text-center md:min-h-full md:border-r md:border-b-0">
+      <span className="font-medium text-cutout-muted text-xs">
+        大人の事情で
+      </span>
+      <span className="font-display font-normal text-3xl text-cutout-muted">
         No Image
       </span>
     </div>
