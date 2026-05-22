@@ -35,15 +35,7 @@ function BiographyPage() {
 
         <div className="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
           <div>
-            <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
-              Biography
-            </p>
-            <h1
-              className="font-bold text-5xl leading-none sm:text-6xl"
-              style={{
-                fontFamily: 'var(--font-latin-dot-gothic)',
-              }}
-            >
+            <h1 className="font-display font-normal text-6xl leading-none sm:text-7xl">
               kamatte
             </h1>
           </div>
@@ -68,11 +60,8 @@ function BiographyPage() {
       </section>
 
       <section className="border border-cutout-hole p-6 sm:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-4 border-cutout-hole border-b pb-4">
-          <h2 className="font-bold text-3xl">Biography</h2>
-          <span className="font-semibold text-cutout-hole text-xs uppercase tracking-[0.28em]">
-            History
-          </span>
+        <div className="mb-6 border-cutout-hole border-b pb-4">
+          <h2 className="font-display font-normal text-3xl">Biography</h2>
         </div>
 
         <dl className="grid gap-4">
@@ -93,11 +82,8 @@ function BiographyPage() {
       </section>
 
       <section className="border border-cutout-hole p-6 sm:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-4 border-cutout-hole border-b pb-4">
-          <h2 className="font-bold text-3xl">Skills</h2>
-          <span className="font-semibold text-cutout-hole text-xs uppercase tracking-[0.28em]">
-            Level
-          </span>
+        <div className="mb-6 border-cutout-hole border-b pb-4">
+          <h2 className="font-display font-normal text-3xl">Skills</h2>
         </div>
 
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

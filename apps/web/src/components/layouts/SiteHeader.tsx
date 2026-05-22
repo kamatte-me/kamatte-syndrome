@@ -26,7 +26,7 @@ export function SiteHeader() {
             }}
             key={link.to}
             to={link.to}
-            className="inline-flex min-h-10 items-center justify-center rounded-full border border-cutout-hole px-[18px] font-bold text-[0.78rem] leading-none no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4"
+            className="inline-flex min-h-10 items-center justify-center rounded-full border border-cutout-hole px-[18px] font-display font-normal text-[1.2rem] leading-none no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4"
           >
             {link.label}
           </Link>
