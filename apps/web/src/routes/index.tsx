@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { cn } from '@/utils/classNames';
+import styles from './index.module.css';
 
 export const Route = createFileRoute('/')({ component: App });
 
@@ -11,11 +13,10 @@ function App() {
       >
         <span
           aria-hidden="true"
-          className="block h-48 w-full max-w-96 bg-cutout-hole sm:h-72 sm:max-w-[34rem]"
-          style={{
-            WebkitMask: 'url("/logo.svg") center / contain no-repeat',
-            mask: 'url("/logo.svg") center / contain no-repeat',
-          }}
+          className={cn(
+            styles.logoMask,
+            'block h-48 w-full max-w-96 bg-cutout-hole sm:h-72 sm:max-w-[34rem]',
+          )}
         />
       </h1>
 
