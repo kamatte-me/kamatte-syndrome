@@ -1,7 +1,8 @@
-import { X } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import xIconUrl from '@/assets/icons/x.svg';
 import { cn } from '@/utils/classNames';
+import { Icon } from './Icon';
 import styles from './Modal.module.css';
 
 type ModalRenderState = {
@@ -210,10 +211,9 @@ export function Modal({
             className="flex size-9 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-11 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
             onClick={onClose}
           >
-            <X
-              aria-hidden="true"
+            <Icon
               className="size-4 sm:size-5 [@media_(orientation:landscape)_and_(max-height:500px)]:size-4"
-              strokeWidth={2}
+              src={xIconUrl}
             />
           </button>
         </div>

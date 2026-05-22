@@ -95,7 +95,7 @@
 ## 生成物と依存関係
 
 - `apps/web/dist/`、`apps/web/.output/`、`apps/web/.content-collections/`、`apps/web/src/routeTree.gen.ts`、lockfile などの生成物は、必要がある場合だけ更新してください。
-- 依存関係を追加する前に、既存の React / TanStack / Tailwind / lucide-react で解決できるか確認してください。
+- 依存関係を追加する前に、既存の React / TanStack / Tailwind や `apps/web/src/assets/icons/` の SVG アイコン、`Icon` コンポーネントで解決できるか確認してください。
 - lockfile を更新する場合は `pnpm install` を使ってください。
 
 ## 作業時の注意

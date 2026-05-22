@@ -6,7 +6,9 @@ import {
 } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { allPosts } from 'content-collections';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import chevronLeftIconUrl from '@/assets/icons/chevron-left.svg';
+import chevronRightIconUrl from '@/assets/icons/chevron-right.svg';
+import { Icon } from '@/components/ui/Icon';
 import {
   formatPostDate,
   paginateItems,
@@ -99,11 +101,11 @@ function BlogPagination({
           aria-label="前のページ"
           className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
         >
-          <ChevronLeft aria-hidden="true" size={22} />
+          <Icon className="size-[22px]" src={chevronLeftIconUrl} />
         </Link>
       ) : (
         <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
-          <ChevronLeft aria-hidden="true" size={22} />
+          <Icon className="size-[22px]" src={chevronLeftIconUrl} />
         </span>
       )}
 
@@ -120,11 +122,11 @@ function BlogPagination({
           aria-label="次のページ"
           className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
         >
-          <ChevronRight aria-hidden="true" size={22} />
+          <Icon className="size-[22px]" src={chevronRightIconUrl} />
         </Link>
       ) : (
         <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
-          <ChevronRight aria-hidden="true" size={22} />
+          <Icon className="size-[22px]" src={chevronRightIconUrl} />
         </span>
       )}
     </nav>

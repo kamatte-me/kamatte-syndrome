@@ -2,7 +2,9 @@ import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import chevronLeftIconUrl from '@/assets/icons/chevron-left.svg';
+import chevronRightIconUrl from '@/assets/icons/chevron-right.svg';
+import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';
 import { OEmbed } from '@/features/url-embeds/components/OEmbed';
@@ -129,7 +131,7 @@ function AdjacentPostLink({
 }) {
   const isPrevious = direction === 'previous';
   const label = isPrevious ? '前の記事' : '次の記事';
-  const Icon = isPrevious ? ChevronLeft : ChevronRight;
+  const iconUrl = isPrevious ? chevronLeftIconUrl : chevronRightIconUrl;
 
   return (
     <Link
@@ -139,7 +141,7 @@ function AdjacentPostLink({
       to="/blog/$slug"
     >
       {isPrevious ? (
-        <Icon aria-hidden="true" className="size-5 shrink-0 self-center" />
+        <Icon className="size-5 self-center" src={iconUrl} />
       ) : null}
       <span className={cn('min-w-0', !isPrevious && 'text-right')}>
         <span className="block text-cutout-muted text-xs">{label}</span>
@@ -148,7 +150,7 @@ function AdjacentPostLink({
         </span>
       </span>
       {!isPrevious ? (
-        <Icon aria-hidden="true" className="size-5 shrink-0 self-center" />
+        <Icon className="size-5 self-center" src={iconUrl} />
       ) : null}
     </Link>
   );

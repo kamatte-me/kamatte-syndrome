@@ -3,8 +3,9 @@ import { createServerFn } from '@tanstack/react-start';
 import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
-import { ExternalLink } from 'lucide-react';
 import type { ReactElement } from 'react';
+import externalLinkIconUrl from '@/assets/icons/external-link.svg';
+import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 type RenderedServerComponent = RenderableServerComponent<ReactElement>;
@@ -130,11 +131,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
                   className="inline-flex items-center gap-2 text-cutout-hole hover:text-cutout-hole"
                 >
                   {item.name}
-                  <ExternalLink
-                    aria-hidden="true"
-                    className="size-4 shrink-0"
-                    strokeWidth={2}
-                  />
+                  <Icon className="size-4" src={externalLinkIconUrl} />
                 </a>
               ) : (
                 item.name
