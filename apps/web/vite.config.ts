@@ -96,6 +96,11 @@ export default defineConfig(({ mode }) => {
     resolve: {
       tsconfigPaths: true,
     },
+    ssr: {
+      // Cheerio's dependency tree ships sourcemaps with package-external
+      // sourceRoot entries, which makes Vite warn during SSR dev transforms.
+      external: ['cheerio'],
+    },
     test: {
       setupFiles: ['src/testing/setup-tests.ts'],
       projects: [
