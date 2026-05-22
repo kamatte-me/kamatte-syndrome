@@ -61,15 +61,6 @@ function PostDetailPage() {
 
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
-      <div className="flex items-center gap-3 text-cutout-hole text-sm">
-        <Link
-          to="/blog"
-          className="rounded-full border border-cutout-hole px-4 py-1.5 hover:text-cutout-hole"
-        >
-          Back to Blog
-        </Link>
-      </div>
-
       <article className="border border-cutout-hole p-7 sm:p-9">
         <header className="mb-8 border-cutout-hole border-b pb-6">
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
