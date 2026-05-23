@@ -2,8 +2,8 @@ import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
-import chevronLeftIconUrl from '@/assets/icons/chevron-left.svg';
-import chevronRightIconUrl from '@/assets/icons/chevron-right.svg';
+import leftIcon from '@/assets/icons/left_fill.svg';
+import rightIcon from '@/assets/icons/right_fill.svg';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';
@@ -131,7 +131,7 @@ function AdjacentPostLink({
 }) {
   const isPrevious = direction === 'previous';
   const label = isPrevious ? '前の記事' : '次の記事';
-  const iconUrl = isPrevious ? chevronLeftIconUrl : chevronRightIconUrl;
+  const iconUrl = isPrevious ? leftIcon : rightIcon;
 
   return (
     <Link

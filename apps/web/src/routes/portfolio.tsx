@@ -4,7 +4,7 @@ import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import type { ReactElement } from 'react';
-import externalLinkIconUrl from '@/assets/icons/external-link.svg';
+import externalLinkIcon from '@/assets/icons/external_link_line.svg';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
@@ -131,7 +131,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
                   className="inline-flex items-center gap-2 text-cutout-hole hover:text-cutout-hole"
                 >
                   {item.name}
-                  <Icon className="size-4" src={externalLinkIconUrl} />
+                  <Icon className="size-4" src={externalLinkIcon} />
                 </a>
               ) : (
                 item.name

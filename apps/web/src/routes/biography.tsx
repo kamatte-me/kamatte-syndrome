@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { biography, skills as skillSet } from 'content-collections';
-import githubIconUrl from '@/assets/icons/github.svg';
+import githubIcon from '@/assets/github_white.svg';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -57,7 +57,7 @@ function BiographyPage() {
             className="inline-flex items-center gap-2 rounded-full border border-cutout-hole px-4 py-2 font-semibold text-cutout-hole text-sm leading-none"
           >
             <img
-              src={githubIconUrl}
+              src={githubIcon}
               alt=""
               aria-hidden="true"
               width={18}

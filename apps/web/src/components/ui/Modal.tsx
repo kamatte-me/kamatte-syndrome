@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import xIconUrl from '@/assets/icons/x.svg';
+import closeFillIcon from '@/assets/icons/close_fill.svg';
 import { cn } from '@/utils/classNames';
 import { Icon } from './Icon';
 import styles from './Modal.module.css';
@@ -213,7 +213,7 @@ export function Modal({
           >
             <Icon
               className="size-4 sm:size-5 [@media_(orientation:landscape)_and_(max-height:500px)]:size-4"
-              src={xIconUrl}
+              src={closeFillIcon}
             />
           </button>
         </div>

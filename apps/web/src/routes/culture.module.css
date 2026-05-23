@@ -1,6 +1,6 @@
 .cardFrame {
   --culture-play-icon-size: 3.75rem;
-  --culture-play-icon-mask: url("@/assets/icons/play-circle.svg");
+  --culture-play-icon-mask: url("@/assets/icons/play_circle_fill.svg");
 }
 
 .playIndicator {
