@@ -173,9 +173,29 @@
 }
 
 @media (width < 48rem) and (orientation: portrait) {
+  .navigationOpen {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .menuButtonOpen {
     top: calc(var(--cutout-inset) + 1.5rem);
     right: calc(var(--cutout-inset) + 1.5rem);
+  }
+}
+
+@media (width < 48rem) and (orientation: portrait) and (max-height: 560px) {
+  .navigationOpen {
+    justify-content: flex-start;
+    padding-top: max(4rem, calc(env(safe-area-inset-top) + 3.5rem));
+    padding-bottom: max(2rem, calc(env(safe-area-inset-bottom) + 1.5rem));
+  }
+
+  .navigationOpen .menuLogoLink {
+    margin-bottom: 0;
   }
 }
 
@@ -205,8 +225,8 @@
   }
 }
 
-@media (width >= 40rem) and (width < 48rem) and (orientation: landscape) and (
-    max-height: 430px
+@media (width >= 35rem) and (width < 48rem) and (orientation: landscape) and (
+    max-height: 560px
   ) {
   .navigationOpen {
     display: grid;
@@ -233,6 +253,43 @@
     min-height: clamp(2.25rem, 10.5dvh, 2.75rem);
     font-size: clamp(1.45rem, 4.8vw, 2rem);
     line-height: 0.96;
+  }
+
+  .navigationOpen .menuLink:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (width >= 35rem) and (width < 48rem) and (orientation: landscape) and (
+    max-height: 320px
+  ) {
+  .navigationOpen {
+    display: grid;
+    grid-template-columns: repeat(2, 13rem);
+    align-content: start;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    column-gap: 0.875rem;
+    row-gap: 0.25rem;
+    padding-top: max(3rem, calc(env(safe-area-inset-top) + 2.75rem));
+    padding-bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 1.25rem));
+  }
+
+  .navigationOpen .menuLogoLink {
+    top: -1.5rem;
+    grid-column: 1 / -1;
+    width: 88px;
+    height: 62px;
+    margin-bottom: -1.25rem;
+  }
+
+  .navigationOpen .menuLink {
+    justify-self: center;
+    width: fit-content;
+    min-height: 2rem;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    line-height: 0.94;
   }
 
   .navigationOpen .menuLink:last-child {
