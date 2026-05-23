@@ -1,21 +1,86 @@
-[data-cutout-layer="stencil"] .activeNavLink {
+.root {
+  background-color: transparent;
+}
+
+[data-cutout-layer="stencil"] .root {
+  background-color: var(--cutout-stencil-surface-source);
+}
+
+.navigation {
+  display: none;
+}
+
+.navigationOpen {
+  display: flex;
+}
+
+.menuIcon {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 18px;
+}
+
+.menuIcon::before,
+.menuIcon::after {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  content: "";
+  background: currentColor;
+  border-radius: 999px;
+  transition:
+    top 180ms ease,
+    bottom 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.menuIcon::before {
+  top: 2px;
+  box-shadow: 0 7px currentColor;
+}
+
+.menuIcon::after {
+  bottom: 2px;
+}
+
+.menuButtonOpen .menuIcon::before {
+  top: 8px;
+  box-shadow: 0 0 currentColor;
+  transform: rotate(45deg);
+}
+
+.menuButtonOpen .menuIcon::after {
+  bottom: 8px;
+  transform: rotate(-45deg);
+}
+
+[data-cutout-layer="stencil"] .activeHeaderLink {
   background-color: var(--cutout-stencil-hole-source);
 }
 
-[data-cutout-layer="stencil"] .activeNavLink,
-[data-cutout-layer="stencil"] .activeNavLink :where(*) {
+[data-cutout-layer="stencil"] .activeHeaderLink,
+[data-cutout-layer="stencil"] .activeHeaderLink :where(*) {
   color: var(--cutout-stencil-surface-source);
   text-decoration-color: var(--cutout-stencil-surface-source);
   -webkit-text-fill-color: var(--cutout-stencil-surface-source);
 }
 
-[data-cutout-layer="content"] .activeNavLink {
+[data-cutout-layer="content"] .activeHeaderLink {
   background-color: transparent;
 }
 
-[data-cutout-layer="content"] .activeNavLink,
-[data-cutout-layer="content"] .activeNavLink :where(*) {
+[data-cutout-layer="content"] .activeHeaderLink,
+[data-cutout-layer="content"] .activeHeaderLink :where(*) {
   color: var(--cutout-stencil-hole-source);
   text-decoration-color: var(--cutout-stencil-hole-source);
   -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+}
+
+@media (width >= 48rem) {
+  .navigation {
+    display: flex;
+  }
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useCallback, useState } from 'react';
 import { cn } from '@/utils/classNames';
 import styles from './GlobalLayout.module.css';
 import { PsychedelicBackground } from './PsychedelicBackground';
@@ -6,6 +7,11 @@ import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
+
   return (
     <div className={cn(styles.shell, 'relative min-h-dvh p-2 sm:p-5')}>
       <PsychedelicBackground />
@@ -21,13 +27,25 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           data-nosnippet
           inert
         >
-          <LayoutFrame>{children}</LayoutFrame>
+          <LayoutFrame
+            isMobileMenuOpen={isMobileMenuOpen}
+            onMobileMenuOpenChange={setIsMobileMenuOpen}
+            onNavigate={closeMobileMenu}
+          >
+            {children}
+          </LayoutFrame>
         </div>
         <div
           className={cn(styles.contentLayer, 'relative z-10')}
           data-cutout-layer="content"
         >
-          <LayoutFrame>{children}</LayoutFrame>
+          <LayoutFrame
+            isMobileMenuOpen={isMobileMenuOpen}
+            onMobileMenuOpenChange={setIsMobileMenuOpen}
+            onNavigate={closeMobileMenu}
+          >
+            {children}
+          </LayoutFrame>
         </div>
       </div>
     </div>
@@ -61,10 +79,24 @@ function CutoutFilter() {
   );
 }
 
-function LayoutFrame({ children }: { children: ReactNode }) {
+function LayoutFrame({
+  children,
+  isMobileMenuOpen,
+  onMobileMenuOpenChange,
+  onNavigate,
+}: {
+  children: ReactNode;
+  isMobileMenuOpen: boolean;
+  onMobileMenuOpenChange: (isOpen: boolean) => void;
+  onNavigate: () => void;
+}) {
   return (
     <div className="flex min-h-[calc(100dvh-16px)] flex-col sm:min-h-[calc(100dvh-40px)]">
-      <SiteHeader />
+      <SiteHeader
+        isMobileMenuOpen={isMobileMenuOpen}
+        onMobileMenuOpenChange={onMobileMenuOpenChange}
+        onNavigate={onNavigate}
+      />
       <div className="flex min-h-0 flex-1 [&>*]:w-full [&>main]:min-h-0">
         {children}
       </div>
