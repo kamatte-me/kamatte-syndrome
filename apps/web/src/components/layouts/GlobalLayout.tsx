@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { cn } from '@/utils/classNames';
 import styles from './GlobalLayout.module.css';
 import { PsychedelicBackground } from './PsychedelicBackground';
@@ -10,6 +10,35 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 48rem)');
+    const closeDesktopMenu = () => {
+      if (mediaQuery.matches) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    closeDesktopMenu();
+    mediaQuery.addEventListener('change', closeDesktopMenu);
+
+    return () => {
+      mediaQuery.removeEventListener('change', closeDesktopMenu);
+    };
   }, []);
 
   return (
@@ -97,10 +126,21 @@ function LayoutFrame({
         onMobileMenuOpenChange={onMobileMenuOpenChange}
         onNavigate={onNavigate}
       />
-      <div className="flex min-h-0 flex-1 [&>*]:w-full [&>main]:min-h-0">
+      <div
+        className={cn(
+          'flex min-h-0 flex-1 [&>*]:w-full [&>main]:min-h-0',
+          isMobileMenuOpen && styles.mobileMenuSuppressed,
+        )}
+        inert={isMobileMenuOpen ? true : undefined}
+      >
         {children}
       </div>
-      <SiteFooter />
+      <div
+        className={cn(isMobileMenuOpen && styles.mobileMenuSuppressed)}
+        inert={isMobileMenuOpen ? true : undefined}
+      >
+        <SiteFooter />
+      </div>
     </div>
   );
 }

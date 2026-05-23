@@ -1,4 +1,6 @@
 .root {
+  --site-header-x-padding: clamp(14px, 4vw, 40px);
+
   background-color: transparent;
 }
 
@@ -12,6 +14,15 @@
 
 .navigationOpen {
   display: flex;
+}
+
+.menuLink:hover {
+  transform: translateY(-0.125rem);
+}
+
+.menuLinkLabel {
+  display: inline-block;
+  transition: transform 200ms ease;
 }
 
 .menuIcon {
@@ -79,8 +90,202 @@
   -webkit-text-fill-color: var(--cutout-stencil-hole-source);
 }
 
+.activeHeaderLink:hover {
+  transform: none;
+}
+
+.activeHeaderLink:hover .menuLinkLabel {
+  transform: translateY(-0.125rem);
+}
+
+@media (width < 48rem) {
+  .navigationOpen {
+    --mobile-menu-frame-width: 20px;
+    --mobile-menu-scroll-y: 0px;
+
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0.375rem;
+    box-sizing: border-box;
+    width: 100vw;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    padding: clamp(4rem, 13dvh, 6rem) clamp(1.25rem, 8vw, 3rem)
+      clamp(1.5rem, 5dvh, 3rem);
+    border: var(--mobile-menu-frame-width) solid
+      var(--cutout-stencil-hole-source);
+    animation: menuOverlayIn 200ms ease-out;
+    background-color: transparent;
+    overflow: hidden;
+    transform-origin: center;
+  }
+
+  .navigationOpen .menuLink {
+    position: relative;
+    z-index: 1;
+    min-height: 3.5rem;
+    justify-content: center;
+    padding: 0.25rem 0.6rem 0.4rem;
+    border-radius: 0;
+    font-size: clamp(2rem, 11.5vw, 4.25rem);
+    line-height: 0.86;
+  }
+
+  .navigationOpen .menuLogoLink {
+    position: relative;
+    z-index: 1;
+    top: -2.5rem;
+    align-self: center;
+    margin-bottom: clamp(0rem, 1dvh, 0.75rem);
+  }
+
+  [data-cutout-layer="stencil"] .navigationOpen {
+    position: absolute;
+    top: calc(var(--mobile-menu-scroll-y) - var(--cutout-inset));
+    right: auto;
+    bottom: auto;
+    left: calc(-1 * (var(--cutout-inset) + var(--site-header-x-padding)));
+    height: 100dvh;
+    background-color: var(--cutout-stencil-hole-source);
+    border-color: var(--cutout-stencil-surface-source);
+  }
+
+  [data-cutout-layer="content"] .navigationOpen {
+    --cutout-hole: var(--cutout-stencil-hole-source);
+
+    background-color: transparent;
+    filter: none;
+  }
+
+  [data-cutout-layer="content"] .navigationOpen .menuLink,
+  [data-cutout-layer="content"] .navigationOpen .menuLink :where(*),
+  [data-cutout-layer="content"] .navigationOpen .menuLogoLink,
+  [data-cutout-layer="content"] .navigationOpen .menuLogoLink :where(*) {
+    color: var(--cutout-stencil-hole-source);
+    text-decoration-color: var(--cutout-stencil-hole-source);
+    -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+  }
+
+  [data-cutout-layer="stencil"] .navigationOpen .menuLink,
+  [data-cutout-layer="stencil"] .navigationOpen .menuLink :where(*),
+  [data-cutout-layer="stencil"] .navigationOpen .menuLogoLink,
+  [data-cutout-layer="stencil"] .navigationOpen .menuLogoLink :where(*) {
+    color: var(--cutout-stencil-hole-source);
+    text-decoration-color: var(--cutout-stencil-hole-source);
+    -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+  }
+
+  [data-cutout-layer="stencil"] .navigationOpen .activeHeaderLink {
+    background-color: transparent;
+  }
+
+  [data-cutout-layer="content"] .navigationOpen .activeHeaderLink {
+    align-self: center;
+    background-color: var(--cutout-stencil-surface-source);
+    filter: url("#global-cutout-filter");
+    min-height: auto;
+    padding: 0.16em 0.24em 0.34em;
+    width: fit-content;
+  }
+
+  [data-cutout-layer="content"] .navigationOpen .activeHeaderLink,
+  [data-cutout-layer="content"] .navigationOpen .activeHeaderLink :where(*) {
+    color: var(--cutout-stencil-hole-source);
+    text-decoration-color: var(--cutout-stencil-hole-source);
+    -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+  }
+
+  .menuButtonOpen {
+    position: fixed;
+    top: calc(var(--cutout-inset) + 0.875rem);
+    right: calc(var(--cutout-inset) + clamp(0.875rem, 4vw, 1.5rem));
+    z-index: 60;
+  }
+
+  [data-cutout-layer="content"] .menuButtonOpen {
+    color: var(--cutout-stencil-hole-source);
+    -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+  }
+}
+
+@media (width < 48rem) and (orientation: landscape) and (max-height: 430px) {
+  .navigationOpen {
+    justify-content: flex-start;
+    gap: clamp(0.75rem, 3.5dvh, 1.25rem);
+    padding-top: max(5.75rem, calc(env(safe-area-inset-top) + 4.75rem));
+    padding-bottom: max(3rem, calc(env(safe-area-inset-bottom) + 2.5rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navigationOpen .menuLogoLink {
+    top: -1.75rem;
+    width: 104px;
+    height: 73px;
+    margin-bottom: 0;
+  }
+
+  .navigationOpen .menuLink {
+    min-height: clamp(3.85rem, 17dvh, 4.75rem);
+    font-size: clamp(2.2rem, 8.4vw, 3.5rem);
+    line-height: 0.94;
+  }
+}
+
+@media (width >= 40rem) and (width < 48rem) and (orientation: landscape) and (
+    max-height: 430px
+  ) {
+  .navigationOpen {
+    display: grid;
+    grid-template-columns: repeat(2, 13rem);
+    align-content: start;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    column-gap: 0.875rem;
+    row-gap: clamp(0.375rem, 2dvh, 0.875rem);
+    padding-top: max(4.5rem, calc(env(safe-area-inset-top) + 3.75rem));
+    padding-bottom: max(2.5rem, calc(env(safe-area-inset-bottom) + 2rem));
+  }
+
+  .navigationOpen .menuLogoLink {
+    top: -2.25rem;
+    grid-column: 1 / -1;
+    margin-bottom: -1.5rem;
+  }
+
+  .navigationOpen .menuLink {
+    justify-self: center;
+    width: fit-content;
+    min-height: clamp(2.25rem, 10.5dvh, 2.75rem);
+    font-size: clamp(1.45rem, 4.8vw, 2rem);
+    line-height: 0.96;
+  }
+
+  .navigationOpen .menuLink:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (width >= 48rem) {
   .navigation {
     display: flex;
+  }
+}
+
+@keyframes menuOverlayIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

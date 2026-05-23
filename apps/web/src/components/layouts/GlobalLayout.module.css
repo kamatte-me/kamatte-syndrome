@@ -41,6 +41,16 @@
   visibility: visible;
 }
 
+@media (width < 48rem) {
+  .mobileMenuSuppressed {
+    visibility: hidden;
+  }
+
+  .contentLayer .mobileMenuSuppressed :where(img, video, iframe, canvas) {
+    visibility: hidden;
+  }
+}
+
 @media (width >= 40rem) {
   .shell {
     --cutout-inset: 20px;
