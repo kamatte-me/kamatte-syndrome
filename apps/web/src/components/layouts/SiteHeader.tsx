@@ -47,14 +47,14 @@ export function SiteHeader({
     <header
       className={cn(
         styles.root,
-        'relative z-40 shrink-0 px-[clamp(14px,4vw,40px)] pt-[18px] pb-[12px] sm:pt-[22px] sm:pb-[14px]',
+        'relative z-40 shrink-0 px-[clamp(14px,4vw,40px)]',
       )}
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 border-cutout-hole border-b pb-3 md:flex-row md:items-end md:justify-between md:gap-6 md:pb-4">
-        <div className="flex items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-[22px] md:flex-row md:items-end md:justify-between md:gap-6 md:pb-4">
+        <div className="relative flex items-center justify-center gap-4 md:justify-between">
           <a
             aria-label="ホームへ戻る"
-            className="inline-flex h-[58px] w-[83px] shrink-0 items-center justify-center text-cutout-hole no-underline transition-transform duration-200 hover:-rotate-1 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[72px] sm:w-[103px]"
+            className="inline-flex h-[38px] w-[55px] shrink-0 items-center justify-center text-cutout-hole no-underline transition-transform duration-200 hover:-rotate-1 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[72px] sm:w-[103px]"
             href="/"
             onClick={handleLogoClick}
           >
@@ -68,7 +68,7 @@ export function SiteHeader({
               isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'
             }
             className={cn(
-              'inline-flex size-12 items-center justify-center border-0 bg-transparent p-0 text-cutout-hole transition-transform duration-200 hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:hidden',
+              'absolute right-0 inline-flex size-10 items-center justify-center border-0 bg-transparent p-0 text-cutout-hole transition-transform duration-200 hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:static md:hidden',
               isMobileMenuOpen && styles.menuButtonOpen,
             )}
             onClick={() => onMobileMenuOpenChange(!isMobileMenuOpen)}
