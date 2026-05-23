@@ -16,13 +16,17 @@
   display: flex;
 }
 
-.menuLink:hover {
-  transform: translateY(-0.125rem);
-}
-
 .menuLinkLabel {
   display: inline-block;
   transition: transform 200ms ease;
+}
+
+.menuLink:hover {
+  transform: none;
+}
+
+.menuLinkMotionActive .menuLinkLabel {
+  transform: translateY(-0.125rem);
 }
 
 [data-cutout-layer="stencil"] .activeHeaderLink {
@@ -49,10 +53,6 @@
 
 .activeHeaderLink:hover {
   transform: none;
-}
-
-.activeHeaderLink:hover .menuLinkLabel {
-  transform: translateY(-0.125rem);
 }
 
 @media (width < 48rem) {

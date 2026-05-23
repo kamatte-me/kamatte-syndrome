@@ -8,8 +8,12 @@ import { SiteHeader } from './SiteHeader';
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoveredHeaderLink, setHoveredHeaderLink] = useState<string | null>(
+    null,
+  );
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
+    setHoveredHeaderLink(null);
   }, []);
 
   useEffect(() => {
@@ -58,7 +62,9 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
         >
           <LayoutFrame
             isMobileMenuOpen={isMobileMenuOpen}
+            hoveredHeaderLink={hoveredHeaderLink}
             onMobileMenuOpenChange={setIsMobileMenuOpen}
+            onHeaderLinkHoverChange={setHoveredHeaderLink}
             onNavigate={closeMobileMenu}
           >
             {children}
@@ -70,7 +76,9 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
         >
           <LayoutFrame
             isMobileMenuOpen={isMobileMenuOpen}
+            hoveredHeaderLink={hoveredHeaderLink}
             onMobileMenuOpenChange={setIsMobileMenuOpen}
+            onHeaderLinkHoverChange={setHoveredHeaderLink}
             onNavigate={closeMobileMenu}
           >
             {children}
@@ -111,19 +119,25 @@ function CutoutFilter() {
 function LayoutFrame({
   children,
   isMobileMenuOpen,
+  hoveredHeaderLink,
   onMobileMenuOpenChange,
+  onHeaderLinkHoverChange,
   onNavigate,
 }: {
   children: ReactNode;
   isMobileMenuOpen: boolean;
+  hoveredHeaderLink: string | null;
   onMobileMenuOpenChange: (isOpen: boolean) => void;
+  onHeaderLinkHoverChange: (to: string | null) => void;
   onNavigate: () => void;
 }) {
   return (
     <div className="flex min-h-[calc(100dvh-16px)] flex-col sm:min-h-[calc(100dvh-40px)]">
       <SiteHeader
         isMobileMenuOpen={isMobileMenuOpen}
+        hoveredHeaderLink={hoveredHeaderLink}
         onMobileMenuOpenChange={onMobileMenuOpenChange}
+        onHeaderLinkHoverChange={onHeaderLinkHoverChange}
         onNavigate={onNavigate}
       />
       <div
