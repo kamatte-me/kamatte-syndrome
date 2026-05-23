@@ -25,49 +25,6 @@
   transition: transform 200ms ease;
 }
 
-.menuIcon {
-  position: relative;
-  display: block;
-  width: 24px;
-  height: 18px;
-}
-
-.menuIcon::before,
-.menuIcon::after {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  content: "";
-  background: currentColor;
-  border-radius: 999px;
-  transition:
-    top 180ms ease,
-    bottom 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
-}
-
-.menuIcon::before {
-  top: 2px;
-  box-shadow: 0 7px currentColor;
-}
-
-.menuIcon::after {
-  bottom: 2px;
-}
-
-.menuButtonOpen .menuIcon::before {
-  top: 8px;
-  box-shadow: 0 0 currentColor;
-  transform: rotate(45deg);
-}
-
-.menuButtonOpen .menuIcon::after {
-  bottom: 8px;
-  transform: rotate(-45deg);
-}
-
 [data-cutout-layer="stencil"] .activeHeaderLink {
   background-color: var(--cutout-stencil-hole-source);
 }
@@ -205,9 +162,20 @@
     z-index: 60;
   }
 
+  [data-cutout-layer="stencil"] .menuButtonOpen {
+    visibility: hidden;
+  }
+
   [data-cutout-layer="content"] .menuButtonOpen {
     color: var(--cutout-stencil-hole-source);
     -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+  }
+}
+
+@media (width < 48rem) and (orientation: portrait) {
+  .menuButtonOpen {
+    top: calc(var(--cutout-inset) + 1.5rem);
+    right: calc(var(--cutout-inset) + 1.5rem);
   }
 }
 

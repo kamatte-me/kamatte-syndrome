@@ -9,6 +9,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import closeFillIcon from '@/assets/icons/close_fill.svg';
+import menuFillIcon from '@/assets/icons/menu_fill.svg';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/utils/classNames';
 import styles from './SiteHeader.module.css';
@@ -216,7 +218,10 @@ export function SiteHeader({
             ref={menuButtonRef}
             type="button"
           >
-            <span aria-hidden="true" className={styles.menuIcon} />
+            <Icon
+              className={isMobileMenuOpen ? 'size-12' : 'size-6'}
+              src={isMobileMenuOpen ? closeFillIcon : menuFillIcon}
+            />
           </button>
         </div>
 
