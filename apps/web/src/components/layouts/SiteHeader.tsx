@@ -50,8 +50,8 @@ export function SiteHeader({
         'relative z-40 shrink-0 px-[clamp(14px,4vw,40px)]',
       )}
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-[22px] md:flex-row md:items-end md:justify-between md:gap-6 md:pb-4">
-        <div className="relative flex items-center justify-center gap-4 md:justify-between">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-[22px] md:flex-row md:items-center md:justify-start md:gap-5 md:pb-4 lg:gap-6">
+        <div className="relative flex items-center justify-center gap-4 md:justify-start">
           <a
             aria-label="ホームへ戻る"
             className="inline-flex h-[38px] w-[55px] shrink-0 items-center justify-center text-cutout-hole no-underline transition-transform duration-200 hover:-rotate-1 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[72px] sm:w-[103px]"
@@ -83,7 +83,7 @@ export function SiteHeader({
           className={cn(
             styles.navigation,
             isMobileMenuOpen && styles.navigationOpen,
-            'flex-col gap-2 md:flex md:flex-row md:flex-wrap md:justify-end md:gap-[10px]',
+            'flex-col gap-1 md:flex md:flex-row md:flex-nowrap md:items-center md:justify-start md:gap-1 lg:gap-2',
           )}
           id={navigationId}
         >
@@ -92,12 +92,12 @@ export function SiteHeader({
               activeProps={{
                 className: cn(
                   styles.activeHeaderLink,
-                  'bg-cutout-hole text-black',
+                  'rounded-none bg-cutout-hole text-black',
                 ),
               }}
               key={link.to}
               to={link.to}
-              className="inline-flex min-h-10 items-center justify-center rounded-md border border-cutout-hole px-[16px] pt-[3px] pb-1 font-display font-normal text-[1.16rem] text-cutout-hole leading-none no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:px-[18px] md:text-[1.2rem]"
+              className="inline-flex min-h-10 items-center justify-center rounded-md px-2 pt-[3px] pb-1 font-bold font-display text-[1.2rem] text-cutout-hole leading-none no-underline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 lg:text-[1.4rem]"
               onClick={onNavigate}
             >
               {link.label}
