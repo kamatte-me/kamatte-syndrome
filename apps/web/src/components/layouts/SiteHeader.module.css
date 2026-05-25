@@ -4,8 +4,32 @@
   background-color: transparent;
 }
 
+.headerBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: none;
+  overflow: hidden;
+  background-color: #000000;
+  pointer-events: none;
+}
+
 [data-cutout-layer="stencil"] .root {
   background-color: var(--cutout-stencil-surface-source);
+}
+
+[data-cutout-layer="content"] .root:not(.rootMenuOpen) {
+  --cutout-hole: var(--cutout-stencil-hole-source);
+  overflow: clip;
+}
+
+[data-cutout-layer="content"] .root:not(.rootMenuOpen) .headerBackdrop {
+  display: block;
+}
+
+[data-cutout-layer="content"] .root:not(.rootMenuOpen) .headerSurface {
+  background-color: var(--cutout-stencil-surface-source);
+  filter: url("#global-cutout-filter");
 }
 
 .navigation {
@@ -41,14 +65,14 @@
 }
 
 [data-cutout-layer="content"] .activeHeaderLink {
-  background-color: transparent;
+  background-color: var(--cutout-stencil-hole-source);
 }
 
 [data-cutout-layer="content"] .activeHeaderLink,
 [data-cutout-layer="content"] .activeHeaderLink :where(*) {
-  color: var(--cutout-stencil-hole-source);
-  text-decoration-color: var(--cutout-stencil-hole-source);
-  -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+  color: var(--cutout-stencil-surface-source);
+  text-decoration-color: var(--cutout-stencil-surface-source);
+  -webkit-text-fill-color: var(--cutout-stencil-surface-source);
 }
 
 .activeHeaderLink:hover {
@@ -58,7 +82,6 @@
 @media (width < 48rem) {
   .navigationOpen {
     --mobile-menu-frame-width: 20px;
-    --mobile-menu-scroll-y: 0px;
 
     position: fixed;
     inset: 0;
@@ -101,7 +124,7 @@
 
   [data-cutout-layer="stencil"] .navigationOpen {
     position: absolute;
-    top: calc(var(--mobile-menu-scroll-y) - var(--cutout-inset));
+    top: calc(-1 * var(--cutout-inset));
     right: auto;
     bottom: auto;
     left: calc(-1 * (var(--cutout-inset) + var(--site-header-x-padding)));

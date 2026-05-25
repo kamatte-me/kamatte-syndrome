@@ -2,6 +2,8 @@ struct Uniforms {
   time: f32,
   seed: f32,
   resolution: vec2<f32>,
+  viewportResolution: vec2<f32>,
+  viewportOrigin: vec2<f32>,
 };
 
 struct VertexOutput {
@@ -90,7 +92,8 @@ fn screenGrain(coord: vec2<f32>, frame: f32) -> f32 {
 @fragment
 fn fragmentMain(@builtin(position) fragmentPosition: vec4<f32>) -> @location(0) vec4<f32> {
   let coord = vec2<f32>(fragmentPosition.x, uniforms.resolution.y - fragmentPosition.y);
-  let position = (coord - (uniforms.resolution * 0.5)) / min(uniforms.resolution.x, uniforms.resolution.y);
+  let viewportCoord = coord + uniforms.viewportOrigin;
+  let position = (viewportCoord - (uniforms.viewportResolution * 0.5)) / min(uniforms.viewportResolution.x, uniforms.viewportResolution.y);
   let time = uniforms.time * 0.11;
   let seed = vec2<f32>(uniforms.seed, (uniforms.seed * 1.37) + 9.2);
   let radius = length(position);
@@ -129,7 +132,7 @@ fn fragmentMain(@builtin(position) fragmentPosition: vec4<f32>) -> @location(0) 
   color = mix(color, vec3<f32>(0.006, 0.0, 0.02), dropout * 0.24);
 
   let grainFrame = floor(uniforms.time * 18.0);
-  color = color + ((screenGrain(coord, grainFrame) - 0.5) * 0.035);
+  color = color + ((screenGrain(viewportCoord, grainFrame) - 0.5) * 0.035);
   color = clamp(color, vec3<f32>(0.0), vec3<f32>(1.0));
 
   let alpha = 0.96;

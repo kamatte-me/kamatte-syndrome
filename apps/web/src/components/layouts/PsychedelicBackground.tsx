@@ -18,6 +18,76 @@ type BackgroundRenderer = {
   resize: () => void;
 };
 
+type BackgroundRendererOptions = {
+  seed: number;
+  viewportLocked: boolean;
+};
+
+type PsychedelicBackgroundProps = {
+  className?: string;
+  viewportLocked?: boolean;
+};
+
+type RenderMetrics = {
+  renderHeight: number;
+  renderWidth: number;
+  viewportHeight: number;
+  viewportOriginX: number;
+  viewportOriginY: number;
+  viewportWidth: number;
+};
+
+const defaultBackgroundClassName =
+  'pointer-events-none fixed inset-0 z-0 h-[100lvh] w-full overflow-hidden bg-black';
+
+let sharedSeed: number | null = null;
+
+function getSharedSeed() {
+  sharedSeed ??= Math.random() * 1000;
+
+  return sharedSeed;
+}
+
+function getRenderMetrics(
+  container: HTMLDivElement,
+  viewportLocked: boolean,
+): RenderMetrics {
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
+  const scale = RENDER_SCALE * pixelRatio;
+  const viewportWidth = Math.max(1, Math.round(window.innerWidth * scale));
+  const viewportHeight = Math.max(1, Math.round(window.innerHeight * scale));
+
+  if (viewportLocked) {
+    const rect = container.getBoundingClientRect();
+    const cssWidth = rect.width || container.clientWidth || window.innerWidth;
+    const cssHeight =
+      rect.height || container.clientHeight || window.innerHeight;
+
+    return {
+      renderHeight: Math.max(1, Math.round(cssHeight * scale)),
+      renderWidth: Math.max(1, Math.round(cssWidth * scale)),
+      viewportHeight,
+      viewportOriginX: Math.round(rect.left * scale),
+      viewportOriginY: Math.round((window.innerHeight - rect.bottom) * scale),
+      viewportWidth,
+    };
+  }
+
+  const cssWidth = container.clientWidth || window.innerWidth;
+  const cssHeight = container.clientHeight || window.innerHeight;
+  const renderWidth = Math.max(1, Math.round(cssWidth * scale));
+  const renderHeight = Math.max(1, Math.round(cssHeight * scale));
+
+  return {
+    renderHeight,
+    renderWidth,
+    viewportHeight: renderHeight,
+    viewportOriginX: 0,
+    viewportOriginY: 0,
+    viewportWidth: renderWidth,
+  };
+}
+
 function createWebglShader(
   gl: WebGLRenderingContext,
   type: number,
@@ -78,7 +148,10 @@ function createWebglProgram(gl: WebGLRenderingContext) {
   return program;
 }
 
-async function createWebgpuRenderer(container: HTMLDivElement) {
+async function createWebgpuRenderer(
+  container: HTMLDivElement,
+  { seed, viewportLocked }: BackgroundRendererOptions,
+) {
   const gpu = navigator.gpu;
 
   if (!gpu) {
@@ -107,7 +180,7 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   }
 
   const format = gpu.getPreferredCanvasFormat();
-  const uniformData = new Float32Array(4);
+  const uniformData = new Float32Array(8);
   const uniformBuffer = device.createBuffer({
     size: uniformData.byteLength,
     usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.UNIFORM,
@@ -138,34 +211,35 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
     entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
     layout: pipeline.getBindGroupLayout(0),
   });
-  const seed = Math.random() * 1000;
   let drawingHeight = 0;
   let drawingWidth = 0;
+  let viewportHeight = 0;
+  let viewportOriginX = 0;
+  let viewportOriginY = 0;
+  let viewportWidth = 0;
 
   canvas.className = 'absolute inset-0 block size-full opacity-[0.94]';
   container.appendChild(canvas);
 
   const resize = () => {
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-    const renderWidth = Math.max(
-      1,
-      Math.round(width * RENDER_SCALE * pixelRatio),
-    );
-    const renderHeight = Math.max(
-      1,
-      Math.round(height * RENDER_SCALE * pixelRatio),
-    );
+    const metrics = getRenderMetrics(container, viewportLocked);
 
-    if (drawingWidth === renderWidth && drawingHeight === renderHeight) {
+    viewportHeight = metrics.viewportHeight;
+    viewportOriginX = metrics.viewportOriginX;
+    viewportOriginY = metrics.viewportOriginY;
+    viewportWidth = metrics.viewportWidth;
+
+    if (
+      drawingWidth === metrics.renderWidth &&
+      drawingHeight === metrics.renderHeight
+    ) {
       return;
     }
 
-    drawingWidth = renderWidth;
-    drawingHeight = renderHeight;
-    canvas.width = renderWidth;
-    canvas.height = renderHeight;
+    drawingWidth = metrics.renderWidth;
+    drawingHeight = metrics.renderHeight;
+    canvas.width = metrics.renderWidth;
+    canvas.height = metrics.renderHeight;
     context.configure({
       alphaMode: 'premultiplied',
       device,
@@ -182,6 +256,10 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
     uniformData[1] = seed;
     uniformData[2] = drawingWidth;
     uniformData[3] = drawingHeight;
+    uniformData[4] = viewportWidth;
+    uniformData[5] = viewportHeight;
+    uniformData[6] = viewportOriginX;
+    uniformData[7] = viewportOriginY;
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
 
     const encoder = device.createCommandEncoder();
@@ -214,7 +292,10 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   } satisfies BackgroundRenderer;
 }
 
-function createWebglRenderer(container: HTMLDivElement) {
+function createWebglRenderer(
+  container: HTMLDivElement,
+  { seed, viewportLocked }: BackgroundRendererOptions,
+) {
   const canvas = document.createElement('canvas');
   const gl = canvas.getContext('webgl', {
     alpha: true,
@@ -236,11 +317,21 @@ function createWebglRenderer(container: HTMLDivElement) {
   const positionLocation = gl.getAttribLocation(program, 'aPosition');
   const resolutionLocation = gl.getUniformLocation(program, 'uResolution');
   const seedLocation = gl.getUniformLocation(program, 'uSeed');
+  const viewportOriginLocation = gl.getUniformLocation(
+    program,
+    'uViewportOrigin',
+  );
+  const viewportResolutionLocation = gl.getUniformLocation(
+    program,
+    'uViewportResolution',
+  );
 
   if (
     positionLocation < 0 ||
     resolutionLocation === null ||
-    seedLocation === null
+    seedLocation === null ||
+    viewportOriginLocation === null ||
+    viewportResolutionLocation === null
   ) {
     gl.deleteProgram(program);
     return null;
@@ -260,7 +351,6 @@ function createWebglRenderer(container: HTMLDivElement) {
     return null;
   }
 
-  const seed = Math.random() * 1000;
   let drawingHeight = 0;
   let drawingWidth = 0;
   const activateProgram = gl.useProgram.bind(gl);
@@ -279,28 +369,32 @@ function createWebglRenderer(container: HTMLDivElement) {
   gl.uniform1f(seedLocation, seed);
 
   const resize = () => {
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-    const renderWidth = Math.max(
-      1,
-      Math.round(width * RENDER_SCALE * pixelRatio),
+    const metrics = getRenderMetrics(container, viewportLocked);
+
+    gl.uniform2f(
+      viewportOriginLocation,
+      metrics.viewportOriginX,
+      metrics.viewportOriginY,
     );
-    const renderHeight = Math.max(
-      1,
-      Math.round(height * RENDER_SCALE * pixelRatio),
+    gl.uniform2f(
+      viewportResolutionLocation,
+      metrics.viewportWidth,
+      metrics.viewportHeight,
     );
 
-    if (drawingWidth === renderWidth && drawingHeight === renderHeight) {
+    if (
+      drawingWidth === metrics.renderWidth &&
+      drawingHeight === metrics.renderHeight
+    ) {
       return;
     }
 
-    drawingWidth = renderWidth;
-    drawingHeight = renderHeight;
-    canvas.width = renderWidth;
-    canvas.height = renderHeight;
-    gl.viewport(0, 0, renderWidth, renderHeight);
-    gl.uniform2f(resolutionLocation, renderWidth, renderHeight);
+    drawingWidth = metrics.renderWidth;
+    drawingHeight = metrics.renderHeight;
+    canvas.width = metrics.renderWidth;
+    canvas.height = metrics.renderHeight;
+    gl.viewport(0, 0, metrics.renderWidth, metrics.renderHeight);
+    gl.uniform2f(resolutionLocation, metrics.renderWidth, metrics.renderHeight);
   };
 
   const render = (time: number) => {
@@ -320,7 +414,10 @@ function createWebglRenderer(container: HTMLDivElement) {
   } satisfies BackgroundRenderer;
 }
 
-export function PsychedelicBackground() {
+export function PsychedelicBackground({
+  className = defaultBackgroundClassName,
+  viewportLocked = false,
+}: PsychedelicBackgroundProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -344,9 +441,13 @@ export function PsychedelicBackground() {
     };
 
     const initialize = async () => {
+      const rendererOptions = {
+        seed: getSharedSeed(),
+        viewportLocked,
+      };
       const renderer =
-        (await createWebgpuRenderer(container)) ??
-        createWebglRenderer(container);
+        (await createWebgpuRenderer(container, rendererOptions)) ??
+        createWebglRenderer(container, rendererOptions);
 
       if (!renderer) {
         return;
@@ -358,9 +459,10 @@ export function PsychedelicBackground() {
       }
 
       const reducedMotionQuery = window.matchMedia(REDUCED_MOTION_QUERY);
-      const startTime = window.performance.now();
       let lastRenderTime = 0;
-      let timeValue = reducedMotionQuery.matches ? STATIC_TIME : 0;
+      let timeValue = reducedMotionQuery.matches
+        ? STATIC_TIME
+        : window.performance.now() / 1000;
 
       const renderScene = () => {
         renderer.resize();
@@ -374,7 +476,7 @@ export function PsychedelicBackground() {
         }
 
         if (currentTime - lastRenderTime >= FRAME_INTERVAL_MS) {
-          timeValue = (currentTime - startTime) / 1000;
+          timeValue = currentTime / 1000;
           renderScene();
           lastRenderTime = currentTime;
         }
@@ -404,7 +506,7 @@ export function PsychedelicBackground() {
           return;
         }
 
-        timeValue = (window.performance.now() - startTime) / 1000;
+        timeValue = window.performance.now() / 1000;
         renderScene();
         start();
       };
@@ -427,12 +529,18 @@ export function PsychedelicBackground() {
       }
 
       window.addEventListener('resize', renderScene);
+      if (viewportLocked) {
+        window.addEventListener('scroll', renderScene, { passive: true });
+      }
       document.addEventListener('visibilitychange', handleVisibilityChange);
       reducedMotionQuery.addEventListener('change', handleMotionChange);
 
       cleanupRenderer = () => {
         stop();
         window.removeEventListener('resize', renderScene);
+        if (viewportLocked) {
+          window.removeEventListener('scroll', renderScene);
+        }
         document.removeEventListener(
           'visibilitychange',
           handleVisibilityChange,
@@ -448,13 +556,7 @@ export function PsychedelicBackground() {
       isDisposed = true;
       cleanupRenderer?.();
     };
-  }, []);
+  }, [viewportLocked]);
 
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 h-[100lvh] w-full overflow-hidden bg-black"
-      ref={containerRef}
-    />
-  );
+  return <div aria-hidden="true" className={className} ref={containerRef} />;
 }

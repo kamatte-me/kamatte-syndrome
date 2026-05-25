@@ -1,18 +1,16 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
-  type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
   useEffect,
   useId,
-  useLayoutEffect,
   useRef,
-  useState,
 } from 'react';
 import closeFillIcon from '@/assets/icons/close_fill.svg';
 import menuFillIcon from '@/assets/icons/menu_fill.svg';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/utils/classNames';
+import { PsychedelicBackground } from './PsychedelicBackground';
 import styles from './SiteHeader.module.css';
 
 const navigationLinks = [
@@ -26,6 +24,7 @@ const navigationLinks = [
 const mobileMenuSelector = '[data-site-header-mobile-menu]';
 
 type SiteHeaderProps = {
+  cutoutLayer: 'stencil' | 'content';
   isMobileMenuOpen: boolean;
   hoveredHeaderLink: string | null;
   onMobileMenuOpenChange: (isOpen: boolean) => void;
@@ -34,6 +33,7 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({
+  cutoutLayer,
   isMobileMenuOpen,
   hoveredHeaderLink,
   onMobileMenuOpenChange,
@@ -43,66 +43,7 @@ export function SiteHeader({
   const navigationId = useId();
   const headerRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
   const navigate = useNavigate();
-
-  useLayoutEffect(() => {
-    const isStencilHeader = Boolean(
-      headerRef.current?.closest('[data-cutout-layer="stencil"]'),
-    );
-
-    if (!(isMobileMenuOpen && isStencilHeader)) {
-      setStencilScrollY(null);
-      return;
-    }
-
-    let updateFrame: number | null = null;
-
-    const updateStencilScrollY = () => {
-      updateFrame = null;
-      setStencilScrollY(window.scrollY);
-    };
-
-    const scheduleStencilScrollYUpdate = () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
-      updateFrame = window.requestAnimationFrame(updateStencilScrollY);
-    };
-
-    updateStencilScrollY();
-
-    window.addEventListener('resize', scheduleStencilScrollYUpdate);
-    window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
-      passive: true,
-    });
-    window.visualViewport?.addEventListener(
-      'resize',
-      scheduleStencilScrollYUpdate,
-    );
-    window.visualViewport?.addEventListener(
-      'scroll',
-      scheduleStencilScrollYUpdate,
-    );
-
-    return () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
-      window.removeEventListener('resize', scheduleStencilScrollYUpdate);
-      window.removeEventListener('scroll', scheduleStencilScrollYUpdate);
-      window.visualViewport?.removeEventListener(
-        'resize',
-        scheduleStencilScrollYUpdate,
-      );
-      window.visualViewport?.removeEventListener(
-        'scroll',
-        scheduleStencilScrollYUpdate,
-      );
-    };
-  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -181,106 +122,113 @@ export function SiteHeader({
     onMobileMenuOpenChange(false);
     menuButtonRef.current?.focus();
   };
-  const navigationStyle =
-    stencilScrollY === null
-      ? undefined
-      : ({
-          '--mobile-menu-scroll-y': `${stencilScrollY}px`,
-        } as CSSProperties);
 
   return (
     <header
       className={cn(
         styles.root,
-        'relative z-40 shrink-0 px-[var(--site-header-x-padding)]',
+        isMobileMenuOpen && styles.rootMenuOpen,
+        'sticky top-0 z-40 shrink-0',
       )}
       ref={headerRef}
     >
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-[22px] md:flex-row md:items-center md:justify-start md:gap-5 md:pb-4 lg:gap-6">
-        <div className="relative flex items-center justify-center gap-4 md:justify-start">
-          <a
-            aria-label="ホームへ戻る"
-            className="inline-flex h-[38px] w-[55px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[72px] sm:w-[103px]"
-            href="/"
-            onClick={handleLogoClick}
-          >
-            <Icon className="size-full" src="/logo.svg" />
-          </a>
-
-          <button
-            aria-controls={navigationId}
-            aria-expanded={isMobileMenuOpen}
-            aria-label={
-              isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'
-            }
-            className={cn(
-              'absolute right-0 inline-flex size-10 items-center justify-center border-0 bg-transparent p-0 text-cutout-hole transition-transform duration-200 hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:static md:hidden',
-              isMobileMenuOpen && styles.menuButtonOpen,
-            )}
-            onClick={() => onMobileMenuOpenChange(!isMobileMenuOpen)}
-            onKeyDown={handleNavigationKeyDown}
-            ref={menuButtonRef}
-            type="button"
-          >
-            <Icon
-              className={isMobileMenuOpen ? 'size-12' : 'size-6'}
-              src={isMobileMenuOpen ? closeFillIcon : menuFillIcon}
-            />
-          </button>
-        </div>
-
-        <nav
-          aria-label="Primary navigation"
-          className={cn(
-            styles.navigation,
-            isMobileMenuOpen && styles.navigationOpen,
-            'flex-col gap-1 md:flex md:flex-row md:flex-nowrap md:items-center md:justify-start md:gap-1 lg:gap-2',
-          )}
-          id={navigationId}
-          data-site-header-mobile-menu=""
-          onKeyDown={handleNavigationKeyDown}
-          style={navigationStyle}
-        >
-          <a
-            aria-label="ホームへ戻る"
-            className={cn(
-              styles.menuLogoLink,
-              'inline-flex h-[98px] w-[140px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:hidden',
-            )}
-            href="/"
-            onClick={handleLogoClick}
-          >
-            <Icon className="size-full" src="/logo.svg" />
-          </a>
-
-          {navigationLinks.map((link) => (
-            <Link
-              activeProps={{
-                className: cn(
-                  styles.activeHeaderLink,
-                  'rounded-none bg-cutout-hole text-black',
-                ),
-              }}
-              key={link.to}
-              to={link.to}
-              className={cn(
-                styles.menuLink,
-                hoveredHeaderLink === link.to && styles.menuLinkMotionActive,
-                'inline-flex min-h-10 items-center justify-center rounded-md px-2 pt-[3px] pb-1 font-bold font-display text-[1.2rem] text-cutout-hole leading-none no-underline transition-transform duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 lg:text-[1.4rem]',
-              )}
-              onBlur={() => onHeaderLinkHoverChange(null)}
-              onClick={() => {
-                onHeaderLinkHoverChange(null);
-                onNavigate();
-              }}
-              onFocus={() => onHeaderLinkHoverChange(link.to)}
-              onMouseEnter={() => onHeaderLinkHoverChange(link.to)}
-              onMouseLeave={() => onHeaderLinkHoverChange(null)}
+      {cutoutLayer === 'content' ? (
+        <PsychedelicBackground
+          className={styles.headerBackdrop}
+          viewportLocked
+        />
+      ) : null}
+      <div
+        className={cn(
+          styles.headerSurface,
+          'relative z-10 px-[var(--site-header-x-padding)]',
+        )}
+      >
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-[22px] md:flex-row md:items-center md:justify-start md:gap-5 md:pb-4 lg:gap-6">
+          <div className="relative flex items-center justify-center gap-4 md:justify-start">
+            <a
+              aria-label="ホームへ戻る"
+              className="inline-flex h-[38px] w-[55px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[72px] sm:w-[103px]"
+              href="/"
+              onClick={handleLogoClick}
             >
-              <span className={styles.menuLinkLabel}>{link.label}</span>
-            </Link>
-          ))}
-        </nav>
+              <Icon className="size-full" src="/logo.svg" />
+            </a>
+
+            <button
+              aria-controls={navigationId}
+              aria-expanded={isMobileMenuOpen}
+              aria-label={
+                isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'
+              }
+              className={cn(
+                'absolute right-0 inline-flex size-10 items-center justify-center border-0 bg-transparent p-0 text-cutout-hole transition-transform duration-200 hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:static md:hidden',
+                isMobileMenuOpen && styles.menuButtonOpen,
+              )}
+              onClick={() => onMobileMenuOpenChange(!isMobileMenuOpen)}
+              onKeyDown={handleNavigationKeyDown}
+              ref={menuButtonRef}
+              type="button"
+            >
+              <Icon
+                className={isMobileMenuOpen ? 'size-12' : 'size-6'}
+                src={isMobileMenuOpen ? closeFillIcon : menuFillIcon}
+              />
+            </button>
+          </div>
+
+          <nav
+            aria-label="Primary navigation"
+            className={cn(
+              styles.navigation,
+              isMobileMenuOpen && styles.navigationOpen,
+              'flex-col gap-1 md:flex md:flex-row md:flex-nowrap md:items-center md:justify-start md:gap-1 lg:gap-2',
+            )}
+            id={navigationId}
+            data-site-header-mobile-menu=""
+            onKeyDown={handleNavigationKeyDown}
+          >
+            <a
+              aria-label="ホームへ戻る"
+              className={cn(
+                styles.menuLogoLink,
+                'inline-flex h-[98px] w-[140px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:hidden',
+              )}
+              href="/"
+              onClick={handleLogoClick}
+            >
+              <Icon className="size-full" src="/logo.svg" />
+            </a>
+
+            {navigationLinks.map((link) => (
+              <Link
+                activeProps={{
+                  className: cn(
+                    styles.activeHeaderLink,
+                    'rounded-none bg-cutout-hole text-black',
+                  ),
+                }}
+                key={link.to}
+                to={link.to}
+                className={cn(
+                  styles.menuLink,
+                  hoveredHeaderLink === link.to && styles.menuLinkMotionActive,
+                  'inline-flex min-h-10 items-center justify-center rounded-md px-2 pt-[3px] pb-1 font-bold font-display text-[1.2rem] text-cutout-hole leading-none no-underline transition-transform duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 lg:text-[1.4rem]',
+                )}
+                onBlur={() => onHeaderLinkHoverChange(null)}
+                onClick={() => {
+                  onHeaderLinkHoverChange(null);
+                  onNavigate();
+                }}
+                onFocus={() => onHeaderLinkHoverChange(link.to)}
+                onMouseEnter={() => onHeaderLinkHoverChange(link.to)}
+                onMouseLeave={() => onHeaderLinkHoverChange(null)}
+              >
+                <span className={styles.menuLinkLabel}>{link.label}</span>
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </header>
   );

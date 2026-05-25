@@ -49,18 +49,19 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
     <div className={cn(styles.shell, 'relative min-h-dvh p-2 sm:p-5')}>
       <PsychedelicBackground />
       <CutoutFilter />
-      <div className="relative z-[1] min-h-[calc(100dvh-16px)] overflow-hidden text-cutout-hole sm:min-h-[calc(100dvh-40px)]">
+      <div className="relative z-[1] min-h-[calc(100dvh-16px)] overflow-clip text-cutout-hole sm:min-h-[calc(100dvh-40px)]">
         <div
           aria-hidden="true"
           className={cn(
             styles.stencilLayer,
-            'pointer-events-none absolute inset-0 z-0 overflow-hidden',
+            'pointer-events-none absolute inset-0 z-0 overflow-clip',
           )}
           data-cutout-layer="stencil"
           data-nosnippet
           inert
         >
           <LayoutFrame
+            cutoutLayer="stencil"
             isMobileMenuOpen={isMobileMenuOpen}
             hoveredHeaderLink={hoveredHeaderLink}
             onMobileMenuOpenChange={setIsMobileMenuOpen}
@@ -75,6 +76,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           data-cutout-layer="content"
         >
           <LayoutFrame
+            cutoutLayer="content"
             isMobileMenuOpen={isMobileMenuOpen}
             hoveredHeaderLink={hoveredHeaderLink}
             onMobileMenuOpenChange={setIsMobileMenuOpen}
@@ -118,6 +120,7 @@ function CutoutFilter() {
 
 function LayoutFrame({
   children,
+  cutoutLayer,
   isMobileMenuOpen,
   hoveredHeaderLink,
   onMobileMenuOpenChange,
@@ -125,6 +128,7 @@ function LayoutFrame({
   onNavigate,
 }: {
   children: ReactNode;
+  cutoutLayer: 'stencil' | 'content';
   isMobileMenuOpen: boolean;
   hoveredHeaderLink: string | null;
   onMobileMenuOpenChange: (isOpen: boolean) => void;
@@ -134,6 +138,7 @@ function LayoutFrame({
   return (
     <div className="flex min-h-[calc(100dvh-16px)] flex-col sm:min-h-[calc(100dvh-40px)]">
       <SiteHeader
+        cutoutLayer={cutoutLayer}
         isMobileMenuOpen={isMobileMenuOpen}
         hoveredHeaderLink={hoveredHeaderLink}
         onMobileMenuOpenChange={onMobileMenuOpenChange}
