@@ -3,8 +3,6 @@ precision highp float;
 uniform float uSeed;
 uniform float uTime;
 uniform vec2 uResolution;
-uniform vec2 uViewportOrigin;
-uniform vec2 uViewportResolution;
 
 vec3 palette(float value) {
   return 0.5 + 0.5 * cos(6.28318 * (vec3(0.92, 0.48, 0.08) + value));
@@ -63,8 +61,7 @@ float screenGrain(vec2 coord, float frame) {
 }
 
 void main() {
-  vec2 viewportCoord = gl_FragCoord.xy + uViewportOrigin;
-  vec2 position = (viewportCoord - (0.5 * uViewportResolution.xy)) / min(uViewportResolution.x, uViewportResolution.y);
+  vec2 position = (gl_FragCoord.xy - (0.5 * uResolution.xy)) / min(uResolution.x, uResolution.y);
   float time = uTime * 0.11;
   vec2 seed = vec2(uSeed, (uSeed * 1.37) + 9.2);
   float radius = length(position);
@@ -106,7 +103,7 @@ void main() {
   color = mix(color, vec3(0.006, 0.0, 0.02), dropout * 0.24);
   // Quantize time so the grain flickers in place instead of drifting.
   float grainFrame = floor(uTime * 18.0);
-  color += (screenGrain(viewportCoord, grainFrame) - 0.5) * 0.035;
+  color += (screenGrain(gl_FragCoord.xy, grainFrame) - 0.5) * 0.035;
   color = clamp(color, 0.0, 1.0);
 
   gl_FragColor = vec4(color, 0.96);

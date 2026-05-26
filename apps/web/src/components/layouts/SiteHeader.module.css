@@ -1,5 +1,8 @@
 .root {
   --site-header-x-padding: clamp(14px, 4vw, 40px);
+  --site-header-background-width: 100vw;
+  --site-header-viewport-x: 0px;
+  --site-header-viewport-y: 0px;
 
   background-color: transparent;
 }
@@ -14,13 +17,24 @@
   pointer-events: none;
 }
 
+.headerBackdropViewport {
+  position: absolute;
+  top: calc(-1 * var(--site-header-viewport-y));
+  left: calc(-1 * var(--site-header-viewport-x));
+  width: var(--site-header-background-width);
+  height: 100lvh;
+  overflow: hidden;
+  background-color: #000000;
+  pointer-events: none;
+}
+
 [data-cutout-layer="stencil"] .root {
   background-color: var(--cutout-stencil-surface-source);
 }
 
 [data-cutout-layer="content"] .root:not(.rootMenuOpen) {
   --cutout-hole: var(--cutout-stencil-hole-source);
-  overflow: clip;
+  overflow: hidden;
 }
 
 [data-cutout-layer="content"] .root:not(.rootMenuOpen) .headerBackdrop {
@@ -29,7 +43,30 @@
 
 [data-cutout-layer="content"] .root:not(.rootMenuOpen) .headerSurface {
   background-color: var(--cutout-stencil-surface-source);
-  filter: url("#global-cutout-filter");
+  -webkit-filter: url("#site-header-cutout-filter");
+  filter: url("#site-header-cutout-filter");
+}
+
+[data-cutout-layer="content"] .root[data-site-header-modal-cutout] {
+  mask-composite: exclude;
+  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-mode: alpha, alpha;
+  mask-position:
+    0 0,
+    var(--site-header-modal-mask-left) var(--site-header-modal-mask-top);
+  mask-repeat: no-repeat, no-repeat;
+  mask-size:
+    100% 100%,
+    var(--site-header-modal-mask-width) var(--site-header-modal-mask-height);
+  -webkit-mask-composite: xor;
+  -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  -webkit-mask-position:
+    0 0,
+    var(--site-header-modal-mask-left) var(--site-header-modal-mask-top);
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-size:
+    100% 100%,
+    var(--site-header-modal-mask-width) var(--site-header-modal-mask-height);
 }
 
 .navigation {
@@ -82,6 +119,7 @@
 @media (width < 48rem) {
   .navigationOpen {
     --mobile-menu-frame-width: 20px;
+    --mobile-menu-scroll-y: 0px;
 
     position: fixed;
     inset: 0;
@@ -124,7 +162,7 @@
 
   [data-cutout-layer="stencil"] .navigationOpen {
     position: absolute;
-    top: calc(-1 * var(--cutout-inset));
+    top: calc(var(--mobile-menu-scroll-y) - var(--cutout-inset));
     right: auto;
     bottom: auto;
     left: calc(-1 * (var(--cutout-inset) + var(--site-header-x-padding)));
@@ -165,7 +203,8 @@
   [data-cutout-layer="content"] .navigationOpen .activeHeaderLink {
     align-self: center;
     background-color: var(--cutout-stencil-surface-source);
-    filter: url("#global-cutout-filter");
+    -webkit-filter: url("#site-header-cutout-filter");
+    filter: url("#site-header-cutout-filter");
     min-height: auto;
     padding: 0.16em 0.24em 0.34em;
     width: fit-content;
@@ -190,8 +229,8 @@
   }
 
   [data-cutout-layer="content"] .menuButtonOpen {
-    color: var(--cutout-stencil-hole-source);
-    -webkit-text-fill-color: var(--cutout-stencil-hole-source);
+    color: var(--cutout-stencil-surface-source);
+    -webkit-text-fill-color: var(--cutout-stencil-surface-source);
   }
 }
 

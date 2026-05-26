@@ -49,12 +49,12 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
     <div className={cn(styles.shell, 'relative min-h-dvh p-2 sm:p-5')}>
       <PsychedelicBackground />
       <CutoutFilter />
-      <div className="relative z-[1] min-h-[calc(100dvh-16px)] overflow-clip text-cutout-hole sm:min-h-[calc(100dvh-40px)]">
+      <div className="relative z-[1] min-h-[calc(100dvh-16px)] text-cutout-hole sm:min-h-[calc(100dvh-40px)]">
         <div
           aria-hidden="true"
           className={cn(
             styles.stencilLayer,
-            'pointer-events-none absolute inset-0 z-0 overflow-clip',
+            'pointer-events-none absolute inset-0 z-0 overflow-hidden',
           )}
           data-cutout-layer="stencil"
           data-nosnippet
@@ -103,6 +103,20 @@ function CutoutFilter() {
           colorInterpolationFilters="sRGB"
           height="100%"
           id="global-cutout-filter"
+          width="100%"
+          x="0"
+          y="0"
+        >
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.333 -0.333 -0.333 0 1"
+          />
+        </filter>
+        <filter
+          colorInterpolationFilters="sRGB"
+          height="100%"
+          id="site-header-cutout-filter"
           width="100%"
           x="0"
           y="0"

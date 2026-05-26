@@ -21,6 +21,8 @@ export type ModalProps = {
 export const modalDialogSelector = '[data-ui-modal-dialog]';
 
 const modalBodySelector = '[data-ui-modal-body]';
+const contentHeaderSelector =
+  '[data-cutout-layer="content"] [data-site-header]';
 
 export function Modal({
   bodyClassName: customBodyClassName,
@@ -36,9 +38,10 @@ export function Modal({
   const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
 
   useLayoutEffect(() => {
-    const isStencilModal = Boolean(
-      modalRootRef.current?.closest('[data-cutout-layer="stencil"]'),
+    const stencilLayer = modalRootRef.current?.closest<HTMLElement>(
+      '[data-cutout-layer="stencil"]',
     );
+    const isStencilModal = Boolean(stencilLayer);
 
     setIsContentLayer(!isStencilModal);
 
@@ -53,7 +56,13 @@ export function Modal({
 
     const updateStencilScrollY = () => {
       updateFrame = null;
-      setStencilScrollY(window.scrollY);
+      const scrollY = window.scrollY;
+
+      setStencilScrollY(scrollY);
+      stencilLayer?.style.setProperty(
+        '--cutout-stencil-scroll-y',
+        `${scrollY}px`,
+      );
     };
 
     const scheduleStencilScrollYUpdate = () => {
@@ -65,6 +74,7 @@ export function Modal({
     };
 
     updateStencilScrollY();
+    stencilLayer?.setAttribute('data-cutout-modal-open', '');
 
     window.addEventListener('resize', scheduleStencilScrollYUpdate);
     window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
@@ -94,6 +104,8 @@ export function Modal({
         'scroll',
         scheduleStencilScrollYUpdate,
       );
+      stencilLayer?.removeAttribute('data-cutout-modal-open');
+      stencilLayer?.style.removeProperty('--cutout-stencil-scroll-y');
     };
   }, []);
 
@@ -176,13 +188,126 @@ export function Modal({
   const renderedChildren =
     typeof children === 'function' ? children({ isContentLayer }) : children;
 
+  useEffect(() => {
+    if (!isContentLayer) {
+      return;
+    }
+
+    const dialog = dialogRef.current;
+    const header = document.querySelector<HTMLElement>(contentHeaderSelector);
+
+    if (!dialog || !header) {
+      return;
+    }
+
+    let updateFrame: number | null = null;
+
+    const clearHeaderCutout = () => {
+      delete header.dataset.siteHeaderModalCutout;
+      header.style.removeProperty('--site-header-modal-mask-height');
+      header.style.removeProperty('--site-header-modal-mask-left');
+      header.style.removeProperty('--site-header-modal-mask-top');
+      header.style.removeProperty('--site-header-modal-mask-width');
+    };
+
+    const updateHeaderCutout = () => {
+      updateFrame = null;
+
+      const dialogRect = dialog.getBoundingClientRect();
+      const headerRect = header.getBoundingClientRect();
+      const overlapLeft = Math.max(0, dialogRect.left - headerRect.left);
+      const overlapTop = Math.max(0, dialogRect.top - headerRect.top);
+      const overlapRight = Math.min(
+        headerRect.width,
+        dialogRect.right - headerRect.left,
+      );
+      const overlapBottom = Math.min(
+        headerRect.height,
+        dialogRect.bottom - headerRect.top,
+      );
+      const overlapWidth = Math.max(0, overlapRight - overlapLeft);
+      const overlapHeight = Math.max(0, overlapBottom - overlapTop);
+
+      clearHeaderCutout();
+
+      if (overlapWidth <= 0 || overlapHeight <= 0) {
+        return;
+      }
+
+      header.dataset.siteHeaderModalCutout = 'true';
+      header.style.setProperty(
+        '--site-header-modal-mask-height',
+        `${overlapHeight}px`,
+      );
+      header.style.setProperty(
+        '--site-header-modal-mask-left',
+        `${overlapLeft}px`,
+      );
+      header.style.setProperty(
+        '--site-header-modal-mask-top',
+        `${overlapTop}px`,
+      );
+      header.style.setProperty(
+        '--site-header-modal-mask-width',
+        `${overlapWidth}px`,
+      );
+    };
+
+    const scheduleHeaderCutoutUpdate = () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      updateFrame = window.requestAnimationFrame(updateHeaderCutout);
+    };
+
+    const resizeObserver = new ResizeObserver(scheduleHeaderCutoutUpdate);
+
+    resizeObserver.observe(dialog);
+    resizeObserver.observe(header);
+    updateHeaderCutout();
+
+    window.addEventListener('resize', scheduleHeaderCutoutUpdate);
+    window.addEventListener('scroll', scheduleHeaderCutoutUpdate, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener(
+      'resize',
+      scheduleHeaderCutoutUpdate,
+    );
+    window.visualViewport?.addEventListener(
+      'scroll',
+      scheduleHeaderCutoutUpdate,
+    );
+
+    return () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', scheduleHeaderCutoutUpdate);
+      window.removeEventListener('scroll', scheduleHeaderCutoutUpdate);
+      window.visualViewport?.removeEventListener(
+        'resize',
+        scheduleHeaderCutoutUpdate,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        scheduleHeaderCutoutUpdate,
+      );
+      clearHeaderCutout();
+    };
+  }, [isContentLayer]);
+
   return (
     <div
       ref={modalRootRef}
       className={cn(
         styles.root,
-        'fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4',
+        'fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4',
       )}
+      data-ui-modal-root=""
       style={modalStyle}
     >
       <button

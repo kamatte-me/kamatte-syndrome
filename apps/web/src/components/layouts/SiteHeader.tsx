@@ -1,10 +1,13 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
+  type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
+  useState,
 } from 'react';
 import closeFillIcon from '@/assets/icons/close_fill.svg';
 import menuFillIcon from '@/assets/icons/menu_fill.svg';
@@ -43,7 +46,133 @@ export function SiteHeader({
   const navigationId = useId();
   const headerRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
   const navigate = useNavigate();
+
+  useLayoutEffect(() => {
+    if (!(cutoutLayer === 'stencil' && isMobileMenuOpen)) {
+      setStencilScrollY(null);
+      return;
+    }
+
+    let updateFrame: number | null = null;
+
+    const updateStencilScrollY = () => {
+      updateFrame = null;
+      setStencilScrollY(window.scrollY);
+    };
+
+    const scheduleStencilScrollYUpdate = () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      updateFrame = window.requestAnimationFrame(updateStencilScrollY);
+    };
+
+    updateStencilScrollY();
+
+    window.addEventListener('resize', scheduleStencilScrollYUpdate);
+    window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener(
+      'resize',
+      scheduleStencilScrollYUpdate,
+    );
+    window.visualViewport?.addEventListener(
+      'scroll',
+      scheduleStencilScrollYUpdate,
+    );
+
+    return () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      window.removeEventListener('resize', scheduleStencilScrollYUpdate);
+      window.removeEventListener('scroll', scheduleStencilScrollYUpdate);
+      window.visualViewport?.removeEventListener(
+        'resize',
+        scheduleStencilScrollYUpdate,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        scheduleStencilScrollYUpdate,
+      );
+    };
+  }, [cutoutLayer, isMobileMenuOpen]);
+
+  useLayoutEffect(() => {
+    if (cutoutLayer !== 'content') {
+      return;
+    }
+
+    const header = headerRef.current;
+
+    if (!header) {
+      return;
+    }
+
+    let updateFrame: number | null = null;
+
+    const updateBackdropOffset = () => {
+      updateFrame = null;
+      const rect = header.getBoundingClientRect();
+      const backgroundWidth =
+        document.documentElement.clientWidth || window.innerWidth;
+
+      header.style.setProperty(
+        '--site-header-background-width',
+        `${backgroundWidth}px`,
+      );
+      header.style.setProperty('--site-header-viewport-x', `${rect.left}px`);
+      header.style.setProperty('--site-header-viewport-y', `${rect.top}px`);
+    };
+
+    const scheduleBackdropOffsetUpdate = () => {
+      if (updateFrame !== null) {
+        return;
+      }
+
+      updateFrame = window.requestAnimationFrame(updateBackdropOffset);
+    };
+
+    updateBackdropOffset();
+
+    window.addEventListener('resize', scheduleBackdropOffsetUpdate);
+    window.addEventListener('scroll', scheduleBackdropOffsetUpdate, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener(
+      'resize',
+      scheduleBackdropOffsetUpdate,
+    );
+    window.visualViewport?.addEventListener(
+      'scroll',
+      scheduleBackdropOffsetUpdate,
+    );
+
+    return () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      window.removeEventListener('resize', scheduleBackdropOffsetUpdate);
+      window.removeEventListener('scroll', scheduleBackdropOffsetUpdate);
+      window.visualViewport?.removeEventListener(
+        'resize',
+        scheduleBackdropOffsetUpdate,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        scheduleBackdropOffsetUpdate,
+      );
+      header.style.removeProperty('--site-header-background-width');
+      header.style.removeProperty('--site-header-viewport-x');
+      header.style.removeProperty('--site-header-viewport-y');
+    };
+  }, [cutoutLayer]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -122,6 +251,12 @@ export function SiteHeader({
     onMobileMenuOpenChange(false);
     menuButtonRef.current?.focus();
   };
+  const navigationStyle =
+    stencilScrollY === null
+      ? undefined
+      : ({
+          '--mobile-menu-scroll-y': `${stencilScrollY}px`,
+        } as CSSProperties);
 
   return (
     <header
@@ -130,13 +265,13 @@ export function SiteHeader({
         isMobileMenuOpen && styles.rootMenuOpen,
         'sticky top-0 z-40 shrink-0',
       )}
+      data-site-header=""
       ref={headerRef}
     >
       {cutoutLayer === 'content' ? (
-        <PsychedelicBackground
-          className={styles.headerBackdrop}
-          viewportLocked
-        />
+        <div className={styles.headerBackdrop} data-site-header-backdrop="">
+          <PsychedelicBackground className={styles.headerBackdropViewport} />
+        </div>
       ) : null}
       <div
         className={cn(
@@ -187,6 +322,7 @@ export function SiteHeader({
             id={navigationId}
             data-site-header-mobile-menu=""
             onKeyDown={handleNavigationKeyDown}
+            style={navigationStyle}
           >
             <a
               aria-label="ホームへ戻る"

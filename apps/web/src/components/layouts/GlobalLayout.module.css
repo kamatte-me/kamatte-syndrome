@@ -3,6 +3,9 @@
 }
 
 .stencilLayer {
+  --cutout-stencil-scroll-y: 0px;
+  --cutout-stencil-hole-source: #fff;
+  --cutout-stencil-surface-source: #000;
   --cutout-hole: var(--cutout-stencil-hole-source);
   --cutout-muted: var(--cutout-stencil-hole-source);
   --cutout-readable: var(--cutout-stencil-hole-source);
@@ -10,8 +13,18 @@
   display: block;
   background: var(--cutout-stencil-surface-source);
   color: var(--cutout-hole);
+  -webkit-filter: url("#global-cutout-filter");
   filter: url("#global-cutout-filter");
   -webkit-text-fill-color: currentColor;
+}
+
+.stencilLayer[data-cutout-modal-open] {
+  position: fixed;
+  inset: var(--cutout-inset);
+}
+
+.stencilLayer[data-cutout-modal-open] > * {
+  transform: translateY(calc(-1 * var(--cutout-stencil-scroll-y)));
 }
 
 .contentLayer {

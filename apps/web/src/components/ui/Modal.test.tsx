@@ -92,9 +92,16 @@ describe('Modal', () => {
       container.querySelector('[data-ui-modal-dialog]'),
     );
     const root = requireElement(dialog.parentElement);
+    const stencilLayer = requireElement(
+      container.querySelector<HTMLElement>('[data-cutout-layer="stencil"]'),
+    );
 
     expect(dialog).toHaveTextContent('Stencil modal');
     expect(root.style.getPropertyValue('--modal-scroll-y')).toBe('128px');
+    expect(stencilLayer).toHaveAttribute('data-cutout-modal-open');
+    expect(
+      stencilLayer.style.getPropertyValue('--cutout-stencil-scroll-y'),
+    ).toBe('128px');
     expect(document.body.style.overflow).toBe('');
 
     setWindowScrollY(240);
@@ -102,6 +109,9 @@ describe('Modal', () => {
     window.dispatchEvent(new Event('scroll'));
     await waitFor(() => {
       expect(root.style.getPropertyValue('--modal-scroll-y')).toBe('240px');
+      expect(
+        stencilLayer.style.getPropertyValue('--cutout-stencil-scroll-y'),
+      ).toBe('240px');
     });
   });
 
