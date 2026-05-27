@@ -8,12 +8,8 @@ import { SiteHeader } from './SiteHeader';
 
 export function GlobalLayout({ children }: { children: ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [hoveredHeaderLink, setHoveredHeaderLink] = useState<string | null>(
-    null,
-  );
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
-    setHoveredHeaderLink(null);
   }, []);
 
   useEffect(() => {
@@ -63,9 +59,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           <LayoutFrame
             cutoutLayer="stencil"
             isMobileMenuOpen={isMobileMenuOpen}
-            hoveredHeaderLink={hoveredHeaderLink}
             onMobileMenuOpenChange={setIsMobileMenuOpen}
-            onHeaderLinkHoverChange={setHoveredHeaderLink}
             onNavigate={closeMobileMenu}
           >
             {children}
@@ -78,9 +72,7 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           <LayoutFrame
             cutoutLayer="content"
             isMobileMenuOpen={isMobileMenuOpen}
-            hoveredHeaderLink={hoveredHeaderLink}
             onMobileMenuOpenChange={setIsMobileMenuOpen}
-            onHeaderLinkHoverChange={setHoveredHeaderLink}
             onNavigate={closeMobileMenu}
           >
             {children}
@@ -136,17 +128,13 @@ function LayoutFrame({
   children,
   cutoutLayer,
   isMobileMenuOpen,
-  hoveredHeaderLink,
   onMobileMenuOpenChange,
-  onHeaderLinkHoverChange,
   onNavigate,
 }: {
   children: ReactNode;
   cutoutLayer: 'stencil' | 'content';
   isMobileMenuOpen: boolean;
-  hoveredHeaderLink: string | null;
   onMobileMenuOpenChange: (isOpen: boolean) => void;
-  onHeaderLinkHoverChange: (to: string | null) => void;
   onNavigate: () => void;
 }) {
   return (
@@ -154,9 +142,7 @@ function LayoutFrame({
       <SiteHeader
         cutoutLayer={cutoutLayer}
         isMobileMenuOpen={isMobileMenuOpen}
-        hoveredHeaderLink={hoveredHeaderLink}
         onMobileMenuOpenChange={onMobileMenuOpenChange}
-        onHeaderLinkHoverChange={onHeaderLinkHoverChange}
         onNavigate={onNavigate}
       />
       <div

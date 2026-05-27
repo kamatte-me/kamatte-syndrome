@@ -71,9 +71,7 @@ describe('SiteHeader', () => {
       <div data-cutout-layer="content">
         <SiteHeader
           cutoutLayer="content"
-          hoveredHeaderLink={null}
           isMobileMenuOpen={false}
-          onHeaderLinkHoverChange={vi.fn()}
           onMobileMenuOpenChange={vi.fn()}
           onNavigate={vi.fn()}
         />
@@ -104,9 +102,7 @@ describe('SiteHeader', () => {
       <div data-cutout-layer="stencil">
         <SiteHeader
           cutoutLayer="stencil"
-          hoveredHeaderLink={null}
           isMobileMenuOpen
-          onHeaderLinkHoverChange={vi.fn()}
           onMobileMenuOpenChange={vi.fn()}
           onNavigate={vi.fn()}
         />

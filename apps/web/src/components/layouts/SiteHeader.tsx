@@ -29,18 +29,14 @@ const mobileMenuSelector = '[data-site-header-mobile-menu]';
 type SiteHeaderProps = {
   cutoutLayer: 'stencil' | 'content';
   isMobileMenuOpen: boolean;
-  hoveredHeaderLink: string | null;
   onMobileMenuOpenChange: (isOpen: boolean) => void;
-  onHeaderLinkHoverChange: (to: string | null) => void;
   onNavigate: () => void;
 };
 
 export function SiteHeader({
   cutoutLayer,
   isMobileMenuOpen,
-  hoveredHeaderLink,
   onMobileMenuOpenChange,
-  onHeaderLinkHoverChange,
   onNavigate,
 }: SiteHeaderProps) {
   const navigationId = useId();
@@ -361,7 +357,7 @@ export function SiteHeader({
                 isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'
               }
               className={cn(
-                'absolute right-0 inline-flex size-10 items-center justify-center border-0 bg-transparent p-0 text-cutout-hole transition-transform duration-200 hover:scale-[1.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:static md:hidden',
+                'absolute right-0 inline-flex size-10 items-center justify-center border-0 bg-transparent p-0 text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:static md:hidden',
                 isMobileMenuOpen && styles.menuButtonOpen,
               )}
               onClick={() => onMobileMenuOpenChange(!isMobileMenuOpen)}
@@ -412,19 +408,11 @@ export function SiteHeader({
                 to={link.to}
                 className={cn(
                   styles.menuLink,
-                  hoveredHeaderLink === link.to && styles.menuLinkMotionActive,
-                  'inline-flex min-h-10 items-center justify-center rounded-md px-2 pt-[3px] pb-1 font-bold font-display text-[1.2rem] text-cutout-hole leading-none no-underline transition-transform duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 lg:text-[1.4rem]',
+                  'inline-flex min-h-10 items-center justify-center rounded-md px-2 pt-[3px] pb-1 font-bold font-display text-[1.2rem] text-cutout-hole leading-none no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 lg:text-[1.4rem]',
                 )}
-                onBlur={() => onHeaderLinkHoverChange(null)}
-                onClick={() => {
-                  onHeaderLinkHoverChange(null);
-                  onNavigate();
-                }}
-                onFocus={() => onHeaderLinkHoverChange(link.to)}
-                onMouseEnter={() => onHeaderLinkHoverChange(link.to)}
-                onMouseLeave={() => onHeaderLinkHoverChange(null)}
+                onClick={onNavigate}
               >
-                <span className={styles.menuLinkLabel}>{link.label}</span>
+                {link.label}
               </Link>
             ))}
           </nav>

@@ -88,19 +88,6 @@
   display: flex;
 }
 
-.menuLinkLabel {
-  display: inline-block;
-  transition: transform 200ms ease;
-}
-
-.menuLink:hover {
-  transform: none;
-}
-
-.menuLinkMotionActive .menuLinkLabel {
-  transform: translateY(-0.125rem);
-}
-
 [data-cutout-layer="stencil"] .activeHeaderLink {
   background-color: var(--cutout-stencil-hole-source);
 }
@@ -121,10 +108,6 @@
   color: var(--cutout-stencil-surface-source);
   text-decoration-color: var(--cutout-stencil-surface-source);
   -webkit-text-fill-color: var(--cutout-stencil-surface-source);
-}
-
-.activeHeaderLink:hover {
-  transform: none;
 }
 
 @media (width < 48rem) {
