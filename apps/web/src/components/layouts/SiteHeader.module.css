@@ -8,6 +8,19 @@
   border-bottom: 1px solid transparent;
 }
 
+[data-cutout-layer="content"]
+  .root:not(.rootMenuOpen):not([data-site-header-stuck])::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  z-index: 9;
+  height: 1px;
+  background-color: #000000;
+  content: "";
+  pointer-events: none;
+}
+
 .headerBackdrop {
   position: absolute;
   inset: 0;
@@ -37,7 +50,8 @@
 
 [data-cutout-layer="content"] .root:not(.rootMenuOpen) {
   --cutout-hole: var(--cutout-stencil-hole-source);
-  overflow: hidden;
+  overflow: visible;
+  background-color: #000000;
 }
 
 [data-cutout-layer="content"] .root:not(.rootMenuOpen) .headerBackdrop {
