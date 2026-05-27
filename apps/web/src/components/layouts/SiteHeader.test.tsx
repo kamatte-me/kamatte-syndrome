@@ -95,6 +95,70 @@ describe('SiteHeader', () => {
     getBoundingClientRect.mockRestore();
   });
 
+  it('does not write scroll offsets to the content backdrop', async () => {
+    const originalVisualViewport = window.visualViewport;
+    const visualViewport = new EventTarget();
+    let headerTop = 0;
+    const getBoundingClientRect = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function getMockBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        if (this.matches('[data-site-header]')) {
+          return createBoundingClientRect(headerTop);
+        }
+
+        return createBoundingClientRect(0);
+      });
+
+    Object.defineProperty(window, 'visualViewport', {
+      configurable: true,
+      value: visualViewport,
+    });
+
+    const { container, unmount } = render(
+      <div data-cutout-layer="content">
+        <SiteHeader
+          cutoutLayer="content"
+          isMobileMenuOpen={false}
+          onMobileMenuOpenChange={vi.fn()}
+          onNavigate={vi.fn()}
+        />
+      </div>,
+    );
+
+    const header = requireElement(
+      container.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    try {
+      headerTop = -24;
+      visualViewport.dispatchEvent(new Event('scroll'));
+      window.dispatchEvent(new Event('scroll'));
+
+      await new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => resolve());
+      });
+
+      expect(header.style.getPropertyValue('--site-header-viewport-x')).toBe(
+        '',
+      );
+      expect(header.style.getPropertyValue('--site-header-viewport-y')).toBe(
+        '',
+      );
+      expect(
+        header.style.getPropertyValue('--site-header-background-width'),
+      ).toBe('');
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+      Object.defineProperty(window, 'visualViewport', {
+        configurable: true,
+        value: originalVisualViewport,
+      });
+    }
+  });
+
   it('locks the stencil layer to the viewport while the mobile menu is open', async () => {
     setWindowScrollY(4096);
 

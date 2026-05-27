@@ -1,8 +1,5 @@
 .root {
   --site-header-x-padding: clamp(14px, 4vw, 40px);
-  --site-header-background-width: 100vw;
-  --site-header-viewport-x: 0px;
-  --site-header-viewport-y: 0px;
 
   background-color: transparent;
 }
@@ -18,14 +15,16 @@
   display: none;
   overflow: hidden;
   background-color: #000000;
+  -webkit-clip-path: inset(0);
+  clip-path: inset(0);
   pointer-events: none;
 }
 
 .headerBackdropViewport {
-  position: absolute;
-  top: calc(-1 * var(--site-header-viewport-y));
-  left: calc(-1 * var(--site-header-viewport-x));
-  width: var(--site-header-background-width);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100lvh;
   overflow: hidden;
   background-color: #000000;
