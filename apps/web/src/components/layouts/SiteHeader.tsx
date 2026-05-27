@@ -55,6 +55,9 @@ export function SiteHeader({
       return;
     }
 
+    const stencilLayer = headerRef.current?.closest<HTMLElement>(
+      '[data-cutout-layer="stencil"]',
+    );
     let updateFrame: number | null = null;
 
     const updateStencilScrollY = () => {
@@ -71,6 +74,7 @@ export function SiteHeader({
     };
 
     updateStencilScrollY();
+    stencilLayer?.setAttribute('data-cutout-mobile-menu-open', '');
 
     window.addEventListener('resize', scheduleStencilScrollYUpdate);
     window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
@@ -100,6 +104,7 @@ export function SiteHeader({
         'scroll',
         scheduleStencilScrollYUpdate,
       );
+      stencilLayer?.removeAttribute('data-cutout-mobile-menu-open');
     };
   }, [cutoutLayer, isMobileMenuOpen]);
 

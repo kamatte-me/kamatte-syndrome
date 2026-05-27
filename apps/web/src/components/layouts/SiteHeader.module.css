@@ -171,6 +171,10 @@
     border-color: var(--cutout-stencil-surface-source);
   }
 
+  [data-cutout-layer="stencil"][data-cutout-mobile-menu-open] .navigationOpen {
+    top: calc(-1 * var(--cutout-inset));
+  }
+
   [data-cutout-layer="content"] .navigationOpen {
     --cutout-hole: var(--cutout-stencil-hole-source);
 
@@ -229,8 +233,8 @@
   }
 
   [data-cutout-layer="content"] .menuButtonOpen {
-    color: var(--cutout-stencil-surface-source);
-    -webkit-text-fill-color: var(--cutout-stencil-surface-source);
+    color: var(--cutout-stencil-hole-source);
+    -webkit-text-fill-color: var(--cutout-stencil-hole-source);
   }
 }
 

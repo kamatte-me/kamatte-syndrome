@@ -18,7 +18,7 @@
   -webkit-text-fill-color: currentColor;
 }
 
-.stencilLayer[data-cutout-modal-open] {
+.stencilLayer:is([data-cutout-modal-open], [data-cutout-mobile-menu-open]) {
   position: fixed;
   inset: var(--cutout-inset);
 }
