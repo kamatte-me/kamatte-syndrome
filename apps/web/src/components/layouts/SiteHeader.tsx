@@ -50,6 +50,65 @@ export function SiteHeader({
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
+    const header = headerRef.current;
+
+    if (!header) {
+      return;
+    }
+
+    let updateFrame: number | null = null;
+
+    const updateStickyState = () => {
+      updateFrame = null;
+      header.toggleAttribute(
+        'data-site-header-stuck',
+        header.getBoundingClientRect().top <= 0,
+      );
+    };
+
+    const scheduleStickyStateUpdate = () => {
+      if (updateFrame !== null) {
+        return;
+      }
+
+      updateFrame = window.requestAnimationFrame(updateStickyState);
+    };
+
+    updateStickyState();
+
+    window.addEventListener('resize', scheduleStickyStateUpdate);
+    window.addEventListener('scroll', scheduleStickyStateUpdate, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener(
+      'resize',
+      scheduleStickyStateUpdate,
+    );
+    window.visualViewport?.addEventListener(
+      'scroll',
+      scheduleStickyStateUpdate,
+    );
+
+    return () => {
+      if (updateFrame !== null) {
+        window.cancelAnimationFrame(updateFrame);
+      }
+
+      window.removeEventListener('resize', scheduleStickyStateUpdate);
+      window.removeEventListener('scroll', scheduleStickyStateUpdate);
+      window.visualViewport?.removeEventListener(
+        'resize',
+        scheduleStickyStateUpdate,
+      );
+      window.visualViewport?.removeEventListener(
+        'scroll',
+        scheduleStickyStateUpdate,
+      );
+      header.removeAttribute('data-site-header-stuck');
+    };
+  }, []);
+
+  useLayoutEffect(() => {
     if (!(cutoutLayer === 'stencil' && isMobileMenuOpen)) {
       setStencilScrollY(null);
       return;

@@ -7,6 +7,10 @@
   background-color: transparent;
 }
 
+.headerSurface {
+  border-bottom: 1px solid transparent;
+}
+
 .headerBackdrop {
   position: absolute;
   inset: 0;
@@ -43,8 +47,15 @@
 
 [data-cutout-layer="content"] .root:not(.rootMenuOpen) .headerSurface {
   background-color: var(--cutout-stencil-surface-source);
+  border-bottom-color: transparent;
   -webkit-filter: url("#site-header-cutout-filter");
   filter: url("#site-header-cutout-filter");
+}
+
+[data-cutout-layer="content"]
+  .root[data-site-header-stuck]:not(.rootMenuOpen)
+  .headerSurface {
+  border-bottom-color: var(--cutout-stencil-hole-source);
 }
 
 [data-cutout-layer="content"] .root[data-site-header-modal-cutout] {

@@ -25,6 +25,20 @@ function setWindowScrollY(scrollY: number) {
   });
 }
 
+function createBoundingClientRect(top: number): DOMRect {
+  return {
+    bottom: top + 72,
+    height: 72,
+    left: 0,
+    right: 320,
+    toJSON: () => ({}),
+    top,
+    width: 320,
+    x: 0,
+    y: top,
+  } as DOMRect;
+}
+
 function requireElement<T extends Element>(element: T | null): T {
   if (!element) {
     throw new Error('Expected element to exist');
@@ -39,6 +53,50 @@ afterEach(() => {
 });
 
 describe('SiteHeader', () => {
+  it('marks the header while it is stuck to the viewport top', async () => {
+    let headerTop = 8;
+    const getBoundingClientRect = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function getMockBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        if (this.matches('[data-site-header]')) {
+          return createBoundingClientRect(headerTop);
+        }
+
+        return createBoundingClientRect(0);
+      });
+
+    const { container, unmount } = render(
+      <div data-cutout-layer="content">
+        <SiteHeader
+          cutoutLayer="content"
+          hoveredHeaderLink={null}
+          isMobileMenuOpen={false}
+          onHeaderLinkHoverChange={vi.fn()}
+          onMobileMenuOpenChange={vi.fn()}
+          onNavigate={vi.fn()}
+        />
+      </div>,
+    );
+
+    const header = requireElement(
+      container.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    expect(header).not.toHaveAttribute('data-site-header-stuck');
+
+    headerTop = 0;
+    window.dispatchEvent(new Event('scroll'));
+
+    await waitFor(() => {
+      expect(header).toHaveAttribute('data-site-header-stuck');
+    });
+
+    unmount();
+    getBoundingClientRect.mockRestore();
+  });
+
   it('locks the stencil layer to the viewport while the mobile menu is open', async () => {
     setWindowScrollY(4096);
 
