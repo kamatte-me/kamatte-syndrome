@@ -9,6 +9,13 @@ type ModalRenderState = {
   isContentLayer: boolean;
 };
 
+type RectOverlap = {
+  height: number;
+  left: number;
+  top: number;
+  width: number;
+};
+
 export type ModalProps = {
   bodyClassName?: string;
   children: ReactNode | ((state: ModalRenderState) => ReactNode);
@@ -23,6 +30,35 @@ export const modalDialogSelector = '[data-ui-modal-dialog]';
 const modalBodySelector = '[data-ui-modal-body]';
 const contentHeaderSelector =
   '[data-cutout-layer="content"] [data-site-header]';
+
+function getRectOverlap(
+  foregroundRect: DOMRectReadOnly,
+  backgroundRect: DOMRectReadOnly,
+): RectOverlap | null {
+  const overlapLeft = Math.max(0, foregroundRect.left - backgroundRect.left);
+  const overlapTop = Math.max(0, foregroundRect.top - backgroundRect.top);
+  const overlapRight = Math.min(
+    backgroundRect.width,
+    foregroundRect.right - backgroundRect.left,
+  );
+  const overlapBottom = Math.min(
+    backgroundRect.height,
+    foregroundRect.bottom - backgroundRect.top,
+  );
+  const overlapWidth = Math.max(0, overlapRight - overlapLeft);
+  const overlapHeight = Math.max(0, overlapBottom - overlapTop);
+
+  if (overlapWidth <= 0 || overlapHeight <= 0) {
+    return null;
+  }
+
+  return {
+    height: overlapHeight,
+    left: overlapLeft,
+    top: overlapTop,
+    width: overlapWidth,
+  };
+}
 
 export function Modal({
   bodyClassName: customBodyClassName,
@@ -215,41 +251,30 @@ export function Modal({
 
       const dialogRect = dialog.getBoundingClientRect();
       const headerRect = header.getBoundingClientRect();
-      const overlapLeft = Math.max(0, dialogRect.left - headerRect.left);
-      const overlapTop = Math.max(0, dialogRect.top - headerRect.top);
-      const overlapRight = Math.min(
-        headerRect.width,
-        dialogRect.right - headerRect.left,
-      );
-      const overlapBottom = Math.min(
-        headerRect.height,
-        dialogRect.bottom - headerRect.top,
-      );
-      const overlapWidth = Math.max(0, overlapRight - overlapLeft);
-      const overlapHeight = Math.max(0, overlapBottom - overlapTop);
+      const overlap = getRectOverlap(dialogRect, headerRect);
 
       clearHeaderCutout();
 
-      if (overlapWidth <= 0 || overlapHeight <= 0) {
+      if (!overlap) {
         return;
       }
 
       header.dataset.siteHeaderModalCutout = 'true';
       header.style.setProperty(
         '--site-header-modal-mask-height',
-        `${overlapHeight}px`,
+        `${overlap.height}px`,
       );
       header.style.setProperty(
         '--site-header-modal-mask-left',
-        `${overlapLeft}px`,
+        `${overlap.left}px`,
       );
       header.style.setProperty(
         '--site-header-modal-mask-top',
-        `${overlapTop}px`,
+        `${overlap.top}px`,
       );
       header.style.setProperty(
         '--site-header-modal-mask-width',
-        `${overlapWidth}px`,
+        `${overlap.width}px`,
       );
     };
 

@@ -18,6 +18,11 @@ type BackgroundRenderer = {
   resize: () => void;
 };
 
+type RenderSize = {
+  height: number;
+  width: number;
+};
+
 type PsychedelicBackgroundProps = {
   className?: string;
 };
@@ -26,6 +31,17 @@ const defaultBackgroundClassName =
   'pointer-events-none fixed inset-0 z-0 h-[100lvh] w-full overflow-hidden bg-black';
 
 const sharedSeed = Math.random() * 1000;
+
+function getBackgroundRenderSize(container: HTMLElement): RenderSize {
+  const width = container.clientWidth || window.innerWidth;
+  const height = container.clientHeight || window.innerHeight;
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
+
+  return {
+    height: Math.max(1, Math.round(height * RENDER_SCALE * pixelRatio)),
+    width: Math.max(1, Math.round(width * RENDER_SCALE * pixelRatio)),
+  };
+}
 
 function createWebglShader(
   gl: WebGLRenderingContext,
@@ -154,17 +170,8 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   container.appendChild(canvas);
 
   const resize = () => {
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-    const renderWidth = Math.max(
-      1,
-      Math.round(width * RENDER_SCALE * pixelRatio),
-    );
-    const renderHeight = Math.max(
-      1,
-      Math.round(height * RENDER_SCALE * pixelRatio),
-    );
+    const { height: renderHeight, width: renderWidth } =
+      getBackgroundRenderSize(container);
 
     if (drawingWidth === renderWidth && drawingHeight === renderHeight) {
       return;
@@ -286,17 +293,8 @@ function createWebglRenderer(container: HTMLDivElement) {
   gl.uniform1f(seedLocation, sharedSeed);
 
   const resize = () => {
-    const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || window.innerHeight;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-    const renderWidth = Math.max(
-      1,
-      Math.round(width * RENDER_SCALE * pixelRatio),
-    );
-    const renderHeight = Math.max(
-      1,
-      Math.round(height * RENDER_SCALE * pixelRatio),
-    );
+    const { height: renderHeight, width: renderWidth } =
+      getBackgroundRenderSize(container);
 
     if (drawingWidth === renderWidth && drawingHeight === renderHeight) {
       return;

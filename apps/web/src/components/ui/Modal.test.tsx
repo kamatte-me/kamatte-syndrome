@@ -21,6 +21,30 @@ function nextAnimationFrame() {
   });
 }
 
+function createBoundingClientRect({
+  height,
+  left,
+  top,
+  width,
+}: {
+  height: number;
+  left: number;
+  top: number;
+  width: number;
+}): DOMRect {
+  return {
+    bottom: top + height,
+    height,
+    left,
+    right: left + width,
+    toJSON: () => ({}),
+    top,
+    width,
+    x: left,
+    y: top,
+  } as DOMRect;
+}
+
 function requireElement<T extends Element>(element: T | null): T {
   if (!element) {
     throw new Error('Expected element to exist');
@@ -164,5 +188,72 @@ describe('Modal', () => {
     expect(container.querySelector(modalDialogSelector)).toBe(
       screen.getByRole('dialog', { name: 'Content modal' }),
     );
+  });
+
+  it('sets the content header cutout mask to the modal overlap area', async () => {
+    const getBoundingClientRect = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function getMockBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        if (this.matches('[data-site-header]')) {
+          return createBoundingClientRect({
+            height: 80,
+            left: 0,
+            top: 0,
+            width: 320,
+          });
+        }
+
+        if (this.matches(modalDialogSelector)) {
+          return createBoundingClientRect({
+            height: 160,
+            left: 40,
+            top: 24,
+            width: 220,
+          });
+        }
+
+        return createBoundingClientRect({
+          height: 0,
+          left: 0,
+          top: 0,
+          width: 0,
+        });
+      });
+
+    const { unmount } = render(
+      <div data-cutout-layer="content">
+        <header data-site-header="" />
+        <Modal onClose={vi.fn()} titleId="modal-title">
+          <h2 id="modal-title">Content modal</h2>
+        </Modal>
+      </div>,
+    );
+
+    const header = requireElement(
+      document.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    try {
+      await waitFor(() => {
+        expect(header).toHaveAttribute('data-site-header-modal-cutout', 'true');
+        expect(
+          header.style.getPropertyValue('--site-header-modal-mask-height'),
+        ).toBe('56px');
+        expect(
+          header.style.getPropertyValue('--site-header-modal-mask-left'),
+        ).toBe('40px');
+        expect(
+          header.style.getPropertyValue('--site-header-modal-mask-top'),
+        ).toBe('24px');
+        expect(
+          header.style.getPropertyValue('--site-header-modal-mask-width'),
+        ).toBe('220px');
+      });
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+    }
   });
 });
