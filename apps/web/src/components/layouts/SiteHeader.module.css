@@ -235,7 +235,7 @@
     -webkit-filter: url("#site-header-cutout-filter");
     filter: url("#site-header-cutout-filter");
     min-height: auto;
-    padding: 0.16em 0.24em 0.34em;
+    padding: 0.16em 0.48em 0.42em;
     width: fit-content;
   }
 
