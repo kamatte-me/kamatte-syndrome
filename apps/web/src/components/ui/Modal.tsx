@@ -2,18 +2,13 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import closeFillIcon from '@/assets/icons/close_fill.svg';
 import { cn } from '@/utils/classNames';
+import { getRectOverlap, type RectOverlap } from '@/utils/cutoutGeometry';
+import { addViewportListeners, createRafScheduler } from '@/utils/viewportRaf';
 import { Icon } from './Icon';
 import styles from './Modal.module.css';
 
 type ModalRenderState = {
   isContentLayer: boolean;
-};
-
-type RectOverlap = {
-  height: number;
-  left: number;
-  top: number;
-  width: number;
 };
 
 export type ModalProps = {
@@ -31,33 +26,29 @@ const modalBodySelector = '[data-ui-modal-body]';
 const contentHeaderSelector =
   '[data-cutout-layer="content"] [data-site-header]';
 
-function getRectOverlap(
-  foregroundRect: DOMRectReadOnly,
-  backgroundRect: DOMRectReadOnly,
-): RectOverlap | null {
-  const overlapLeft = Math.max(0, foregroundRect.left - backgroundRect.left);
-  const overlapTop = Math.max(0, foregroundRect.top - backgroundRect.top);
-  const overlapRight = Math.min(
-    backgroundRect.width,
-    foregroundRect.right - backgroundRect.left,
-  );
-  const overlapBottom = Math.min(
-    backgroundRect.height,
-    foregroundRect.bottom - backgroundRect.top,
-  );
-  const overlapWidth = Math.max(0, overlapRight - overlapLeft);
-  const overlapHeight = Math.max(0, overlapBottom - overlapTop);
+function clearSiteHeaderModalCutout(header: HTMLElement) {
+  delete header.dataset.siteHeaderModalCutout;
+  header.style.removeProperty('--site-header-modal-mask-height');
+  header.style.removeProperty('--site-header-modal-mask-left');
+  header.style.removeProperty('--site-header-modal-mask-top');
+  header.style.removeProperty('--site-header-modal-mask-width');
+}
 
-  if (overlapWidth <= 0 || overlapHeight <= 0) {
-    return null;
-  }
-
-  return {
-    height: overlapHeight,
-    left: overlapLeft,
-    top: overlapTop,
-    width: overlapWidth,
-  };
+function applySiteHeaderModalCutout(header: HTMLElement, overlap: RectOverlap) {
+  header.dataset.siteHeaderModalCutout = 'true';
+  header.style.setProperty(
+    '--site-header-modal-mask-height',
+    `${overlap.height}px`,
+  );
+  header.style.setProperty(
+    '--site-header-modal-mask-left',
+    `${overlap.left}px`,
+  );
+  header.style.setProperty('--site-header-modal-mask-top', `${overlap.top}px`);
+  header.style.setProperty(
+    '--site-header-modal-mask-width',
+    `${overlap.width}px`,
+  );
 }
 
 export function Modal({
@@ -88,10 +79,7 @@ export function Modal({
       return;
     }
 
-    let updateFrame: number | null = null;
-
     const updateStencilScrollY = () => {
-      updateFrame = null;
       const scrollY = window.scrollY;
 
       setStencilScrollY(scrollY);
@@ -101,45 +89,20 @@ export function Modal({
       );
     };
 
-    const scheduleStencilScrollYUpdate = () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
-      updateFrame = window.requestAnimationFrame(updateStencilScrollY);
-    };
+    const stencilScrollYScheduler = createRafScheduler(updateStencilScrollY, {
+      replacePending: true,
+    });
 
     updateStencilScrollY();
     stencilLayer?.setAttribute('data-cutout-modal-open', '');
 
-    window.addEventListener('resize', scheduleStencilScrollYUpdate);
-    window.addEventListener('scroll', scheduleStencilScrollYUpdate, {
-      passive: true,
-    });
-    window.visualViewport?.addEventListener(
-      'resize',
-      scheduleStencilScrollYUpdate,
-    );
-    window.visualViewport?.addEventListener(
-      'scroll',
-      scheduleStencilScrollYUpdate,
+    const removeViewportListeners = addViewportListeners(
+      stencilScrollYScheduler.schedule,
     );
 
     return () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
-      window.removeEventListener('resize', scheduleStencilScrollYUpdate);
-      window.removeEventListener('scroll', scheduleStencilScrollYUpdate);
-      window.visualViewport?.removeEventListener(
-        'resize',
-        scheduleStencilScrollYUpdate,
-      );
-      window.visualViewport?.removeEventListener(
-        'scroll',
-        scheduleStencilScrollYUpdate,
-      );
+      stencilScrollYScheduler.cancel();
+      removeViewportListeners();
       stencilLayer?.removeAttribute('data-cutout-modal-open');
       stencilLayer?.style.removeProperty('--cutout-stencil-scroll-y');
     };
@@ -236,92 +199,39 @@ export function Modal({
       return;
     }
 
-    let updateFrame: number | null = null;
-
-    const clearHeaderCutout = () => {
-      delete header.dataset.siteHeaderModalCutout;
-      header.style.removeProperty('--site-header-modal-mask-height');
-      header.style.removeProperty('--site-header-modal-mask-left');
-      header.style.removeProperty('--site-header-modal-mask-top');
-      header.style.removeProperty('--site-header-modal-mask-width');
-    };
-
     const updateHeaderCutout = () => {
-      updateFrame = null;
-
       const dialogRect = dialog.getBoundingClientRect();
       const headerRect = header.getBoundingClientRect();
       const overlap = getRectOverlap(dialogRect, headerRect);
 
-      clearHeaderCutout();
+      clearSiteHeaderModalCutout(header);
 
       if (!overlap) {
         return;
       }
 
-      header.dataset.siteHeaderModalCutout = 'true';
-      header.style.setProperty(
-        '--site-header-modal-mask-height',
-        `${overlap.height}px`,
-      );
-      header.style.setProperty(
-        '--site-header-modal-mask-left',
-        `${overlap.left}px`,
-      );
-      header.style.setProperty(
-        '--site-header-modal-mask-top',
-        `${overlap.top}px`,
-      );
-      header.style.setProperty(
-        '--site-header-modal-mask-width',
-        `${overlap.width}px`,
-      );
+      applySiteHeaderModalCutout(header, overlap);
     };
 
-    const scheduleHeaderCutoutUpdate = () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
+    const headerCutoutScheduler = createRafScheduler(updateHeaderCutout, {
+      replacePending: true,
+    });
 
-      updateFrame = window.requestAnimationFrame(updateHeaderCutout);
-    };
-
-    const resizeObserver = new ResizeObserver(scheduleHeaderCutoutUpdate);
+    const resizeObserver = new ResizeObserver(headerCutoutScheduler.schedule);
 
     resizeObserver.observe(dialog);
     resizeObserver.observe(header);
     updateHeaderCutout();
 
-    window.addEventListener('resize', scheduleHeaderCutoutUpdate);
-    window.addEventListener('scroll', scheduleHeaderCutoutUpdate, {
-      passive: true,
-    });
-    window.visualViewport?.addEventListener(
-      'resize',
-      scheduleHeaderCutoutUpdate,
-    );
-    window.visualViewport?.addEventListener(
-      'scroll',
-      scheduleHeaderCutoutUpdate,
+    const removeViewportListeners = addViewportListeners(
+      headerCutoutScheduler.schedule,
     );
 
     return () => {
-      if (updateFrame !== null) {
-        window.cancelAnimationFrame(updateFrame);
-      }
-
+      headerCutoutScheduler.cancel();
       resizeObserver.disconnect();
-      window.removeEventListener('resize', scheduleHeaderCutoutUpdate);
-      window.removeEventListener('scroll', scheduleHeaderCutoutUpdate);
-      window.visualViewport?.removeEventListener(
-        'resize',
-        scheduleHeaderCutoutUpdate,
-      );
-      window.visualViewport?.removeEventListener(
-        'scroll',
-        scheduleHeaderCutoutUpdate,
-      );
-      clearHeaderCutout();
+      removeViewportListeners();
+      clearSiteHeaderModalCutout(header);
     };
   }, [isContentLayer]);
 

@@ -11,6 +11,8 @@ const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const RENDER_SCALE = 1;
 const STATIC_TIME = 38;
 const FULLSCREEN_TRIANGLE = new Float32Array([-1, -1, 3, -1, -1, 3]);
+const RENDERER_CANVAS_CLASS_NAME =
+  'absolute inset-0 block size-full opacity-[0.94]';
 
 type BackgroundRenderer = {
   dispose: () => void;
@@ -166,7 +168,7 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   let drawingHeight = 0;
   let drawingWidth = 0;
 
-  canvas.className = 'absolute inset-0 block size-full opacity-[0.94]';
+  canvas.className = RENDERER_CANVAS_CLASS_NAME;
   container.appendChild(canvas);
 
   const resize = () => {
@@ -279,7 +281,7 @@ function createWebglRenderer(container: HTMLDivElement) {
   let drawingWidth = 0;
   const activateProgram = gl.useProgram.bind(gl);
 
-  canvas.className = 'absolute inset-0 block size-full opacity-[0.94]';
+  canvas.className = RENDERER_CANVAS_CLASS_NAME;
   container.appendChild(canvas);
 
   activateProgram(program);
