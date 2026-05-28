@@ -27,6 +27,8 @@ const navigationLinks = [
 ] as const;
 
 const mobileMenuSelector = '[data-site-header-mobile-menu]';
+const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
+const DESKTOP_HEADER_HIDDEN_OFFSET_GUARD = 1;
 
 type SiteHeaderProps = {
   cutoutLayer: 'stencil' | 'content';
@@ -54,23 +56,109 @@ export function SiteHeader({
       return;
     }
 
-    const updateStickyState = () => {
-      header.toggleAttribute(
-        'data-site-header-stuck',
-        header.getBoundingClientRect().top <= 0,
-      );
-    };
-    const stickyStateScheduler = createRafScheduler(updateStickyState);
+    const desktopMediaQuery = window.matchMedia?.(DESKTOP_HEADER_MEDIA_QUERY);
+    let previousScrollY = Math.max(0, window.scrollY);
+    const desktopHeaderDocumentTop = Math.max(
+      0,
+      header.getBoundingClientRect().top + previousScrollY,
+    );
+    let desktopRevealOffset = 0;
 
-    updateStickyState();
+    const isDesktopViewport = () =>
+      desktopMediaQuery?.matches ?? window.innerWidth >= 768;
+
+    const clearDesktopRevealState = () => {
+      desktopRevealOffset = 0;
+      header.removeAttribute('data-site-header-desktop-floating');
+      header.removeAttribute('data-site-header-desktop-revealed');
+      header.style.removeProperty('--site-header-desktop-reveal-y');
+    };
+
+    const applyDesktopRevealState = (headerHeight: number) => {
+      const hiddenOffset = headerHeight + DESKTOP_HEADER_HIDDEN_OFFSET_GUARD;
+      desktopRevealOffset = Math.min(
+        Math.max(desktopRevealOffset, 0),
+        hiddenOffset,
+      );
+      const revealTranslateY = desktopRevealOffset - hiddenOffset;
+      const isDesktopHeaderVisible = desktopRevealOffset > 0;
+      const isDesktopHeaderRevealed = desktopRevealOffset >= hiddenOffset;
+
+      header.style.setProperty(
+        '--site-header-desktop-reveal-y',
+        `${revealTranslateY}px`,
+      );
+      header.toggleAttribute('data-site-header-desktop-floating', true);
+      header.toggleAttribute(
+        'data-site-header-desktop-revealed',
+        isDesktopHeaderRevealed,
+      );
+      header.toggleAttribute('data-site-header-stuck', isDesktopHeaderVisible);
+    };
+
+    const updateHeaderViewportState = () => {
+      const headerRect = header.getBoundingClientRect();
+
+      if (!isDesktopViewport()) {
+        clearDesktopRevealState();
+        header.toggleAttribute('data-site-header-stuck', headerRect.top <= 0);
+        previousScrollY = Math.max(0, window.scrollY);
+        return;
+      }
+
+      const currentScrollY = Math.max(0, window.scrollY);
+      const headerHeight = headerRect.height;
+      const isDesktopHeaderFloating = header.hasAttribute(
+        'data-site-header-desktop-floating',
+      );
+
+      if (currentScrollY <= desktopHeaderDocumentTop) {
+        clearDesktopRevealState();
+        header.removeAttribute('data-site-header-stuck');
+        previousScrollY = currentScrollY;
+        return;
+      }
+
+      if (currentScrollY <= headerHeight && !isDesktopHeaderFloating) {
+        clearDesktopRevealState();
+        header.removeAttribute('data-site-header-stuck');
+        previousScrollY = currentScrollY;
+        return;
+      }
+
+      const scrollDelta = currentScrollY - previousScrollY;
+
+      if (scrollDelta < 0) {
+        desktopRevealOffset += Math.abs(scrollDelta);
+      } else if (scrollDelta > 0) {
+        desktopRevealOffset -= scrollDelta;
+      }
+
+      applyDesktopRevealState(headerHeight);
+      previousScrollY = currentScrollY;
+    };
+    const headerViewportStateScheduler = createRafScheduler(
+      updateHeaderViewportState,
+    );
+
+    updateHeaderViewportState();
 
     const removeViewportListeners = addViewportListeners(
-      stickyStateScheduler.schedule,
+      headerViewportStateScheduler.schedule,
+    );
+    desktopMediaQuery?.addEventListener(
+      'change',
+      headerViewportStateScheduler.schedule,
     );
 
     return () => {
-      stickyStateScheduler.cancel();
+      headerViewportStateScheduler.cancel();
       removeViewportListeners();
+      desktopMediaQuery?.removeEventListener(
+        'change',
+        headerViewportStateScheduler.schedule,
+      );
+      clearDesktopRevealState();
       header.removeAttribute('data-site-header-stuck');
     };
   }, []);

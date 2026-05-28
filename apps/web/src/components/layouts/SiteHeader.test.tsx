@@ -3,6 +3,8 @@ import type { AnchorHTMLAttributes } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SiteHeader } from './SiteHeader';
 
+const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
+
 type MockLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   activeProps?: unknown;
   to: string;
@@ -39,6 +41,32 @@ function createBoundingClientRect(top: number): DOMRect {
   } as DOMRect;
 }
 
+function mockDesktopHeaderMediaQuery(matches: boolean) {
+  const originalMatchMedia = window.matchMedia;
+  const mediaQueryList = {
+    addEventListener: vi.fn(),
+    addListener: vi.fn(),
+    dispatchEvent: vi.fn(() => true),
+    matches,
+    media: DESKTOP_HEADER_MEDIA_QUERY,
+    onchange: null,
+    removeEventListener: vi.fn(),
+    removeListener: vi.fn(),
+  } as MediaQueryList;
+
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    value: vi.fn(() => mediaQueryList),
+  });
+
+  return () => {
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: originalMatchMedia,
+    });
+  };
+}
+
 function requireElement<T extends Element>(element: T | null): T {
   if (!element) {
     throw new Error('Expected element to exist');
@@ -53,7 +81,8 @@ afterEach(() => {
 });
 
 describe('SiteHeader', () => {
-  it('marks the header while it is stuck to the viewport top', async () => {
+  it('marks the mobile header while it is stuck to the viewport top', async () => {
+    const restoreMatchMedia = mockDesktopHeaderMediaQuery(false);
     let headerTop = 8;
     const getBoundingClientRect = vi
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
@@ -84,15 +113,98 @@ describe('SiteHeader', () => {
 
     expect(header).not.toHaveAttribute('data-site-header-stuck');
 
-    headerTop = 0;
-    window.dispatchEvent(new Event('scroll'));
+    try {
+      headerTop = 0;
+      window.dispatchEvent(new Event('scroll'));
 
-    await waitFor(() => {
-      expect(header).toHaveAttribute('data-site-header-stuck');
-    });
+      await waitFor(() => {
+        expect(header).toHaveAttribute('data-site-header-stuck');
+      });
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+      restoreMatchMedia();
+    }
+  });
 
-    unmount();
-    getBoundingClientRect.mockRestore();
+  it('reveals the desktop header in proportion to upward scrolling', async () => {
+    const restoreMatchMedia = mockDesktopHeaderMediaQuery(true);
+    setWindowScrollY(160);
+    const getBoundingClientRect = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function getMockBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        if (this.matches('[data-site-header]')) {
+          return createBoundingClientRect(-88);
+        }
+
+        return createBoundingClientRect(0);
+      });
+
+    const { container, unmount } = render(
+      <div data-cutout-layer="content">
+        <SiteHeader
+          cutoutLayer="content"
+          isMobileMenuOpen={false}
+          onMobileMenuOpenChange={vi.fn()}
+          onNavigate={vi.fn()}
+        />
+      </div>,
+    );
+
+    const header = requireElement(
+      container.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    try {
+      expect(header).toHaveAttribute('data-site-header-desktop-floating');
+      expect(header).not.toHaveAttribute('data-site-header-desktop-revealed');
+      expect(header).not.toHaveAttribute('data-site-header-stuck');
+      expect(
+        header.style.getPropertyValue('--site-header-desktop-reveal-y'),
+      ).toBe('-73px');
+
+      setWindowScrollY(128);
+      window.dispatchEvent(new Event('scroll'));
+
+      await waitFor(() => {
+        expect(header).toHaveAttribute('data-site-header-desktop-floating');
+        expect(header).not.toHaveAttribute('data-site-header-desktop-revealed');
+        expect(header).toHaveAttribute('data-site-header-stuck');
+        expect(
+          header.style.getPropertyValue('--site-header-desktop-reveal-y'),
+        ).toBe('-41px');
+      });
+
+      setWindowScrollY(80);
+      window.dispatchEvent(new Event('scroll'));
+
+      await waitFor(() => {
+        expect(header).toHaveAttribute('data-site-header-desktop-floating');
+        expect(header).toHaveAttribute('data-site-header-desktop-revealed');
+        expect(header).toHaveAttribute('data-site-header-stuck');
+        expect(
+          header.style.getPropertyValue('--site-header-desktop-reveal-y'),
+        ).toBe('0px');
+      });
+
+      setWindowScrollY(72);
+      window.dispatchEvent(new Event('scroll'));
+
+      await waitFor(() => {
+        expect(header).not.toHaveAttribute('data-site-header-desktop-floating');
+        expect(header).not.toHaveAttribute('data-site-header-desktop-revealed');
+        expect(header).not.toHaveAttribute('data-site-header-stuck');
+        expect(
+          header.style.getPropertyValue('--site-header-desktop-reveal-y'),
+        ).toBe('');
+      });
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+      restoreMatchMedia();
+    }
   });
 
   it('does not write scroll offsets to the content backdrop', async () => {

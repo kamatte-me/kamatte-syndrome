@@ -123,6 +123,26 @@
   -webkit-text-fill-color: var(--cutout-stencil-surface-source);
 }
 
+@media (width >= 48rem) {
+  .root {
+    position: relative;
+    top: auto;
+  }
+
+  .root[data-site-header-desktop-floating] {
+    position: sticky;
+    top: 0;
+    transform: translateY(
+      var(--site-header-desktop-reveal-y, calc(-100% - 1px))
+    );
+    will-change: transform;
+  }
+
+  .root[data-site-header-desktop-floating][data-site-header-desktop-revealed] {
+    transform: translateY(0);
+  }
+}
+
 @media (width < 48rem) {
   .navigationOpen {
     --mobile-menu-frame-width: 20px;
