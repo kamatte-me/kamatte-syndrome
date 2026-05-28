@@ -6,6 +6,10 @@
   -webkit-text-fill-color: currentColor;
 }
 
+.root :where(blockquote, blockquote *, a) {
+  overflow-wrap: anywhere;
+}
+
 [data-cutout-layer="stencil"] .root :where(pre) {
   background-color: var(--cutout-hole);
 }
