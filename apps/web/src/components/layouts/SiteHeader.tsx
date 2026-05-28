@@ -29,6 +29,28 @@ const navigationLinks = [
 const mobileMenuSelector = '[data-site-header-mobile-menu]';
 const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
 const DESKTOP_HEADER_HIDDEN_OFFSET_GUARD = 1;
+const DESKTOP_HEADER_FLOATING_ATTRIBUTE = 'data-site-header-desktop-floating';
+const DESKTOP_HEADER_REVEALED_ATTRIBUTE = 'data-site-header-desktop-revealed';
+const SITE_HEADER_STUCK_ATTRIBUTE = 'data-site-header-stuck';
+const DESKTOP_HEADER_REVEAL_Y_PROPERTY = '--site-header-desktop-reveal-y';
+
+type DesktopHeaderRevealStateInput = {
+  currentScrollY: number;
+  headerDocumentTop: number;
+  headerHeight: number;
+  isFloating: boolean;
+  previousScrollY: number;
+  revealOffset: number;
+};
+
+type DesktopHeaderRevealState = {
+  isFloating: boolean;
+  isRevealed: boolean;
+  isStuck: boolean;
+  revealOffset: number;
+  revealTranslateY: number;
+  shouldClear: boolean;
+};
 
 type SiteHeaderProps = {
   cutoutLayer: 'stencil' | 'content';
@@ -36,6 +58,58 @@ type SiteHeaderProps = {
   onMobileMenuOpenChange: (isOpen: boolean) => void;
   onNavigate: () => void;
 };
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function createClearedDesktopHeaderRevealState(): DesktopHeaderRevealState {
+  return {
+    isFloating: false,
+    isRevealed: false,
+    isStuck: false,
+    revealOffset: 0,
+    revealTranslateY: 0,
+    shouldClear: true,
+  };
+}
+
+function calculateDesktopHeaderRevealState({
+  currentScrollY,
+  headerDocumentTop,
+  headerHeight,
+  isFloating,
+  previousScrollY,
+  revealOffset,
+}: DesktopHeaderRevealStateInput): DesktopHeaderRevealState {
+  if (
+    currentScrollY <= headerDocumentTop ||
+    (currentScrollY <= headerHeight && !isFloating)
+  ) {
+    return createClearedDesktopHeaderRevealState();
+  }
+
+  const hiddenOffset = headerHeight + DESKTOP_HEADER_HIDDEN_OFFSET_GUARD;
+  const scrollDelta = currentScrollY - previousScrollY;
+  let nextRevealOffset = revealOffset;
+
+  if (scrollDelta < 0) {
+    nextRevealOffset += Math.abs(scrollDelta);
+  } else if (scrollDelta > 0) {
+    nextRevealOffset -= scrollDelta;
+  }
+
+  nextRevealOffset = clampNumber(nextRevealOffset, 0, hiddenOffset);
+
+  return {
+    isFloating: true,
+    isRevealed: nextRevealOffset >= hiddenOffset,
+    isStuck: nextRevealOffset > 0,
+    revealOffset: nextRevealOffset,
+    revealTranslateY: nextRevealOffset - hiddenOffset,
+    shouldClear: false,
+  };
+}
 
 export function SiteHeader({
   cutoutLayer,
@@ -69,31 +143,32 @@ export function SiteHeader({
 
     const clearDesktopRevealState = () => {
       desktopRevealOffset = 0;
-      header.removeAttribute('data-site-header-desktop-floating');
-      header.removeAttribute('data-site-header-desktop-revealed');
-      header.style.removeProperty('--site-header-desktop-reveal-y');
+      header.removeAttribute(DESKTOP_HEADER_FLOATING_ATTRIBUTE);
+      header.removeAttribute(DESKTOP_HEADER_REVEALED_ATTRIBUTE);
+      header.style.removeProperty(DESKTOP_HEADER_REVEAL_Y_PROPERTY);
     };
 
-    const applyDesktopRevealState = (headerHeight: number) => {
-      const hiddenOffset = headerHeight + DESKTOP_HEADER_HIDDEN_OFFSET_GUARD;
-      desktopRevealOffset = Math.min(
-        Math.max(desktopRevealOffset, 0),
-        hiddenOffset,
-      );
-      const revealTranslateY = desktopRevealOffset - hiddenOffset;
-      const isDesktopHeaderVisible = desktopRevealOffset > 0;
-      const isDesktopHeaderRevealed = desktopRevealOffset >= hiddenOffset;
+    const applyDesktopRevealState = (state: DesktopHeaderRevealState) => {
+      if (state.shouldClear) {
+        clearDesktopRevealState();
+        header.removeAttribute(SITE_HEADER_STUCK_ATTRIBUTE);
+        return;
+      }
 
+      desktopRevealOffset = state.revealOffset;
       header.style.setProperty(
-        '--site-header-desktop-reveal-y',
-        `${revealTranslateY}px`,
+        DESKTOP_HEADER_REVEAL_Y_PROPERTY,
+        `${state.revealTranslateY}px`,
       );
-      header.toggleAttribute('data-site-header-desktop-floating', true);
       header.toggleAttribute(
-        'data-site-header-desktop-revealed',
-        isDesktopHeaderRevealed,
+        DESKTOP_HEADER_FLOATING_ATTRIBUTE,
+        state.isFloating,
       );
-      header.toggleAttribute('data-site-header-stuck', isDesktopHeaderVisible);
+      header.toggleAttribute(
+        DESKTOP_HEADER_REVEALED_ATTRIBUTE,
+        state.isRevealed,
+      );
+      header.toggleAttribute(SITE_HEADER_STUCK_ATTRIBUTE, state.isStuck);
     };
 
     const updateHeaderViewportState = () => {
@@ -101,7 +176,10 @@ export function SiteHeader({
 
       if (!isDesktopViewport()) {
         clearDesktopRevealState();
-        header.toggleAttribute('data-site-header-stuck', headerRect.top <= 0);
+        header.toggleAttribute(
+          SITE_HEADER_STUCK_ATTRIBUTE,
+          headerRect.top <= 0,
+        );
         previousScrollY = Math.max(0, window.scrollY);
         return;
       }
@@ -109,32 +187,18 @@ export function SiteHeader({
       const currentScrollY = Math.max(0, window.scrollY);
       const headerHeight = headerRect.height;
       const isDesktopHeaderFloating = header.hasAttribute(
-        'data-site-header-desktop-floating',
+        DESKTOP_HEADER_FLOATING_ATTRIBUTE,
       );
+      const nextRevealState = calculateDesktopHeaderRevealState({
+        currentScrollY,
+        headerDocumentTop: desktopHeaderDocumentTop,
+        headerHeight,
+        isFloating: isDesktopHeaderFloating,
+        previousScrollY,
+        revealOffset: desktopRevealOffset,
+      });
 
-      if (currentScrollY <= desktopHeaderDocumentTop) {
-        clearDesktopRevealState();
-        header.removeAttribute('data-site-header-stuck');
-        previousScrollY = currentScrollY;
-        return;
-      }
-
-      if (currentScrollY <= headerHeight && !isDesktopHeaderFloating) {
-        clearDesktopRevealState();
-        header.removeAttribute('data-site-header-stuck');
-        previousScrollY = currentScrollY;
-        return;
-      }
-
-      const scrollDelta = currentScrollY - previousScrollY;
-
-      if (scrollDelta < 0) {
-        desktopRevealOffset += Math.abs(scrollDelta);
-      } else if (scrollDelta > 0) {
-        desktopRevealOffset -= scrollDelta;
-      }
-
-      applyDesktopRevealState(headerHeight);
+      applyDesktopRevealState(nextRevealState);
       previousScrollY = currentScrollY;
     };
     const headerViewportStateScheduler = createRafScheduler(
@@ -159,7 +223,7 @@ export function SiteHeader({
         headerViewportStateScheduler.schedule,
       );
       clearDesktopRevealState();
-      header.removeAttribute('data-site-header-stuck');
+      header.removeAttribute(SITE_HEADER_STUCK_ATTRIBUTE);
     };
   }, []);
 

@@ -4,10 +4,21 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SiteHeader } from './SiteHeader';
 
 const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
+const DESKTOP_HEADER_FLOATING_ATTRIBUTE = 'data-site-header-desktop-floating';
+const DESKTOP_HEADER_REVEALED_ATTRIBUTE = 'data-site-header-desktop-revealed';
+const SITE_HEADER_STUCK_ATTRIBUTE = 'data-site-header-stuck';
+const DESKTOP_HEADER_REVEAL_Y_PROPERTY = '--site-header-desktop-reveal-y';
 
 type MockLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   activeProps?: unknown;
   to: string;
+};
+
+type ExpectedDesktopHeaderState = {
+  isFloating: boolean;
+  isRevealed: boolean;
+  isStuck: boolean;
+  revealTranslateY: string;
 };
 
 vi.mock('@tanstack/react-router', async () => {
@@ -73,6 +84,27 @@ function requireElement<T extends Element>(element: T | null): T {
   }
 
   return element;
+}
+
+function expectDesktopHeaderState(
+  header: HTMLElement,
+  {
+    isFloating,
+    isRevealed,
+    isStuck,
+    revealTranslateY,
+  }: ExpectedDesktopHeaderState,
+) {
+  expect(header.hasAttribute(DESKTOP_HEADER_FLOATING_ATTRIBUTE)).toBe(
+    isFloating,
+  );
+  expect(header.hasAttribute(DESKTOP_HEADER_REVEALED_ATTRIBUTE)).toBe(
+    isRevealed,
+  );
+  expect(header.hasAttribute(SITE_HEADER_STUCK_ATTRIBUTE)).toBe(isStuck);
+  expect(header.style.getPropertyValue(DESKTOP_HEADER_REVEAL_Y_PROPERTY)).toBe(
+    revealTranslateY,
+  );
 }
 
 afterEach(() => {
@@ -158,47 +190,47 @@ describe('SiteHeader', () => {
     );
 
     try {
-      expect(header).toHaveAttribute('data-site-header-desktop-floating');
-      expect(header).not.toHaveAttribute('data-site-header-desktop-revealed');
-      expect(header).not.toHaveAttribute('data-site-header-stuck');
-      expect(
-        header.style.getPropertyValue('--site-header-desktop-reveal-y'),
-      ).toBe('-73px');
+      expectDesktopHeaderState(header, {
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
 
       setWindowScrollY(128);
       window.dispatchEvent(new Event('scroll'));
 
       await waitFor(() => {
-        expect(header).toHaveAttribute('data-site-header-desktop-floating');
-        expect(header).not.toHaveAttribute('data-site-header-desktop-revealed');
-        expect(header).toHaveAttribute('data-site-header-stuck');
-        expect(
-          header.style.getPropertyValue('--site-header-desktop-reveal-y'),
-        ).toBe('-41px');
+        expectDesktopHeaderState(header, {
+          isFloating: true,
+          isRevealed: false,
+          isStuck: true,
+          revealTranslateY: '-41px',
+        });
       });
 
       setWindowScrollY(80);
       window.dispatchEvent(new Event('scroll'));
 
       await waitFor(() => {
-        expect(header).toHaveAttribute('data-site-header-desktop-floating');
-        expect(header).toHaveAttribute('data-site-header-desktop-revealed');
-        expect(header).toHaveAttribute('data-site-header-stuck');
-        expect(
-          header.style.getPropertyValue('--site-header-desktop-reveal-y'),
-        ).toBe('0px');
+        expectDesktopHeaderState(header, {
+          isFloating: true,
+          isRevealed: true,
+          isStuck: true,
+          revealTranslateY: '0px',
+        });
       });
 
       setWindowScrollY(72);
       window.dispatchEvent(new Event('scroll'));
 
       await waitFor(() => {
-        expect(header).not.toHaveAttribute('data-site-header-desktop-floating');
-        expect(header).not.toHaveAttribute('data-site-header-desktop-revealed');
-        expect(header).not.toHaveAttribute('data-site-header-stuck');
-        expect(
-          header.style.getPropertyValue('--site-header-desktop-reveal-y'),
-        ).toBe('');
+        expectDesktopHeaderState(header, {
+          isFloating: false,
+          isRevealed: false,
+          isStuck: false,
+          revealTranslateY: '',
+        });
       });
     } finally {
       unmount();
