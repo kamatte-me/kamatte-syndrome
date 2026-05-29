@@ -360,10 +360,10 @@ export function SiteHeader({
           'relative z-10 px-[var(--site-header-x-padding)]',
         )}
       >
-        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-[22px] md:flex-row md:items-center md:justify-start md:gap-5 md:pb-4 lg:gap-6">
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-2 pt-[10px] pb-2 sm:pt-5 md:flex-row md:items-center md:justify-start md:gap-5 md:pb-4 lg:gap-6">
           <div className="relative flex items-center justify-center gap-4 md:justify-start">
             <HeaderLogoLink
-              className="inline-flex h-[38px] w-[55px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[72px] sm:w-[103px]"
+              className="inline-flex h-10 w-15 shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-14 sm:w-20"
               onClick={handleLogoClick}
             />
 
