@@ -1,31 +1,18 @@
-import { render, screen, within } from '@testing-library/react';
-import type { AnchorHTMLAttributes } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { screen, within } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import { siteName } from '@/constants/site';
+import { renderWithRouter } from '@/testing/renderWithRouter';
 import { SiteFooter } from './SiteFooter';
-
-type MockLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
-  to: string;
-};
-
-vi.mock('@tanstack/react-router', async () => {
-  const { createElement } = await import('react');
-
-  return {
-    Link: ({ to, ...props }: MockLinkProps) =>
-      createElement('a', { ...props, href: to }),
-  };
-});
 
 describe('SiteFooter', () => {
   it('renders the copyright start year with the shared site name', () => {
-    render(<SiteFooter />);
+    renderWithRouter(<SiteFooter />);
 
     expect(screen.getByText(`© 2018 ${siteName}`)).toBeInTheDocument();
   });
 
   it('renders policy navigation links', () => {
-    render(<SiteFooter />);
+    renderWithRouter(<SiteFooter />);
 
     const navigation = screen.getByRole('navigation', {
       name: 'サイトポリシー',

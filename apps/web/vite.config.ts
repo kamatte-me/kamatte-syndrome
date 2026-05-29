@@ -61,10 +61,10 @@ export default defineConfig(({ mode }) => {
           ],
         }),
       },
-      !isTest &&
-        contentCollections({
-          environment: 'ssr',
-        }),
+      contentCollections({
+        environment: 'ssr',
+        isEnabled: () => !isTest,
+      }),
       !isTest &&
         viteStaticCopy({
           targets: [
@@ -95,6 +95,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       tsconfigPaths: true,
+      preserveSymlinks: isTest,
     },
     ssr: {
       // Cheerio's dependency tree ships sourcemaps with package-external

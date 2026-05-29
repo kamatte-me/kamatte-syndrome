@@ -1,6 +1,6 @@
-import { render, waitFor } from '@testing-library/react';
-import type { AnchorHTMLAttributes } from 'react';
+import { waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { renderWithRouter } from '@/testing/renderWithRouter';
 import { SiteHeader } from './SiteHeader';
 
 const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
@@ -9,27 +9,12 @@ const DESKTOP_HEADER_REVEALED_ATTRIBUTE = 'data-site-header-desktop-revealed';
 const SITE_HEADER_STUCK_ATTRIBUTE = 'data-site-header-stuck';
 const DESKTOP_HEADER_REVEAL_Y_PROPERTY = '--site-header-desktop-reveal-y';
 
-type MockLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
-  activeProps?: unknown;
-  to: string;
-};
-
 type ExpectedDesktopHeaderState = {
   isFloating: boolean;
   isRevealed: boolean;
   isStuck: boolean;
   revealTranslateY: string;
 };
-
-vi.mock('@tanstack/react-router', async () => {
-  const { createElement } = await import('react');
-
-  return {
-    Link: ({ activeProps: _activeProps, to, ...props }: MockLinkProps) =>
-      createElement('a', { ...props, href: to }),
-    useNavigate: () => vi.fn(),
-  };
-});
 
 function setWindowScrollY(scrollY: number) {
   Object.defineProperty(window, 'scrollY', {
@@ -127,7 +112,7 @@ describe('SiteHeader', () => {
         return createBoundingClientRect(0);
       });
 
-    const { container, unmount } = render(
+    const { container, unmount } = renderWithRouter(
       <div data-cutout-layer="content">
         <SiteHeader
           cutoutLayer="content"
@@ -173,7 +158,7 @@ describe('SiteHeader', () => {
         return createBoundingClientRect(0);
       });
 
-    const { container, unmount } = render(
+    const { container, unmount } = renderWithRouter(
       <div data-cutout-layer="content">
         <SiteHeader
           cutoutLayer="content"
@@ -259,7 +244,7 @@ describe('SiteHeader', () => {
       value: visualViewport,
     });
 
-    const { container, unmount } = render(
+    const { container, unmount } = renderWithRouter(
       <div data-cutout-layer="content">
         <SiteHeader
           cutoutLayer="content"
@@ -305,7 +290,7 @@ describe('SiteHeader', () => {
   it('locks the stencil layer to the viewport while the mobile menu is open', async () => {
     setWindowScrollY(4096);
 
-    const { container, unmount } = render(
+    const { container, unmount } = renderWithRouter(
       <div data-cutout-layer="stencil">
         <SiteHeader
           cutoutLayer="stencil"
