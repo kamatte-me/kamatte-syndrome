@@ -1,15 +1,18 @@
 import { Link } from '@tanstack/react-router';
+import { siteName } from '@/constants/site';
 
 const policyLinks = [
   { label: 'Terms', to: '/terms' },
   { label: 'Privacy', to: '/privacy' },
 ] as const;
 
+const copyrightStartYear = 2018;
+
 export function SiteFooter() {
   return (
-    <footer className="grid shrink-0 justify-items-center gap-3 px-[clamp(16px,4vw,40px)] pt-[18px] pb-[26px] text-center">
-      <p className="m-0 font-bold text-[0.9rem] text-cutout-hole leading-normal">
-        © 2026 かまって☆しんどろ〜む
+    <footer className="grid shrink-0 justify-items-center gap-3 px-4 pt-5 pb-6 text-center sm:px-8 lg:px-10">
+      <p className="m-0 text-cutout-hole text-sm leading-normal">
+        © {copyrightStartYear} {siteName}
       </p>
       <nav
         aria-label="サイトポリシー"
@@ -19,7 +22,7 @@ export function SiteFooter() {
           <Link
             key={link.to}
             to={link.to}
-            className="font-bold text-[0.78rem] text-cutout-hole leading-none underline-offset-4 hover:underline hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4"
+            className="text-cutout-hole text-xs leading-none underline-offset-4 hover:underline hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4"
           >
             {link.label}
           </Link>
