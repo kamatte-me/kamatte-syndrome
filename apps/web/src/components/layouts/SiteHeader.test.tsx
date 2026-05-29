@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import type { AnchorHTMLAttributes } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SiteHeader } from './SiteHeader';
@@ -108,7 +108,6 @@ function expectDesktopHeaderState(
 }
 
 afterEach(() => {
-  cleanup();
   setWindowScrollY(0);
 });
 

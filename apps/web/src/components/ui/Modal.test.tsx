@@ -1,10 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Modal, modalDialogSelector } from './Modal';
 
@@ -54,7 +48,6 @@ function requireElement<T extends Element>(element: T | null): T {
 }
 
 afterEach(() => {
-  cleanup();
   document.body.style.overflow = '';
   setWindowScrollY(0);
 });

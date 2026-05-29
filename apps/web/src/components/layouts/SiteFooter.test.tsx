@@ -1,6 +1,6 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import type { AnchorHTMLAttributes } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { siteName } from '@/constants/site';
 import { SiteFooter } from './SiteFooter';
 
@@ -15,10 +15,6 @@ vi.mock('@tanstack/react-router', async () => {
     Link: ({ to, ...props }: MockLinkProps) =>
       createElement('a', { ...props, href: to }),
   };
-});
-
-afterEach(() => {
-  cleanup();
 });
 
 describe('SiteFooter', () => {
