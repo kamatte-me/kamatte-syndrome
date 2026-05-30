@@ -29,28 +29,28 @@ const navigationLinks = [
 const mobileMenuSelector = '[data-site-header-mobile-menu]';
 const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
 const DESKTOP_HEADER_HIDDEN_OFFSET_GUARD = 1;
+const DESKTOP_HEADER_ANIMATED_ATTRIBUTE = 'data-site-header-desktop-animated';
 const DESKTOP_HEADER_FLOATING_ATTRIBUTE = 'data-site-header-desktop-floating';
 const DESKTOP_HEADER_REVEALED_ATTRIBUTE = 'data-site-header-desktop-revealed';
 const SITE_HEADER_STUCK_ATTRIBUTE = 'data-site-header-stuck';
 const DESKTOP_HEADER_REVEAL_Y_PROPERTY = '--site-header-desktop-reveal-y';
 
-type DesktopHeaderRevealStateInput = {
+type DesktopHeaderVisibility = 'normal' | 'hidden' | 'revealed';
+
+type DesktopHeaderScrollActionInput = {
   currentScrollY: number;
   headerDocumentTop: number;
   headerHeight: number;
-  isFloating: boolean;
   previousScrollY: number;
-  revealOffset: number;
+  visibility: DesktopHeaderVisibility;
 };
 
-type DesktopHeaderRevealState = {
-  isFloating: boolean;
-  isRevealed: boolean;
-  isStuck: boolean;
-  revealOffset: number;
-  revealTranslateY: number;
-  shouldClear: boolean;
-};
+type DesktopHeaderScrollAction =
+  | 'clear'
+  | 'hide'
+  | 'none'
+  | 'prepare-hidden'
+  | 'reveal';
 
 type SiteHeaderProps = {
   cutoutLayer: 'stencil' | 'content';
@@ -59,56 +59,50 @@ type SiteHeaderProps = {
   onNavigate: () => void;
 };
 
-function clampNumber(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
-function createClearedDesktopHeaderRevealState(): DesktopHeaderRevealState {
-  return {
-    isFloating: false,
-    isRevealed: false,
-    isStuck: false,
-    revealOffset: 0,
-    revealTranslateY: 0,
-    shouldClear: true,
-  };
-}
-
-function calculateDesktopHeaderRevealState({
+function getDesktopHeaderScrollAction({
   currentScrollY,
   headerDocumentTop,
   headerHeight,
-  isFloating,
   previousScrollY,
-  revealOffset,
-}: DesktopHeaderRevealStateInput): DesktopHeaderRevealState {
-  if (
-    currentScrollY <= headerDocumentTop ||
-    (currentScrollY <= headerHeight && !isFloating)
-  ) {
-    return createClearedDesktopHeaderRevealState();
+  visibility,
+}: DesktopHeaderScrollActionInput): DesktopHeaderScrollAction {
+  if (currentScrollY <= headerDocumentTop) {
+    return 'clear';
   }
 
-  const hiddenOffset = headerHeight + DESKTOP_HEADER_HIDDEN_OFFSET_GUARD;
   const scrollDelta = currentScrollY - previousScrollY;
-  let nextRevealOffset = revealOffset;
+  const isNormalHeaderFullyHidden =
+    currentScrollY >= headerDocumentTop + headerHeight;
 
   if (scrollDelta < 0) {
-    nextRevealOffset += Math.abs(scrollDelta);
-  } else if (scrollDelta > 0) {
-    nextRevealOffset -= scrollDelta;
+    if (visibility === 'revealed') {
+      return 'none';
+    }
+
+    if (visibility === 'normal' && !isNormalHeaderFullyHidden) {
+      return 'clear';
+    }
+
+    return 'reveal';
   }
 
-  nextRevealOffset = clampNumber(nextRevealOffset, 0, hiddenOffset);
+  if (scrollDelta > 0) {
+    if (visibility === 'revealed') {
+      return 'hide';
+    }
 
-  return {
-    isFloating: true,
-    isRevealed: nextRevealOffset >= hiddenOffset,
-    isStuck: nextRevealOffset > 0,
-    revealOffset: nextRevealOffset,
-    revealTranslateY: nextRevealOffset - hiddenOffset,
-    shouldClear: false,
-  };
+    if (isNormalHeaderFullyHidden) {
+      return 'prepare-hidden';
+    }
+
+    return 'clear';
+  }
+
+  if (visibility === 'normal' && isNormalHeaderFullyHidden) {
+    return 'prepare-hidden';
+  }
+
+  return 'none';
 }
 
 export function SiteHeader({
@@ -136,39 +130,113 @@ export function SiteHeader({
       0,
       header.getBoundingClientRect().top + previousScrollY,
     );
-    let desktopRevealOffset = 0;
+    let desktopHeaderVisibility: DesktopHeaderVisibility = 'normal';
 
     const isDesktopViewport = () =>
       desktopMediaQuery?.matches ?? window.innerWidth >= 768;
 
+    let desktopRevealFirstAnimationFrame: number | null = null;
+    let desktopRevealSecondAnimationFrame: number | null = null;
+    let desktopRevealAnimationPending = false;
+
+    const cancelDesktopRevealAnimation = () => {
+      if (desktopRevealFirstAnimationFrame !== null) {
+        window.cancelAnimationFrame(desktopRevealFirstAnimationFrame);
+        desktopRevealFirstAnimationFrame = null;
+      }
+
+      if (desktopRevealSecondAnimationFrame !== null) {
+        window.cancelAnimationFrame(desktopRevealSecondAnimationFrame);
+        desktopRevealSecondAnimationFrame = null;
+      }
+
+      desktopRevealAnimationPending = false;
+    };
+
     const clearDesktopRevealState = () => {
-      desktopRevealOffset = 0;
+      cancelDesktopRevealAnimation();
+      desktopHeaderVisibility = 'normal';
+      header.removeAttribute(DESKTOP_HEADER_ANIMATED_ATTRIBUTE);
       header.removeAttribute(DESKTOP_HEADER_FLOATING_ATTRIBUTE);
       header.removeAttribute(DESKTOP_HEADER_REVEALED_ATTRIBUTE);
       header.style.removeProperty(DESKTOP_HEADER_REVEAL_Y_PROPERTY);
     };
 
-    const applyDesktopRevealState = (state: DesktopHeaderRevealState) => {
-      if (state.shouldClear) {
+    const prepareDesktopHeaderHidden = (
+      hiddenOffset: number,
+      { animated }: { animated: boolean },
+    ) => {
+      cancelDesktopRevealAnimation();
+      desktopHeaderVisibility = 'hidden';
+      header.style.setProperty(
+        DESKTOP_HEADER_REVEAL_Y_PROPERTY,
+        `${-hiddenOffset}px`,
+      );
+      header.toggleAttribute(DESKTOP_HEADER_ANIMATED_ATTRIBUTE, animated);
+      header.toggleAttribute(DESKTOP_HEADER_FLOATING_ATTRIBUTE, true);
+      header.removeAttribute(DESKTOP_HEADER_REVEALED_ATTRIBUTE);
+      header.removeAttribute(SITE_HEADER_STUCK_ATTRIBUTE);
+    };
+
+    const revealDesktopHeader = () => {
+      desktopHeaderVisibility = 'revealed';
+      header.style.setProperty(DESKTOP_HEADER_REVEAL_Y_PROPERTY, '0px');
+      header.toggleAttribute(DESKTOP_HEADER_ANIMATED_ATTRIBUTE, true);
+      header.toggleAttribute(DESKTOP_HEADER_FLOATING_ATTRIBUTE, true);
+      header.toggleAttribute(DESKTOP_HEADER_REVEALED_ATTRIBUTE, true);
+      header.toggleAttribute(SITE_HEADER_STUCK_ATTRIBUTE, true);
+    };
+
+    const scheduleDesktopHeaderReveal = (hiddenOffset: number) => {
+      prepareDesktopHeaderHidden(hiddenOffset, { animated: false });
+      desktopRevealAnimationPending = true;
+      desktopRevealFirstAnimationFrame = window.requestAnimationFrame(() => {
+        desktopRevealFirstAnimationFrame = null;
+
+        if (!header.isConnected || desktopHeaderVisibility !== 'hidden') {
+          desktopRevealAnimationPending = false;
+          return;
+        }
+
+        header.toggleAttribute(DESKTOP_HEADER_ANIMATED_ATTRIBUTE, true);
+        desktopRevealSecondAnimationFrame = window.requestAnimationFrame(() => {
+          desktopRevealSecondAnimationFrame = null;
+          desktopRevealAnimationPending = false;
+
+          if (!header.isConnected || desktopHeaderVisibility !== 'hidden') {
+            return;
+          }
+
+          revealDesktopHeader();
+        });
+      });
+    };
+
+    const applyDesktopHeaderScrollAction = (
+      action: DesktopHeaderScrollAction,
+      hiddenOffset: number,
+    ) => {
+      if (action === 'none') {
+        return;
+      }
+
+      if (action === 'clear') {
         clearDesktopRevealState();
         header.removeAttribute(SITE_HEADER_STUCK_ATTRIBUTE);
         return;
       }
 
-      desktopRevealOffset = state.revealOffset;
-      header.style.setProperty(
-        DESKTOP_HEADER_REVEAL_Y_PROPERTY,
-        `${state.revealTranslateY}px`,
-      );
-      header.toggleAttribute(
-        DESKTOP_HEADER_FLOATING_ATTRIBUTE,
-        state.isFloating,
-      );
-      header.toggleAttribute(
-        DESKTOP_HEADER_REVEALED_ATTRIBUTE,
-        state.isRevealed,
-      );
-      header.toggleAttribute(SITE_HEADER_STUCK_ATTRIBUTE, state.isStuck);
+      if (action === 'prepare-hidden') {
+        prepareDesktopHeaderHidden(hiddenOffset, { animated: false });
+        return;
+      }
+
+      if (action === 'hide') {
+        prepareDesktopHeaderHidden(hiddenOffset, { animated: true });
+        return;
+      }
+
+      scheduleDesktopHeaderReveal(hiddenOffset);
     };
 
     const updateHeaderViewportState = () => {
@@ -185,20 +253,31 @@ export function SiteHeader({
       }
 
       const currentScrollY = Math.max(0, window.scrollY);
+      const scrollDelta = currentScrollY - previousScrollY;
       const headerHeight = headerRect.height;
-      const isDesktopHeaderFloating = header.hasAttribute(
-        DESKTOP_HEADER_FLOATING_ATTRIBUTE,
-      );
-      const nextRevealState = calculateDesktopHeaderRevealState({
+      const hiddenOffset = headerHeight + DESKTOP_HEADER_HIDDEN_OFFSET_GUARD;
+
+      if (desktopRevealAnimationPending) {
+        if (currentScrollY <= desktopHeaderDocumentTop) {
+          clearDesktopRevealState();
+          header.removeAttribute(SITE_HEADER_STUCK_ATTRIBUTE);
+        } else if (scrollDelta > 0) {
+          prepareDesktopHeaderHidden(hiddenOffset, { animated: false });
+        }
+
+        previousScrollY = currentScrollY;
+        return;
+      }
+
+      const nextScrollAction = getDesktopHeaderScrollAction({
         currentScrollY,
         headerDocumentTop: desktopHeaderDocumentTop,
         headerHeight,
-        isFloating: isDesktopHeaderFloating,
         previousScrollY,
-        revealOffset: desktopRevealOffset,
+        visibility: desktopHeaderVisibility,
       });
 
-      applyDesktopRevealState(nextRevealState);
+      applyDesktopHeaderScrollAction(nextScrollAction, hiddenOffset);
       previousScrollY = currentScrollY;
     };
     const headerViewportStateScheduler = createRafScheduler(

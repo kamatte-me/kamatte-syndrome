@@ -138,8 +138,18 @@
     will-change: transform;
   }
 
+  .root[data-site-header-desktop-floating][data-site-header-desktop-animated] {
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
   .root[data-site-header-desktop-floating][data-site-header-desktop-revealed] {
     transform: translateY(0);
+  }
+}
+
+@media (width >= 48rem) and (prefers-reduced-motion: reduce) {
+  .root[data-site-header-desktop-floating][data-site-header-desktop-animated] {
+    transition: none;
   }
 }
 

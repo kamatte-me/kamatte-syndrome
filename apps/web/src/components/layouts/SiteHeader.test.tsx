@@ -4,12 +4,14 @@ import { renderWithRouter } from '@/testing/renderWithRouter';
 import { SiteHeader } from './SiteHeader';
 
 const DESKTOP_HEADER_MEDIA_QUERY = '(min-width: 48rem)';
+const DESKTOP_HEADER_ANIMATED_ATTRIBUTE = 'data-site-header-desktop-animated';
 const DESKTOP_HEADER_FLOATING_ATTRIBUTE = 'data-site-header-desktop-floating';
 const DESKTOP_HEADER_REVEALED_ATTRIBUTE = 'data-site-header-desktop-revealed';
 const SITE_HEADER_STUCK_ATTRIBUTE = 'data-site-header-stuck';
 const DESKTOP_HEADER_REVEAL_Y_PROPERTY = '--site-header-desktop-reveal-y';
 
 type ExpectedDesktopHeaderState = {
+  isAnimated?: boolean;
   isFloating: boolean;
   isRevealed: boolean;
   isStuck: boolean;
@@ -35,6 +37,53 @@ function createBoundingClientRect(top: number): DOMRect {
     x: 0,
     y: top,
   } as DOMRect;
+}
+
+function createRafController() {
+  let nextFrameId = 1;
+  const callbacks = new Map<number, FrameRequestCallback>();
+  const requestAnimationFrame = vi
+    .spyOn(window, 'requestAnimationFrame')
+    .mockImplementation((callback) => {
+      const frameId = nextFrameId;
+      nextFrameId += 1;
+      callbacks.set(frameId, callback);
+
+      return frameId;
+    });
+  const cancelAnimationFrame = vi
+    .spyOn(window, 'cancelAnimationFrame')
+    .mockImplementation((frameId) => {
+      callbacks.delete(frameId);
+    });
+
+  return {
+    flushFrame() {
+      const pendingCallbacks = Array.from(callbacks.values());
+      callbacks.clear();
+
+      for (const callback of pendingCallbacks) {
+        callback(performance.now());
+      }
+    },
+    restore() {
+      callbacks.clear();
+      requestAnimationFrame.mockRestore();
+      cancelAnimationFrame.mockRestore();
+    },
+  };
+}
+
+function mockHeaderRectFromScrollY(headerDocumentTop = 0) {
+  return vi
+    .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+    .mockImplementation(function getMockBoundingClientRect(this: HTMLElement) {
+      if (this.matches('[data-site-header]')) {
+        return createBoundingClientRect(headerDocumentTop - window.scrollY);
+      }
+
+      return createBoundingClientRect(0);
+    });
 }
 
 function mockDesktopHeaderMediaQuery(matches: boolean) {
@@ -74,12 +123,19 @@ function requireElement<T extends Element>(element: T | null): T {
 function expectDesktopHeaderState(
   header: HTMLElement,
   {
+    isAnimated,
     isFloating,
     isRevealed,
     isStuck,
     revealTranslateY,
   }: ExpectedDesktopHeaderState,
 ) {
+  if (isAnimated !== undefined) {
+    expect(header.hasAttribute(DESKTOP_HEADER_ANIMATED_ATTRIBUTE)).toBe(
+      isAnimated,
+    );
+  }
+
   expect(header.hasAttribute(DESKTOP_HEADER_FLOATING_ATTRIBUTE)).toBe(
     isFloating,
   );
@@ -143,20 +199,11 @@ describe('SiteHeader', () => {
     }
   });
 
-  it('reveals the desktop header in proportion to upward scrolling', async () => {
+  it('reveals and hides the desktop header on scroll direction changes', () => {
+    const raf = createRafController();
     const restoreMatchMedia = mockDesktopHeaderMediaQuery(true);
     setWindowScrollY(160);
-    const getBoundingClientRect = vi
-      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
-      .mockImplementation(function getMockBoundingClientRect(
-        this: HTMLElement,
-      ) {
-        if (this.matches('[data-site-header]')) {
-          return createBoundingClientRect(-88);
-        }
-
-        return createBoundingClientRect(0);
-      });
+    const getBoundingClientRect = mockHeaderRectFromScrollY(72);
 
     const { container, unmount } = renderWithRouter(
       <div data-cutout-layer="content">
@@ -175,6 +222,7 @@ describe('SiteHeader', () => {
 
     try {
       expectDesktopHeaderState(header, {
+        isAnimated: false,
         isFloating: true,
         isRevealed: false,
         isStuck: false,
@@ -184,41 +232,283 @@ describe('SiteHeader', () => {
       setWindowScrollY(128);
       window.dispatchEvent(new Event('scroll'));
 
-      await waitFor(() => {
-        expectDesktopHeaderState(header, {
-          isFloating: true,
-          isRevealed: false,
-          isStuck: true,
-          revealTranslateY: '-41px',
-        });
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
       });
 
-      setWindowScrollY(80);
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: true,
+        isStuck: true,
+        revealTranslateY: '0px',
+      });
+
+      setWindowScrollY(140);
       window.dispatchEvent(new Event('scroll'));
 
-      await waitFor(() => {
-        expectDesktopHeaderState(header, {
-          isFloating: true,
-          isRevealed: true,
-          isStuck: true,
-          revealTranslateY: '0px',
-        });
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
       });
 
       setWindowScrollY(72);
       window.dispatchEvent(new Event('scroll'));
 
-      await waitFor(() => {
-        expectDesktopHeaderState(header, {
-          isFloating: false,
-          isRevealed: false,
-          isStuck: false,
-          revealTranslateY: '',
-        });
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: false,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '',
       });
     } finally {
       unmount();
       getBoundingClientRect.mockRestore();
+      raf.restore();
+      restoreMatchMedia();
+    }
+  });
+
+  it('keeps the desktop floating header hidden while scrolling down from the top', () => {
+    const raf = createRafController();
+    const restoreMatchMedia = mockDesktopHeaderMediaQuery(true);
+    setWindowScrollY(0);
+    const getBoundingClientRect = mockHeaderRectFromScrollY();
+
+    const { container, unmount } = renderWithRouter(
+      <div data-cutout-layer="content">
+        <SiteHeader
+          cutoutLayer="content"
+          isMobileMenuOpen={false}
+          onMobileMenuOpenChange={vi.fn()}
+          onNavigate={vi.fn()}
+        />
+      </div>,
+    );
+
+    const header = requireElement(
+      container.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    try {
+      expectDesktopHeaderState(header, {
+        isFloating: false,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '',
+      });
+
+      setWindowScrollY(88);
+      window.dispatchEvent(new Event('scroll'));
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+      raf.restore();
+      restoreMatchMedia();
+    }
+  });
+
+  it('animates the first desktop reveal after scrolling up from the top', () => {
+    const raf = createRafController();
+    const restoreMatchMedia = mockDesktopHeaderMediaQuery(true);
+    setWindowScrollY(0);
+    const getBoundingClientRect = mockHeaderRectFromScrollY();
+
+    const { container, unmount } = renderWithRouter(
+      <div data-cutout-layer="content">
+        <SiteHeader
+          cutoutLayer="content"
+          isMobileMenuOpen={false}
+          onMobileMenuOpenChange={vi.fn()}
+          onNavigate={vi.fn()}
+        />
+      </div>,
+    );
+
+    const header = requireElement(
+      container.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    try {
+      expectDesktopHeaderState(header, {
+        isFloating: false,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '',
+      });
+
+      setWindowScrollY(120);
+      window.dispatchEvent(new Event('scroll'));
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+
+      setWindowScrollY(104);
+      window.dispatchEvent(new Event('scroll'));
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: true,
+        isStuck: true,
+        revealTranslateY: '0px',
+      });
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+      raf.restore();
+      restoreMatchMedia();
+    }
+  });
+
+  it('keeps the reveal animation after returning to the top and scrolling again', () => {
+    const raf = createRafController();
+    const restoreMatchMedia = mockDesktopHeaderMediaQuery(true);
+    setWindowScrollY(0);
+    const getBoundingClientRect = mockHeaderRectFromScrollY();
+
+    const { container, unmount } = renderWithRouter(
+      <div data-cutout-layer="content">
+        <SiteHeader
+          cutoutLayer="content"
+          isMobileMenuOpen={false}
+          onMobileMenuOpenChange={vi.fn()}
+          onNavigate={vi.fn()}
+        />
+      </div>,
+    );
+
+    const header = requireElement(
+      container.querySelector<HTMLElement>('[data-site-header]'),
+    );
+
+    try {
+      setWindowScrollY(120);
+      window.dispatchEvent(new Event('scroll'));
+      raf.flushFrame();
+
+      setWindowScrollY(104);
+      window.dispatchEvent(new Event('scroll'));
+      raf.flushFrame();
+      raf.flushFrame();
+      raf.flushFrame();
+
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: true,
+        isStuck: true,
+        revealTranslateY: '0px',
+      });
+
+      setWindowScrollY(130);
+      window.dispatchEvent(new Event('scroll'));
+      raf.flushFrame();
+
+      setWindowScrollY(0);
+      window.dispatchEvent(new Event('scroll'));
+      raf.flushFrame();
+
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: false,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '',
+      });
+
+      setWindowScrollY(120);
+      window.dispatchEvent(new Event('scroll'));
+      raf.flushFrame();
+
+      setWindowScrollY(104);
+      window.dispatchEvent(new Event('scroll'));
+      raf.flushFrame();
+
+      expectDesktopHeaderState(header, {
+        isAnimated: false,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: false,
+        isStuck: false,
+        revealTranslateY: '-73px',
+      });
+
+      raf.flushFrame();
+      expectDesktopHeaderState(header, {
+        isAnimated: true,
+        isFloating: true,
+        isRevealed: true,
+        isStuck: true,
+        revealTranslateY: '0px',
+      });
+    } finally {
+      unmount();
+      getBoundingClientRect.mockRestore();
+      raf.restore();
       restoreMatchMedia();
     }
   });
