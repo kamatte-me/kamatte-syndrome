@@ -127,6 +127,12 @@
     will-change: transform;
   }
 
+  .root[data-site-header-desktop-floating] .headerBackdropViewport {
+    right: calc(-1 * var(--cutout-inset));
+    left: calc(-1 * var(--cutout-inset));
+    width: auto;
+  }
+
   .root[data-site-header-desktop-floating][data-site-header-desktop-animated] {
     transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   }
