@@ -7,6 +7,7 @@ import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import react from '@vitejs/plugin-react';
 import rsc from '@vitejs/plugin-rsc';
+import autoprefixer from 'autoprefixer';
 import { nitro } from 'nitro/vite';
 import remarkBreaks from 'remark-breaks';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -93,6 +94,15 @@ export default defineConfig(({ mode }) => {
         applyToEnvironment: (environment) => environment.name === 'client',
       },
     ],
+    css: {
+      postcss: {
+        plugins: [autoprefixer()],
+      },
+    },
+    build: {
+      // Keep Autoprefixer as the single CSS prefixing pass.
+      cssMinify: 'esbuild',
+    },
     resolve: {
       tsconfigPaths: true,
       preserveSymlinks: isTest,

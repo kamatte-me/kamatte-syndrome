@@ -1,4 +1,3 @@
 .logoMask {
   mask: url("/logo.svg") center / contain no-repeat;
-  -webkit-mask: url("/logo.svg") center / contain no-repeat;
 }

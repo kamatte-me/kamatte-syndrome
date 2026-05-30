@@ -21,9 +21,6 @@
   mask-mode: alpha;
   mask-repeat: no-repeat;
   mask-size: 100% 100%;
-  -webkit-mask-image: var(--culture-play-icon-mask);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
 }
 
 [data-cutout-layer="content"] .cardMedia {
@@ -37,15 +34,6 @@
   mask-size:
     100% 100%,
     var(--culture-play-icon-size) var(--culture-play-icon-size);
-  -webkit-mask-composite: xor;
-  -webkit-mask-image: linear-gradient(#000 0 0), var(--culture-play-icon-mask);
-  -webkit-mask-position:
-    0 0,
-    50% 50%;
-  -webkit-mask-repeat: no-repeat, no-repeat;
-  -webkit-mask-size:
-    100% 100%,
-    var(--culture-play-icon-size) var(--culture-play-icon-size);
 }
 
 [data-cutout-layer="content"] .pageContent[data-culture-modal-cutout] {
@@ -57,15 +45,6 @@
     var(--culture-modal-mask-left) var(--culture-modal-mask-top);
   mask-repeat: no-repeat, no-repeat;
   mask-size:
-    100% 100%,
-    var(--culture-modal-mask-width) var(--culture-modal-mask-height);
-  -webkit-mask-composite: xor;
-  -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  -webkit-mask-position:
-    0 0,
-    var(--culture-modal-mask-left) var(--culture-modal-mask-top);
-  -webkit-mask-repeat: no-repeat, no-repeat;
-  -webkit-mask-size:
     100% 100%,
     var(--culture-modal-mask-width) var(--culture-modal-mask-height);
 }
