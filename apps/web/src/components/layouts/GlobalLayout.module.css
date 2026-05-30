@@ -17,13 +17,9 @@
   -webkit-text-fill-color: currentColor;
 }
 
-.stencilLayer:is([data-cutout-modal-open], [data-cutout-mobile-menu-open]) {
+.stencilLayer[data-cutout-mobile-menu-open] {
   position: fixed;
   inset: var(--cutout-inset);
-}
-
-.stencilLayer[data-cutout-modal-open] > * {
-  transform: translateY(calc(-1 * var(--cutout-stencil-scroll-y)));
 }
 
 .contentLayer {
