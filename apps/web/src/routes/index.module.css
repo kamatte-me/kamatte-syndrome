@@ -25,7 +25,7 @@
 
 .speechBubble .speechBubbleText {
   position: relative;
-  transform: translateY(-0.4rem);
+  transform: translateY(-0.65rem);
   color: #000000;
   text-decoration-color: #000000;
   -webkit-text-fill-color: #000000;
@@ -39,7 +39,7 @@
   }
 
   .speechBubble .speechBubbleText {
-    transform: translateY(-0.5rem);
+    transform: translateY(-0.8rem);
   }
 }
 
@@ -56,7 +56,7 @@
   }
 
   .speechBubble .speechBubbleText {
-    transform: translate(-0.7rem, 0.5rem);
+    transform: translate(-0.5rem, 0.5rem);
   }
 }
 
@@ -69,6 +69,6 @@
   }
 
   .speechBubble .speechBubbleText {
-    transform: translate(-0.9rem, 0.6rem);
+    transform: translate(-0.55rem, 0.6rem);
   }
 }
