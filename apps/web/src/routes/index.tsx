@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { author, siteName, slogan } from '@/constants/site';
 import { cn } from '@/utils/classNames';
 import styles from './index.module.css';
@@ -19,13 +19,18 @@ function App() {
       </h1>
 
       <div className="flex flex-col items-center justify-center gap-3 md:flex-row md:items-start md:gap-4">
-        <img
-          src="/avatar.svg"
-          alt={author}
-          width={180}
-          height={180}
-          className="order-2 size-32 md:order-1 md:mt-14 md:size-36 lg:mt-16 lg:size-40"
-        />
+        <Link
+          to="/biography"
+          className="order-2 block size-32 md:order-1 md:mt-14 md:size-36 lg:mt-16 lg:size-40"
+        >
+          <img
+            src="/avatar.svg"
+            alt={author}
+            width={180}
+            height={180}
+            className="size-full"
+          />
+        </Link>
 
         <div
           className={cn(
@@ -34,13 +39,10 @@ function App() {
           )}
         >
           <span aria-hidden="true" className={styles.speechBubbleShape} />
-          <p
-            className={cn(
-              styles.speechBubbleText,
-              'whitespace-nowrap font-display font-normal text-[1.65rem] leading-none sm:text-[2.1rem] md:text-[2.5rem] md:leading-tight lg:text-5xl',
-            )}
-          >
-            {slogan}
+          <p className="whitespace-nowrap font-display font-normal text-[1.65rem] leading-none sm:text-[2.1rem] md:text-[2.5rem] md:leading-tight lg:text-5xl">
+            <Link to="/biography" className={styles.speechBubbleText}>
+              {slogan}
+            </Link>
           </p>
         </div>
       </div>

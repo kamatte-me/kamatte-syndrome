@@ -25,6 +25,7 @@
 
 .speechBubble .speechBubbleText {
   position: relative;
+  display: inline-block;
   transform: translateY(-0.65rem);
   color: #000000;
   text-decoration-color: #000000;
