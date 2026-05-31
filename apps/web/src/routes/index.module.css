@@ -35,11 +35,11 @@
   .speechBubbleShape {
     top: -1.15rem;
     bottom: -1.05rem;
-    width: 360px;
+    width: 400px;
   }
 
   .speechBubble .speechBubbleText {
-    transform: translateY(-0.45rem);
+    transform: translateY(-0.5rem);
   }
 }
 

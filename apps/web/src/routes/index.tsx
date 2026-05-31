@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({ component: App });
 
 function App() {
   return (
-    <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-6 px-6 py-6 text-center">
+    <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
       <h1 aria-label={siteName} className="flex w-full justify-center">
         <span
           aria-hidden="true"
@@ -37,7 +37,7 @@ function App() {
           <p
             className={cn(
               styles.speechBubbleText,
-              'whitespace-nowrap font-display font-normal text-[1.65rem] leading-none sm:text-[1.9rem] md:text-[2.5rem] md:leading-tight lg:text-5xl',
+              'whitespace-nowrap font-display font-normal text-[1.65rem] leading-none sm:text-[2.1rem] md:text-[2.5rem] md:leading-tight lg:text-5xl',
             )}
           >
             {slogan}
