@@ -1,3 +1,49 @@
 .logoMask {
   mask: url("/logo.svg") center / contain no-repeat;
 }
+
+.speechBubble {
+  isolation: isolate;
+}
+
+.speechBubbleShape {
+  position: absolute;
+  display: block;
+  top: -1.05rem;
+  right: auto;
+  bottom: -0.95rem;
+  left: 50%;
+  z-index: -1;
+  width: 300px;
+  transform: translateX(-50%);
+  background: var(--cutout-hole);
+  -webkit-mask:
+    url("../assets/speech-bubble-mobile.svg") center / 100% 100% no-repeat;
+  mask: url("../assets/speech-bubble-mobile.svg") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.speechBubble .speechBubbleText {
+  position: relative;
+  transform: translateY(-0.4rem);
+  color: #000000;
+  text-decoration-color: #000000;
+  -webkit-text-fill-color: #000000;
+}
+
+@media (width >= 40rem) {
+  .speechBubbleShape {
+    top: 0.4rem;
+    right: auto;
+    bottom: -2.4rem;
+    left: -2rem;
+    width: 550px;
+    transform: none;
+    -webkit-mask-image: url("../assets/speech-bubble-desktop.svg");
+    mask-image: url("../assets/speech-bubble-desktop.svg");
+  }
+
+  .speechBubble .speechBubbleText {
+    transform: translate(-0.9rem, 0.6rem);
+  }
+}
