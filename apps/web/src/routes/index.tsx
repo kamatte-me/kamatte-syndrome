@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({ component: App });
 
 function App() {
   return (
-    <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
+    <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-3 p-6 text-center md:gap-7">
       <h1 aria-label={siteName} className="flex w-full justify-center">
         <span
           aria-hidden="true"
@@ -30,7 +30,7 @@ function App() {
         <div
           className={cn(
             styles.speechBubble,
-            'relative order-1 max-w-full px-6 pt-4 pb-5 text-cutout-hole sm:px-7 sm:pt-5 sm:pb-6 md:order-2 md:-translate-y-5 md:px-8 md:pt-7 md:pb-7 lg:-translate-y-6 lg:px-9 lg:pt-8 lg:pb-8',
+            'relative order-1 max-w-full translate-y-3 px-6 pt-4 pb-5 text-cutout-hole sm:px-7 sm:pt-5 sm:pb-6 md:order-2 md:-translate-y-5 md:px-8 md:pt-7 md:pb-7 lg:-translate-y-6 lg:px-9 lg:pt-8 lg:pb-8',
           )}
         >
           <span aria-hidden="true" className={styles.speechBubbleShape} />
