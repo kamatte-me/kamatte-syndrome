@@ -329,12 +329,12 @@ function CultureCard({
               width={480}
               height={360}
               loading="lazy"
-              className="block size-full object-cover opacity-90 transition-transform duration-300 group-hover:scale-105"
+              className="block size-full object-cover opacity-90 transition-transform duration-300 group-hover:scale-110"
             />
           </span>
           <span aria-hidden="true" className={cultureStyles.playIndicator} />
         </span>
-        <span className="flex min-h-20 items-center px-4 py-3 font-bold text-cutout-hole text-lg leading-snug">
+        <span className="flex min-h-20 items-center justify-center px-4 py-3 text-center font-bold text-cutout-hole text-lg leading-snug [word-break:auto-phrase]">
           {item.name}
         </span>
       </button>
