@@ -6,6 +6,7 @@ import { allPortfolios } from 'content-collections';
 import type { ReactElement } from 'react';
 import externalLinkIcon from '@/assets/icons/external_link_line.svg';
 import PageMain from '@/components/layouts/PageMain';
+import { PageTitle } from '@/components/layouts/PageTitle';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
@@ -75,15 +76,7 @@ function PortfolioPage() {
 
   return (
     <PageMain>
-      <section className="border-cutout-hole border-b pb-8">
-        <div className="grid gap-5">
-          <div>
-            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
-              Portfolio
-            </h1>
-          </div>
-        </div>
-      </section>
+      <PageTitle>Portfolio</PageTitle>
 
       <div className="grid gap-10">
         {portfolioGroups.map((group) => (

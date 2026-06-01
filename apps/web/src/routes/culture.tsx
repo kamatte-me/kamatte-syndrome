@@ -13,6 +13,7 @@ import {
   useState,
 } from 'react';
 import PageMain from '@/components/layouts/PageMain';
+import { PageTitle } from '@/components/layouts/PageTitle';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { Modal, modalDialogSelector } from '@/components/ui/Modal';
 import { cn } from '@/utils/classNames';
@@ -279,15 +280,7 @@ function CulturePage() {
         ref={pageContentRef}
         className={cn(cultureStyles.pageContent, 'flex flex-col gap-8')}
       >
-        <section className="border-cutout-hole border-b pb-8">
-          <div className="grid gap-5">
-            <div>
-              <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
-                Culture
-              </h1>
-            </div>
-          </div>
-        </section>
+        <PageTitle>Culture</PageTitle>
 
         <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {cultureItems.map((item) => (

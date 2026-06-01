@@ -9,6 +9,7 @@ import { allPosts } from 'content-collections';
 import leftIcon from '@/assets/icons/left_fill.svg';
 import rightIcon from '@/assets/icons/right_fill.svg';
 import PageMain from '@/components/layouts/PageMain';
+import { PageTitle } from '@/components/layouts/PageTitle';
 import { Icon } from '@/components/ui/Icon';
 import {
   formatPostDate,
@@ -139,15 +140,7 @@ function BlogPage() {
 
   return (
     <PageMain>
-      <section className="border-cutout-hole border-b pb-8">
-        <div className="grid gap-5">
-          <div>
-            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
-              Blog
-            </h1>
-          </div>
-        </div>
-      </section>
+      <PageTitle>Blog</PageTitle>
 
       <ul className="grid gap-5">
         {posts.map((post) => (

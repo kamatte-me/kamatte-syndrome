@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { biography, skills as skillSet } from 'content-collections';
 import githubIcon from '@/assets/github_white.svg';
 import PageMain from '@/components/layouts/PageMain';
+import { PageTitle } from '@/components/layouts/PageTitle';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -23,15 +24,7 @@ function BiographyPage() {
 
   return (
     <PageMain>
-      <section className="border-cutout-hole border-b-4 pb-8">
-        <div className="grid gap-5">
-          <div>
-            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
-              Biography
-            </h1>
-          </div>
-        </div>
-      </section>
+      <PageTitle>Biography</PageTitle>
 
       <section className="grid gap-8 border-cutout-hole border-b pb-8 md:grid-cols-[240px_1fr] md:items-center">
         <div className="flex justify-center md:justify-start">

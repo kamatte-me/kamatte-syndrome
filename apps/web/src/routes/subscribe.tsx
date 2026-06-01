@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import PageMain from '@/components/layouts/PageMain';
+import { PageTitle } from '@/components/layouts/PageTitle';
 import { author } from '@/constants/site';
 
 const PAGE_TITLE = 'Subscribe';
@@ -22,15 +23,7 @@ export const Route = createFileRoute('/subscribe')({
 function SubscribePage() {
   return (
     <PageMain>
-      <section className="border-cutout-hole border-b pb-8">
-        <div className="grid gap-5">
-          <div>
-            <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
-              Subscribe
-            </h1>
-          </div>
-        </div>
-      </section>
+      <PageTitle>Subscribe</PageTitle>
 
       <section className="border border-cutout-hole p-7 sm:p-9">
         <h2 className="mb-6 font-bold text-4xl leading-tight sm:text-5xl">
