@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import PageMain from '@/components/layouts/PageMain';
+import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { Modal, modalDialogSelector } from '@/components/ui/Modal';

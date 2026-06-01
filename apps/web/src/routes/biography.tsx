@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { biography, skills as skillSet } from 'content-collections';
 import githubIcon from '@/assets/github_white.svg';
-import PageMain from '@/components/layouts/PageMain';
+import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(

@@ -13,23 +13,20 @@ const sizeClassNames = {
   narrow: 'max-w-4xl',
 } as const satisfies Record<PageMainSize, string>;
 
-const PageMain = forwardRef<HTMLElement, PageMainProps>(function PageMain(
-  { children, className, size, ...props },
-  ref,
-) {
-  return (
-    <main
-      ref={ref}
-      className={cn(
-        'mx-auto flex flex-col gap-8 px-6 py-8 sm:px-8',
-        size ? sizeClassNames[size] : defaultSizeClassName,
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </main>
-  );
-});
-
-export default PageMain;
+export const PageMain = forwardRef<HTMLElement, PageMainProps>(
+  function PageMain({ children, className, size, ...props }, ref) {
+    return (
+      <main
+        ref={ref}
+        className={cn(
+          'mx-auto flex flex-col gap-8 px-6 py-8 sm:px-8',
+          size ? sizeClassNames[size] : defaultSizeClassName,
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </main>
+    );
+  },
+);

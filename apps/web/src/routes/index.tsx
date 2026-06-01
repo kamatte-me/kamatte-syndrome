@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({ component: App });
 
 function App() {
   return (
-    <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-3 p-6 text-center md:gap-7">
+    <main className="flex min-h-full flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center md:gap-7">
       <h1 aria-label={siteName} className="flex w-full justify-center">
         <span
           aria-hidden="true"

@@ -5,7 +5,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import type { ReactElement } from 'react';
 import externalLinkIcon from '@/assets/icons/external_link_line.svg';
-import PageMain from '@/components/layouts/PageMain';
+import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';

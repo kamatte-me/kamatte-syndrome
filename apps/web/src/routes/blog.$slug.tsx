@@ -4,7 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import leftIcon from '@/assets/icons/left_fill.svg';
 import rightIcon from '@/assets/icons/right_fill.svg';
-import PageMain from '@/components/layouts/PageMain';
+import { PageMain } from '@/components/layouts/PageMain';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';

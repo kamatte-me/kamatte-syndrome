@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { privacyPolicy } from 'content-collections';
-import PageMain from '@/components/layouts/PageMain';
+import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 const PAGE_TITLE = 'プライバシーポリシー';

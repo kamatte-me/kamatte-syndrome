@@ -8,7 +8,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { allPosts } from 'content-collections';
 import leftIcon from '@/assets/icons/left_fill.svg';
 import rightIcon from '@/assets/icons/right_fill.svg';
-import PageMain from '@/components/layouts/PageMain';
+import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 import { Icon } from '@/components/ui/Icon';
 import {
