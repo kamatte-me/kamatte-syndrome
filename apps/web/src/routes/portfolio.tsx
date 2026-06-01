@@ -105,10 +105,10 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
 
   return (
     <li className="overflow-hidden border border-cutout-hole">
-      <div className="grid gap-0 md:grid-cols-[220px_1fr]">
+      <div className="grid items-start gap-5 p-4 sm:p-5 md:grid-cols-[minmax(9rem,11rem)_1fr] md:gap-6">
         <PortfolioImage item={item} link={link} />
 
-        <div className="flex flex-col gap-5 p-5 sm:p-6">
+        <div className="flex flex-col gap-5 md:min-h-44 md:py-1">
           <header className="grid gap-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-cutout-hole px-3 py-1 font-semibold text-cutout-hole text-xs">
@@ -135,7 +135,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
 
           <MarkdownContent variant="compact">{item.body}</MarkdownContent>
 
-          <ul className="flex flex-wrap gap-2">
+          <ul className="mt-auto flex flex-wrap gap-2">
             {item.technologies.map((technology) => (
               <li
                 key={technology}
@@ -159,32 +159,28 @@ function PortfolioImage({
   link?: string;
 }) {
   const image = item.image || undefined;
+  const frameClassName =
+    'block aspect-square w-40 max-w-full justify-self-center overflow-hidden sm:w-44 md:w-full md:justify-self-start';
   const imageContent = image ? (
     <img
       src={image}
       alt={item.name}
       width={440}
-      height={280}
+      height={440}
       loading="lazy"
-      className="h-full min-h-48 w-full object-cover md:min-h-full"
+      className="h-full w-full object-contain"
     />
   ) : (
-    <div className="flex h-full min-h-48 w-full flex-col items-center justify-center gap-1 border-cutout-hole border-b p-6 text-center md:min-h-full md:border-r md:border-b-0">
-      <span className="font-medium text-cutout-muted text-xs">
-        大人の事情で
-      </span>
-      <span className="font-display font-normal text-3xl text-cutout-muted">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-cutout-hole p-6 text-center">
+      <span className="text-black text-xs">大人の事情で</span>
+      <span className="whitespace-nowrap font-display font-normal text-2xl text-black leading-none sm:text-3xl">
         No Image
       </span>
     </div>
   );
 
   if (!link) {
-    return (
-      <div className="border-cutout-hole border-b md:border-r md:border-b-0">
-        {imageContent}
-      </div>
-    );
+    return <div className={frameClassName}>{imageContent}</div>;
   }
 
   return (
@@ -192,7 +188,7 @@ function PortfolioImage({
       href={link}
       target="_blank"
       rel="noreferrer"
-      className="block border-cutout-hole border-b hover:opacity-80 md:border-r md:border-b-0"
+      className={`${frameClassName} hover:opacity-80`}
       aria-label={`${item.name} を開く`}
     >
       {imageContent}
