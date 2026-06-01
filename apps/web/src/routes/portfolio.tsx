@@ -7,6 +7,7 @@ import type { ReactElement } from 'react';
 import externalLinkIcon from '@/assets/icons/external_link_line.svg';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
+import { Chip } from '@/components/ui/Chip';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
@@ -78,13 +79,13 @@ function PortfolioPage() {
     <PageMain>
       <PageTitle>Portfolio</PageTitle>
 
-      <div className="grid gap-10">
+      <div className="grid gap-10 md:gap-12">
         {portfolioGroups.map((group) => (
           <section
             key={group.year}
-            className="grid gap-5 md:grid-cols-[112px_1fr]"
+            className="grid gap-5 md:grid-cols-[112px_1fr] md:gap-x-8"
           >
-            <h2 className="sticky top-6 h-fit font-display font-normal text-4xl text-cutout-hole sm:text-5xl">
+            <h2 className="sticky top-6 h-fit text-center font-display font-normal text-4xl text-cutout-hole sm:text-5xl md:text-left">
               {group.year}
             </h2>
 
@@ -111,9 +112,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
         <div className="flex flex-col gap-5 md:min-h-44 md:py-1">
           <header className="grid gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-cutout-hole px-3 py-1 font-semibold text-cutout-hole text-xs">
-                {item.category}
-              </span>
+              <Chip className="font-semibold">{item.category}</Chip>
             </div>
 
             <h3 className="font-bold text-2xl leading-tight">
@@ -137,12 +136,9 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
 
           <ul className="mt-auto flex flex-wrap gap-2">
             {item.technologies.map((technology) => (
-              <li
-                key={technology}
-                className="rounded-full border border-cutout-hole px-3 py-1 text-cutout-hole text-xs"
-              >
-                {technology}
-              </li>
+              <Chip asChild key={technology}>
+                <li>{technology}</li>
+              </Chip>
             ))}
           </ul>
         </div>
