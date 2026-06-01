@@ -228,8 +228,11 @@ describe('Modal', () => {
       document.querySelector<HTMLElement>('[data-site-header]'),
     );
 
+    let didUnmount = false;
+
     try {
       await waitFor(() => {
+        expect(header).toHaveAttribute('data-site-header-modal-open', 'true');
         expect(header).toHaveAttribute('data-site-header-modal-cutout', 'true');
         expect(
           header.style.getPropertyValue('--site-header-modal-mask-height'),
@@ -244,8 +247,16 @@ describe('Modal', () => {
           header.style.getPropertyValue('--site-header-modal-mask-width'),
         ).toBe('220px');
       });
-    } finally {
+
       unmount();
+      didUnmount = true;
+
+      expect(header).not.toHaveAttribute('data-site-header-modal-open');
+      expect(header).not.toHaveAttribute('data-site-header-modal-cutout');
+    } finally {
+      if (!didUnmount) {
+        unmount();
+      }
       getBoundingClientRect.mockRestore();
     }
   });

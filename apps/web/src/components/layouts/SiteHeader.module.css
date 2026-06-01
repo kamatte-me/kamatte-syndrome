@@ -140,6 +140,16 @@
   .root[data-site-header-desktop-floating][data-site-header-desktop-revealed] {
     transform: translateY(0);
   }
+
+  .root[data-site-header-modal-open][data-site-header-desktop-floating],
+  [data-cutout-layer="stencil"][data-cutout-modal-open]
+    .root[data-site-header-desktop-floating] {
+    /* Avoid Safari repainting filtered cutout layers white under the modal. */
+    top: var(--site-header-desktop-reveal-y, 0);
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
 }
 
 @media (width >= 48rem) and (prefers-reduced-motion: reduce) {

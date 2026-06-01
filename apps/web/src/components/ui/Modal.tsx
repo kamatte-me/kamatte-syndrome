@@ -34,6 +34,11 @@ function clearSiteHeaderModalCutout(header: HTMLElement) {
   header.style.removeProperty('--site-header-modal-mask-width');
 }
 
+function clearSiteHeaderModalState(header: HTMLElement) {
+  delete header.dataset.siteHeaderModalOpen;
+  clearSiteHeaderModalCutout(header);
+}
+
 function applySiteHeaderModalCutout(header: HTMLElement, overlap: RectOverlap) {
   header.dataset.siteHeaderModalCutout = 'true';
   header.style.setProperty(
@@ -199,6 +204,8 @@ export function Modal({
       return;
     }
 
+    header.dataset.siteHeaderModalOpen = 'true';
+
     const updateHeaderCutout = () => {
       const dialogRect = dialog.getBoundingClientRect();
       const headerRect = header.getBoundingClientRect();
@@ -231,7 +238,7 @@ export function Modal({
       headerCutoutScheduler.cancel();
       resizeObserver.disconnect();
       removeViewportListeners();
-      clearSiteHeaderModalCutout(header);
+      clearSiteHeaderModalState(header);
     };
   }, [isContentLayer]);
 
