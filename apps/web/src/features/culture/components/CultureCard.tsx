@@ -1,6 +1,6 @@
 import { cn } from '@/utils/classNames';
 import type { CultureListItem } from '../types';
-import cultureStyles from './Culture.module.css';
+import cultureCardStyles from './CultureCard.module.css';
 
 type CultureCardProps = {
   item: CultureListItem;
@@ -17,14 +17,14 @@ export function CultureCard({ item, onOpen }: CultureCardProps) {
       >
         <span
           className={cn(
-            cultureStyles.cardFrame,
+            cultureCardStyles.cardFrame,
             'relative block aspect-[4/3] overflow-hidden',
           )}
         >
           <span
             data-culture-card-media
             className={cn(
-              cultureStyles.cardMedia,
+              cultureCardStyles.cardMedia,
               'block size-full overflow-hidden',
             )}
           >
@@ -37,7 +37,10 @@ export function CultureCard({ item, onOpen }: CultureCardProps) {
               className="block size-full object-cover opacity-90 transition-transform duration-300 group-hover:scale-110"
             />
           </span>
-          <span aria-hidden="true" className={cultureStyles.playIndicator} />
+          <span
+            aria-hidden="true"
+            className={cultureCardStyles.playIndicator}
+          />
         </span>
         <span className="flex min-h-20 items-center justify-center px-4 py-3 text-center font-bold text-cutout-hole text-lg leading-snug [word-break:auto-phrase]">
           {item.name}
