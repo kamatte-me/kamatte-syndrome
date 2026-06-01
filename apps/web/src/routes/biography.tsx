@@ -49,7 +49,7 @@ function BiographyPage() {
             href="https://github.com/kamatte-me"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-cutout-hole px-4 py-2 font-semibold text-cutout-hole text-sm leading-none"
+            className="inline-flex items-center gap-2 rounded-full border border-cutout-hole px-4 py-2 font-semibold text-base text-cutout-hole leading-none"
           >
             <img
               src={githubIcon}
@@ -57,7 +57,7 @@ function BiographyPage() {
               aria-hidden="true"
               width={18}
               height={18}
-              className="block size-[18px] shrink-0"
+              className="block size-5 shrink-0"
             />
             GitHub
           </a>
