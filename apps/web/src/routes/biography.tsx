@@ -77,9 +77,9 @@ function BiographyPage() {
       </section>
 
       <section className="mt-12 border border-cutout-hole p-6 sm:p-8 md:mt-16">
-        <div className="mb-6 border-cutout-hole border-b pb-4">
-          <h2 className="font-display font-normal text-3xl">Skills</h2>
-        </div>
+        <h2 className="mb-6 font-display font-normal text-4xl text-cutout-hole sm:mb-8 sm:text-5xl">
+          Skills
+        </h2>
 
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {skills.map((skill) => (
