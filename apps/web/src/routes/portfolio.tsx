@@ -1,34 +1,11 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
-import type { ReactElement } from 'react';
-import externalLinkIcon from '@/assets/icons/external_link_line.svg';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { Chip } from '@/components/ui/Chip';
-import { Icon } from '@/components/ui/Icon';
-import { MarkdownContent } from '@/components/ui/MarkdownContent';
-
-type RenderedServerComponent = RenderableServerComponent<ReactElement>;
-
-type PortfolioListItem = {
-  body: RenderedServerComponent;
-  category: string;
-  image?: string;
-  link?: string;
-  name: string;
-  order: number;
-  slug: string;
-  technologies: string[];
-  year: number;
-};
-
-type PortfolioYearGroup = {
-  items: PortfolioListItem[];
-  year: number;
-};
+import { PortfolioYearGroups } from '@/features/portfolio/components/PortfolioYearGroups';
+import { groupPortfolioItemsByYear } from '@/features/portfolio/utils/groupPortfolioItemsByYear';
 
 const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -79,134 +56,7 @@ function PortfolioPage() {
     <PageMain>
       <PageTitle>Portfolio</PageTitle>
 
-      <div className="grid gap-10 md:gap-12">
-        {portfolioGroups.map((group) => (
-          <section
-            key={group.year}
-            className="grid gap-5 md:grid-cols-[112px_1fr] md:gap-x-8"
-          >
-            <h2 className="sticky top-6 h-fit text-center font-display font-normal text-4xl text-cutout-hole sm:text-5xl md:text-left">
-              {group.year}
-            </h2>
-
-            <ul className="grid gap-5">
-              {group.items.map((item) => (
-                <PortfolioItemCard item={item} key={item.slug} />
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
+      <PortfolioYearGroups groups={portfolioGroups} />
     </PageMain>
   );
-}
-
-function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
-  const link = item.link || undefined;
-
-  return (
-    <li className="overflow-hidden border border-cutout-hole">
-      <div className="grid items-start gap-5 p-4 sm:p-5 md:grid-cols-[minmax(9rem,11rem)_1fr] md:gap-6">
-        <PortfolioImage item={item} link={link} />
-
-        <div className="flex flex-col gap-4 md:min-h-44 md:py-1">
-          <header className="grid gap-3">
-            <Chip className="font-semibold">{item.category}</Chip>
-
-            <h3 className="font-bold text-2xl leading-tight">
-              {link ? (
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-cutout-hole hover:text-cutout-hole"
-                >
-                  {item.name}
-                  <Icon className="size-4" src={externalLinkIcon} />
-                </a>
-              ) : (
-                item.name
-              )}
-            </h3>
-          </header>
-
-          <MarkdownContent variant="compact">{item.body}</MarkdownContent>
-
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {item.technologies.map((technology) => (
-              <Chip asChild key={technology}>
-                <li>{technology}</li>
-              </Chip>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </li>
-  );
-}
-
-function PortfolioImage({
-  item,
-  link,
-}: {
-  item: PortfolioListItem;
-  link?: string;
-}) {
-  const image = item.image || undefined;
-  const frameClassName =
-    'block aspect-square w-40 max-w-full justify-self-center overflow-hidden sm:w-44 md:w-full md:justify-self-start';
-  const imageContent = image ? (
-    <img
-      src={image}
-      alt={item.name}
-      width={440}
-      height={440}
-      loading="lazy"
-      className="h-full w-full object-contain"
-    />
-  ) : (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-cutout-hole p-6 text-center">
-      <span className="text-black text-xs">大人の事情で</span>
-      <span className="whitespace-nowrap font-display font-normal text-2xl text-black leading-none sm:text-3xl">
-        No Image
-      </span>
-    </div>
-  );
-
-  if (!link) {
-    return <div className={frameClassName}>{imageContent}</div>;
-  }
-
-  return (
-    <a
-      href={link}
-      target="_blank"
-      rel="noreferrer"
-      className={`${frameClassName} hover:opacity-80`}
-      aria-label={`${item.name} を開く`}
-    >
-      {imageContent}
-    </a>
-  );
-}
-
-function groupPortfolioItemsByYear(items: PortfolioListItem[]) {
-  const groups = new Map<number, PortfolioListItem[]>();
-
-  for (const item of items) {
-    const group = groups.get(item.year);
-
-    if (group) {
-      group.push(item);
-    } else {
-      groups.set(item.year, [item]);
-    }
-  }
-
-  return Array.from(groups, ([year, groupedItems]): PortfolioYearGroup => {
-    return {
-      year,
-      items: groupedItems,
-    };
-  });
 }
