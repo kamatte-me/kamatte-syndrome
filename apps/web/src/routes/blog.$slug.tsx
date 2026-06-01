@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import leftIcon from '@/assets/icons/left_fill.svg';
 import rightIcon from '@/assets/icons/right_fill.svg';
+import PageMain from '@/components/layouts/PageMain';
 import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';
@@ -62,7 +63,7 @@ function PostDetailPage() {
   const post = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
+    <PageMain size="narrow">
       <article className="border border-cutout-hole p-7 sm:p-9">
         <header className="mb-8 border-cutout-hole border-b pb-6">
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
@@ -90,7 +91,7 @@ function PostDetailPage() {
           previous={post.previousPost}
         />
       </article>
-    </main>
+    </PageMain>
   );
 }
 

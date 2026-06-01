@@ -8,6 +8,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { allPosts } from 'content-collections';
 import leftIcon from '@/assets/icons/left_fill.svg';
 import rightIcon from '@/assets/icons/right_fill.svg';
+import PageMain from '@/components/layouts/PageMain';
 import { Icon } from '@/components/ui/Icon';
 import {
   formatPostDate,
@@ -137,7 +138,7 @@ function BlogPage() {
   const { pageInfo, posts } = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
+    <PageMain>
       <section className="border-cutout-hole border-b pb-8">
         <div className="grid gap-5">
           <div>
@@ -183,6 +184,6 @@ function BlogPage() {
         currentPage={pageInfo.currentPage}
         totalPages={pageInfo.totalPages}
       />
-    </main>
+    </PageMain>
   );
 }

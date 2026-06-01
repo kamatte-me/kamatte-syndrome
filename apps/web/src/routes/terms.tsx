@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { terms } from 'content-collections';
+import PageMain from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 
 const PAGE_TITLE = '免責事項';
@@ -34,7 +35,7 @@ function TermsPage() {
   const { body } = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
+    <PageMain size="narrow">
       <article className="border border-cutout-hole p-7 sm:p-9">
         <header className="mb-8 border-cutout-hole border-b pb-6">
           <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
@@ -47,6 +48,6 @@ function TermsPage() {
 
         <MarkdownContent>{body}</MarkdownContent>
       </article>
-    </main>
+    </PageMain>
   );
 }

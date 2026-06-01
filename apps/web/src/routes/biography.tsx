@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { biography, skills as skillSet } from 'content-collections';
 import githubIcon from '@/assets/github_white.svg';
+import PageMain from '@/components/layouts/PageMain';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -21,8 +22,8 @@ function BiographyPage() {
   const { history, skills } = Route.useLoaderData();
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12">
-      <section className="border-cutout-hole border-b pb-8">
+    <PageMain>
+      <section className="border-cutout-hole border-b-4 pb-8">
         <div className="grid gap-5">
           <div>
             <h1 className="font-display font-normal text-5xl leading-none sm:text-6xl">
@@ -122,6 +123,6 @@ function BiographyPage() {
           ))}
         </ul>
       </section>
-    </main>
+    </PageMain>
   );
 }

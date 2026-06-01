@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import PageMain from '@/components/layouts/PageMain';
 import { author } from '@/constants/site';
 
 const PAGE_TITLE = 'Subscribe';
@@ -20,7 +21,7 @@ export const Route = createFileRoute('/subscribe')({
 
 function SubscribePage() {
   return (
-    <main className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
+    <PageMain>
       <section className="border-cutout-hole border-b pb-8">
         <div className="grid gap-5">
           <div>
@@ -100,6 +101,6 @@ function SubscribePage() {
           そして余談ですが、誕生日は7月10日です。
         </p>
       </section>
-    </main>
+    </PageMain>
   );
 }
