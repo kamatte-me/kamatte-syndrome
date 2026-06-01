@@ -109,7 +109,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
       <div className="grid items-start gap-5 p-4 sm:p-5 md:grid-cols-[minmax(9rem,11rem)_1fr] md:gap-6">
         <PortfolioImage item={item} link={link} />
 
-        <div className="flex flex-col gap-5 md:min-h-44 md:py-1">
+        <div className="flex flex-col gap-4 md:min-h-44 md:py-1">
           <header className="grid gap-3">
             <Chip className="font-semibold">{item.category}</Chip>
 
@@ -132,7 +132,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
 
           <MarkdownContent variant="compact">{item.body}</MarkdownContent>
 
-          <ul className="mt-auto flex flex-wrap gap-2">
+          <ul className="mt-3 flex flex-wrap gap-2">
             {item.technologies.map((technology) => (
               <Chip asChild key={technology}>
                 <li>{technology}</li>

@@ -28,6 +28,8 @@ describe('MarkdownContent', () => {
       'max-w-none',
       'prose-pre:border',
       'prose-li:marker:text-cutout-readable',
+      '[&>:first-child]:mt-0',
+      '[&>:last-child]:mb-0',
       'prose-p:my-5',
       'prose-ul:my-5',
       'text-base',
@@ -48,12 +50,14 @@ describe('MarkdownContent', () => {
     const content = screen.getByTestId('compact-content');
 
     expect(content).toHaveClass(
-      'prose-li:my-1',
-      'prose-p:my-3',
-      'prose-headings:mt-5',
-      'prose-headings:mb-2',
+      'prose-li:my-0.5',
+      'prose-p:my-2',
+      'prose-headings:mt-4',
+      'prose-headings:mb-1',
       'text-[15px]',
-      'leading-7',
+      'leading-6',
+      '[&>:first-child]:mt-0',
+      '[&>:last-child]:mb-0',
     );
     expect(content).not.toHaveClass('prose-p:my-5');
     expect(content).not.toHaveClass('leading-8');
