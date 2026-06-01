@@ -4,6 +4,7 @@ import { biography, skills as skillSet } from 'content-collections';
 import githubIcon from '@/assets/github_white.svg';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
+import { author } from '@/constants/site';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -26,21 +27,21 @@ function BiographyPage() {
     <PageMain>
       <PageTitle>Biography</PageTitle>
 
-      <section className="grid gap-8 border-cutout-hole border-b pb-8 md:grid-cols-[240px_1fr] md:items-center">
+      <section className="grid border-cutout-hole border-b pb-8 md:grid-cols-[288px_1fr] md:items-start md:gap-6">
         <div className="flex justify-center md:justify-start">
           <img
             src="/avatar.svg"
-            alt="kamatte"
-            width={240}
-            height={240}
-            className="aspect-square w-44 rounded-full border border-cutout-hole p-3 sm:w-56"
+            alt={author}
+            width={288}
+            height={288}
+            className="aspect-square w-56 sm:w-72"
           />
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
           <div>
-            <h2 className="font-display font-normal text-6xl leading-none sm:text-7xl">
-              kamatte
+            <h2 className="font-display font-normal text-5xl leading-none sm:text-6xl">
+              {author}
             </h2>
           </div>
 
@@ -60,29 +61,19 @@ function BiographyPage() {
             />
             GitHub
           </a>
-        </div>
-      </section>
 
-      <section className="border border-cutout-hole p-6 sm:p-8">
-        <div className="mb-6 border-cutout-hole border-b pb-4">
-          <h2 className="font-display font-normal text-3xl">Biography</h2>
+          <dl className="mx-auto grid w-fit max-w-full gap-0.5 text-left text-sm leading-6 sm:text-base md:mx-0 md:w-full md:max-w-md">
+            {history.map((item) => (
+              <div
+                key={`${item.year}-${item.description}`}
+                className="grid grid-cols-[3.5rem_minmax(0,1fr)] gap-1 sm:gap-4"
+              >
+                <dt className="text-cutout-hole tabular-nums">{item.year}年</dt>
+                <dd className="text-cutout-readable">{item.description}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-
-        <dl className="grid gap-4">
-          {history.map((item) => (
-            <div
-              key={`${item.year}-${item.description}`}
-              className="grid gap-2 border border-cutout-hole p-4 sm:grid-cols-[96px_1fr] sm:items-baseline"
-            >
-              <dt className="font-bold text-cutout-hole text-xl">
-                {item.year}
-              </dt>
-              <dd className="text-base text-cutout-readable leading-7">
-                {item.description}
-              </dd>
-            </div>
-          ))}
-        </dl>
       </section>
 
       <section className="border border-cutout-hole p-6 sm:p-8">
