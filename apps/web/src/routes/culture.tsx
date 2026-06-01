@@ -1,9 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import type { RenderableServerComponent } from '@tanstack/react-start/rsc';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allCultures } from 'content-collections';
-import type { ReactElement } from 'react';
 import {
   useCallback,
   useEffect,
@@ -14,24 +12,13 @@ import {
 } from 'react';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { MarkdownContent } from '@/components/ui/MarkdownContent';
-import { Modal, modalDialogSelector } from '@/components/ui/Modal';
+import { modalDialogSelector } from '@/components/ui/Modal';
+import { CultureCardList } from '@/features/culture/components/CultureCardList';
+import { CultureItemModal } from '@/features/culture/components/CultureItemModal';
 import { cn } from '@/utils/classNames';
 import cultureStyles from './culture.module.css';
 
-type RenderedServerComponent = RenderableServerComponent<ReactElement>;
-
-type CultureListItem = {
-  body: RenderedServerComponent;
-  name: string;
-  order: number;
-  slug: string;
-  youtubeVideoId: string;
-};
-
 const cultureModalChangeEvent = 'culture-modal-change';
-const useBrowserLayoutEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 const getCulturePageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -78,7 +65,6 @@ function CulturePage() {
   const pageRef = useRef<HTMLElement>(null);
   const pageContentRef = useRef<HTMLDivElement>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const [isStencilPage, setIsStencilPage] = useState(false);
 
   const selectedItem = useMemo(
     () => cultureItems.find((item) => item.slug === selectedSlug),
@@ -114,12 +100,6 @@ function CulturePage() {
     window.history.back();
   }, [selectedSlug]);
 
-  useBrowserLayoutEffect(() => {
-    setIsStencilPage(
-      Boolean(pageRef.current?.closest('[data-cutout-layer="stencil"]')),
-    );
-  }, []);
-
   useEffect(() => {
     const handlePopState = () => {
       setSelectedSlug(null);
@@ -140,8 +120,11 @@ function CulturePage() {
     };
   }, []);
 
-  useBrowserLayoutEffect(() => {
-    if (!selectedItem || isStencilPage) {
+  useLayoutEffect(() => {
+    if (
+      !selectedItem ||
+      pageRef.current?.closest('[data-cutout-layer="stencil"]')
+    ) {
       return;
     }
 
@@ -269,7 +252,7 @@ function CulturePage() {
       );
       clearObscuredPageContent();
     };
-  }, [isStencilPage, selectedItem]);
+  }, [selectedItem]);
 
   return (
     <PageMain
@@ -282,109 +265,12 @@ function CulturePage() {
       >
         <PageTitle>Culture</PageTitle>
 
-        <ul className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {cultureItems.map((item) => (
-            <CultureCard item={item} key={item.slug} onOpen={openModal} />
-          ))}
-        </ul>
+        <CultureCardList items={cultureItems} onOpen={openModal} />
       </div>
 
       {selectedItem ? (
-        <CultureModal item={selectedItem} onClose={closeModal} />
+        <CultureItemModal item={selectedItem} onClose={closeModal} />
       ) : null}
     </PageMain>
-  );
-}
-
-function CultureCard({
-  item,
-  onOpen,
-}: {
-  item: CultureListItem;
-  onOpen: (slug: string) => void;
-}) {
-  return (
-    <li>
-      <button
-        type="button"
-        className="group grid h-full w-full cursor-pointer overflow-hidden border border-cutout-hole text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
-        onClick={() => onOpen(item.slug)}
-      >
-        <span
-          className={cn(
-            cultureStyles.cardFrame,
-            'relative block aspect-[4/3] overflow-hidden',
-          )}
-        >
-          <span
-            data-culture-card-media
-            className={cn(
-              cultureStyles.cardMedia,
-              'block size-full overflow-hidden',
-            )}
-          >
-            <img
-              src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
-              alt=""
-              width={480}
-              height={360}
-              loading="lazy"
-              className="block size-full object-cover opacity-90 transition-transform duration-300 group-hover:scale-110"
-            />
-          </span>
-          <span aria-hidden="true" className={cultureStyles.playIndicator} />
-        </span>
-        <span className="flex min-h-20 items-center justify-center px-4 py-3 text-center font-bold text-cutout-hole text-lg leading-snug [word-break:auto-phrase]">
-          {item.name}
-        </span>
-      </button>
-    </li>
-  );
-}
-
-function CultureModal({
-  item,
-  onClose,
-}: {
-  item: CultureListItem;
-  onClose: () => void;
-}) {
-  return (
-    <Modal onClose={onClose} titleId="culture-modal-title">
-      {({ isContentLayer }) => (
-        <>
-          <div className="shrink-0 border-cutout-hole border-b p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:border-r [@media_(orientation:landscape)_and_(max-height:500px)]:border-b-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4">
-            <div className="mx-auto aspect-video w-full md:max-w-2xl lg:max-w-none">
-              {isContentLayer ? (
-                <iframe
-                  title={`${item.name} - YouTube`}
-                  src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1`}
-                  className="size-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              ) : (
-                <div aria-hidden="true" className="size-full" />
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8 [@media_(orientation:landscape)_and_(max-height:500px)]:min-h-0 [@media_(orientation:landscape)_and_(max-height:500px)]:flex-1 [@media_(orientation:landscape)_and_(max-height:500px)]:p-5">
-            <header className="shrink-0 border-cutout-hole border-b pb-4">
-              <h2
-                className="font-bold text-3xl leading-tight sm:text-4xl"
-                id="culture-modal-title"
-              >
-                {item.name}
-              </h2>
-            </header>
-
-            <MarkdownContent className="pr-1" variant="compact">
-              {item.body}
-            </MarkdownContent>
-          </div>
-        </>
-      )}
-    </Modal>
   );
 }
