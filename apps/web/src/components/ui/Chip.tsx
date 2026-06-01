@@ -13,7 +13,7 @@ export function Chip({ asChild = false, className, ...props }: ChipProps) {
     <Component
       {...props}
       className={cn(
-        'inline-flex rounded-full border border-cutout-hole px-3 py-1 text-cutout-hole text-xs',
+        'inline-flex w-fit max-w-full rounded-full border border-cutout-hole px-3 py-1 text-cutout-hole text-xs',
         className,
       )}
     />

@@ -111,9 +111,7 @@ function PortfolioItemCard({ item }: { item: PortfolioListItem }) {
 
         <div className="flex flex-col gap-5 md:min-h-44 md:py-1">
           <header className="grid gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <Chip className="font-semibold">{item.category}</Chip>
-            </div>
+            <Chip className="font-semibold">{item.category}</Chip>
 
             <h3 className="font-bold text-2xl leading-tight">
               {link ? (
