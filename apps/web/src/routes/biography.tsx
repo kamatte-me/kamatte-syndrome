@@ -27,7 +27,7 @@ function BiographyPage() {
     <PageMain>
       <PageTitle>Biography</PageTitle>
 
-      <section className="grid border-cutout-hole border-b pb-8 md:grid-cols-[288px_1fr] md:items-start md:gap-6">
+      <section className="grid md:grid-cols-[288px_1fr] md:items-start md:gap-6">
         <div className="flex justify-center md:justify-start">
           <img
             src="/avatar.svg"
@@ -76,7 +76,7 @@ function BiographyPage() {
         </div>
       </section>
 
-      <section className="border border-cutout-hole p-6 sm:p-8">
+      <section className="mt-12 border border-cutout-hole p-6 sm:p-8 md:mt-16">
         <div className="mb-6 border-cutout-hole border-b pb-4">
           <h2 className="font-display font-normal text-3xl">Skills</h2>
         </div>

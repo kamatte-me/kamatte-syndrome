@@ -278,7 +278,7 @@ function CulturePage() {
     >
       <div
         ref={pageContentRef}
-        className={cn(cultureStyles.pageContent, 'flex flex-col gap-8')}
+        className={cn(cultureStyles.pageContent, 'flex flex-col')}
       >
         <PageTitle>Culture</PageTitle>
 

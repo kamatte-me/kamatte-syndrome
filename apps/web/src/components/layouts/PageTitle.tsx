@@ -8,7 +8,7 @@ type PageTitleProps = Omit<ComponentPropsWithoutRef<'section'>, 'children'> & {
 export function PageTitle({ children, className, ...props }: PageTitleProps) {
   return (
     <section
-      className={cn('border-cutout-hole border-b-4 pb-8', className)}
+      className={cn('mb-8 border-cutout-hole border-b-4 pb-8', className)}
       {...props}
     >
       <h1 className="text-center font-display font-normal text-5xl leading-none sm:text-6xl md:text-left">

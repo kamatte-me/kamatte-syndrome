@@ -19,7 +19,7 @@ export const PageMain = forwardRef<HTMLElement, PageMainProps>(
       <main
         ref={ref}
         className={cn(
-          'mx-auto flex flex-col gap-8 px-6 py-8 sm:px-8',
+          'mx-auto flex flex-col px-6 py-8 sm:px-8',
           size ? sizeClassNames[size] : defaultSizeClassName,
           className,
         )}
