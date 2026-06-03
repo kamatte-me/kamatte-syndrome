@@ -12,8 +12,8 @@ export function CultureItemModal({ item, onClose }: CultureItemModalProps) {
     <Modal onClose={onClose} titleId="culture-modal-title">
       {({ isContentLayer }) => (
         <>
-          <div className="shrink-0 border-cutout-hole border-b p-4 sm:p-5 lg:flex lg:w-[42%] lg:items-center lg:border-r lg:border-b-0 lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:border-r [@media_(orientation:landscape)_and_(max-height:500px)]:border-b-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4">
-            <div className="mx-auto aspect-video w-full md:max-w-2xl lg:max-w-none">
+          <div className="shrink-0 p-4 sm:p-5 lg:flex lg:w-[48%] lg:items-center lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:p-4">
+            <div className="mx-auto aspect-video w-full max-w-xl lg:max-w-none">
               {isContentLayer ? (
                 <iframe
                   title={`${item.name} - YouTube`}

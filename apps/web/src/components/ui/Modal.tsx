@@ -247,7 +247,7 @@ export function Modal({
       ref={modalRootRef}
       className={cn(
         styles.root,
-        'fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4',
+        'fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 md:p-0 [@media_(orientation:landscape)_and_(max-height:500px)]:p-4',
       )}
       data-ui-modal-root=""
       style={modalStyle}
@@ -264,22 +264,22 @@ export function Modal({
         aria-modal="true"
         className={cn(
           styles.panel,
-          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[80dvh] sm:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]',
+          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[calc(100dvh-4rem)] sm:w-[calc(100vw-4rem)] md:h-[80dvh] md:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]',
           customDialogClassName,
         )}
         data-ui-modal-dialog=""
         role="dialog"
         tabIndex={-1}
       >
-        <div className="flex shrink-0 justify-end border-cutout-hole border-b p-1.5 sm:p-2">
+        <div className="flex shrink-0 justify-end p-1.5 sm:p-2">
           <button
             type="button"
             aria-label={closeLabel}
-            className="flex size-9 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-11 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
+            className="flex size-9 cursor-pointer items-center justify-center text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-13 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
             onClick={onClose}
           >
             <Icon
-              className="size-4 sm:size-5 [@media_(orientation:landscape)_and_(max-height:500px)]:size-4"
+              className="size-8 sm:size-12 [@media_(orientation:landscape)_and_(max-height:500px)]:size-5"
               src={closeFillIcon}
             />
           </button>
