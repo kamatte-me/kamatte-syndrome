@@ -12,8 +12,8 @@ export function CultureItemModal({ item, onClose }: CultureItemModalProps) {
     <Modal onClose={onClose} titleId="culture-modal-title">
       {({ isContentLayer }) => (
         <>
-          <div className="shrink-0 p-4 sm:p-5 lg:flex lg:w-[48%] lg:items-center lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:p-4">
-            <div className="mx-auto aspect-video w-full max-w-xl lg:max-w-none">
+          <div className="shrink-0 px-4 sm:px-5 lg:flex lg:w-[48%] lg:items-center lg:p-6 [@media_(orientation:landscape)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-height:500px)]:items-center [@media_(orientation:landscape)_and_(max-height:500px)]:px-4">
+            <div className="mx-auto aspect-video w-full max-w-xl lg:max-w-none [@media_(min-width:768px)_and_(max-width:1023px)_and_(max-height:900px)]:max-w-md">
               {isContentLayer ? (
                 <iframe
                   title={`${item.name} - YouTube`}
@@ -28,10 +28,10 @@ export function CultureItemModal({ item, onClose }: CultureItemModalProps) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 p-5 sm:p-7 lg:min-h-0 lg:flex-1 lg:p-8 [@media_(orientation:landscape)_and_(max-height:500px)]:min-h-0 [@media_(orientation:landscape)_and_(max-height:500px)]:flex-1 [@media_(orientation:landscape)_and_(max-height:500px)]:p-5">
+          <div className="flex flex-col gap-5 p-5 lg:min-h-0 lg:flex-1 lg:p-7 lg:p-8 [@media_(orientation:landscape)_and_(max-height:500px)]:min-h-0 [@media_(orientation:landscape)_and_(max-height:500px)]:flex-1 [@media_(orientation:landscape)_and_(max-height:500px)]:p-5">
             <header className="shrink-0 border-cutout-hole border-b pb-4">
               <h2
-                className="font-bold text-3xl leading-tight sm:text-4xl"
+                className="font-bold text-3xl leading-tight lg:text-4xl"
                 id="culture-modal-title"
               >
                 {item.name}
