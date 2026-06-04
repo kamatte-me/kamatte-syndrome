@@ -29,7 +29,7 @@ export function CultureItemModal({ item, onClose }: CultureItemModalProps) {
           </div>
 
           <div className="flex flex-col gap-5 p-5 lg:min-h-0 lg:flex-1 lg:p-7 lg:p-8 [@media_(orientation:landscape)_and_(max-height:500px)]:min-h-0 [@media_(orientation:landscape)_and_(max-height:500px)]:flex-1 [@media_(orientation:landscape)_and_(max-height:500px)]:p-5">
-            <header className="shrink-0 border-cutout-hole border-b pb-4">
+            <header className="shrink-0 border-cutout-hole border-b pb-3 lg:pb-4">
               <h2
                 className="font-bold text-3xl leading-tight lg:text-4xl"
                 id="culture-modal-title"
@@ -38,9 +38,7 @@ export function CultureItemModal({ item, onClose }: CultureItemModalProps) {
               </h2>
             </header>
 
-            <MarkdownContent className="pr-1" variant="compact">
-              {item.body}
-            </MarkdownContent>
+            <MarkdownContent variant="compact">{item.body}</MarkdownContent>
           </div>
         </>
       )}
