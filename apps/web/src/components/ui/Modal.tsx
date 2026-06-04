@@ -86,6 +86,7 @@ export function Modal({
     useState<HTMLElement | null>(null);
   const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
 
+  // Identify whether this render is the interactive modal or its stencil copy.
   useLayoutEffect(() => {
     const stencilLayer =
       modalRootRef.current?.closest<HTMLElement>(
@@ -138,6 +139,7 @@ export function Modal({
     };
   }, []);
 
+  // Cut the base stencil only where the separately portaled modal stencil sits.
   useLayoutEffect(() => {
     if (isContentLayer || !stencilPortalTarget) {
       return;
@@ -191,6 +193,7 @@ export function Modal({
     };
   }, [isContentLayer, stencilPortalTarget]);
 
+  // The content layer owns real interaction, focus, and body scroll locking.
   useEffect(() => {
     if (!isContentLayer) {
       return;
@@ -215,6 +218,7 @@ export function Modal({
     };
   }, [isContentLayer, onClose]);
 
+  // Mirror modal-body scrolling so the stencil copy stays visually aligned.
   useEffect(() => {
     if (!isContentLayer) {
       return;
@@ -270,6 +274,7 @@ export function Modal({
   const renderedChildren =
     typeof children === 'function' ? children({ isContentLayer }) : children;
 
+  // Hide the content-layer header only where it visually overlaps the modal.
   useEffect(() => {
     if (!isContentLayer) {
       return;
