@@ -132,9 +132,103 @@ describe('Modal', () => {
     });
   });
 
+  it('renders stencil-layer dialog content into the modal stencil layer when available', async () => {
+    const getBoundingClientRect = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function getMockBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        if (this.matches('[data-cutout-layer="stencil"]')) {
+          return createBoundingClientRect({
+            height: 800,
+            left: 0,
+            top: -200,
+            width: 320,
+          });
+        }
+
+        if (this.matches(modalDialogSelector)) {
+          return createBoundingClientRect({
+            height: 160,
+            left: 40,
+            top: 24,
+            width: 220,
+          });
+        }
+
+        return createBoundingClientRect({
+          height: 0,
+          left: 0,
+          top: 0,
+          width: 0,
+        });
+      });
+
+    const { container, unmount } = render(
+      <>
+        <div data-cutout-layer="modal-stencil" />
+        <div data-cutout-layer="stencil">
+          <Modal onClose={vi.fn()} titleId="modal-title">
+            {({ isContentLayer }) => (
+              <h2 id="modal-title">
+                {isContentLayer ? 'Content modal' : 'Stencil modal'}
+              </h2>
+            )}
+          </Modal>
+        </div>
+      </>,
+    );
+
+    const stencilLayer = requireElement(
+      container.querySelector<HTMLElement>('[data-cutout-layer="stencil"]'),
+    );
+    const modalStencilLayer = requireElement(
+      container.querySelector<HTMLElement>(
+        '[data-cutout-layer="modal-stencil"]',
+      ),
+    );
+
+    try {
+      await waitFor(() => {
+        expect(
+          modalStencilLayer.querySelector('[data-ui-modal-dialog]'),
+        ).toHaveTextContent('Stencil modal');
+      });
+      expect(stencilLayer.querySelector('[data-ui-modal-dialog]')).toBeNull();
+      expect(stencilLayer).toHaveAttribute('data-cutout-modal-open');
+
+      await waitFor(() => {
+        expect(stencilLayer).toHaveAttribute(
+          'data-cutout-modal-cutout',
+          'true',
+        );
+        expect(
+          stencilLayer.style.getPropertyValue('--cutout-modal-mask-height'),
+        ).toBe('160px');
+        expect(
+          stencilLayer.style.getPropertyValue('--cutout-modal-mask-left'),
+        ).toBe('40px');
+        expect(
+          stencilLayer.style.getPropertyValue('--cutout-modal-mask-top'),
+        ).toBe('224px');
+        expect(
+          stencilLayer.style.getPropertyValue('--cutout-modal-mask-width'),
+        ).toBe('220px');
+      });
+
+      unmount();
+
+      expect(stencilLayer).not.toHaveAttribute('data-cutout-modal-open');
+      expect(stencilLayer).not.toHaveAttribute('data-cutout-modal-cutout');
+    } finally {
+      getBoundingClientRect.mockRestore();
+    }
+  });
+
   it('syncs modal body scrolling from the content layer to the stencil layer', async () => {
     render(
       <>
+        <div data-cutout-layer="modal-stencil" />
         <div data-cutout-layer="stencil">
           <Modal onClose={vi.fn()} titleId="stencil-title">
             <h2 id="stencil-title">Stencil modal</h2>
@@ -150,7 +244,7 @@ describe('Modal', () => {
 
     const stencilBody = requireElement(
       document.querySelector<HTMLElement>(
-        `[data-cutout-layer="stencil"] [data-ui-modal-body]`,
+        `[data-cutout-layer="modal-stencil"] [data-ui-modal-body]`,
       ),
     );
     const contentBody = requireElement(

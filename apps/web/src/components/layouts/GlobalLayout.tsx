@@ -66,6 +66,16 @@ export function GlobalLayout({ children }: { children: ReactNode }) {
           </LayoutFrame>
         </div>
         <div
+          aria-hidden="true"
+          className={cn(
+            styles.modalStencilLayer,
+            'pointer-events-none fixed inset-0 z-[5] overflow-hidden',
+          )}
+          data-cutout-layer="modal-stencil"
+          data-nosnippet
+          inert
+        />
+        <div
           className={cn(styles.contentLayer, 'relative z-10')}
           data-cutout-layer="content"
         >

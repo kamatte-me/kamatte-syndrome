@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import closeFillIcon from '@/assets/icons/close_fill.svg';
 import { cn } from '@/utils/classNames';
 import { getRectOverlap, type RectOverlap } from '@/utils/cutoutGeometry';
@@ -23,6 +24,7 @@ export type ModalProps = {
 export const modalDialogSelector = '[data-ui-modal-dialog]';
 
 const modalBodySelector = '[data-ui-modal-body]';
+const modalStencilLayerSelector = '[data-cutout-layer="modal-stencil"]';
 const contentHeaderSelector =
   '[data-cutout-layer="content"] [data-site-header]';
 
@@ -37,6 +39,14 @@ function clearSiteHeaderModalCutout(header: HTMLElement) {
 function clearSiteHeaderModalState(header: HTMLElement) {
   delete header.dataset.siteHeaderModalOpen;
   clearSiteHeaderModalCutout(header);
+}
+
+function clearStencilLayerModalCutout(stencilLayer: HTMLElement) {
+  delete stencilLayer.dataset.cutoutModalCutout;
+  stencilLayer.style.removeProperty('--cutout-modal-mask-height');
+  stencilLayer.style.removeProperty('--cutout-modal-mask-left');
+  stencilLayer.style.removeProperty('--cutout-modal-mask-top');
+  stencilLayer.style.removeProperty('--cutout-modal-mask-width');
 }
 
 function applySiteHeaderModalCutout(header: HTMLElement, overlap: RectOverlap) {
@@ -56,6 +66,26 @@ function applySiteHeaderModalCutout(header: HTMLElement, overlap: RectOverlap) {
   );
 }
 
+function applyStencilLayerModalCutout(
+  stencilLayer: HTMLElement,
+  overlap: RectOverlap,
+) {
+  stencilLayer.dataset.cutoutModalCutout = 'true';
+  stencilLayer.style.setProperty(
+    '--cutout-modal-mask-height',
+    `${overlap.height}px`,
+  );
+  stencilLayer.style.setProperty(
+    '--cutout-modal-mask-left',
+    `${overlap.left}px`,
+  );
+  stencilLayer.style.setProperty('--cutout-modal-mask-top', `${overlap.top}px`);
+  stencilLayer.style.setProperty(
+    '--cutout-modal-mask-width',
+    `${overlap.width}px`,
+  );
+}
+
 export function Modal({
   bodyClassName: customBodyClassName,
   children,
@@ -66,23 +96,33 @@ export function Modal({
 }: ModalProps) {
   const modalRootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const stencilLayerRef = useRef<HTMLElement | null>(null);
   const [isContentLayer, setIsContentLayer] = useState(false);
+  const [stencilPortalTarget, setStencilPortalTarget] =
+    useState<HTMLElement | null>(null);
   const [stencilScrollY, setStencilScrollY] = useState<number | null>(null);
 
   useLayoutEffect(() => {
-    const stencilLayer = modalRootRef.current?.closest<HTMLElement>(
-      '[data-cutout-layer="stencil"]',
-    );
-    const isStencilModal = Boolean(stencilLayer);
+    const stencilLayer =
+      modalRootRef.current?.closest<HTMLElement>(
+        '[data-cutout-layer="stencil"]',
+      ) ?? null;
 
-    setIsContentLayer(!isStencilModal);
-
-    if (!isStencilModal) {
+    if (!stencilLayer) {
+      setIsContentLayer(true);
+      stencilLayerRef.current = null;
+      setStencilPortalTarget(null);
       setStencilScrollY(null);
       dialogRef.current?.focus();
 
       return;
     }
+
+    setIsContentLayer(false);
+    stencilLayerRef.current = stencilLayer;
+    setStencilPortalTarget(
+      document.querySelector<HTMLElement>(modalStencilLayerSelector),
+    );
 
     const updateStencilScrollY = () => {
       const scrollY = window.scrollY;
@@ -110,8 +150,62 @@ export function Modal({
       removeViewportListeners();
       stencilLayer?.removeAttribute('data-cutout-modal-open');
       stencilLayer?.style.removeProperty('--cutout-stencil-scroll-y');
+      clearStencilLayerModalCutout(stencilLayer);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    if (isContentLayer || !stencilPortalTarget) {
+      return;
+    }
+
+    const stencilLayer = stencilLayerRef.current;
+    const dialog = dialogRef.current;
+
+    if (!stencilLayer || !dialog) {
+      return;
+    }
+
+    const updateStencilLayerCutout = () => {
+      const dialogRect = dialog.getBoundingClientRect();
+      const stencilRect = stencilLayer.getBoundingClientRect();
+      const overlap = getRectOverlap(dialogRect, stencilRect);
+
+      clearStencilLayerModalCutout(stencilLayer);
+
+      if (!overlap) {
+        return;
+      }
+
+      applyStencilLayerModalCutout(stencilLayer, overlap);
+    };
+
+    const stencilLayerCutoutScheduler = createRafScheduler(
+      updateStencilLayerCutout,
+      {
+        replacePending: true,
+      },
+    );
+
+    const resizeObserver = new ResizeObserver(
+      stencilLayerCutoutScheduler.schedule,
+    );
+
+    resizeObserver.observe(dialog);
+    resizeObserver.observe(stencilLayer);
+    updateStencilLayerCutout();
+
+    const removeViewportListeners = addViewportListeners(
+      stencilLayerCutoutScheduler.schedule,
+    );
+
+    return () => {
+      stencilLayerCutoutScheduler.cancel();
+      resizeObserver.disconnect();
+      removeViewportListeners();
+      clearStencilLayerModalCutout(stencilLayer);
+    };
+  }, [isContentLayer, stencilPortalTarget]);
 
   useEffect(() => {
     if (!isContentLayer) {
@@ -152,7 +246,7 @@ export function Modal({
     let stencilBody: HTMLElement | null = null;
     const getStencilBody = () => {
       stencilBody ??= document.querySelector<HTMLElement>(
-        `[data-cutout-layer="stencil"] ${modalBodySelector}`,
+        `${modalStencilLayerSelector} ${modalBodySelector}, [data-cutout-layer="stencil"] ${modalBodySelector}`,
       );
 
       return stencilBody;
@@ -242,7 +336,7 @@ export function Modal({
     };
   }, [isContentLayer]);
 
-  return (
+  const modal = (
     <div
       ref={modalRootRef}
       className={cn(
@@ -297,4 +391,10 @@ export function Modal({
       </section>
     </div>
   );
+
+  if (!isContentLayer && stencilPortalTarget) {
+    return createPortal(modal, stencilPortalTarget);
+  }
+
+  return modal;
 }

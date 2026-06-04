@@ -15,8 +15,13 @@
   height: 100dvh;
 }
 
+[data-cutout-layer="modal-stencil"] .panel,
 [data-cutout-layer="stencil"] .panel {
   background-color: var(--cutout-stencil-surface-source);
+}
+
+[data-cutout-layer="modal-stencil"] .panel {
+  filter: url("#global-cutout-filter");
 }
 
 [data-cutout-layer="content"] .panel {
