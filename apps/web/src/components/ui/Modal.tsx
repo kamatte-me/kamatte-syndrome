@@ -12,6 +12,11 @@ type ModalRenderState = {
   isContentLayer: boolean;
 };
 
+type ModalCutoutConfig = {
+  datasetKey: string;
+  variablePrefix: string;
+};
+
 export type ModalProps = {
   bodyClassName?: string;
   children: ReactNode | ((state: ModalRenderState) => ReactNode);
@@ -27,63 +32,42 @@ const modalBodySelector = '[data-ui-modal-body]';
 const modalStencilLayerSelector = '[data-cutout-layer="modal-stencil"]';
 const contentHeaderSelector =
   '[data-cutout-layer="content"] [data-site-header]';
+const modalCutoutRectProperties = ['height', 'left', 'top', 'width'] as const;
+const siteHeaderModalCutoutConfig = {
+  datasetKey: 'siteHeaderModalCutout',
+  variablePrefix: '--site-header-modal-mask',
+} as const satisfies ModalCutoutConfig;
+const stencilLayerModalCutoutConfig = {
+  datasetKey: 'cutoutModalCutout',
+  variablePrefix: '--cutout-modal-mask',
+} as const satisfies ModalCutoutConfig;
 
-function clearSiteHeaderModalCutout(header: HTMLElement) {
-  delete header.dataset.siteHeaderModalCutout;
-  header.style.removeProperty('--site-header-modal-mask-height');
-  header.style.removeProperty('--site-header-modal-mask-left');
-  header.style.removeProperty('--site-header-modal-mask-top');
-  header.style.removeProperty('--site-header-modal-mask-width');
+function clearModalCutout(element: HTMLElement, config: ModalCutoutConfig) {
+  delete element.dataset[config.datasetKey];
+
+  for (const property of modalCutoutRectProperties) {
+    element.style.removeProperty(`${config.variablePrefix}-${property}`);
+  }
 }
 
 function clearSiteHeaderModalState(header: HTMLElement) {
   delete header.dataset.siteHeaderModalOpen;
-  clearSiteHeaderModalCutout(header);
+  clearModalCutout(header, siteHeaderModalCutoutConfig);
 }
 
-function clearStencilLayerModalCutout(stencilLayer: HTMLElement) {
-  delete stencilLayer.dataset.cutoutModalCutout;
-  stencilLayer.style.removeProperty('--cutout-modal-mask-height');
-  stencilLayer.style.removeProperty('--cutout-modal-mask-left');
-  stencilLayer.style.removeProperty('--cutout-modal-mask-top');
-  stencilLayer.style.removeProperty('--cutout-modal-mask-width');
-}
-
-function applySiteHeaderModalCutout(header: HTMLElement, overlap: RectOverlap) {
-  header.dataset.siteHeaderModalCutout = 'true';
-  header.style.setProperty(
-    '--site-header-modal-mask-height',
-    `${overlap.height}px`,
-  );
-  header.style.setProperty(
-    '--site-header-modal-mask-left',
-    `${overlap.left}px`,
-  );
-  header.style.setProperty('--site-header-modal-mask-top', `${overlap.top}px`);
-  header.style.setProperty(
-    '--site-header-modal-mask-width',
-    `${overlap.width}px`,
-  );
-}
-
-function applyStencilLayerModalCutout(
-  stencilLayer: HTMLElement,
+function applyModalCutout(
+  element: HTMLElement,
   overlap: RectOverlap,
+  config: ModalCutoutConfig,
 ) {
-  stencilLayer.dataset.cutoutModalCutout = 'true';
-  stencilLayer.style.setProperty(
-    '--cutout-modal-mask-height',
-    `${overlap.height}px`,
-  );
-  stencilLayer.style.setProperty(
-    '--cutout-modal-mask-left',
-    `${overlap.left}px`,
-  );
-  stencilLayer.style.setProperty('--cutout-modal-mask-top', `${overlap.top}px`);
-  stencilLayer.style.setProperty(
-    '--cutout-modal-mask-width',
-    `${overlap.width}px`,
-  );
+  element.dataset[config.datasetKey] = 'true';
+
+  for (const property of modalCutoutRectProperties) {
+    element.style.setProperty(
+      `${config.variablePrefix}-${property}`,
+      `${overlap[property]}px`,
+    );
+  }
 }
 
 export function Modal({
@@ -150,7 +134,7 @@ export function Modal({
       removeViewportListeners();
       stencilLayer?.removeAttribute('data-cutout-modal-open');
       stencilLayer?.style.removeProperty('--cutout-stencil-scroll-y');
-      clearStencilLayerModalCutout(stencilLayer);
+      clearModalCutout(stencilLayer, stencilLayerModalCutoutConfig);
     };
   }, []);
 
@@ -171,13 +155,13 @@ export function Modal({
       const stencilRect = stencilLayer.getBoundingClientRect();
       const overlap = getRectOverlap(dialogRect, stencilRect);
 
-      clearStencilLayerModalCutout(stencilLayer);
+      clearModalCutout(stencilLayer, stencilLayerModalCutoutConfig);
 
       if (!overlap) {
         return;
       }
 
-      applyStencilLayerModalCutout(stencilLayer, overlap);
+      applyModalCutout(stencilLayer, overlap, stencilLayerModalCutoutConfig);
     };
 
     const stencilLayerCutoutScheduler = createRafScheduler(
@@ -203,7 +187,7 @@ export function Modal({
       stencilLayerCutoutScheduler.cancel();
       resizeObserver.disconnect();
       removeViewportListeners();
-      clearStencilLayerModalCutout(stencilLayer);
+      clearModalCutout(stencilLayer, stencilLayerModalCutoutConfig);
     };
   }, [isContentLayer, stencilPortalTarget]);
 
@@ -305,13 +289,13 @@ export function Modal({
       const headerRect = header.getBoundingClientRect();
       const overlap = getRectOverlap(dialogRect, headerRect);
 
-      clearSiteHeaderModalCutout(header);
+      clearModalCutout(header, siteHeaderModalCutoutConfig);
 
       if (!overlap) {
         return;
       }
 
-      applySiteHeaderModalCutout(header, overlap);
+      applyModalCutout(header, overlap, siteHeaderModalCutoutConfig);
     };
 
     const headerCutoutScheduler = createRafScheduler(updateHeaderCutout, {

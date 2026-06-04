@@ -47,6 +47,52 @@ function requireElement<T extends Element>(element: T | null): T {
   return element;
 }
 
+type LayeredModalFixtureOptions = {
+  contentTitleId?: string;
+  includeContentLayer?: boolean;
+  includeModalStencilLayer?: boolean;
+  includeStencilLayer?: boolean;
+  stencilTitleId?: string;
+};
+
+function renderLayeredModal({
+  contentTitleId = 'content-title',
+  includeContentLayer = true,
+  includeModalStencilLayer = true,
+  includeStencilLayer = true,
+  stencilTitleId = 'stencil-title',
+}: LayeredModalFixtureOptions = {}) {
+  return render(
+    <>
+      {includeModalStencilLayer ? (
+        <div data-cutout-layer="modal-stencil" />
+      ) : null}
+      {includeStencilLayer ? (
+        <div data-cutout-layer="stencil">
+          <Modal onClose={vi.fn()} titleId={stencilTitleId}>
+            {({ isContentLayer }) => (
+              <h2 id={stencilTitleId}>
+                {isContentLayer ? 'Content modal' : 'Stencil modal'}
+              </h2>
+            )}
+          </Modal>
+        </div>
+      ) : null}
+      {includeContentLayer ? (
+        <div data-cutout-layer="content">
+          <Modal onClose={vi.fn()} titleId={contentTitleId}>
+            {({ isContentLayer }) => (
+              <h2 id={contentTitleId}>
+                {isContentLayer ? 'Content modal' : 'Stencil modal'}
+              </h2>
+            )}
+          </Modal>
+        </div>
+      ) : null}
+    </>,
+  );
+}
+
 afterEach(() => {
   document.body.style.overflow = '';
   setWindowScrollY(0);
@@ -93,17 +139,11 @@ describe('Modal', () => {
   it('keeps stencil-layer rendering non-interactive and syncs the scroll offset CSS variable', async () => {
     setWindowScrollY(128);
 
-    const { container } = render(
-      <div data-cutout-layer="stencil">
-        <Modal onClose={vi.fn()} titleId="modal-title">
-          {({ isContentLayer }) => (
-            <h2 id="modal-title">
-              {isContentLayer ? 'Content modal' : 'Stencil modal'}
-            </h2>
-          )}
-        </Modal>
-      </div>,
-    );
+    const { container } = renderLayeredModal({
+      includeContentLayer: false,
+      includeModalStencilLayer: false,
+      stencilTitleId: 'modal-title',
+    });
 
     const dialog = requireElement(
       container.querySelector('[data-ui-modal-dialog]'),
@@ -164,20 +204,10 @@ describe('Modal', () => {
         });
       });
 
-    const { container, unmount } = render(
-      <>
-        <div data-cutout-layer="modal-stencil" />
-        <div data-cutout-layer="stencil">
-          <Modal onClose={vi.fn()} titleId="modal-title">
-            {({ isContentLayer }) => (
-              <h2 id="modal-title">
-                {isContentLayer ? 'Content modal' : 'Stencil modal'}
-              </h2>
-            )}
-          </Modal>
-        </div>
-      </>,
-    );
+    const { container, unmount } = renderLayeredModal({
+      includeContentLayer: false,
+      stencilTitleId: 'modal-title',
+    });
 
     const stencilLayer = requireElement(
       container.querySelector<HTMLElement>('[data-cutout-layer="stencil"]'),
@@ -226,21 +256,7 @@ describe('Modal', () => {
   });
 
   it('syncs modal body scrolling from the content layer to the stencil layer', async () => {
-    render(
-      <>
-        <div data-cutout-layer="modal-stencil" />
-        <div data-cutout-layer="stencil">
-          <Modal onClose={vi.fn()} titleId="stencil-title">
-            <h2 id="stencil-title">Stencil modal</h2>
-          </Modal>
-        </div>
-        <div data-cutout-layer="content">
-          <Modal onClose={vi.fn()} titleId="content-title">
-            <h2 id="content-title">Content modal</h2>
-          </Modal>
-        </div>
-      </>,
-    );
+    renderLayeredModal();
 
     const stencilBody = requireElement(
       document.querySelector<HTMLElement>(
