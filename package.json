@@ -36,7 +36,7 @@
     "@biomejs/biome": "2.4.16",
     "@types/node": "24.13.1",
     "@types/react": "19.2.17",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   },
   "packageManager": "pnpm@10.34.2",
   "engines": {
