@@ -1,4 +1,5 @@
 {
+  "root": false,
   "$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
   "extends": "//",
   "files": {
@@ -23,6 +24,18 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["src/assets/**/*.svg"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noSvgWithoutTitle": "off"
+          }
+        }
+      }
+    }
+  ],
   "css": {
     "parser": {
       "tailwindDirectives": true

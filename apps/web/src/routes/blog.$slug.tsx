@@ -31,7 +31,7 @@ function toAdjacentPost(
 }
 
 const getPostBySlugServerFn = createServerFn({ method: 'GET' })
-  .inputValidator((slug: string) => slug)
+  .validator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
     const posts = sortPostsByPublishedAtDesc(allPosts);
     const currentIndex = posts.findIndex((post) => post.slug === slug);

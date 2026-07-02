@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "oembed-providers": "1.0.20260421"
+    "oembed-providers": "1.0.20260604"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",

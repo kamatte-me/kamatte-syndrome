@@ -42,7 +42,7 @@ function hasPageSearchParam(searchStr: string) {
 }
 
 const getBlogIndex = createServerFn({ method: 'GET' })
-  .inputValidator((input: BlogIndexInput) => input)
+  .validator((input: BlogIndexInput) => input)
   .handler(async ({ data: { page } }) => {
     const posts = sortPostsByPublishedAtDesc(allPosts).map(
       ({ mdx: _mdx, content: _content, ...post }) => post,

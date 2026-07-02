@@ -3,7 +3,7 @@ import { fetchOpenGraphMetadata } from '../server/openGraph.server';
 import { validateOpenGraphRequest } from '../utils/openGraph';
 
 export const getOpenGraph = createServerFn({ method: 'GET' })
-  .inputValidator(validateOpenGraphRequest)
+  .validator(validateOpenGraphRequest)
   .handler(async ({ data }) => {
     return fetchOpenGraphMetadata(data.url);
   });

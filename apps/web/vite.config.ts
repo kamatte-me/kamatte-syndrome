@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import contentCollections from '@content-collections/vite';
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
@@ -16,6 +17,9 @@ import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+
+const appDirectory = fileURLToPath(new URL('.', import.meta.url));
+const sourceDirectory = fileURLToPath(new URL('./src/', import.meta.url));
 
 export default defineConfig(({ mode }) => {
   const isTest = process.env.VITEST === 'true';
@@ -104,6 +108,10 @@ export default defineConfig(({ mode }) => {
       cssMinify: 'esbuild',
     },
     resolve: {
+      alias: [
+        { find: /^@@\//, replacement: appDirectory },
+        { find: /^@\//, replacement: sourceDirectory },
+      ],
       tsconfigPaths: true,
       preserveSymlinks: isTest,
     },
