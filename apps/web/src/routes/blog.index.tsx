@@ -1,18 +1,13 @@
-import {
-  createFileRoute,
-  Link,
-  notFound,
-  redirect,
-} from '@tanstack/react-router';
+import { createFileRoute, notFound, redirect } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { allPosts } from 'content-collections';
-import leftIcon from '@/assets/icons/left_fill.svg';
-import rightIcon from '@/assets/icons/right_fill.svg';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { Icon } from '@/components/ui/Icon';
+import { BlogPagination } from '@/features/blog/components/BlogPagination';
+import { BlogPostCard } from '@/features/blog/components/BlogPostCard';
+import { BlogPostList } from '@/features/blog/components/BlogPostList';
+import type { BlogListPost } from '@/features/blog/types';
 import {
-  formatPostDate,
   paginateItems,
   parseBlogPageSearchParam,
   sortPostsByPublishedAtDesc,
@@ -24,11 +19,6 @@ type BlogIndexInput = {
 
 type BlogSearch = {
   page?: number;
-};
-
-const paginationLinkActiveOptions = {
-  exact: true,
-  includeSearch: true,
 };
 
 function validateBlogSearch(search: Record<string, unknown>): BlogSearch {
@@ -44,8 +34,13 @@ function hasPageSearchParam(searchStr: string) {
 const getBlogIndex = createServerFn({ method: 'GET' })
   .validator((input: BlogIndexInput) => input)
   .handler(async ({ data: { page } }) => {
-    const posts = sortPostsByPublishedAtDesc(allPosts).map(
-      ({ mdx: _mdx, content: _content, ...post }) => post,
+    const posts: BlogListPost[] = sortPostsByPublishedAtDesc(allPosts).map(
+      ({ featuredImage, publishedAt, slug, title }) => ({
+        featuredImage,
+        publishedAt,
+        slug,
+        title,
+      }),
     );
     const { items, pageInfo } = paginateItems(posts, page);
 
@@ -76,65 +71,6 @@ export const Route = createFileRoute('/blog/')({
   component: BlogPage,
 });
 
-function getBlogPageSearch(page: number): BlogSearch {
-  return page <= 1 ? {} : { page };
-}
-
-function BlogPagination({
-  currentPage,
-  totalPages,
-}: {
-  currentPage: number;
-  totalPages: number;
-}) {
-  const hasPrevious = currentPage > 1;
-  const hasNext = currentPage < totalPages;
-
-  return (
-    <nav
-      aria-label="Blog pagination"
-      className="flex items-center justify-center gap-5"
-    >
-      {hasPrevious ? (
-        <Link
-          to="/blog"
-          search={getBlogPageSearch(currentPage - 1)}
-          activeOptions={paginationLinkActiveOptions}
-          aria-label="前のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
-        >
-          <Icon className="size-[22px]" src={leftIcon} />
-        </Link>
-      ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
-          <Icon className="size-[22px]" src={leftIcon} />
-        </span>
-      )}
-
-      <p className="min-w-20 text-center font-semibold text-cutout-hole">
-        <span className="text-2xl">{currentPage}</span>
-        <span className="ml-1 text-cutout-muted text-sm">/ {totalPages}</span>
-      </p>
-
-      {hasNext ? (
-        <Link
-          to="/blog"
-          search={getBlogPageSearch(currentPage + 1)}
-          activeOptions={paginationLinkActiveOptions}
-          aria-label="次のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
-        >
-          <Icon className="size-[22px]" src={rightIcon} />
-        </Link>
-      ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
-          <Icon className="size-[22px]" src={rightIcon} />
-        </span>
-      )}
-    </nav>
-  );
-}
-
 function BlogPage() {
   const { pageInfo, posts } = Route.useLoaderData();
 
@@ -143,36 +79,11 @@ function BlogPage() {
       <PageTitle>Blog</PageTitle>
 
       <div className="grid gap-8">
-        <ul className="grid gap-5">
+        <BlogPostList>
           {posts.map((post) => (
-            <li key={post.slug}>
-              <Link
-                to="/blog/$slug"
-                params={{ slug: post.slug }}
-                className="flex gap-4 border border-cutout-hole p-5 sm:gap-6 sm:p-6"
-              >
-                <div className="size-20 shrink-0 overflow-hidden border border-cutout-hole sm:size-[120px]">
-                  <img
-                    src={post.featuredImage ?? '/avatar.svg'}
-                    alt={post.title}
-                    width={120}
-                    height={120}
-                    className="size-full object-cover"
-                  />
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <h2 className="font-semibold text-2xl leading-snug">
-                    {post.title}
-                  </h2>
-                  <div className="mt-2 text-cutout-muted text-sm">
-                    {formatPostDate(post.publishedAt)}
-                  </div>
-                </div>
-              </Link>
-            </li>
+            <BlogPostCard key={post.slug} post={post} />
           ))}
-        </ul>
+        </BlogPostList>
 
         <BlogPagination
           currentPage={pageInfo.currentPage}
