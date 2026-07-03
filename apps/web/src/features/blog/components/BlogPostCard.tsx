@@ -12,9 +12,9 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
       <Link
         to="/blog/$slug"
         params={{ slug: post.slug }}
-        className="flex gap-4 border border-cutout-hole p-5 sm:gap-6 sm:p-6"
+        className="flex gap-4 border border-cutout-hole p-4 sm:gap-6 sm:p-6"
       >
-        <div className="size-20 shrink-0 overflow-hidden border border-cutout-hole sm:size-[120px]">
+        <div className="size-18 shrink-0 overflow-hidden sm:size-30">
           <img
             src={post.featuredImage ?? '/avatar.svg'}
             alt={post.title}
@@ -25,7 +25,9 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="font-semibold text-2xl leading-snug">{post.title}</h2>
+          <h2 className="font-bold text-lg leading-snug sm:text-2xl">
+            {post.title}
+          </h2>
           <div className="mt-2 text-cutout-muted text-sm">
             {formatPostDate(post.publishedAt)}
           </div>
