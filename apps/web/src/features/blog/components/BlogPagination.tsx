@@ -19,6 +19,9 @@ const paginationLinkActiveOptions = {
   includeSearch: true,
 };
 
+const paginationControlClassName =
+  'inline-flex size-11 items-center justify-center';
+
 function getBlogPageSearch(page: number): BlogSearch {
   return page <= 1 ? {} : { page };
 }
@@ -34,7 +37,7 @@ export function BlogPagination({
   return (
     <nav
       aria-label="Blog pagination"
-      className={cn('flex items-center justify-center gap-5', className)}
+      className={cn('flex items-center justify-center gap-1', className)}
     >
       {hasPrevious ? (
         <Link
@@ -42,19 +45,26 @@ export function BlogPagination({
           search={getBlogPageSearch(currentPage - 1)}
           activeOptions={paginationLinkActiveOptions}
           aria-label="前のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
+          className={cn(
+            paginationControlClassName,
+            'text-cutout-hole hover:text-cutout-hole',
+          )}
         >
-          <Icon className="size-[22px]" src={leftIcon} />
+          <Icon className="size-9 translate-y-1" src={leftIcon} />
         </Link>
       ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
-          <Icon className="size-[22px]" src={leftIcon} />
-        </span>
+        <span
+          aria-hidden="true"
+          className={cn(paginationControlClassName, 'invisible')}
+        />
       )}
 
-      <p className="min-w-20 text-center font-semibold text-cutout-hole">
-        <span className="text-2xl">{currentPage}</span>
-        <span className="ml-1 text-cutout-muted text-sm">/ {totalPages}</span>
+      <p className="min-w-24 text-center font-bold font-display text-cutout-hole tabular-nums leading-none">
+        <span className="text-4xl">{currentPage}</span>
+        <span className="text-2xl text-cutout-muted">
+          <span className="mx-1">/</span>
+          {totalPages}
+        </span>
       </p>
 
       {hasNext ? (
@@ -63,14 +73,18 @@ export function BlogPagination({
           search={getBlogPageSearch(currentPage + 1)}
           activeOptions={paginationLinkActiveOptions}
           aria-label="次のページ"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-hole hover:text-cutout-hole"
+          className={cn(
+            paginationControlClassName,
+            'text-cutout-hole hover:text-cutout-hole',
+          )}
         >
-          <Icon className="size-[22px]" src={rightIcon} />
+          <Icon className="size-9 translate-y-1" src={rightIcon} />
         </Link>
       ) : (
-        <span className="inline-flex size-11 items-center justify-center rounded-full border border-cutout-hole text-cutout-muted">
-          <Icon className="size-[22px]" src={rightIcon} />
-        </span>
+        <span
+          aria-hidden="true"
+          className={cn(paginationControlClassName, 'invisible')}
+        />
       )}
     </nav>
   );
