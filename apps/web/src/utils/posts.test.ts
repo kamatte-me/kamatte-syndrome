@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  formatPostDate,
   paginateItems,
   parseBlogPageSearchParam,
   sortPostsByPublishedAtDesc,
 } from './posts';
 
 describe('posts helpers', () => {
+  it('formats post dates as YYYY/M/D in Japan time', () => {
+    expect(formatPostDate(new Date('2026-07-03T10:00:00+09:00'))).toBe(
+      '2026/7/3',
+    );
+  });
+
   it('sorts newer posts first and leaves missing dates last', () => {
     const posts = sortPostsByPublishedAtDesc([
       { publishedAt: undefined, title: 'missing' },

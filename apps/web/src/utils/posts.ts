@@ -43,8 +43,10 @@ export function formatPostDate(date?: Date) {
   }
 
   return new Intl.DateTimeFormat('ja-JP', {
-    dateStyle: 'long',
+    day: 'numeric',
+    month: 'numeric',
     timeZone: 'Asia/Tokyo',
+    year: 'numeric',
   }).format(date);
 }
 

@@ -28,7 +28,7 @@ describe('BlogPostCard', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'Example Post' }),
     ).toBeInTheDocument();
-    expect(screen.getByText('2026年7月3日')).toBeInTheDocument();
+    expect(screen.getByText('2026/7/3')).toBeInTheDocument();
   });
 
   it('uses the avatar image when the post has no featured image', () => {
