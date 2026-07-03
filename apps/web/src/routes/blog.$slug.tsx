@@ -1,25 +1,21 @@
-import { createFileRoute, Link, notFound } from '@tanstack/react-router';
+import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
-import leftIcon from '@/assets/icons/left_fill.svg';
-import rightIcon from '@/assets/icons/right_fill.svg';
 import { PageMain } from '@/components/layouts/PageMain';
-import { Icon } from '@/components/ui/Icon';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { BlogPostArticle } from '@/features/blog/components/BlogPostArticle';
+import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
+import { BlogPostHeader } from '@/features/blog/components/BlogPostHeader';
+import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
+import type { BlogAdjacentPost } from '@/features/blog/types';
 import { LinkCard } from '@/features/url-embeds/components/LinkCard';
 import { OEmbed } from '@/features/url-embeds/components/OEmbed';
-import { cn } from '@/utils/classNames';
-import { formatPostDate, sortPostsByPublishedAtDesc } from '@/utils/posts';
-
-type AdjacentPost = {
-  slug: string;
-  title: string;
-};
+import { sortPostsByPublishedAtDesc } from '@/utils/posts';
 
 function toAdjacentPost(
   post: (typeof allPosts)[number] | undefined,
-): AdjacentPost | null {
+): BlogAdjacentPost | null {
   if (!post) {
     return null;
   }
@@ -64,95 +60,12 @@ function PostDetailPage() {
 
   return (
     <PageMain size="narrow">
-      <article className="border border-cutout-hole p-7 sm:p-9">
-        <header className="mb-8 border-cutout-hole border-b pb-6">
-          <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
-            {post.title}
-          </h1>
-          <div className="mt-4 text-cutout-muted text-sm">
-            {formatPostDate(post.publishedAt)}
-          </div>
-        </header>
-
-        {post.featuredImage ? (
-          <div className="mb-8 flex justify-center">
-            <img
-              src={post.featuredImage}
-              alt={post.title}
-              className="max-h-[400px] max-w-full object-contain"
-            />
-          </div>
-        ) : null}
-
+      <BlogPostArticle>
+        <BlogPostHeader publishedAt={post.publishedAt} title={post.title} />
+        <BlogPostFeaturedImage src={post.featuredImage} title={post.title} />
         <MarkdownContent>{post.mdx}</MarkdownContent>
-
-        <BlogEntryNavigation
-          next={post.nextPost}
-          previous={post.previousPost}
-        />
-      </article>
+        <BlogPostNavigation next={post.nextPost} previous={post.previousPost} />
+      </BlogPostArticle>
     </PageMain>
-  );
-}
-
-function BlogEntryNavigation({
-  next,
-  previous,
-}: {
-  next: AdjacentPost | null;
-  previous: AdjacentPost | null;
-}) {
-  if (!previous && !next) {
-    return null;
-  }
-
-  return (
-    <nav
-      aria-label="前後の記事"
-      className="mt-10 grid grid-cols-2 gap-3 border-cutout-hole border-t pt-6 sm:gap-5"
-    >
-      <div className="flex min-w-0 items-start">
-        {previous ? (
-          <AdjacentPostLink direction="previous" post={previous} />
-        ) : null}
-      </div>
-      <div className="flex min-w-0 items-start justify-end">
-        {next ? <AdjacentPostLink direction="next" post={next} /> : null}
-      </div>
-    </nav>
-  );
-}
-
-function AdjacentPostLink({
-  direction,
-  post,
-}: {
-  direction: 'previous' | 'next';
-  post: AdjacentPost;
-}) {
-  const isPrevious = direction === 'previous';
-  const label = isPrevious ? '前の記事' : '次の記事';
-  const iconUrl = isPrevious ? leftIcon : rightIcon;
-
-  return (
-    <Link
-      aria-label={`${label}: ${post.title}`}
-      className="group inline-flex h-full max-w-full items-start gap-2 text-cutout-hole hover:text-cutout-hole sm:gap-3"
-      params={{ slug: post.slug }}
-      to="/blog/$slug"
-    >
-      {isPrevious ? (
-        <Icon className="size-5 self-center" src={iconUrl} />
-      ) : null}
-      <span className={cn('min-w-0', !isPrevious && 'text-right')}>
-        <span className="block text-cutout-muted text-xs">{label}</span>
-        <span className="block font-medium text-sm [overflow-wrap:anywhere] group-hover:underline sm:text-base">
-          {post.title}
-        </span>
-      </span>
-      {!isPrevious ? (
-        <Icon className="size-5 self-center" src={iconUrl} />
-      ) : null}
-    </Link>
   );
 }
