@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { BlogPostArticle } from '@/features/blog/components/BlogPostArticle';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
 import { BlogPostHeader } from '@/features/blog/components/BlogPostHeader';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
@@ -59,12 +60,12 @@ function PostDetailPage() {
 
   return (
     <PageMain size="narrow">
-      <article>
+      <BlogPostArticle>
         <BlogPostHeader publishedAt={post.publishedAt} title={post.title} />
         <BlogPostFeaturedImage src={post.featuredImage} title={post.title} />
         <MarkdownContent>{post.mdx}</MarkdownContent>
         <BlogPostNavigation next={post.nextPost} previous={post.previousPost} />
-      </article>
+      </BlogPostArticle>
     </PageMain>
   );
 }
