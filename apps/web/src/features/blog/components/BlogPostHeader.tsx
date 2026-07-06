@@ -20,10 +20,10 @@ export function BlogPostHeader({
   return (
     <header
       {...props}
-      className={cn('mb-8 border-cutout-hole border-b pb-6', className)}
+      className={cn('mb-8 border-cutout-hole border-b-4 pb-5', className)}
     >
-      <h1 className="font-bold text-4xl leading-tight sm:text-5xl">{title}</h1>
-      <div className="mt-4 text-cutout-muted text-sm">
+      <h1 className="font-bold text-3xl leading-tight sm:text-4xl">{title}</h1>
+      <div className="mt-3 text-cutout-muted text-sm">
         {formatPostDate(publishedAt)}
       </div>
     </header>
