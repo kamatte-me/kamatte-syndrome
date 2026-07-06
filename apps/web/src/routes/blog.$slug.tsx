@@ -3,8 +3,8 @@ import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
-import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { BlogPostArticle } from '@/features/blog/components/BlogPostArticle';
+import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
 import { BlogPostHeader } from '@/features/blog/components/BlogPostHeader';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
@@ -63,7 +63,7 @@ function PostDetailPage() {
       <BlogPostArticle>
         <BlogPostHeader publishedAt={post.publishedAt} title={post.title} />
         <BlogPostFeaturedImage src={post.featuredImage} title={post.title} />
-        <MarkdownContent>{post.mdx}</MarkdownContent>
+        <BlogPostBody>{post.mdx}</BlogPostBody>
         <BlogPostNavigation next={post.nextPost} previous={post.previousPost} />
       </BlogPostArticle>
     </PageMain>
