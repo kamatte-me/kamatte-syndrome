@@ -11,7 +11,7 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
   if (metadata.type === 'photo' && metadata.photoUrl) {
     return (
       <a
-        className="not-prose my-6 block overflow-hidden border border-cutout-hole no-underline"
+        className="not-prose mx-auto my-6 block max-w-[576px] overflow-hidden border border-cutout-hole no-underline"
         href={url}
         rel="noreferrer"
         target="_blank"
@@ -35,7 +35,7 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
     return (
       <div
         className={cn(
-          'not-prose my-6 border border-cutout-hole p-4',
+          'not-prose mx-auto my-6 max-w-[576px]',
           fixedAspect && 'overflow-hidden',
         )}
         style={

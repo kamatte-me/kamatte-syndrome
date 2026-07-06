@@ -26,6 +26,8 @@ describe('OEmbedView', () => {
 
     expect(iframe).toHaveAttribute('src', 'about:blank');
     expect(shell?.style.aspectRatio).toBe('640 / 360');
+    expect(shell?.className).not.toContain('border-cutout-hole');
+    expect(shell?.className).not.toContain('p-4');
     expect(htmlShell?.className).toContain('[&_iframe]:h-full');
     expect(htmlShell?.className).toContain('[&_iframe]:w-full');
   });
@@ -75,6 +77,8 @@ describe('OEmbedView', () => {
     expect(container.querySelector('iframe')).toBeNull();
     expect(container.querySelector('[srcdoc]')).toBeNull();
     expect(container.querySelector('[sandbox]')).toBeNull();
+    expect(shell?.className).not.toContain('border-cutout-hole');
+    expect(shell?.className).not.toContain('p-4');
     expect(providerPost).toBeInTheDocument();
     expect(providerPost).toHaveTextContent('Provider HTML');
     expect(container.querySelector('script')?.textContent).toContain(
