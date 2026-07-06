@@ -14,6 +14,7 @@ describe('LinkCardView', () => {
     const link = screen.getByRole('link', { name: /example\.com/i });
     expect(link).toHaveAttribute('href', 'https://example.com/posts/hello');
     expect(link).toHaveAttribute('target', '_blank');
+    expect(link.className).toContain('h-32');
     expect(screen.getAllByText('example.com')).toHaveLength(2);
     expect(screen.getByText('Loading')).toBeInTheDocument();
   });
@@ -38,13 +39,18 @@ describe('LinkCardView', () => {
     );
 
     const link = screen.getByRole('link', { name: /Example title/i });
+    const image = container.querySelector(
+      'img[src="https://example.com/card.png"]',
+    );
+    const imageShell = image?.parentElement;
+
     expect(link).toHaveAttribute('href', 'https://example.com/posts/hello');
+    expect(link.className).toContain('h-32');
     expect(screen.getByText('Example title')).toBeInTheDocument();
     expect(screen.getByText('Example description')).toBeInTheDocument();
     expect(screen.getByText('Example Site')).toBeInTheDocument();
-    expect(
-      container.querySelector('img[src="https://example.com/card.png"]'),
-    ).not.toBeNull();
+    expect(image).not.toBeNull();
+    expect(imageShell?.className.split(/\s+/)).not.toContain('hidden');
   });
 
   it('renders a stable fallback when OGP fetching fails', () => {
