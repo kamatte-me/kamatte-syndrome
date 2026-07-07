@@ -31,6 +31,17 @@
   -webkit-text-fill-color: currentColor;
 }
 
+[data-cutout-layer="content"] .root :where(:not(pre) > code) {
+  border-color: var(--cutout-muted);
+  background-color: transparent;
+}
+
+[data-cutout-layer="content"] .root :where(pre, pre *) {
+  color: #000000;
+  text-decoration-color: #000000;
+  -webkit-text-fill-color: currentColor;
+}
+
 [data-cutout-layer="content"] .root :where(pre) {
   background-color: transparent;
 }
