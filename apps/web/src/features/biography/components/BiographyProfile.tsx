@@ -31,7 +31,7 @@ export function BiographyProfile({ history }: BiographyProfileProps) {
           href="https://github.com/kamatte-me"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-cutout-hole px-4 py-2 font-semibold text-base text-cutout-hole leading-none"
+          className="inline-flex items-center gap-2 rounded-full border border-cutout-hole px-4 py-2 font-bold text-base text-cutout-hole leading-none"
         >
           <img
             src={githubIcon}

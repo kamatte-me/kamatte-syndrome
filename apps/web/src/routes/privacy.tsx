@@ -40,7 +40,7 @@ function PrivacyPage() {
     <PageMain size="narrow">
       <article className="border border-cutout-hole p-7 sm:p-9">
         <header className="mb-8 border-cutout-hole border-b pb-6">
-          <p className="mb-3 font-semibold text-cutout-hole text-xs uppercase tracking-[0.3em]">
+          <p className="mb-3 font-bold text-cutout-hole text-xs uppercase tracking-[0.3em]">
             Privacy
           </p>
           <h1 className="font-bold text-4xl leading-tight sm:text-5xl">

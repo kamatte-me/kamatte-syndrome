@@ -20,7 +20,7 @@ export function PortfolioItemCard({ item }: PortfolioItemCardProps) {
 
         <div className="flex flex-col gap-4 md:min-h-44 md:py-1">
           <header className="grid gap-3">
-            <Chip className="font-semibold">{item.category}</Chip>
+            <Chip className="font-bold">{item.category}</Chip>
 
             <h3 className="font-bold text-2xl leading-tight">
               {link ? (
