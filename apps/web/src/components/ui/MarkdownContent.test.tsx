@@ -26,7 +26,7 @@ describe('MarkdownContent', () => {
       'prose',
       'prose-invert',
       'max-w-none',
-      'prose-pre:border',
+      'prose-pre:border-0',
       'prose-li:marker:text-cutout-readable',
       '[&>:first-child]:mt-0',
       '[&>:last-child]:mb-0',
