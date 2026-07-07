@@ -100,3 +100,15 @@
     --cutout-inset: 20px;
   }
 }
+
+@media (width >= 48rem) {
+  .stencilLayer {
+    background: transparent;
+    filter: none;
+  }
+
+  .stencilLayer :where([data-site-header], .stencilFilterSegment) {
+    background: var(--cutout-stencil-surface-source);
+    filter: url("#global-cutout-filter");
+  }
+}

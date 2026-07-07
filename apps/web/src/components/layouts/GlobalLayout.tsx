@@ -157,6 +157,7 @@ function LayoutFrame({
       />
       <div
         className={cn(
+          styles.stencilFilterSegment,
           'flex min-h-0 flex-1 [&>*]:w-full [&>main]:min-h-0',
           isMobileMenuOpen && styles.mobileMenuSuppressed,
         )}
@@ -165,7 +166,10 @@ function LayoutFrame({
         {children}
       </div>
       <div
-        className={cn(isMobileMenuOpen && styles.mobileMenuSuppressed)}
+        className={cn(
+          styles.stencilFilterSegment,
+          isMobileMenuOpen && styles.mobileMenuSuppressed,
+        )}
         inert={isMobileMenuOpen ? true : undefined}
       >
         <SiteFooter />
