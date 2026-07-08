@@ -43,7 +43,7 @@ export function LinkCardView({ url, state, className }: LinkCardViewProps) {
         {description ? (
           <span
             className={cn(
-              'line-clamp-1 text-cutout-readable text-xs leading-4',
+              'line-clamp-2 text-cutout-readable text-xs leading-4',
               styles.readableText,
             )}
           >
