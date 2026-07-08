@@ -2,16 +2,17 @@ import { fetchOEmbedMetadata } from '../server/oEmbed.server';
 import { LinkCard } from './LinkCard';
 import { OEmbedView } from './OEmbedView';
 
-type OEmbedProps = {
+export type OEmbedProps = {
   url: string;
+  className?: string;
 };
 
-export async function OEmbed({ url }: OEmbedProps) {
+export async function OEmbed({ url, className }: OEmbedProps) {
   const metadata = await fetchOEmbedMetadata(url);
 
   if (!metadata) {
-    return <LinkCard url={url} />;
+    return <LinkCard className={className} url={url} />;
   }
 
-  return <OEmbedView metadata={metadata} url={url} />;
+  return <OEmbedView className={className} metadata={metadata} url={url} />;
 }

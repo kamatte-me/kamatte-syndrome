@@ -5,13 +5,17 @@ import { OEmbedHtml } from './OEmbedHtml';
 type OEmbedViewProps = {
   metadata: OEmbedMetadata;
   url: string;
+  className?: string;
 };
 
-export function OEmbedView({ metadata, url }: OEmbedViewProps) {
+export function OEmbedView({ metadata, url, className }: OEmbedViewProps) {
   if (metadata.type === 'photo' && metadata.photoUrl) {
     return (
       <a
-        className="not-prose mx-auto my-6 block max-w-[576px] overflow-hidden border border-cutout-hole no-underline"
+        className={cn(
+          'not-prose block overflow-hidden border border-cutout-hole no-underline',
+          className,
+        )}
         href={url}
         rel="noreferrer"
         target="_blank"
@@ -34,10 +38,7 @@ export function OEmbedView({ metadata, url }: OEmbedViewProps) {
 
     return (
       <div
-        className={cn(
-          'not-prose mx-auto my-6 max-w-[576px]',
-          fixedAspect && 'overflow-hidden',
-        )}
+        className={cn('not-prose', fixedAspect && 'overflow-hidden', className)}
         style={
           fixedAspect
             ? { aspectRatio: getEmbedAspectRatio(metadata) }

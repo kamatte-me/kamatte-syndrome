@@ -6,6 +6,7 @@ describe('LinkCardView', () => {
   it('renders a loading fallback with the destination domain', () => {
     render(
       <LinkCardView
+        className="my-6"
         state={{ status: 'loading' }}
         url="https://example.com/posts/hello"
       />,
@@ -15,6 +16,7 @@ describe('LinkCardView', () => {
     expect(link).toHaveAttribute('href', 'https://example.com/posts/hello');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link.className).toContain('h-32');
+    expect(link.className).toContain('my-6');
     expect(screen.getAllByText('example.com')).toHaveLength(2);
     expect(screen.getByText('Loading')).toBeInTheDocument();
   });

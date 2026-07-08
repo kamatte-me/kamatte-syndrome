@@ -6,6 +6,7 @@ describe('OEmbedView', () => {
   it('renders video oEmbed iframe HTML directly', () => {
     const { container } = render(
       <OEmbedView
+        className="mx-auto my-6 max-w-[576px]"
         metadata={{
           url: 'https://youtu.be/example',
           type: 'video',
@@ -26,6 +27,7 @@ describe('OEmbedView', () => {
 
     expect(iframe).toHaveAttribute('src', 'about:blank');
     expect(shell?.style.aspectRatio).toBe('640 / 360');
+    expect(shell?.className).toContain('max-w-[576px]');
     expect(shell?.className).not.toContain('border-cutout-hole');
     expect(shell?.className).not.toContain('p-4');
     expect(htmlShell?.className).toContain('[&_iframe]:h-full');

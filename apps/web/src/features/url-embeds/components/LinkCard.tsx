@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
 import { getOpenGraph } from '../api/openGraph.functions';
 import { type LinkCardState, LinkCardView } from './LinkCardView';
 
-type LinkCardProps = {
+export type LinkCardProps = {
   url: string;
+  className?: string;
 };
 
-export function LinkCard({ url }: LinkCardProps) {
+export function LinkCard({ url, className }: LinkCardProps) {
   const fetchOpenGraph = useServerFn(getOpenGraph);
   const [state, setState] = useState<LinkCardState>({ status: 'loading' });
 
@@ -37,5 +38,5 @@ export function LinkCard({ url }: LinkCardProps) {
     };
   }, [fetchOpenGraph, url]);
 
-  return <LinkCardView state={state} url={url} />;
+  return <LinkCardView className={className} state={state} url={url} />;
 }

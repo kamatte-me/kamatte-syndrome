@@ -10,9 +10,10 @@ export type LinkCardState =
 type LinkCardViewProps = {
   url: string;
   state: LinkCardState;
+  className?: string;
 };
 
-export function LinkCardView({ url, state }: LinkCardViewProps) {
+export function LinkCardView({ url, state, className }: LinkCardViewProps) {
   const displayUrl = formatDisplayUrl(url);
   const metadata = state.status === 'success' ? state.metadata : undefined;
   const title = metadata?.title ?? displayUrl;
@@ -24,11 +25,12 @@ export function LinkCardView({ url, state }: LinkCardViewProps) {
   return (
     <a
       className={cn(
-        'not-prose my-6 grid h-32 overflow-hidden border border-cutout-hole text-cutout-hole no-underline',
+        'not-prose grid h-32 overflow-hidden border border-cutout-hole text-cutout-hole no-underline',
         styles.card,
         hasImage
           ? 'grid-cols-[minmax(0,1fr)_8rem] sm:grid-cols-[minmax(0,1fr)_160px] md:grid-cols-[minmax(0,1fr)_auto]'
           : 'grid-cols-1',
+        className,
       )}
       href={url}
       rel="noreferrer"

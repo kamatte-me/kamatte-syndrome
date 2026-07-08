@@ -9,8 +9,15 @@ import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeatur
 import { BlogPostHeader } from '@/features/blog/components/BlogPostHeader';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
 import type { BlogAdjacentPost } from '@/features/blog/types';
-import { LinkCard } from '@/features/url-embeds/components/LinkCard';
-import { OEmbed } from '@/features/url-embeds/components/OEmbed';
+import {
+  LinkCard,
+  type LinkCardProps,
+} from '@/features/url-embeds/components/LinkCard';
+import {
+  OEmbed,
+  type OEmbedProps,
+} from '@/features/url-embeds/components/OEmbed';
+import { cn } from '@/utils/classNames';
 import { sortPostsByPublishedAtDesc } from '@/utils/posts';
 
 function toAdjacentPost(
@@ -24,6 +31,19 @@ function toAdjacentPost(
     slug: post.slug,
     title: post.title,
   };
+}
+
+function BlogPostLinkCard({ className, ...props }: LinkCardProps) {
+  return <LinkCard {...props} className={cn('my-6', className)} />;
+}
+
+function BlogPostOEmbed({ className, ...props }: OEmbedProps) {
+  return (
+    <OEmbed
+      {...props}
+      className={cn('mx-auto my-6 max-w-[576px]', className)}
+    />
+  );
 }
 
 const getPostBySlugServerFn = createServerFn({ method: 'GET' })
@@ -42,7 +62,9 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
     return {
       ...post,
       mdx: await renderServerComponent(
-        <MDXContent components={{ LinkCard, OEmbed }} />,
+        <MDXContent
+          components={{ LinkCard: BlogPostLinkCard, OEmbed: BlogPostOEmbed }}
+        />,
       ),
       previousPost: toAdjacentPost(posts[currentIndex + 1]),
       nextPost: toAdjacentPost(posts[currentIndex - 1]),
