@@ -21,12 +21,12 @@ export function AdjacentBlogPostLink({
   return (
     <Link
       aria-label={`${label}: ${post.title}`}
-      className="group inline-flex h-full max-w-full items-start gap-2 text-cutout-hole hover:text-cutout-hole sm:gap-3"
+      className="group inline-flex h-full max-w-full items-start gap-1.5 text-cutout-hole hover:text-cutout-hole sm:gap-3"
       params={{ slug: post.slug }}
       to="/blog/$slug"
     >
       {isPrevious ? (
-        <Icon className="size-5 self-center" src={iconUrl} />
+        <Icon className="size-6 self-center sm:size-8" src={iconUrl} />
       ) : null}
       <span className={cn('min-w-0', !isPrevious && 'text-right')}>
         <span className="block text-cutout-muted text-xs">{label}</span>
@@ -35,7 +35,7 @@ export function AdjacentBlogPostLink({
         </span>
       </span>
       {!isPrevious ? (
-        <Icon className="size-5 self-center" src={iconUrl} />
+        <Icon className="size-6 self-center sm:size-8" src={iconUrl} />
       ) : null}
     </Link>
   );
