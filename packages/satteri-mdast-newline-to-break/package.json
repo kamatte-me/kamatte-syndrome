@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/remark-mdx-url-embed",
+  "name": "@kamatte-syndrome/satteri-mdast-newline-to-break",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,12 +11,15 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*"
+    "mdast-util-newline-to-break": "2.0.0"
+  },
+  "peerDependencies": {
+    "satteri": "catalog:"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
     "@types/mdast": "catalog:",
-    "mdast-util-mdx-jsx": "3.2.0",
+    "satteri": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }
