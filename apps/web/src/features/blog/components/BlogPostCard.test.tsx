@@ -25,6 +25,10 @@ describe('BlogPostCard', () => {
       'src',
       '/media/example.png',
     );
+    expect(screen.getByRole('img', { name: 'Example Post' })).toHaveAttribute(
+      'loading',
+      'lazy',
+    );
     expect(
       screen.getByRole('heading', { level: 2, name: 'Example Post' }),
     ).toBeInTheDocument();

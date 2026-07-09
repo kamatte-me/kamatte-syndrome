@@ -20,6 +20,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
             alt={post.title}
             width={120}
             height={120}
+            loading="lazy"
             className="size-full object-cover"
           />
         </div>
