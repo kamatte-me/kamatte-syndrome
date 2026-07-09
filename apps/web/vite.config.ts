@@ -11,6 +11,7 @@ import rsc from '@vitejs/plugin-rsc';
 import autoprefixer from 'autoprefixer';
 import { nitro } from 'nitro/vite';
 import remarkBreaks from 'remark-breaks';
+import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -60,8 +61,9 @@ export default defineConfig(({ mode }) => {
           remarkPlugins: [
             remarkFrontmatter,
             remarkMdxFrontmatter,
-            remarkBreaks,
             remarkGfmSubset,
+            remarkCjkFriendly,
+            remarkBreaks,
             remarkMdxUrlEmbed,
           ],
         }),

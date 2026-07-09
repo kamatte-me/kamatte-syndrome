@@ -24,9 +24,10 @@
 ```ts
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
+import remarkCjkFriendly from 'remark-cjk-friendly';
 
 export default {
-  remarkPlugins: [remarkGfmSubset, remarkMdxUrlEmbed],
+  remarkPlugins: [remarkGfmSubset, remarkCjkFriendly, remarkMdxUrlEmbed],
 };
 ```
 

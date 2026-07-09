@@ -32,12 +32,14 @@ oEmbed providerに一致するURLの場合は`OEmbed`に変換します。
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
 import mdx from '@mdx-js/rollup';
+import remarkCjkFriendly from 'remark-cjk-friendly';
 
 export default {
   plugins: [
     mdx({
       remarkPlugins: [
         remarkGfmSubset,
+        remarkCjkFriendly,
         remarkMdxUrlEmbed,
       ],
     }),
