@@ -75,7 +75,7 @@ function BlogPage() {
   const { pageInfo, posts } = Route.useLoaderData();
 
   return (
-    <PageMain>
+    <PageMain size="narrow">
       <PageTitle>Blog</PageTitle>
 
       <div className="grid gap-8">
