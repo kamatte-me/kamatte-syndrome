@@ -29,6 +29,9 @@ importers:
       '@kamatte-syndrome/remark-gfm-subset':
         specifier: workspace:*
         version: link:../../packages/remark-gfm-subset
+      '@kamatte-syndrome/remark-image-loading-lazy':
+        specifier: workspace:*
+        version: link:../../packages/remark-image-loading-lazy
       '@kamatte-syndrome/remark-mdx-url-embed':
         specifier: workspace:*
         version: link:../../packages/remark-mdx-url-embed
@@ -233,6 +236,24 @@ importers:
       unified:
         specifier: 11.0.5
         version: 11.0.5
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.9(@types/node@24.13.2)(happy-dom@20.10.6)(msw@2.14.6(@types/node@24.13.2)(typescript@6.0.3))(vite@8.1.2(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
+
+  packages/remark-image-loading-lazy:
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
+      mdast-util-mdx-jsx:
+        specifier: 3.2.0
+        version: 3.2.0
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
       vitest:
         specifier: 'catalog:'
         version: 4.1.9(@types/node@24.13.2)(happy-dom@20.10.6)(msw@2.14.6(@types/node@24.13.2)(typescript@6.0.3))(vite@8.1.2(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))

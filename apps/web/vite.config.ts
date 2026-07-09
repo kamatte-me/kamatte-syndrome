@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import contentCollections from '@content-collections/vite';
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
+import { remarkImageLoadingLazy } from '@kamatte-syndrome/remark-image-loading-lazy';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
@@ -64,6 +65,7 @@ export default defineConfig(({ mode }) => {
             remarkGfmSubset,
             remarkCjkFriendly,
             remarkBreaks,
+            remarkImageLoadingLazy,
             remarkMdxUrlEmbed,
           ],
         }),
