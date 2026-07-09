@@ -9,14 +9,14 @@ type BiographyProfileProps = {
 
 export function BiographyProfile({ history }: BiographyProfileProps) {
   return (
-    <section className="grid md:grid-cols-[288px_1fr] md:items-start md:gap-6">
+    <section className="mx-auto grid max-w-full md:w-fit md:grid-cols-[256px_minmax(0,max-content)] md:items-start md:gap-8 lg:grid-cols-[288px_minmax(0,max-content)] lg:gap-12">
       <div className="flex justify-center md:justify-start">
         <img
           src="/avatar.svg"
           alt={author}
           width={288}
           height={288}
-          className="aspect-square w-56 sm:w-72"
+          className="aspect-square w-56 sm:w-64 lg:w-72"
         />
       </div>
 

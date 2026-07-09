@@ -6,7 +6,7 @@ type HistoryListProps = {
 
 export function HistoryList({ history }: HistoryListProps) {
   return (
-    <dl className="mx-auto grid w-fit max-w-full gap-0.5 text-left text-sm leading-6 sm:text-base md:mx-0 md:w-full md:max-w-md">
+    <dl className="mx-auto grid w-fit max-w-full gap-0.5 text-left text-sm leading-6 sm:text-base md:mx-0 md:max-w-md">
       {history.map((item) => (
         <div
           key={`${item.year}-${item.description}`}
