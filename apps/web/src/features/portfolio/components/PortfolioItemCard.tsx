@@ -15,7 +15,7 @@ export function PortfolioItemCard({ item }: PortfolioItemCardProps) {
 
   return (
     <li className="border border-cutout-hole">
-      <div className="grid items-start gap-5 p-4 sm:p-5 md:grid-cols-[minmax(9rem,11rem)_1fr] md:gap-6">
+      <div className="grid items-start gap-5 p-4 sm:p-6 md:grid-cols-[minmax(9rem,11rem)_1fr] md:gap-6">
         <PortfolioImage item={item} link={link} />
 
         <div className="flex flex-col gap-4 md:min-h-44 md:py-1">
