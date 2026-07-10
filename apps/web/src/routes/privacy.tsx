@@ -2,8 +2,10 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { privacyPolicy } from 'content-collections';
+import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = 'プライバシーポリシー';
 
@@ -13,6 +15,7 @@ const getPrivacyPageData = createServerFn({ method: 'GET' }).handler(
 
     return {
       body: await renderServerComponent(<MDXContent />),
+      revisedAt: privacyPolicy.revisedAt,
     };
   },
 );
@@ -34,22 +37,16 @@ export const Route = createFileRoute('/privacy')({
 });
 
 function PrivacyPage() {
-  const { body } = Route.useLoaderData();
+  const { body, revisedAt } = Route.useLoaderData();
 
   return (
     <PageMain size="narrow">
-      <article className="border border-cutout-hole p-7 sm:p-9">
-        <header className="mb-8 border-cutout-hole border-b pb-6">
-          <p className="mb-3 font-bold text-cutout-hole text-xs uppercase tracking-[0.3em]">
-            Privacy
-          </p>
-          <h1 className="font-bold text-4xl leading-tight sm:text-5xl">
-            {PAGE_TITLE}
-          </h1>
-        </header>
-
+      <ArticleLayout
+        metadata={`最終改定日: ${formatPostDate(revisedAt)}`}
+        title={PAGE_TITLE}
+      >
         <MarkdownContent>{body}</MarkdownContent>
-      </article>
+      </ArticleLayout>
     </PageMain>
   );
 }
