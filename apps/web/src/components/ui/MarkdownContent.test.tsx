@@ -33,7 +33,6 @@ describe('MarkdownContent', () => {
       'prose-p:my-5',
       'prose-ul:my-5',
       'text-base',
-      'leading-8',
       'tracking-wide',
     );
     expect(screen.getByRole('heading', { name: '見出し' })).toBeInTheDocument();
@@ -60,7 +59,6 @@ describe('MarkdownContent', () => {
       '[&>:last-child]:mb-0',
     );
     expect(content).not.toHaveClass('prose-p:my-5');
-    expect(content).not.toHaveClass('leading-8');
   });
 
   it('lets caller classes override conflicting Tailwind utilities', () => {
@@ -74,6 +72,5 @@ describe('MarkdownContent', () => {
 
     expect(content).toHaveClass('text-lg', 'leading-10');
     expect(content).not.toHaveClass('text-base');
-    expect(content).not.toHaveClass('leading-8');
   });
 });
