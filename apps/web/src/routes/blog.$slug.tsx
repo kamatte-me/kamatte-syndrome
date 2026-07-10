@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
+import { formatPageTitle } from '@/constants/site';
 import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
@@ -72,6 +73,9 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
 
 export const Route = createFileRoute('/blog/$slug')({
   loader: ({ params: { slug } }) => getPostBySlugServerFn({ data: slug }),
+  head: ({ loaderData }) => ({
+    meta: [{ title: formatPageTitle(loaderData?.title ?? 'Blog') }],
+  }),
   component: PostDetailPage,
   pendingComponent: () => <div>Loading...</div>,
 });

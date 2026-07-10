@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
+import { formatPageTitle } from '@/constants/site';
 import { PortfolioYearGroups } from '@/features/portfolio/components/PortfolioYearGroups';
 import { groupPortfolioItemsByYear } from '@/features/portfolio/utils/groupPortfolioItemsByYear';
 
@@ -38,7 +39,7 @@ export const Route = createFileRoute('/portfolio')({
   head: () => ({
     meta: [
       {
-        title: 'Portfolio | kamatte syndrome',
+        title: formatPageTitle('Portfolio'),
       },
       {
         name: 'description',

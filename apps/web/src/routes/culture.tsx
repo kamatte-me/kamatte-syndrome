@@ -13,6 +13,7 @@ import {
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 import { modalDialogSelector } from '@/components/ui/Modal';
+import { formatPageTitle } from '@/constants/site';
 import { CultureCardList } from '@/features/culture/components/CultureCardList';
 import { CultureItemModal } from '@/features/culture/components/CultureItemModal';
 import { cn } from '@/utils/classNames';
@@ -49,7 +50,7 @@ export const Route = createFileRoute('/culture')({
   head: () => ({
     meta: [
       {
-        title: 'Culture | kamatte syndrome',
+        title: formatPageTitle('Culture'),
       },
       {
         name: 'description',

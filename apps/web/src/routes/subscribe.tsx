@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { author } from '@/constants/site';
+import { author, formatPageTitle } from '@/constants/site';
 import { DonationSection } from '@/features/subscribe/components/DonationSection';
 import { LineOfficialAccountSection } from '@/features/subscribe/components/LineOfficialAccountSection';
 
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/subscribe')({
   head: () => ({
     meta: [
       {
-        title: `${PAGE_TITLE} | kamatte syndrome`,
+        title: formatPageTitle(PAGE_TITLE),
       },
       {
         name: 'description',

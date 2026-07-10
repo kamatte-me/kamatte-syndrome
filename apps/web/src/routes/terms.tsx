@@ -5,6 +5,7 @@ import { terms } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { formatPageTitle } from '@/constants/site';
 import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = '免責事項';
@@ -23,7 +24,7 @@ export const Route = createFileRoute('/terms')({
   head: () => ({
     meta: [
       {
-        title: `${PAGE_TITLE} | kamatte syndrome`,
+        title: formatPageTitle(PAGE_TITLE),
       },
       {
         name: 'description',
