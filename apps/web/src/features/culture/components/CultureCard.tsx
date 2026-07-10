@@ -12,21 +12,15 @@ export function CultureCard({ item, onOpen }: CultureCardProps) {
     <li>
       <button
         type="button"
-        className="group grid h-full w-full cursor-pointer overflow-hidden border border-cutout-hole text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
+        className="group grid aspect-square w-full cursor-pointer grid-rows-[minmax(0,1fr)_auto] overflow-hidden border border-cutout-hole text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
         onClick={() => onOpen(item.slug)}
       >
         <span
-          className={cn(
-            cultureCardStyles.cardFrame,
-            'relative block aspect-[4/3] overflow-hidden',
-          )}
+          className={cn(cultureCardStyles.cardFrame, 'relative block min-h-0')}
         >
           <span
             data-culture-card-media
-            className={cn(
-              cultureCardStyles.cardMedia,
-              'block size-full overflow-hidden',
-            )}
+            className={cn(cultureCardStyles.cardMedia, 'block size-full p-4')}
           >
             <img
               src={`https://img.youtube.com/vi/${item.youtubeVideoId}/hqdefault.jpg`}
@@ -42,7 +36,7 @@ export function CultureCard({ item, onOpen }: CultureCardProps) {
             className={cultureCardStyles.playIndicator}
           />
         </span>
-        <span className="flex min-h-20 items-center justify-center px-4 py-3 text-center font-bold text-cutout-hole text-lg leading-snug [word-break:auto-phrase]">
+        <span className="flex min-h-20 items-center justify-center p-4 text-center font-bold text-cutout-hole text-lg leading-snug [word-break:auto-phrase]">
           {item.name}
         </span>
       </button>
