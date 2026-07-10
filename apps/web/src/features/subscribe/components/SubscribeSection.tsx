@@ -14,7 +14,7 @@ export function SubscribeSection({
   return (
     <section
       {...props}
-      className={cn('sm:border sm:border-cutout-hole sm:p-7 md:p-9', className)}
+      className={cn('border border-cutout-hole p-4 sm:p-6', className)}
     >
       <h2 className="mb-6 border-cutout-hole border-b pb-3 font-bold text-2xl text-cutout-hole leading-tight sm:text-3xl">
         {heading}
