@@ -347,7 +347,7 @@ export function Modal({
         aria-modal="true"
         className={cn(
           styles.panel,
-          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[calc(100dvh-4rem)] sm:w-[calc(100vw-4rem)] md:h-[80dvh] md:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]',
+          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-6xl flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[calc(100dvh-4rem)] sm:w-[calc(100vw-4rem)] md:h-[80dvh] md:max-h-[48rem] md:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]',
           customDialogClassName,
         )}
         data-ui-modal-dialog=""
