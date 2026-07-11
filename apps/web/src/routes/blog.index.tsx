@@ -3,12 +3,11 @@ import { createServerFn } from '@tanstack/react-start';
 import { allPosts } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { formatPageTitle } from '@/constants/site';
 import { BlogPagination } from '@/features/blog/components/BlogPagination';
 import { BlogPostCard } from '@/features/blog/components/BlogPostCard';
 import { BlogPostList } from '@/features/blog/components/BlogPostList';
 import type { BlogListPost } from '@/features/blog/types';
-import { createPageMeta } from '@/utils/pageMeta';
+import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
 import {
   paginateItems,
   parseBlogPageSearchParam,

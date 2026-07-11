@@ -5,8 +5,8 @@ import { terms } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
-import { formatPageTitle, siteName } from '@/constants/site';
-import { createPageMeta } from '@/utils/pageMeta';
+import { siteName } from '@/constants/site';
+import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
 import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = '免責事項';

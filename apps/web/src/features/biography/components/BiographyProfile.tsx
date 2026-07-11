@@ -1,6 +1,6 @@
 import type { Biography } from 'content-collections';
 import githubIcon from '@/assets/github_white.svg';
-import { author } from '@/constants/site';
+import { author, authorGitHubUrl } from '@/constants/site';
 import { HistoryList } from './HistoryList';
 
 type BiographyProfileProps = {
@@ -28,7 +28,7 @@ export function BiographyProfile({ history }: BiographyProfileProps) {
         </div>
 
         <a
-          href="https://github.com/kamatte-me"
+          href={authorGitHubUrl}
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-2 rounded-full border border-cutout-hole px-4 py-2 font-bold text-base text-cutout-hole leading-none"

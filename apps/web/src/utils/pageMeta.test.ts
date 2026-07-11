@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { siteName } from '@/constants/site';
-import { createPageMeta } from './pageMeta';
+import { createPageMeta, formatPageTitle } from './pageMeta';
+
+describe('formatPageTitle', () => {
+  it('appends the site name to a page title', () => {
+    expect(formatPageTitle('Blog')).toBe(`Blog - ${siteName}`);
+  });
+});
 
 describe('createPageMeta', () => {
   it('creates Open Graph metadata with absolute URLs', () => {

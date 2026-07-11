@@ -4,11 +4,15 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
-import { formatPageTitle, slogan } from '@/constants/site';
+import { slogan } from '@/constants/site';
 import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
 import type { BlogAdjacentPost } from '@/features/blog/types';
+import {
+  createBlogBreadcrumbStructuredData,
+  createBlogPostingStructuredData,
+} from '@/features/blog/utils/jsonLd';
 import {
   LinkCard,
   type LinkCardProps,
@@ -18,7 +22,8 @@ import {
   type OEmbedProps,
 } from '@/features/url-embeds/components/OEmbed';
 import { cn } from '@/utils/classNames';
-import { createPageMeta } from '@/utils/pageMeta';
+import { createJsonLdScript } from '@/utils/jsonLd';
+import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
 import {
   createPostDescription,
   formatPostDate,
@@ -91,6 +96,12 @@ export const Route = createFileRoute('/blog/$slug')({
         image: post?.featuredImage,
         type: 'article',
       }),
+      scripts: post
+        ? [
+            createJsonLdScript(createBlogPostingStructuredData(post)),
+            createJsonLdScript(createBlogBreadcrumbStructuredData(post)),
+          ]
+        : [],
     };
   },
   component: PostDetailPage,

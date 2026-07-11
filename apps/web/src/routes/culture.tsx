@@ -13,11 +13,11 @@ import {
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 import { modalDialogSelector } from '@/components/ui/Modal';
-import { author, formatPageTitle } from '@/constants/site';
+import { author } from '@/constants/site';
 import { CultureCardList } from '@/features/culture/components/CultureCardList';
 import { CultureItemModal } from '@/features/culture/components/CultureItemModal';
 import { cn } from '@/utils/classNames';
-import { createPageMeta } from '@/utils/pageMeta';
+import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
 import cultureStyles from './culture.module.css';
 
 const cultureModalChangeEvent = 'culture-modal-change';

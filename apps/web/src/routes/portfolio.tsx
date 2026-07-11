@@ -4,10 +4,10 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { author, formatPageTitle } from '@/constants/site';
+import { author } from '@/constants/site';
 import { PortfolioYearGroups } from '@/features/portfolio/components/PortfolioYearGroups';
 import { groupPortfolioItemsByYear } from '@/features/portfolio/utils/groupPortfolioItemsByYear';
-import { createPageMeta } from '@/utils/pageMeta';
+import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
 
 const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
   async () => {

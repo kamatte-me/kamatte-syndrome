@@ -1,9 +1,16 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { author, siteName, slogan } from '@/constants/site';
+import { websiteStructuredData } from '@/features/index/constants/jsonLd';
 import { cn } from '@/utils/classNames';
+import { createJsonLdScript } from '@/utils/jsonLd';
 import styles from './index.module.css';
 
-export const Route = createFileRoute('/')({ component: App });
+export const Route = createFileRoute('/')({
+  head: () => ({
+    scripts: [createJsonLdScript(websiteStructuredData)],
+  }),
+  component: App,
+});
 
 function App() {
   return (

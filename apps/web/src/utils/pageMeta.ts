@@ -14,6 +14,10 @@ type PageMeta =
   | { name: string; content: string }
   | { property: string; content: string };
 
+export function formatPageTitle(pageName: string) {
+  return `${pageName} - ${siteName}`;
+}
+
 export function createPageMeta({
   description,
   image = '/icon.png',
