@@ -18,8 +18,11 @@
   transform: translateX(-50%);
   background: var(--cutout-hole);
   -webkit-mask:
-    url("../assets/speech-bubble-mobile.svg") center / 100% 100% no-repeat;
-  mask: url("../assets/speech-bubble-mobile.svg") center / 100% 100% no-repeat;
+    url("../features/index/assets/speech-bubble-mobile.svg") center / 100% 100%
+    no-repeat;
+  mask:
+    url("../features/index/assets/speech-bubble-mobile.svg") center / 100% 100%
+    no-repeat;
   pointer-events: none;
 }
 
@@ -52,8 +55,8 @@
     left: -1.6rem;
     width: 460px;
     transform: none;
-    -webkit-mask-image: url("../assets/speech-bubble-desktop.svg");
-    mask-image: url("../assets/speech-bubble-desktop.svg");
+    -webkit-mask-image: url("../features/index/assets/speech-bubble-desktop.svg");
+    mask-image: url("../features/index/assets/speech-bubble-desktop.svg");
   }
 
   .speechBubble .speechBubbleText {
