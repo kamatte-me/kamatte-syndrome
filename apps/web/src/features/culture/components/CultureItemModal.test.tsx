@@ -45,7 +45,20 @@ describe('CultureItemModal', () => {
       'src',
       'https://www.youtube.com/embed/youtube-id?autoplay=1',
     );
-    expect(screen.getByText('Culture modal body')).toBeInTheDocument();
+    expect(iframe.parentElement?.parentElement).toHaveClass(
+      'md:col-start-1',
+      'md:row-start-2',
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Culture Item' }).parentElement,
+    ).toHaveClass('md:col-span-2', 'md:row-start-1');
+    expect(screen.getByRole('heading', { name: 'Culture Item' })).toHaveClass(
+      'md:text-center',
+    );
+    expect(screen.getByText('Culture modal body').parentElement).toHaveClass(
+      'md:col-start-2',
+      'md:row-start-2',
+    );
   });
 
   it('uses Modal close interactions', async () => {
