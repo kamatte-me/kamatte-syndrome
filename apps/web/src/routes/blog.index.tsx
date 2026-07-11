@@ -8,6 +8,7 @@ import { BlogPagination } from '@/features/blog/components/BlogPagination';
 import { BlogPostCard } from '@/features/blog/components/BlogPostCard';
 import { BlogPostList } from '@/features/blog/components/BlogPostList';
 import type { BlogListPost } from '@/features/blog/types';
+import { createPageMeta } from '@/utils/pageMeta';
 import {
   paginateItems,
   parseBlogPageSearchParam,
@@ -69,7 +70,22 @@ export const Route = createFileRoute('/blog/')({
     page: search.page ?? 1,
   }),
   loader: async ({ deps: { page } }) => getBlogIndex({ data: { page } }),
-  head: () => ({ meta: [{ title: formatPageTitle('Blog') }] }),
+  head: ({ loaderData }) => {
+    const currentPage = loaderData?.pageInfo.currentPage ?? 1;
+    const pageText = currentPage <= 1 ? '' : `${String(currentPage)}ページ`;
+    const pageTitle = `Blog${pageText ? `（${pageText}）` : ''}`;
+
+    return {
+      meta: createPageMeta({
+        title: formatPageTitle(pageTitle),
+        openGraphTitle: pageTitle,
+        description: `局所的な人気があるらしい。${
+          pageText ? `（${pageText}）` : ''
+        }`,
+        path: pageText ? `/blog?page=${String(currentPage)}` : '/blog',
+      }),
+    };
+  },
   component: BlogPage,
 });
 

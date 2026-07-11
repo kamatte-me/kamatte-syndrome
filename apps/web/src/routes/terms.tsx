@@ -5,7 +5,8 @@ import { terms } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
-import { formatPageTitle } from '@/constants/site';
+import { formatPageTitle, siteName } from '@/constants/site';
+import { createPageMeta } from '@/utils/pageMeta';
 import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = '免責事項';
@@ -22,15 +23,12 @@ const getTermsPageData = createServerFn({ method: 'GET' }).handler(async () => {
 export const Route = createFileRoute('/terms')({
   loader: async () => getTermsPageData(),
   head: () => ({
-    meta: [
-      {
-        title: formatPageTitle(PAGE_TITLE),
-      },
-      {
-        name: 'description',
-        content: `kamatte syndromeの${PAGE_TITLE}`,
-      },
-    ],
+    meta: createPageMeta({
+      title: formatPageTitle(PAGE_TITLE),
+      openGraphTitle: PAGE_TITLE,
+      description: `${siteName}の${PAGE_TITLE}`,
+      path: '/terms',
+    }),
   }),
   component: TermsPage,
 });

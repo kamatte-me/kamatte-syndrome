@@ -5,7 +5,8 @@ import { privacyPolicy } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
-import { formatPageTitle } from '@/constants/site';
+import { formatPageTitle, siteName } from '@/constants/site';
+import { createPageMeta } from '@/utils/pageMeta';
 import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = 'プライバシーポリシー';
@@ -24,15 +25,12 @@ const getPrivacyPageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/privacy')({
   loader: async () => getPrivacyPageData(),
   head: () => ({
-    meta: [
-      {
-        title: formatPageTitle(PAGE_TITLE),
-      },
-      {
-        name: 'description',
-        content: `kamatte syndromeの${PAGE_TITLE}`,
-      },
-    ],
+    meta: createPageMeta({
+      title: formatPageTitle(PAGE_TITLE),
+      openGraphTitle: PAGE_TITLE,
+      description: `${siteName}の${PAGE_TITLE}`,
+      path: '/privacy',
+    }),
   }),
   component: PrivacyPage,
 });

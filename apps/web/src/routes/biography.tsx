@@ -3,9 +3,10 @@ import { createServerFn } from '@tanstack/react-start';
 import { biography, skills as skillSet } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { formatPageTitle } from '@/constants/site';
+import { author, formatPageTitle } from '@/constants/site';
 import { BiographyProfile } from '@/features/biography/components/BiographyProfile';
 import { BiographySkills } from '@/features/biography/components/BiographySkills';
+import { createPageMeta } from '@/utils/pageMeta';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -18,7 +19,14 @@ const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
 
 export const Route = createFileRoute('/biography')({
   loader: async () => getBiographyPageData(),
-  head: () => ({ meta: [{ title: formatPageTitle('Biography') }] }),
+  head: () => ({
+    meta: createPageMeta({
+      title: formatPageTitle('Biography'),
+      openGraphTitle: 'Biography',
+      description: `${author}のすべて`,
+      path: '/biography',
+    }),
+  }),
   component: BiographyPage,
 });
 

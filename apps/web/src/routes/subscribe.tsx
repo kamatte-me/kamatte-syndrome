@@ -4,20 +4,18 @@ import { PageTitle } from '@/components/layouts/PageTitle';
 import { author, formatPageTitle } from '@/constants/site';
 import { DonationSection } from '@/features/subscribe/components/DonationSection';
 import { LineOfficialAccountSection } from '@/features/subscribe/components/LineOfficialAccountSection';
+import { createPageMeta } from '@/utils/pageMeta';
 
 const PAGE_TITLE = 'Subscribe';
 
 export const Route = createFileRoute('/subscribe')({
   head: () => ({
-    meta: [
-      {
-        title: formatPageTitle(PAGE_TITLE),
-      },
-      {
-        name: 'description',
-        content: `${author}を信仰する`,
-      },
-    ],
+    meta: createPageMeta({
+      title: formatPageTitle(PAGE_TITLE),
+      openGraphTitle: PAGE_TITLE,
+      description: `${author}を信仰する`,
+      path: '/subscribe',
+    }),
   }),
   component: SubscribePage,
 });

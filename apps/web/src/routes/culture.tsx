@@ -13,10 +13,11 @@ import {
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
 import { modalDialogSelector } from '@/components/ui/Modal';
-import { formatPageTitle } from '@/constants/site';
+import { author, formatPageTitle } from '@/constants/site';
 import { CultureCardList } from '@/features/culture/components/CultureCardList';
 import { CultureItemModal } from '@/features/culture/components/CultureItemModal';
 import { cn } from '@/utils/classNames';
+import { createPageMeta } from '@/utils/pageMeta';
 import cultureStyles from './culture.module.css';
 
 const cultureModalChangeEvent = 'culture-modal-change';
@@ -48,15 +49,12 @@ const getCulturePageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/culture')({
   loader: async () => getCulturePageData(),
   head: () => ({
-    meta: [
-      {
-        title: formatPageTitle('Culture'),
-      },
-      {
-        name: 'description',
-        content: 'kamatte を構成する音楽や動画の記録。',
-      },
-    ],
+    meta: createPageMeta({
+      title: formatPageTitle('Culture'),
+      openGraphTitle: 'Culture',
+      description: `${author}を構成するもの`,
+      path: '/culture',
+    }),
   }),
   component: CulturePage,
 });

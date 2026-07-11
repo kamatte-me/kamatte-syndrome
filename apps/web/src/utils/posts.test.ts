@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  createPostDescription,
   formatPostDate,
   paginateItems,
   parseBlogPageSearchParam,
@@ -7,6 +8,19 @@ import {
 } from './posts';
 
 describe('posts helpers', () => {
+  it('creates a plain-text description from the first 100 characters', () => {
+    const content = `## Heading
+
+This is **strong** and [linked](https://example.com). ${'a'.repeat(100)}`;
+
+    const description = createPostDescription(content);
+
+    expect(description).toHaveLength(100);
+    expect(description).toBe(
+      `Heading This is strong and linked. ${'a'.repeat(64)}…`,
+    );
+  });
+
   it('formats post dates as YYYY/M/D in Japan time', () => {
     expect(formatPostDate(new Date('2026-07-03T10:00:00+09:00'))).toBe(
       '2026/7/3',

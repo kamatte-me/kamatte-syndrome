@@ -4,9 +4,10 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
-import { formatPageTitle } from '@/constants/site';
+import { author, formatPageTitle } from '@/constants/site';
 import { PortfolioYearGroups } from '@/features/portfolio/components/PortfolioYearGroups';
 import { groupPortfolioItemsByYear } from '@/features/portfolio/utils/groupPortfolioItemsByYear';
+import { createPageMeta } from '@/utils/pageMeta';
 
 const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -37,15 +38,12 @@ const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/portfolio')({
   loader: async () => getPortfolioPageData(),
   head: () => ({
-    meta: [
-      {
-        title: formatPageTitle('Portfolio'),
-      },
-      {
-        name: 'description',
-        content: 'kamatte の制作物、仕事、発表、ハッカソンの記録。',
-      },
-    ],
+    meta: createPageMeta({
+      title: formatPageTitle('Portfolio'),
+      openGraphTitle: 'Portfolio',
+      description: `${author}の戦歴に刮目せよ！！ ババァ〜〜〜ン`,
+      path: '/portfolio',
+    }),
   }),
   component: PortfolioPage,
 });

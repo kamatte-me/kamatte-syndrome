@@ -4,7 +4,8 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { GlobalLayout } from '@/components/layouts/GlobalLayout';
 import { getOpenGraph } from '@/features/url-embeds/api/openGraph.functions';
 import '../styles.css';
-import { siteName } from '@/constants/site';
+import { siteName, slogan } from '@/constants/site';
+import { createPageMeta } from '@/utils/pageMeta';
 
 // LinkCard can be rendered through RSC client references from multiple routes.
 // Keep the server function in the root route graph so production builds register it.
@@ -34,16 +35,13 @@ export const Route = createRootRoute({
       },
     ],
     meta: [
-      {
-        charSet: 'utf-8',
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ...createPageMeta({
         title: siteName,
-      },
+        description: slogan,
+        path: '/',
+      }),
     ],
   }),
   shellComponent: RootDocument,

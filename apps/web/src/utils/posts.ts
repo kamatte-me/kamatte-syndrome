@@ -4,6 +4,21 @@ type PostWithDate = {
 
 export const BLOG_POSTS_PER_PAGE = 5;
 
+export function createPostDescription(content: string) {
+  const text = content
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return text.length <= 100 ? text : `${text.slice(0, 99)}…`;
+}
+
 export function parseBlogPageSearchParam(value: unknown) {
   if (typeof value === 'number') {
     return Number.isInteger(value) && value >= 2 ? value : undefined;
