@@ -575,7 +575,7 @@ function HeaderNavigation({
       <HeaderLogoLink
         className={cn(
           styles.menuLogoLink,
-          'inline-flex h-[98px] w-[140px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 md:hidden',
+          'inline-flex h-[98px] w-[140px] shrink-0 items-center justify-center text-cutout-hole no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole focus-visible:outline-offset-4 sm:h-[140px] sm:w-[200px] md:hidden',
         )}
         onClick={onLogoClick}
       />
