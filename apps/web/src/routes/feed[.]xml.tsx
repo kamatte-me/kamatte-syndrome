@@ -46,6 +46,7 @@ export const Route = createFileRoute('/feed.xml')({
           feedLinks: {
             atom: createAbsoluteUrl('/feed.xml'),
           },
+          generator: false,
           hub: 'https://pubsubhubbub.appspot.com/',
           id: createAbsoluteUrl('/'),
           image: createAbsoluteUrl('/icon-48x48.png'),

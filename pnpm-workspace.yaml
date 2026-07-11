@@ -3,8 +3,8 @@ packages:
   - packages/*
 
 catalog:
-  typescript: 6.0.3
-  vitest: 4.1.9
+  typescript: 7.0.2
+  vitest: 4.1.10
 
 saveExact: true
 minimumReleaseAge: 1440
