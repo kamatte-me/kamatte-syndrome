@@ -6,7 +6,11 @@ import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { siteName } from '@/constants/site';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = '免責事項';
@@ -23,6 +27,7 @@ const getTermsPageData = createServerFn({ method: 'GET' }).handler(async () => {
 export const Route = createFileRoute('/terms')({
   loader: async () => getTermsPageData(),
   head: () => ({
+    links: [createCanonicalLink('/terms')],
     meta: createPageMeta({
       title: formatPageTitle(PAGE_TITLE),
       openGraphTitle: PAGE_TITLE,

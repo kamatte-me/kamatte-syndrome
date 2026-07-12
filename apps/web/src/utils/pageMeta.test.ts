@@ -1,6 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { siteName } from '@/constants/site';
-import { createPageMeta, formatPageTitle } from './pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from './pageMeta';
+
+describe('createCanonicalLink', () => {
+  it('creates an absolute canonical URL while preserving search parameters', () => {
+    expect(createCanonicalLink('/blog?page=2')).toEqual({
+      rel: 'canonical',
+      href: 'https://kamatte.me/blog?page=2',
+    });
+  });
+});
 
 describe('formatPageTitle', () => {
   it('appends the site name to a page title', () => {

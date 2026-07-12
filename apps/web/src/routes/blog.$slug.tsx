@@ -23,7 +23,11 @@ import {
 } from '@/features/url-embeds/components/OEmbed';
 import { cn } from '@/utils/classNames';
 import { createJsonLdScript } from '@/utils/jsonLd';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 import {
   createPostDescription,
   formatPostDate,
@@ -86,13 +90,15 @@ export const Route = createFileRoute('/blog/$slug')({
   loader: ({ params: { slug } }) => getPostBySlugServerFn({ data: slug }),
   head: ({ loaderData }) => {
     const post = loaderData;
+    const path = post ? `/blog/${post.slug}` : '/blog';
 
     return {
+      links: [createCanonicalLink(path)],
       meta: createPageMeta({
         title: formatPageTitle(post?.title ?? 'Blog'),
         openGraphTitle: post?.title ?? 'Blog',
         description: post?.description ?? slogan,
-        path: post ? `/blog/${post.slug}` : '/blog',
+        path,
         image: post?.featuredImage,
         type: 'article',
       }),

@@ -8,7 +8,11 @@ import { BiographyProfile } from '@/features/biography/components/BiographyProfi
 import { BiographySkills } from '@/features/biography/components/BiographySkills';
 import { createProfilePageStructuredData } from '@/features/biography/utils/jsonLd';
 import { createJsonLdScript } from '@/utils/jsonLd';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 
 const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -26,6 +30,7 @@ const getBiographyPageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/biography')({
   loader: async () => getBiographyPageData(),
   head: ({ loaderData }) => ({
+    links: [createCanonicalLink('/biography')],
     meta: createPageMeta({
       title: formatPageTitle('Biography'),
       openGraphTitle: 'Biography',

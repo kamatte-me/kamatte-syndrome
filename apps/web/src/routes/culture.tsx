@@ -17,7 +17,11 @@ import { author } from '@/constants/site';
 import { CultureCardList } from '@/features/culture/components/CultureCardList';
 import { CultureItemModal } from '@/features/culture/components/CultureItemModal';
 import { cn } from '@/utils/classNames';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 import cultureStyles from './culture.module.css';
 
 const cultureModalChangeEvent = 'culture-modal-change';
@@ -49,6 +53,7 @@ const getCulturePageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/culture')({
   loader: async () => getCulturePageData(),
   head: () => ({
+    links: [createCanonicalLink('/culture')],
     meta: createPageMeta({
       title: formatPageTitle('Culture'),
       openGraphTitle: 'Culture',

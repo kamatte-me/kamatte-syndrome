@@ -3,10 +3,12 @@ import { author, siteName, slogan } from '@/constants/site';
 import { websiteStructuredData } from '@/features/index/constants/jsonLd';
 import { cn } from '@/utils/classNames';
 import { createJsonLdScript } from '@/utils/jsonLd';
+import { createCanonicalLink } from '@/utils/pageMeta';
 import styles from './index.module.css';
 
 export const Route = createFileRoute('/')({
   head: () => ({
+    links: [createCanonicalLink('/')],
     scripts: [createJsonLdScript(websiteStructuredData)],
   }),
   component: App,

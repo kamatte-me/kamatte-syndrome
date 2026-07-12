@@ -14,6 +14,13 @@ type PageMeta =
   | { name: string; content: string }
   | { property: string; content: string };
 
+export function createCanonicalLink(path: string) {
+  return {
+    rel: 'canonical',
+    href: new URL(path, baseUrl).href,
+  };
+}
+
 export function formatPageTitle(pageName: string) {
   return `${pageName} - ${siteName}`;
 }

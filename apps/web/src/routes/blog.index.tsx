@@ -7,7 +7,11 @@ import { BlogPagination } from '@/features/blog/components/BlogPagination';
 import { BlogPostCard } from '@/features/blog/components/BlogPostCard';
 import { BlogPostList } from '@/features/blog/components/BlogPostList';
 import type { BlogListPost } from '@/features/blog/types';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 import {
   paginateItems,
   parseBlogPageSearchParam,
@@ -73,15 +77,17 @@ export const Route = createFileRoute('/blog/')({
     const currentPage = loaderData?.pageInfo.currentPage ?? 1;
     const pageText = currentPage <= 1 ? '' : `${String(currentPage)}ページ`;
     const pageTitle = `Blog${pageText ? `（${pageText}）` : ''}`;
+    const path = pageText ? `/blog?page=${String(currentPage)}` : '/blog';
 
     return {
+      links: [createCanonicalLink(path)],
       meta: createPageMeta({
         title: formatPageTitle(pageTitle),
         openGraphTitle: pageTitle,
         description: `局所的な人気があるらしい。${
           pageText ? `（${pageText}）` : ''
         }`,
-        path: pageText ? `/blog?page=${String(currentPage)}` : '/blog',
+        path,
       }),
     };
   },

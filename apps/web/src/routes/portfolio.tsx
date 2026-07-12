@@ -7,7 +7,11 @@ import { PageTitle } from '@/components/layouts/PageTitle';
 import { author } from '@/constants/site';
 import { PortfolioYearGroups } from '@/features/portfolio/components/PortfolioYearGroups';
 import { groupPortfolioItemsByYear } from '@/features/portfolio/utils/groupPortfolioItemsByYear';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 
 const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
   async () => {
@@ -38,6 +42,7 @@ const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/portfolio')({
   loader: async () => getPortfolioPageData(),
   head: () => ({
+    links: [createCanonicalLink('/portfolio')],
     meta: createPageMeta({
       title: formatPageTitle('Portfolio'),
       openGraphTitle: 'Portfolio',

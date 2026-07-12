@@ -6,7 +6,11 @@ import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { siteName } from '@/constants/site';
-import { createPageMeta, formatPageTitle } from '@/utils/pageMeta';
+import {
+  createCanonicalLink,
+  createPageMeta,
+  formatPageTitle,
+} from '@/utils/pageMeta';
 import { formatPostDate } from '@/utils/posts';
 
 const PAGE_TITLE = 'プライバシーポリシー';
@@ -25,6 +29,7 @@ const getPrivacyPageData = createServerFn({ method: 'GET' }).handler(
 export const Route = createFileRoute('/privacy')({
   loader: async () => getPrivacyPageData(),
   head: () => ({
+    links: [createCanonicalLink('/privacy')],
     meta: createPageMeta({
       title: formatPageTitle(PAGE_TITLE),
       openGraphTitle: PAGE_TITLE,

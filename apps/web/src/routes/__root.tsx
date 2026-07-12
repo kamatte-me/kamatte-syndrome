@@ -11,6 +11,8 @@ import { createPageMeta } from '@/utils/pageMeta';
 // Keep the server function in the root route graph so production builds register it.
 void getOpenGraph;
 
+const facebookAppId = import.meta.env.VITE_FACEBOOK_APP_ID;
+
 export const Route = createRootRoute({
   head: () => ({
     links: [
@@ -28,15 +30,33 @@ export const Route = createRootRoute({
         href: 'https://fonts.googleapis.com/css2?family=Matemasie&display=block',
       },
       {
+        rel: 'shortcut icon',
+        href: '/favicon.ico',
+      },
+      {
+        rel: 'apple-touch-icon',
+        href: '/apple-touch-icon.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.json',
+      },
+      {
         rel: 'alternate',
         type: 'application/atom+xml',
-        title: `${siteName} Atom Feed`,
+        title: siteName,
         href: '/feed.xml',
       },
     ],
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'theme-color', content: '#000000' },
+      ...(facebookAppId
+        ? [{ property: 'fb:app_id', content: facebookAppId }]
+        : []),
+      { name: 'twitter:card', content: 'summary' },
+      { name: 'twitter:site', content: '@kamatte_me' },
       ...createPageMeta({
         title: siteName,
         description: slogan,
