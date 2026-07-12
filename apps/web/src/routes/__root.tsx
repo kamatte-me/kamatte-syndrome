@@ -2,6 +2,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { GlobalLayout } from '@/components/layouts/GlobalLayout';
+import { createGoogleAnalyticsScripts } from '@/features/analytics/utils/googleAnalytics';
 import { getOpenGraph } from '@/features/url-embeds/api/openGraph.functions';
 import '../styles.css';
 import { siteName, slogan } from '@/constants/site';
@@ -12,6 +13,7 @@ import { createPageMeta } from '@/utils/pageMeta';
 void getOpenGraph;
 
 const facebookAppId = import.meta.env.VITE_FACEBOOK_APP_ID;
+const googleAnalyticsId = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -63,6 +65,7 @@ export const Route = createRootRoute({
         path: '/',
       }),
     ],
+    scripts: createGoogleAnalyticsScripts(googleAnalyticsId),
   }),
   shellComponent: RootDocument,
 });
