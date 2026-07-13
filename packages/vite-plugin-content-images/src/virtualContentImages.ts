@@ -1,59 +1,77 @@
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
+import { clampImageWidths } from './clampImageWidths.ts';
 import type { ContentImageManifest } from './types.ts';
 
 export const contentImagesVirtualModuleId = 'virtual:content-images';
-export const contentImageSourceVirtualModuleId = 'virtual:content-image-source';
-const contentImageSourceExtensions = new Set([
-  '.avif',
-  '.jpeg',
-  '.jpg',
-  '.png',
-  '.webp',
-]);
+const resolvedContentImagesVirtualModulePrefix =
+  '\0virtual:content-images:resolved:';
 
 type CreateContentImagesVirtualModuleOptions = {
+  base: string;
   manifest: ContentImageManifest;
-  publicPath: string;
-  sourceId: string;
+  sourceDirectory: string;
   widths: readonly number[];
 };
 
 export type ContentImagesVirtualModuleRequest = Readonly<{
-  sourceId: string;
+  base: string;
+  src: string;
   widths: readonly number[];
 }>;
+
+export type ResolvedContentImagesVirtualModule =
+  ContentImagesVirtualModuleRequest &
+    Readonly<{
+      id: string;
+      sourceDirectory: string;
+      watchDirectory: string;
+    }>;
 
 export function parseContentImagesVirtualModuleRequest(
   id: string,
 ): ContentImagesVirtualModuleRequest | null {
-  const unresolvedId = id.startsWith('\0') ? id.slice(1) : id;
-  const queryIndex = unresolvedId.indexOf('?');
-  const moduleId =
-    queryIndex === -1 ? unresolvedId : unresolvedId.slice(0, queryIndex);
+  const queryIndex = id.indexOf('?');
+  const moduleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
 
-  if (moduleId !== contentImagesVirtualModuleId) {
-    return null;
-  }
-  if (queryIndex === -1) {
+  if (moduleId !== contentImagesVirtualModuleId || queryIndex === -1) {
     return null;
   }
 
-  const query = unresolvedId.slice(queryIndex + 1);
-  const parameters = new URLSearchParams(query);
-  const sourceId = getSingleParameter(parameters, 'source');
-  if (!sourceId) {
+  const parameters = new URLSearchParams(id.slice(queryIndex + 1));
+  const src = getSingleParameter(parameters, 'src');
+  if (!src) {
     throw new Error(
-      `${contentImagesVirtualModuleId} requires a source query, for example ` +
-        `'${contentImagesVirtualModuleId}?source=content&widths=320;640'`,
+      `${contentImagesVirtualModuleId} requires a src query, for example ` +
+        `'${contentImagesVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
-  validateSourceId(sourceId);
+  if (/[?#]/.test(src)) {
+    throw new Error(
+      `${contentImagesVirtualModuleId} src must not contain ? or #: ${src}`,
+    );
+  }
+
+  const rawBase = getSingleParameter(parameters, 'base');
+  if (!rawBase) {
+    throw new Error(
+      `${contentImagesVirtualModuleId} requires a base query, for example ` +
+        `'${contentImagesVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+    );
+  }
+  if (/[?#]/.test(rawBase)) {
+    throw new Error(
+      `${contentImagesVirtualModuleId} base must not contain ? or #: ${rawBase}`,
+    );
+  }
+  const base = normalizeBase(rawBase);
+
   const rawWidths = getSingleParameter(parameters, 'widths');
   if (!rawWidths) {
     throw new Error(
       `${contentImagesVirtualModuleId} requires a widths query, for example ` +
-        `'${contentImagesVirtualModuleId}?source=content&widths=320;640'`,
+        `'${contentImagesVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
 
@@ -74,27 +92,87 @@ export function parseContentImagesVirtualModuleRequest(
   }
 
   return {
-    sourceId,
+    base,
+    src,
     widths: [...new Set(widthTokens.map(Number))].sort((a, b) => a - b),
   };
 }
 
-export function resolveContentImagesVirtualModuleId(id: string) {
-  const request = parseContentImagesVirtualModuleRequest(id);
-  return request
-    ? `\0${contentImagesVirtualModuleId}?source=${request.sourceId}&widths=${request.widths.join(';')}`
-    : null;
+export function resolveContentImagesSourceDirectory({
+  importer,
+  rootDirectory,
+  src,
+}: Readonly<{
+  importer: string | undefined;
+  rootDirectory: string;
+  src: string;
+}>) {
+  if (src.startsWith('/')) {
+    const sourceDirectory = normalizePath(
+      path.resolve(rootDirectory, `.${src}`),
+    );
+    if (!isPathInside(rootDirectory, sourceDirectory)) {
+      throw new Error(
+        `${contentImagesVirtualModuleId} root-absolute src must stay inside the Vite root: ${src}`,
+      );
+    }
+    return sourceDirectory;
+  }
+
+  if (!src.startsWith('.')) {
+    throw new Error(
+      `${contentImagesVirtualModuleId} src must be Vite-root-absolute or importer-relative: ${src}`,
+    );
+  }
+  if (!importer || importer.startsWith('\0')) {
+    throw new Error(
+      `${contentImagesVirtualModuleId} relative src requires an application importer: ${src}`,
+    );
+  }
+
+  const importerPath = importer.split('?')[0];
+  if (!importerPath) {
+    throw new Error(
+      `${contentImagesVirtualModuleId} relative src requires an application importer: ${src}`,
+    );
+  }
+
+  return normalizePath(path.resolve(path.dirname(importerPath), src));
+}
+
+export function resolveContentImagesVirtualModule({
+  base,
+  sourceDirectory,
+  src,
+  watchDirectory = sourceDirectory,
+  widths,
+}: ContentImagesVirtualModuleRequest & {
+  sourceDirectory: string;
+  watchDirectory?: string;
+}) {
+  const normalizedSourceDirectory = normalizePath(sourceDirectory);
+  const normalizedWatchDirectory = normalizePath(watchDirectory);
+  const hash = createHash('sha256')
+    .update(`${normalizedSourceDirectory}\0${base}\0${widths.join(';')}`)
+    .digest('hex');
+
+  return {
+    base,
+    id: `${resolvedContentImagesVirtualModulePrefix}${hash}`,
+    sourceDirectory: normalizedSourceDirectory,
+    src,
+    watchDirectory: normalizedWatchDirectory,
+    widths,
+  } satisfies ResolvedContentImagesVirtualModule;
 }
 
 export function createContentImagesVirtualModule({
+  base,
   manifest,
-  publicPath,
-  sourceId,
+  sourceDirectory,
   widths,
 }: CreateContentImagesVirtualModuleOptions) {
-  const normalizedPublicPath = `/${publicPath.replace(/^\/+|\/+$/g, '')}`;
-  const publicPathPrefix = `${normalizedPublicPath}/`;
-  const widthDirective = widths.join(';');
+  const publicPathPrefix = `${base}/`;
   const imports: string[] = [];
   const entries: string[] = [];
 
@@ -106,25 +184,31 @@ export function createContentImagesVirtualModule({
     }
 
     const relativePath = publicUrl.slice(publicPathPrefix.length);
+    const sourcePath = normalizePath(path.join(sourceDirectory, relativePath));
+    if (!isPathInside(sourceDirectory, sourcePath)) {
+      throw new Error(
+        `Content image path must stay inside its source directory: ${relativePath}`,
+      );
+    }
+
     const index = entries.length;
     const avifIdentifier = `contentImageAvif${index}`;
     const webpIdentifier = `contentImageWebp${index}`;
+    const widthDirective = clampImageWidths(widths, entry.width).join(';');
 
     imports.push(
       createVariantImport({
         format: 'avif',
         identifier: avifIdentifier,
         quality: 60,
-        relativePath,
-        sourceId,
+        sourcePath,
         widths: widthDirective,
       }),
       createVariantImport({
         format: 'webp',
         identifier: webpIdentifier,
         quality: 80,
-        relativePath,
-        sourceId,
+        sourcePath,
         widths: widthDirective,
       }),
     );
@@ -142,52 +226,12 @@ export function createContentImagesVirtualModule({
   ].join('\n');
 }
 
-export function resolveContentImageSource(
-  id: string,
-  sourceDirectories: ReadonlyMap<string, string>,
-) {
-  const queryIndex = id.indexOf('?');
-  const moduleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
-  if (moduleId !== contentImageSourceVirtualModuleId) {
-    return null;
-  }
-  if (queryIndex === -1) {
-    return null;
-  }
-
-  const query = id.slice(queryIndex + 1);
-  const parameters = new URLSearchParams(query);
-  const sourceId = getSingleParameter(parameters, 'source');
-  if (!sourceId) {
-    throw new Error(`${contentImageSourceVirtualModuleId} requires source`);
-  }
-  validateSourceId(sourceId);
-  const sourceDirectory = sourceDirectories.get(sourceId);
-  if (!sourceDirectory) {
-    throw new Error(`Unknown content image source: ${sourceId}`);
-  }
-  const relativePath = getSingleParameter(parameters, 'src');
-  if (!relativePath) {
-    throw new Error(`${contentImageSourceVirtualModuleId} requires src`);
-  }
-
-  const sourcePath = path.resolve(sourceDirectory, relativePath);
-  if (!isPathInside(sourceDirectory, sourcePath)) {
-    throw new Error(
-      `${contentImageSourceVirtualModuleId} src must stay inside its source directory: ${relativePath}`,
-    );
-  }
-  if (
-    !contentImageSourceExtensions.has(path.extname(sourcePath).toLowerCase())
-  ) {
-    throw new Error(
-      `${contentImageSourceVirtualModuleId} src must be a supported static image: ${relativePath}`,
-    );
-  }
-
-  parameters.delete('source');
-  parameters.delete('src');
-  return `${normalizePath(sourcePath)}?${parameters}`;
+export function createEmptyContentImagesVirtualModule() {
+  return [
+    'const contentImageManifest={};',
+    'export { contentImageManifest };',
+    'export default contentImageManifest;',
+  ].join('\n');
 }
 
 export function isPathInside(directory: string, filePath: string) {
@@ -203,8 +247,7 @@ type CreateVariantImportOptions = {
   format: 'avif' | 'webp';
   identifier: string;
   quality: number;
-  relativePath: string;
-  sourceId: string;
+  sourcePath: string;
   widths: string;
 };
 
@@ -212,20 +255,18 @@ function createVariantImport({
   format,
   identifier,
   quality,
-  relativePath,
-  sourceId,
+  sourcePath,
   widths,
 }: CreateVariantImportOptions) {
   const parameters = new URLSearchParams({
+    allowUpscale: 'true',
     as: 'metadata:src;width',
     format,
     quality: String(quality),
-    src: relativePath,
-    source: sourceId,
     w: widths,
   });
 
-  return `import ${identifier} from ${JSON.stringify(`${contentImageSourceVirtualModuleId}?${parameters}`)};`;
+  return `import ${identifier} from ${JSON.stringify(`${sourcePath}?${parameters}`)};`;
 }
 
 function getSingleParameter(parameters: URLSearchParams, name: string) {
@@ -238,10 +279,10 @@ function getSingleParameter(parameters: URLSearchParams, name: string) {
   return values[0] || null;
 }
 
-function validateSourceId(sourceId: string) {
-  if (!/^[a-z0-9][a-z0-9_-]*$/.test(sourceId)) {
-    throw new Error(
-      `${contentImagesVirtualModuleId} source must match [a-z0-9][a-z0-9_-]*: ${sourceId}`,
-    );
+function normalizeBase(base: string) {
+  const normalizedBase = `/${base.replace(/^\/+|\/+$/g, '')}`;
+  if (normalizedBase === '/') {
+    throw new Error(`${contentImagesVirtualModuleId} base must not be root`);
   }
+  return normalizedBase;
 }

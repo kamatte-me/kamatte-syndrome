@@ -1,13 +1,11 @@
 /// <reference path="./virtual.d.ts" />
 
+import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
 import { imagetools } from 'vite-imagetools';
-import {
-  type GenerateContentImagesOptions,
-  generateContentImages,
-} from './generateContentImages.ts';
+import { scanContentImageManifest } from './scanContentImageManifest.ts';
 import type { ContentImageManifest } from './types.ts';
 import {
   createContentImageVirtualModule,
@@ -18,10 +16,12 @@ import {
 } from './virtualContentImage.ts';
 import {
   createContentImagesVirtualModule,
+  createEmptyContentImagesVirtualModule,
   isPathInside,
   parseContentImagesVirtualModuleRequest,
-  resolveContentImageSource,
-  resolveContentImagesVirtualModuleId,
+  type ResolvedContentImagesVirtualModule,
+  resolveContentImagesSourceDirectory,
+  resolveContentImagesVirtualModule,
 } from './virtualContentImages.ts';
 
 export type {
@@ -30,108 +30,87 @@ export type {
   ContentImageVariant,
 } from './types.ts';
 
-export type ContentImageSourceOptions = Omit<
-  GenerateContentImagesOptions,
-  'cacheDirectory'
-> & {
-  id: string;
-};
-
 export type ContentImagesPluginOptions = {
   cacheDirectory: string;
   enabled?: boolean;
-  sources?: readonly ContentImageSourceOptions[];
 };
 
 export function contentImages({
   cacheDirectory,
   enabled = true,
-  sources: sourceOptions = [],
 }: ContentImagesPluginOptions): Plugin[] {
-  const sources = validateSources(cacheDirectory, sourceOptions);
-  const sourcesById = new Map(sources.map((source) => [source.id, source]));
-  const sourceDirectories = new Map(
-    sources.map((source) => [source.id, source.sourceDirectory]),
-  );
-  const manifests = new Map<string, ContentImageManifest>();
-  let initialGeneration: Promise<void> | undefined;
   let devServer: ViteDevServer | undefined;
-  let regeneration = Promise.resolve();
-  let regenerationTimer: ReturnType<typeof setTimeout> | undefined;
-  const pendingSourceIds = new Set<string>();
-  const resolvedVirtualModuleIds = new Map<string, string>();
+  let rootDirectory = process.cwd();
+  let invalidationTimer: ReturnType<typeof setTimeout> | undefined;
+  const pendingInvalidationIds = new Set<string>();
+  const manifestPromises = new Map<string, Promise<ContentImageManifest>>();
   const resolvedContentImageModules = new Map<
     string,
     ResolvedContentImageVirtualModule
   >();
+  const resolvedContentImagesModules = new Map<
+    string,
+    ResolvedContentImagesVirtualModule
+  >();
 
-  const regenerate = async (sourceIds: readonly string[]) => {
-    await Promise.all(
-      sourceIds.map(async (sourceId) => {
-        const source = sourcesById.get(sourceId);
-        if (!source) {
-          return;
-        }
-        const manifest = enabled
-          ? await generateContentImages(source)
-          : ({} satisfies ContentImageManifest);
-        manifests.set(sourceId, manifest);
-      }),
-    );
-  };
-
-  const queueRegeneration = (sourceIds: readonly string[]) => {
-    for (const sourceId of sourceIds) {
-      pendingSourceIds.add(sourceId);
+  const getManifest = (
+    contentImagesModule: ResolvedContentImagesVirtualModule,
+  ) => {
+    const cacheKey = createManifestCacheKey(contentImagesModule);
+    const cachedManifest = manifestPromises.get(cacheKey);
+    if (cachedManifest) {
+      return cachedManifest;
     }
-    clearTimeout(regenerationTimer);
-    regenerationTimer = setTimeout(() => {
-      const queuedSourceIds = [...pendingSourceIds];
-      pendingSourceIds.clear();
-      regeneration = regeneration
-        .then(() => regenerate(queuedSourceIds))
-        .then(() => {
-          for (const environment of Object.values(
-            devServer?.environments ?? {},
-          )) {
-            for (const [id, sourceId] of resolvedVirtualModuleIds) {
-              if (!queuedSourceIds.includes(sourceId)) {
-                continue;
-              }
-              const module = environment.moduleGraph.getModuleById(id);
-              if (module) {
-                environment.moduleGraph.invalidateModule(module);
-              }
-            }
-          }
-          devServer?.ws.send({ type: 'full-reload' });
-        })
-        .catch((error: unknown) => {
-          devServer?.config.logger.error(
-            error instanceof Error
-              ? (error.stack ?? error.message)
-              : String(error),
-          );
-        });
-    }, 100);
+
+    const manifest = scanContentImageManifest({
+      publicPath: contentImagesModule.base,
+      sourceDirectory: contentImagesModule.sourceDirectory,
+    }).catch((error: unknown) => {
+      manifestPromises.delete(cacheKey);
+      throw error;
+    });
+    manifestPromises.set(cacheKey, manifest);
+    return manifest;
   };
 
   const handleSourceChange = (filePath: string) => {
-    const changedSourceIds = sources
-      .filter((source) => isPathInside(source.sourceDirectory, filePath))
-      .map((source) => source.id);
-    if (changedSourceIds.length > 0) {
-      queueRegeneration(changedSourceIds);
+    const affectedModules = [...resolvedContentImagesModules.values()].filter(
+      (contentImagesModule) =>
+        isPathInside(contentImagesModule.sourceDirectory, filePath) ||
+        isPathInside(contentImagesModule.watchDirectory, filePath),
+    );
+    if (affectedModules.length === 0) {
+      return;
     }
+
+    for (const contentImagesModule of affectedModules) {
+      manifestPromises.delete(createManifestCacheKey(contentImagesModule));
+      pendingInvalidationIds.add(contentImagesModule.id);
+    }
+
+    clearTimeout(invalidationTimer);
+    invalidationTimer = setTimeout(() => {
+      const invalidationIds = [...pendingInvalidationIds];
+      pendingInvalidationIds.clear();
+
+      for (const environment of Object.values(devServer?.environments ?? {})) {
+        for (const id of invalidationIds) {
+          const module = environment.moduleGraph.getModuleById(id);
+          if (module) {
+            environment.moduleGraph.invalidateModule(module);
+          }
+        }
+      }
+      devServer?.ws.send({ type: 'full-reload' });
+    }, 100);
   };
 
   const plugin: Plugin = {
     name: 'content-images',
     enforce: 'pre',
     sharedDuringBuild: true,
-    async buildStart() {
-      initialGeneration ??= regenerate(sources.map((source) => source.id));
-      await initialGeneration;
+    configResolved(config) {
+      rootDirectory = config.root;
     },
     async resolveId(id, importer) {
       const contentImageRequest = parseContentImageVirtualModuleRequest(id);
@@ -159,58 +138,88 @@ export function contentImages({
         return resolvedModule.id;
       }
 
-      const sourceId = resolveContentImageSource(id, sourceDirectories);
-      if (sourceId) {
-        return sourceId;
-      }
-
-      const resolvedId = resolveContentImagesVirtualModuleId(id);
-      if (resolvedId) {
-        const request = parseContentImagesVirtualModuleRequest(resolvedId);
-        if (!request || !sourcesById.has(request.sourceId)) {
-          throw new Error(
-            `Unknown content image source: ${request?.sourceId ?? ''}`,
-          );
-        }
-        resolvedVirtualModuleIds.set(resolvedId, request.sourceId);
-        return resolvedId;
+      const contentImagesRequest = parseContentImagesVirtualModuleRequest(id);
+      if (contentImagesRequest) {
+        const sourceDirectory =
+          contentImagesRequest.src.startsWith('/') ||
+          contentImagesRequest.src.startsWith('.')
+            ? resolveContentImagesSourceDirectory({
+                importer,
+                rootDirectory,
+                src: contentImagesRequest.src,
+              })
+            : await resolveAliasedSourceDirectory({
+                importer,
+                resolve: (source, sourceImporter) =>
+                  this.resolve(source, sourceImporter, { skipSelf: true }),
+                src: contentImagesRequest.src,
+              });
+        await assertSourceDirectory(sourceDirectory, contentImagesRequest.src);
+        const watchDirectory = normalizeSourcePath(
+          await realpath(sourceDirectory),
+        );
+        const resolvedModule = resolveContentImagesVirtualModule({
+          ...contentImagesRequest,
+          sourceDirectory,
+          watchDirectory,
+        });
+        resolvedContentImagesModules.set(resolvedModule.id, resolvedModule);
+        devServer?.watcher.add([sourceDirectory, watchDirectory]);
+        return resolvedModule.id;
       }
     },
     async load(id) {
       const contentImageModule = resolvedContentImageModules.get(id);
       if (contentImageModule) {
         this.addWatchFile(contentImageModule.sourcePath);
+        const metadata = await sharp(contentImageModule.sourcePath).metadata();
+        const width = metadata.autoOrient.width;
+        const height = metadata.autoOrient.height;
+        if (!width || !height) {
+          throw new Error(
+            `Image dimensions are unavailable: ${contentImageModule.src}`,
+          );
+        }
         if (!enabled) {
-          const metadata = await sharp(
-            contentImageModule.sourcePath,
-          ).metadata();
-          const width = metadata.autoOrient.width;
-          const height = metadata.autoOrient.height;
-          if (!width || !height) {
-            throw new Error(
-              `Image dimensions are unavailable: ${contentImageModule.src}`,
-            );
-          }
           return createUnoptimizedContentImageVirtualModule({
             height,
             sourcePath: contentImageModule.sourcePath,
             width,
           });
         }
-        return createContentImageVirtualModule(contentImageModule);
+        return createContentImageVirtualModule({
+          ...contentImageModule,
+          naturalWidth: width,
+        });
       }
 
-      const request = parseContentImagesVirtualModuleRequest(id);
-      if (request) {
-        const source = sourcesById.get(request.sourceId);
-        if (!source) {
-          throw new Error(`Unknown content image source: ${request.sourceId}`);
+      const contentImagesModule = resolvedContentImagesModules.get(id);
+      if (contentImagesModule) {
+        if (!enabled) {
+          return createEmptyContentImagesVirtualModule();
+        }
+
+        const manifest = await getManifest(contentImagesModule);
+        const publicPathPrefix = `${contentImagesModule.base}/`;
+        for (const publicUrl of Object.keys(manifest)) {
+          this.addWatchFile(
+            path.join(
+              contentImagesModule.sourceDirectory,
+              publicUrl.slice(publicPathPrefix.length),
+            ),
+          );
+          this.addWatchFile(
+            path.join(
+              contentImagesModule.watchDirectory,
+              publicUrl.slice(publicPathPrefix.length),
+            ),
+          );
         }
         return createContentImagesVirtualModule({
-          manifest: manifests.get(source.id) ?? {},
-          publicPath: source.publicPath,
-          sourceId: source.id,
-          widths: request.widths,
+          base: contentImagesModule.base,
+          manifest,
+          sourceDirectory: contentImagesModule.sourceDirectory,
+          widths: contentImagesModule.widths,
         });
       }
     },
@@ -220,17 +229,25 @@ export function contentImages({
         return;
       }
 
-      server.watcher.add(sources.map((source) => source.sourceDirectory));
+      server.watcher.add(
+        [...resolvedContentImagesModules.values()].flatMap(
+          (contentImagesModule) => [
+            contentImagesModule.sourceDirectory,
+            contentImagesModule.watchDirectory,
+          ],
+        ),
+      );
       server.watcher.on('add', handleSourceChange);
       server.watcher.on('change', handleSourceChange);
       server.watcher.on('unlink', handleSourceChange);
 
-      return () => {
-        clearTimeout(regenerationTimer);
+      const cleanup = () => {
+        clearTimeout(invalidationTimer);
         server.watcher.off('add', handleSourceChange);
         server.watcher.off('change', handleSourceChange);
         server.watcher.off('unlink', handleSourceChange);
       };
+      server.httpServer?.once('close', cleanup);
     },
   };
 
@@ -242,115 +259,68 @@ export function contentImages({
             cache: {
               dir: path.join(cacheDirectory, 'imagetools'),
             },
+            include: /^[^?]+\.(avif|gif|heif|jpeg|jpg|png|tiff|webp)(\?.*)?$/i,
           }),
         ]
       : []),
   ];
 }
 
-type ResolvedContentImageSource = ContentImageSourceOptions & {
-  cacheDirectory: string;
-};
-
-function validateSources(
-  cacheDirectory: string,
-  sources: readonly ContentImageSourceOptions[],
-): ResolvedContentImageSource[] {
-  const resolvedCacheDirectory = path.resolve(cacheDirectory);
-  const resolvedSources = sources.map((source) => ({
-    ...source,
-    cacheDirectory: path.join(resolvedCacheDirectory, source.id),
-    outputDirectory: path.resolve(source.outputDirectory),
-    sourceDirectory: path.resolve(source.sourceDirectory),
-  }));
-  const sourceIds = new Set<string>();
-  const publicPaths = new Set<string>();
-
-  for (const source of resolvedSources) {
-    if (!/^[a-z0-9][a-z0-9_-]*$/.test(source.id)) {
-      throw new Error(
-        `Content image source id must match [a-z0-9][a-z0-9_-]*: ${source.id}`,
-      );
-    }
-    if (sourceIds.has(source.id)) {
-      throw new Error(`Duplicate content image source id: ${source.id}`);
-    }
-    sourceIds.add(source.id);
-
-    const publicPath = `/${source.publicPath.replace(/^\/+|\/+$/g, '')}`;
-    if (publicPath === '/') {
-      throw new Error(
-        `Content image public path must not be root: ${source.id}`,
-      );
-    }
-    if (publicPaths.has(publicPath)) {
-      throw new Error(`Duplicate content image public path: ${publicPath}`);
-    }
-    publicPaths.add(publicPath);
-    source.publicPath = publicPath;
-
-    assertDirectoriesDoNotOverlap(
-      source.sourceDirectory,
-      source.outputDirectory,
-      `Source and output directories must not overlap for ${source.id}`,
-    );
-    assertDirectoriesDoNotOverlap(
-      resolvedCacheDirectory,
-      source.sourceDirectory,
-      `Cache and source directories must not overlap for ${source.id}`,
-    );
-    assertDirectoriesDoNotOverlap(
-      resolvedCacheDirectory,
-      source.outputDirectory,
-      `Cache and output directories must not overlap for ${source.id}`,
-    );
-  }
-
-  for (let index = 0; index < resolvedSources.length; index += 1) {
-    for (
-      let comparisonIndex = index + 1;
-      comparisonIndex < resolvedSources.length;
-      comparisonIndex += 1
-    ) {
-      const source = resolvedSources[index];
-      const comparison = resolvedSources[comparisonIndex];
-      if (source && comparison) {
-        assertDirectoriesDoNotOverlap(
-          source.sourceDirectory,
-          comparison.sourceDirectory,
-          `Source directories must not overlap for ${source.id} and ${comparison.id}`,
-        );
-        assertDirectoriesDoNotOverlap(
-          source.outputDirectory,
-          comparison.outputDirectory,
-          `Output directories must not overlap for ${source.id} and ${comparison.id}`,
-        );
-        assertDirectoriesDoNotOverlap(
-          source.sourceDirectory,
-          comparison.outputDirectory,
-          `Source and output directories must not overlap for ${source.id} and ${comparison.id}`,
-        );
-        assertDirectoriesDoNotOverlap(
-          source.outputDirectory,
-          comparison.sourceDirectory,
-          `Source and output directories must not overlap for ${source.id} and ${comparison.id}`,
-        );
-      }
-    }
-  }
-
-  return resolvedSources;
+function createManifestCacheKey({
+  base,
+  sourceDirectory,
+}: Pick<ResolvedContentImagesVirtualModule, 'base' | 'sourceDirectory'>) {
+  return `${sourceDirectory}\0${base}`;
 }
 
-function assertDirectoriesDoNotOverlap(
-  firstDirectory: string,
-  secondDirectory: string,
-  message: string,
-) {
-  if (
-    isPathInside(firstDirectory, secondDirectory) ||
-    isPathInside(secondDirectory, firstDirectory)
-  ) {
-    throw new Error(message);
+async function assertSourceDirectory(sourceDirectory: string, src: string) {
+  try {
+    const sourceStats = await stat(sourceDirectory);
+    if (sourceStats.isDirectory()) {
+      return;
+    }
+  } catch (error) {
+    throw new Error(`Unable to read content image directory: ${src}`, {
+      cause: error,
+    });
   }
+
+  throw new Error(`Content image source is not a directory: ${src}`);
+}
+
+function normalizeSourcePath(sourcePath: string) {
+  return sourcePath.split(path.sep).join('/');
+}
+
+async function resolveAliasedSourceDirectory({
+  importer,
+  resolve,
+  src,
+}: Readonly<{
+  importer: string | undefined;
+  resolve: (
+    source: string,
+    importer: string,
+  ) => Promise<{ external?: 'absolute' | boolean; id: string } | null>;
+  src: string;
+}>) {
+  if (!importer || importer.startsWith('\0')) {
+    throw new Error(
+      `${src} must be imported from an application module to resolve its Vite alias`,
+    );
+  }
+
+  const resolvedSource = await resolve(src, importer);
+  if (!resolvedSource || resolvedSource.external) {
+    throw new Error(`Unable to resolve content image directory: ${src}`);
+  }
+
+  const sourceDirectory = resolvedSource.id.split(/[?#]/, 1)[0];
+  if (!sourceDirectory || !path.isAbsolute(sourceDirectory)) {
+    throw new Error(
+      `Content image directory alias must resolve to an absolute path: ${src}`,
+    );
+  }
+
+  return normalizeSourcePath(sourceDirectory);
 }

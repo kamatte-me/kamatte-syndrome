@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
+import { clampImageWidths } from './clampImageWidths.ts';
 
 export const contentImageVirtualModuleId = 'virtual:content-image';
 const resolvedContentImageVirtualModulePrefix =
@@ -42,6 +43,11 @@ export function parseContentImageVirtualModuleRequest(
     throw new Error(
       `${contentImageVirtualModuleId} requires a src query, for example ` +
         `'${contentImageVirtualModuleId}?src=./image.jpg&widths=160;320'`,
+    );
+  }
+  if (/[?#]/.test(src)) {
+    throw new Error(
+      `${contentImageVirtualModuleId} src must not contain ? or #: ${src}`,
     );
   }
 
@@ -112,28 +118,33 @@ export function resolveContentImageVirtualModule({
 
 export function createContentImageVirtualModule({
   lossless,
+  naturalWidth,
   sourcePath,
   widths,
 }: Pick<
   ResolvedContentImageVirtualModule,
   'lossless' | 'sourcePath' | 'widths'
->) {
+> &
+  Readonly<{ naturalWidth: number }>) {
+  const variantWidths = clampImageWidths(widths, naturalWidth);
   const fallbackImport = createImageImport(sourcePath, {
     as: 'metadata:src;width;height',
   });
   const avifImport = lossless
     ? null
     : createImageImport(sourcePath, {
+        allowUpscale: 'true',
         as: 'metadata:src;width',
         format: 'avif',
         quality: '60',
-        w: widths.join(';'),
+        w: variantWidths.join(';'),
       });
   const webpImport = createImageImport(sourcePath, {
+    allowUpscale: 'true',
     as: 'metadata:src;width',
     format: 'webp',
     ...(lossless ? { lossless: 'true' } : { quality: '80' }),
-    w: widths.join(';'),
+    w: variantWidths.join(';'),
   });
 
   return [

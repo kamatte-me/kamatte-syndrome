@@ -1,4 +1,4 @@
-import portfolioContentImages from 'virtual:content-images?source=content&widths=160;176;320;352';
+import portfolioContentImages from 'virtual:content-images?src=@@/kamatte-syndrome-content/media&base=/media&widths=160;176;320;352';
 import { ContentImage } from '@/components/ui/ContentImage';
 import { cn } from '@/utils/classNames';
 import type { PortfolioListItem } from '../types';

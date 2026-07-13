@@ -1,10 +1,10 @@
 # vite-plugin-content-images
 
-アプリケーションから静的importした画像、または任意の画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPを生成するViteプラグインです。
+アプリケーションから静的importした画像、または画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPを生成するViteプラグインです。
 
-## Usage
+## Setup
 
-Vite設定ではcacheディレクトリを指定します。
+Vite設定ではvite-imagetools用のcacheディレクトリだけを指定します。
 
 ```ts
 contentImages({
@@ -12,16 +12,14 @@ contentImages({
 })
 ```
 
-アプリケーションコードから単一画像を使う場合は、画像パスと必要な幅をquery付きvirtual moduleとして静的importします。`src`はimport元ファイルからの相対パスのほか、Viteに設定されたaliasも解決できます。
+## Single image
+
+単一画像を使う場合は、画像パスと必要な幅をquery付きvirtual moduleとして静的importします。`src`はimport元ファイルからの相対パスのほか、Viteに設定されたaliasも解決できます。画像パスにはquery区切りと衝突する`?`または`#`を使用できません。
 
 ```tsx
 import image from 'virtual:content-image?src=../assets/image.jpg&widths=160;320';
 
-<ContentImage
-  image={image}
-  sizes="160px"
-  alt="サンプル画像"
-/>
+<ContentImage image={image} sizes="160px" alt="サンプル画像" />
 ```
 
 元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。指定幅は重複除去・昇順化され、元画像より大きな幅には拡大されません。
@@ -32,51 +30,61 @@ QRコードやピクセルアートなど可逆圧縮が必要な画像では、
 import qrCode from 'virtual:content-image?src=../assets/qr.png&widths=140;280&lossless=true';
 ```
 
-MarkdownやFrontmatterのように実行時のURLから画像を引く場合は、Vite設定へ名前付きsourceを追加します。`sourceDirectory`は`src/assets`などViteのpublicディレクトリ外でも構いません。原寸fallbackをURLで配信するため、`outputDirectory`はViteのpublicディレクトリ配下に置きます。
+## Image collection
+
+MarkdownやFrontmatterのように実行時のURLから画像を引く場合は、画像ディレクトリ、公開URLのbase、必要な幅をquery付きvirtual moduleとして静的importします。
 
 ```ts
-contentImages({
-  cacheDirectory,
-  sources: [
+import contentImages from 'virtual:content-images?src=@@/content/media&base=/media&widths=160;320';
+```
+
+- `src`はViteに設定されたalias、Vite rootからの`/`始まりのパス、またはimport元からの相対パスです。
+- `base`はmanifestのキーとfallbackに使う公開URLです。
+- `widths`は正の整数を`;`区切りで指定します。
+- 画像ファイル名にURL区切り文字の`?`または`#`は使用できません。
+
+例えば`/content/media/nested/image.jpg`は、次のentryになります。
+
+```ts
+{
+  '/media/nested/image.jpg': {
+    src: '/media/nested/image.jpg',
+    width: 800,
+    height: 600,
+    avif: [/* Vite assets */],
+    webp: [/* Vite assets */],
+  },
+}
+```
+
+```tsx
+<ContentImage
+  src="/media/nested/image.jpg"
+  manifest={contentImages}
+  sizes="160px"
+  alt="サンプル画像"
+/>
+```
+
+プラグインは`src`を読み取り、AVIF/WebPだけをVite assetとして出力します。fallback URLのファイルは書き込まないため、アプリケーションのpublicディレクトリや`vite-plugin-static-copy`などで`base`以下を別途配信してください。
+
+```ts
+viteStaticCopy({
+  targets: [
     {
-      id: 'content',
-      outputDirectory: publicMediaDirectory,
-      publicPath: '/media',
-      sourceDirectory: contentMediaDirectory,
-    },
-    {
-      id: 'assets',
-      outputDirectory: publicAppImagesDirectory,
-      publicPath: '/app-images',
-      sourceDirectory: sourceAssetsDirectory,
+      src: 'content/media/**/*',
+      dest: 'media',
+      rename: { stripBase: 2 },
     },
   ],
 })
 ```
 
-sourceの`id`は`[a-z0-9][a-z0-9_-]*`に一致する一意な値にします。source・output・cacheディレクトリは互いに重ねられず、複数sourceで同じoutputディレクトリやpublic pathを共有することもできません。
+collectionの元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当します。
 
-sourceと必要な幅をquery付きvirtual moduleとして静的importします。
+queryの順序や幅の指定順が異なっても、同じ解決済みディレクトリ、base、幅なら同じvirtual module IDへ正規化されます。派生幅はEXIF orientation適用後の自然幅までに制限され、拡大されません。dev中はsymlinkの実体を含む対象ディレクトリの追加・変更・削除を監視し、manifestを更新します。
 
-```ts
-import contentImages from 'virtual:content-images?source=content&widths=160;320';
-import assetImages from 'virtual:content-images?source=assets&widths=48;96';
-```
-
-default exportはsource単位の`ContentImageManifest`です。manifestのキーはsourceの`publicPath`から始まるURLになります。
-
-```tsx
-<ContentImage
-  src="/app-images/hoge.jpg"
-  manifest={assetImages}
-  sizes="48px"
-  alt="サンプル画像"
-/>
-```
-
-幅は正の整数を`;`区切りで静的に指定します。`virtual:content-images`ではqueryの順序や幅の指定順が異なっても、同じsourceと幅なら同じvirtual module IDへ正規化されます。
-
-virtual moduleは内部でvite-imagetools用の静的importを生成します。単一画像の`src`、manifestの`source`、`widths`は静的に指定する必要がありますが、`ContentImage`へ渡すmanifestモードの`src`はmanifestのキーに一致すれば実行時に決まる文字列でも構いません。
+## TypeScript
 
 virtual moduleの型宣言はパッケージに含まれ、通常はプラグインAPIのimportと一緒に読み込まれます。Vite設定とアプリケーションでTypeScript projectが完全に分かれている場合は、アプリ側の`vite-env.d.ts`などから明示的に参照できます。
 
@@ -84,4 +92,4 @@ virtual moduleの型宣言はパッケージに含まれ、通常はプラグイ
 /// <reference types="@kamatte-syndrome/vite-plugin-content-images/virtual" />
 ```
 
-TypeScript上はquery全体をwildcardとして宣言しているため、画像パス、source名、幅の誤りはViteの変換時に検証されます。
+TypeScript上はquery全体をwildcardとして宣言しているため、画像パス、base、幅の誤りはViteの変換時に検証されます。

@@ -66,6 +66,7 @@
     "schema-dts": "2.0.0",
     "typescript": "catalog:",
     "vite": "8.1.4",
+    "vite-plugin-static-copy": "4.1.1",
     "vitest": "catalog:",
     "zod": "4.4.3"
   },

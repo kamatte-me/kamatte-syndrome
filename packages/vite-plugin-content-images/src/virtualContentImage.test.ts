@@ -26,6 +26,11 @@ describe('virtual content image', () => {
         'virtual:content-image?src=./image.jpg&widths=160;fluid',
       ),
     ).toThrow('widths must be positive integers');
+    expect(() =>
+      parseContentImageVirtualModuleRequest(
+        'virtual:content-image?src=.%2Fimage%3Fname.jpg&widths=160',
+      ),
+    ).toThrow('src must not contain ? or #');
   });
 
   it('creates a canonical id without exposing the resolved source path', () => {
@@ -46,6 +51,7 @@ describe('virtual content image', () => {
   it('generates static fallback, AVIF, and WebP imports', () => {
     const code = createContentImageVirtualModule({
       lossless: false,
+      naturalWidth: 240,
       sourcePath: '/project/src/image.jpg',
       widths: [160, 320],
     });
@@ -55,7 +61,8 @@ describe('virtual content image', () => {
     expect(code).toContain('format=avif&quality=60');
     expect(code).toContain('format=webp');
     expect(code).toContain('format=webp&quality=80');
-    expect(code).toContain('w=160%3B320');
+    expect(code).toContain('allowUpscale=true');
+    expect(code).toContain('w=160%3B240');
     expect(code).toContain('export default contentImage');
   });
 
@@ -70,6 +77,7 @@ describe('virtual content image', () => {
     });
     const code = createContentImageVirtualModule({
       lossless: true,
+      naturalWidth: 200,
       sourcePath: '/project/src/code.png',
       widths: [140, 280],
     });

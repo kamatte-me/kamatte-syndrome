@@ -18,15 +18,10 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
 const sourceDirectory = fileURLToPath(new URL('./src/', import.meta.url));
-const contentMediaDirectory = fileURLToPath(
-  new URL('./kamatte-syndrome-content/media/', import.meta.url),
-);
-const publicMediaDirectory = fileURLToPath(
-  new URL('./public/media/', import.meta.url),
-);
 const contentImageCacheDirectory = fileURLToPath(
   new URL('./node_modules/.cache/content-images/', import.meta.url),
 );
@@ -80,15 +75,19 @@ export default defineConfig(({ mode }) => {
       contentImages({
         cacheDirectory: contentImageCacheDirectory,
         enabled: !isTest,
-        sources: [
-          {
-            id: 'content',
-            outputDirectory: publicMediaDirectory,
-            publicPath: '/media',
-            sourceDirectory: contentMediaDirectory,
-          },
-        ],
       }),
+      !isTest &&
+        viteStaticCopy({
+          targets: [
+            {
+              src: 'kamatte-syndrome-content/media/**/*',
+              dest: 'media',
+              rename: {
+                stripBase: 2,
+              },
+            },
+          ],
+        }),
       contentCollections({
         environment: 'ssr',
         isEnabled: () => !isTest,
