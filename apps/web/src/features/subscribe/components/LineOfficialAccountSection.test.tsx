@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import lineButtonImage from '../assets/line_button.png';
+import lineQrImage from '../assets/line_qr.png';
 import { LineOfficialAccountSection } from './LineOfficialAccountSection';
 
 describe('LineOfficialAccountSection', () => {
@@ -11,9 +13,10 @@ describe('LineOfficialAccountSection', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole('img', { name: '友だち追加QRコード' }),
-    ).toHaveAttribute(
+    ).toHaveAttribute('src', lineQrImage);
+    expect(screen.getByRole('img', { name: '友だち追加' })).toHaveAttribute(
       'src',
-      'https://qr-official.line.me/gs/M_200qygmw_GW.png',
+      lineButtonImage,
     );
     expect(screen.getByRole('link', { name: '友だち追加' })).toHaveAttribute(
       'href',

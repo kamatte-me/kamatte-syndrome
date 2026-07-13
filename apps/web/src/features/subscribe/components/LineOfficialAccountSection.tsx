@@ -1,3 +1,5 @@
+import lineButtonImage from '../assets/line_button.png';
+import lineQrImage from '../assets/line_qr.png';
 import { SubscribeSection } from './SubscribeSection';
 
 export function LineOfficialAccountSection() {
@@ -6,7 +8,7 @@ export function LineOfficialAccountSection() {
       <div className="grid gap-6 md:grid-cols-[180px_1fr] md:items-start">
         <div className="flex flex-col items-center gap-3">
           <img
-            src="https://qr-official.line.me/gs/M_200qygmw_GW.png"
+            src={lineQrImage}
             alt="友だち追加QRコード"
             width={140}
             height={140}
@@ -18,7 +20,7 @@ export function LineOfficialAccountSection() {
             className="inline-flex hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
           >
             <img
-              src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+              src={lineButtonImage}
               alt="友だち追加"
               width={120}
               height={36}
