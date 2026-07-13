@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
+import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
 import { slogan } from '@/constants/site';
 import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
@@ -78,7 +79,11 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
       description: createPostDescription(content),
       mdx: await renderServerComponent(
         <MDXContent
-          components={{ LinkCard: BlogPostLinkCard, OEmbed: BlogPostOEmbed }}
+          components={{
+            ...contentImageMdxComponents,
+            LinkCard: BlogPostLinkCard,
+            OEmbed: BlogPostOEmbed,
+          }}
         />,
       ),
       previousPost: toAdjacentPost(posts[currentIndex + 1]),

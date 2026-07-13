@@ -28,8 +28,9 @@ describe('PortfolioImage', () => {
 
     expect(image).toHaveAttribute('src', '/media/example.png');
     expect(image).toHaveAttribute('loading', 'lazy');
-    expect(image).toHaveAttribute('width', '440');
-    expect(image).toHaveAttribute('height', '440');
+    expect(image).toHaveAttribute('sizes', '(min-width: 640px) 176px, 160px');
+    expect(image).toHaveAttribute('width', '176');
+    expect(image).toHaveAttribute('height', '176');
   });
 
   it('wraps the image in an external link when a link is supplied', () => {

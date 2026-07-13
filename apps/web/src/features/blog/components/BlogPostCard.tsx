@@ -1,4 +1,6 @@
+import blogCardContentImages from 'virtual:content-images?widths=72;120;144;240';
 import { Link } from '@tanstack/react-router';
+import { ContentImage } from '@/components/ui/ContentImage';
 import { formatPostDate } from '@/utils/posts';
 import type { BlogListPost } from '../types';
 
@@ -15,12 +17,14 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
         className="flex gap-4 border border-cutout-hole p-4 sm:gap-6 sm:p-6"
       >
         <div className="size-18 shrink-0 overflow-hidden sm:size-30">
-          <img
+          <ContentImage
             src={post.featuredImage ?? '/avatar.svg'}
             alt={post.title}
             width={120}
             height={120}
             loading="lazy"
+            manifest={blogCardContentImages}
+            sizes="(min-width: 640px) 120px, 72px"
             className="size-full object-cover"
           />
         </div>

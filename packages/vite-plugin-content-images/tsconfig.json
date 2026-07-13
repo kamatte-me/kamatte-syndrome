@@ -1,0 +1,4 @@
+{
+  "extends": "@kamatte-syndrome/tsconfig/tsconfig.node.json",
+  "include": ["src/**/*.ts"]
+}

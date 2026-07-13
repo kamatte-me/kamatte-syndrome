@@ -1,5 +1,7 @@
+import blogFeaturedContentImages from 'virtual:content-images?widths=320;640;760;1280;1520';
 import type { Post } from 'content-collections';
 import type { ComponentPropsWithoutRef } from 'react';
+import { ContentImage } from '@/components/ui/ContentImage';
 import { cn } from '@/utils/classNames';
 
 export type BlogPostFeaturedImageProps = Omit<
@@ -22,9 +24,13 @@ export function BlogPostFeaturedImage({
 
   return (
     <div {...props} className={cn('mb-8 flex justify-center', className)}>
-      <img
+      <ContentImage
         src={src}
         alt={title}
+        loading="eager"
+        manifest={blogFeaturedContentImages}
+        pictureProps={{ className: 'max-w-full' }}
+        sizes="(max-width: 896px) calc(100vw - 3rem), 760px"
         className="max-h-[400px] max-w-full object-contain"
       />
     </div>

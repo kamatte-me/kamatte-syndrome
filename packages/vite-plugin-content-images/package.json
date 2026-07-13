@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/remark-image-loading-lazy",
+  "name": "@kamatte-syndrome/vite-plugin-content-images",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,11 +10,15 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
+  "dependencies": {
+    "sharp": "0.35.3",
+    "vite-imagetools": "10.0.1"
+  },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
-    "@types/mdast": "4.0.4",
-    "mdast-util-mdx-jsx": "3.2.0",
+    "@types/node": "24.13.3",
     "typescript": "catalog:",
+    "vite": "8.1.4",
     "vitest": "catalog:"
   }
 }

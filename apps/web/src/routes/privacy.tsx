@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { privacyPolicy } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
+import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
 import { siteName } from '@/constants/site';
 import {
@@ -20,7 +21,9 @@ const getPrivacyPageData = createServerFn({ method: 'GET' }).handler(
     const MDXContent = privacyPolicy.mdx;
 
     return {
-      body: await renderServerComponent(<MDXContent />),
+      body: await renderServerComponent(
+        <MDXContent components={contentImageMdxComponents} />,
+      ),
       revisedAt: privacyPolicy.revisedAt,
     };
   },

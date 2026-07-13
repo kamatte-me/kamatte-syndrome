@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
+import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
 import { modalDialogSelector } from '@/components/ui/Modal';
 import { author } from '@/constants/site';
 import { CultureCardList } from '@/features/culture/components/CultureCardList';
@@ -43,7 +44,9 @@ const getCulturePageData = createServerFn({ method: 'GET' }).handler(
             ...item
           }) => ({
             ...item,
-            body: await renderServerComponent(<MDXContent />),
+            body: await renderServerComponent(
+              <MDXContent components={contentImageMdxComponents} />,
+            ),
           }),
         ),
     );

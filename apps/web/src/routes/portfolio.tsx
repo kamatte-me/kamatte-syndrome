@@ -4,6 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPortfolios } from 'content-collections';
 import { PageMain } from '@/components/layouts/PageMain';
 import { PageTitle } from '@/components/layouts/PageTitle';
+import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
 import { author } from '@/constants/site';
 import { PortfolioYearGroups } from '@/features/portfolio/components/PortfolioYearGroups';
 import { groupPortfolioItemsByYear } from '@/features/portfolio/utils/groupPortfolioItemsByYear';
@@ -30,7 +31,9 @@ const getPortfolioPageData = createServerFn({ method: 'GET' }).handler(
             ...item
           }) => ({
             ...item,
-            body: await renderServerComponent(<MDXContent />),
+            body: await renderServerComponent(
+              <MDXContent components={contentImageMdxComponents} />,
+            ),
           }),
         ),
     );

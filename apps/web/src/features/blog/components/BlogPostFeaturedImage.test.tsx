@@ -6,10 +6,15 @@ describe('BlogPostFeaturedImage', () => {
   it('renders the featured image when provided', () => {
     render(<BlogPostFeaturedImage src="/media/example.png" title="Example" />);
 
-    expect(screen.getByRole('img', { name: 'Example' })).toHaveAttribute(
-      'src',
-      '/media/example.png',
+    const image = screen.getByRole('img', { name: 'Example' });
+
+    expect(image).toHaveAttribute('src', '/media/example.png');
+    expect(image).toHaveAttribute('loading', 'eager');
+    expect(image).toHaveAttribute(
+      'sizes',
+      '(max-width: 896px) calc(100vw - 3rem), 760px',
     );
+    expect(screen.queryByRole('link')).toBeNull();
   });
 
   it('renders nothing without a featured image', () => {

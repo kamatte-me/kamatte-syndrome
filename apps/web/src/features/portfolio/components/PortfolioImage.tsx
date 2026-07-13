@@ -1,3 +1,5 @@
+import portfolioContentImages from 'virtual:content-images?widths=160;176;320;352';
+import { ContentImage } from '@/components/ui/ContentImage';
 import { cn } from '@/utils/classNames';
 import type { PortfolioListItem } from '../types';
 import { PortfolioImagePlaceholder } from './PortfolioImagePlaceholder';
@@ -13,12 +15,14 @@ const frameClassName =
 export function PortfolioImage({ item, link }: PortfolioImageProps) {
   const image = item.image || undefined;
   const imageContent = image ? (
-    <img
+    <ContentImage
       src={image}
       alt={item.name}
-      width={440}
-      height={440}
+      width={176}
+      height={176}
       loading="lazy"
+      manifest={portfolioContentImages}
+      sizes="(min-width: 640px) 176px, 160px"
       className="h-full w-full object-contain"
     />
   ) : (

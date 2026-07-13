@@ -15,9 +15,9 @@
   "dependencies": {
     "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*",
     "@kamatte-syndrome/remark-gfm-subset": "workspace:*",
-    "@kamatte-syndrome/remark-image-loading-lazy": "workspace:*",
     "@kamatte-syndrome/remark-mdx-url-embed": "workspace:*",
     "@kamatte-syndrome/sitemap-generator": "workspace:*",
+    "@kamatte-syndrome/vite-plugin-content-images": "workspace:*",
     "@radix-ui/react-slot": "1.3.0",
     "@tailwindcss/vite": "4.3.2",
     "@tanstack/intent": "0.3.5",
@@ -66,7 +66,6 @@
     "schema-dts": "2.0.0",
     "typescript": "catalog:",
     "vite": "8.1.4",
-    "vite-plugin-static-copy": "4.1.1",
     "vitest": "catalog:",
     "zod": "4.4.3"
   },

@@ -1,8 +1,8 @@
 import { fileURLToPath } from 'node:url';
 import contentCollections from '@content-collections/vite';
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
-import { remarkImageLoadingLazy } from '@kamatte-syndrome/remark-image-loading-lazy';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
+import { contentImages } from '@kamatte-syndrome/vite-plugin-content-images';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
@@ -18,10 +18,18 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
 const sourceDirectory = fileURLToPath(new URL('./src/', import.meta.url));
+const contentMediaDirectory = fileURLToPath(
+  new URL('./kamatte-syndrome-content/media/', import.meta.url),
+);
+const publicMediaDirectory = fileURLToPath(
+  new URL('./public/media/', import.meta.url),
+);
+const contentImageCacheDirectory = fileURLToPath(
+  new URL('./node_modules/.cache/content-images/', import.meta.url),
+);
 
 export default defineConfig(({ mode }) => {
   const isTest = process.env.VITEST === 'true';
@@ -65,27 +73,21 @@ export default defineConfig(({ mode }) => {
             remarkGfmSubset,
             remarkCjkFriendly,
             remarkBreaks,
-            remarkImageLoadingLazy,
             remarkMdxUrlEmbed,
           ],
         }),
       },
+      contentImages({
+        cacheDirectory: contentImageCacheDirectory,
+        enabled: !isTest,
+        outputDirectory: publicMediaDirectory,
+        publicPath: '/media',
+        sourceDirectory: contentMediaDirectory,
+      }),
       contentCollections({
         environment: 'ssr',
         isEnabled: () => !isTest,
       }),
-      !isTest &&
-        viteStaticCopy({
-          targets: [
-            {
-              src: 'kamatte-syndrome-content/media/',
-              dest: '../public/media',
-              rename: {
-                stripBase: true,
-              },
-            },
-          ],
-        }),
       !isTest && devtools(),
       tailwindcss(),
       !isTest &&
