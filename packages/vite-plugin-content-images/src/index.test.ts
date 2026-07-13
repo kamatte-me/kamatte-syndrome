@@ -28,9 +28,14 @@ describe('contentImages', () => {
     const [plugin] = contentImages({
       cacheDirectory: '/cache',
       enabled: false,
-      outputDirectory: '/public/media',
-      publicPath: '/media',
-      sourceDirectory: '/content/media',
+      sources: [
+        {
+          id: 'content',
+          outputDirectory: '/public/media',
+          publicPath: '/media',
+          sourceDirectory: '/content/media',
+        },
+      ],
     });
 
     expect(plugin?.sharedDuringBuild).toBe(true);
@@ -41,10 +46,12 @@ describe('contentImages', () => {
       path.join(tmpdir(), 'content-images-vite-'),
     );
     temporaryDirectories.push(rootDirectory);
-    const sourceDirectory = path.join(rootDirectory, 'content-media');
+    const contentSourceDirectory = path.join(rootDirectory, 'content-media');
+    const assetSourceDirectory = path.join(rootDirectory, 'src/assets/images');
     const publicDirectory = path.join(rootDirectory, 'public');
     const outputDirectory = path.join(rootDirectory, 'dist');
-    await mkdir(sourceDirectory, { recursive: true });
+    await mkdir(contentSourceDirectory, { recursive: true });
+    await mkdir(assetSourceDirectory, { recursive: true });
     await sharp({
       create: {
         background: { b: 180, g: 120, r: 60 },
@@ -54,10 +61,25 @@ describe('contentImages', () => {
       },
     })
       .jpeg()
-      .toFile(path.join(sourceDirectory, 'photo.jpg'));
+      .toFile(path.join(contentSourceDirectory, 'photo.jpg'));
+    await sharp({
+      create: {
+        background: { b: 60, g: 120, r: 180 },
+        channels: 3,
+        height: 80,
+        width: 100,
+      },
+    })
+      .jpeg()
+      .toFile(path.join(assetSourceDirectory, 'hoge.jpg'));
     await writeFile(
       path.join(rootDirectory, 'main.js'),
-      "import images from 'virtual:content-images?widths=160;320';\nconsole.log(images);\n",
+      [
+        "import contentImages from 'virtual:content-images?source=content&widths=160;320';",
+        "import assetImages from 'virtual:content-images?source=assets&widths=24;48';",
+        'console.log(contentImages, assetImages);',
+        '',
+      ].join('\n'),
     );
 
     await build({
@@ -71,9 +93,20 @@ describe('contentImages', () => {
       plugins: [
         contentImages({
           cacheDirectory: path.join(rootDirectory, 'cache'),
-          outputDirectory: path.join(publicDirectory, 'media'),
-          publicPath: '/media',
-          sourceDirectory,
+          sources: [
+            {
+              id: 'content',
+              outputDirectory: path.join(publicDirectory, 'media'),
+              publicPath: '/media',
+              sourceDirectory: contentSourceDirectory,
+            },
+            {
+              id: 'assets',
+              outputDirectory: path.join(publicDirectory, 'app-images'),
+              publicPath: '/app-images',
+              sourceDirectory: assetSourceDirectory,
+            },
+          ],
         }),
       ],
       publicDir: publicDirectory,
@@ -82,8 +115,18 @@ describe('contentImages', () => {
 
     const assetDirectory = path.join(outputDirectory, 'assets');
     const assetFiles = await readdir(assetDirectory);
-    await expectVariantWidths(assetDirectory, assetFiles, '.avif', [160, 320]);
-    await expectVariantWidths(assetDirectory, assetFiles, '.webp', [160, 320]);
+    await expectVariantWidths(
+      assetDirectory,
+      assetFiles,
+      '.avif',
+      [24, 48, 160, 320],
+    );
+    await expectVariantWidths(
+      assetDirectory,
+      assetFiles,
+      '.webp',
+      [24, 48, 160, 320],
+    );
 
     const bundleFile = assetFiles.find((file) => file.endsWith('.js'));
     expect(bundleFile).toBeDefined();
@@ -92,6 +135,9 @@ describe('contentImages', () => {
       'utf8',
     );
     expect(bundle).toContain('/media/photo.jpg');
+    expect(bundle).toContain('/app-images/hoge.jpg');
+    expect(bundle).toContain('width:24');
+    expect(bundle).toContain('width:48');
     expect(bundle).toContain('width:160');
     expect(bundle).toContain('width:320');
 
@@ -99,6 +145,44 @@ describe('contentImages', () => {
       path.join(outputDirectory, 'media/photo.jpg'),
     ).metadata();
     expect(originalMetadata).toMatchObject({ height: 300, width: 400 });
+
+    const assetMetadata = await sharp(
+      path.join(outputDirectory, 'app-images/hoge.jpg'),
+    ).metadata();
+    expect(assetMetadata).toMatchObject({ height: 80, width: 100 });
+  });
+
+  it('rejects source configurations that could overwrite each other', () => {
+    const contentSource = {
+      id: 'content',
+      outputDirectory: '/public/media',
+      publicPath: '/media',
+      sourceDirectory: '/content/media',
+    };
+
+    expect(() =>
+      contentImages({ cacheDirectory: '/cache', sources: [] }),
+    ).toThrow('requires at least one source');
+    expect(() =>
+      contentImages({
+        cacheDirectory: '/cache',
+        sources: [contentSource, { ...contentSource }],
+      }),
+    ).toThrow('Duplicate content image source id');
+    expect(() =>
+      contentImages({
+        cacheDirectory: '/cache',
+        sources: [
+          contentSource,
+          {
+            id: 'assets',
+            outputDirectory: '/public/media/assets',
+            publicPath: '/assets',
+            sourceDirectory: '/app/src/assets',
+          },
+        ],
+      }),
+    ).toThrow('Output directories must not overlap');
   });
 });
 

@@ -80,9 +80,14 @@ export default defineConfig(({ mode }) => {
       contentImages({
         cacheDirectory: contentImageCacheDirectory,
         enabled: !isTest,
-        outputDirectory: publicMediaDirectory,
-        publicPath: '/media',
-        sourceDirectory: contentMediaDirectory,
+        sources: [
+          {
+            id: 'content',
+            outputDirectory: publicMediaDirectory,
+            publicPath: '/media',
+            sourceDirectory: contentMediaDirectory,
+          },
+        ],
       }),
       contentCollections({
         environment: 'ssr',

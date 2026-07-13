@@ -1,4 +1,4 @@
-import blogFeaturedContentImages from 'virtual:content-images?widths=320;640;760;1280;1520';
+import blogFeaturedContentImages from 'virtual:content-images?source=content&widths=320;640;760;1280;1520';
 import type { Post } from 'content-collections';
 import type { ComponentPropsWithoutRef } from 'react';
 import { ContentImage } from '@/components/ui/ContentImage';

@@ -1,4 +1,4 @@
-import blogCardContentImages from 'virtual:content-images?widths=72;120;144;240';
+import blogCardContentImages from 'virtual:content-images?source=content&widths=72;120;144;240';
 import { Link } from '@tanstack/react-router';
 import { ContentImage } from '@/components/ui/ContentImage';
 import { formatPostDate } from '@/utils/posts';

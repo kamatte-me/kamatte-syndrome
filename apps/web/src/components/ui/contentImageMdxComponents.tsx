@@ -1,4 +1,4 @@
-import markdownContentImages from 'virtual:content-images?widths=320;480;640;960';
+import markdownContentImages from 'virtual:content-images?source=content&widths=320;480;640;960';
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentPropsWithoutRef } from 'react';
 import { ContentImage } from './ContentImage';
