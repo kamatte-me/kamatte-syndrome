@@ -20,12 +20,18 @@ type CreateContentImagesVirtualModuleOptions = {
 
 export function parseContentImageWidths(id: string) {
   const unresolvedId = id.startsWith('\0') ? id.slice(1) : id;
-  const [moduleId, query = ''] = unresolvedId.split('?', 2);
+  const queryIndex = unresolvedId.indexOf('?');
+  const moduleId =
+    queryIndex === -1 ? unresolvedId : unresolvedId.slice(0, queryIndex);
 
   if (moduleId !== contentImagesVirtualModuleId) {
     return null;
   }
+  if (queryIndex === -1) {
+    return null;
+  }
 
+  const query = unresolvedId.slice(queryIndex + 1);
   const rawWidths = new URLSearchParams(query).get('widths');
   if (!rawWidths) {
     throw new Error(

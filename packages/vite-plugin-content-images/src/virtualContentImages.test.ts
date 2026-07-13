@@ -12,9 +12,13 @@ describe('virtual content images', () => {
     expect(
       parseContentImageWidths('virtual:content-images?widths=352;160;352;176'),
     ).toEqual([160, 176, 352]);
-    expect(() => parseContentImageWidths('virtual:content-images')).toThrow(
-      'requires a widths query',
+    expect(parseContentImageWidths('virtual:content-images')).toBeNull();
+    expect(resolveContentImagesVirtualModuleId('virtual:content-images')).toBe(
+      null,
     );
+    expect(() =>
+      parseContentImageWidths('virtual:content-images?format=avif'),
+    ).toThrow('requires a widths query');
     expect(() =>
       parseContentImageWidths('virtual:content-images?widths=160;fluid'),
     ).toThrow('widths must be positive integers');
