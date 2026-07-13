@@ -1,6 +1,7 @@
 /// <reference path="./virtual.d.ts" />
 
 import path from 'node:path';
+import sharp from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
 import { imagetools } from 'vite-imagetools';
 import {
@@ -8,6 +9,13 @@ import {
   generateContentImages,
 } from './generateContentImages.ts';
 import type { ContentImageManifest } from './types.ts';
+import {
+  createContentImageVirtualModule,
+  createUnoptimizedContentImageVirtualModule,
+  parseContentImageVirtualModuleRequest,
+  type ResolvedContentImageVirtualModule,
+  resolveContentImageVirtualModule,
+} from './virtualContentImage.ts';
 import {
   createContentImagesVirtualModule,
   isPathInside,
@@ -32,13 +40,13 @@ export type ContentImageSourceOptions = Omit<
 export type ContentImagesPluginOptions = {
   cacheDirectory: string;
   enabled?: boolean;
-  sources: readonly ContentImageSourceOptions[];
+  sources?: readonly ContentImageSourceOptions[];
 };
 
 export function contentImages({
   cacheDirectory,
   enabled = true,
-  sources: sourceOptions,
+  sources: sourceOptions = [],
 }: ContentImagesPluginOptions): Plugin[] {
   const sources = validateSources(cacheDirectory, sourceOptions);
   const sourcesById = new Map(sources.map((source) => [source.id, source]));
@@ -52,6 +60,10 @@ export function contentImages({
   let regenerationTimer: ReturnType<typeof setTimeout> | undefined;
   const pendingSourceIds = new Set<string>();
   const resolvedVirtualModuleIds = new Map<string, string>();
+  const resolvedContentImageModules = new Map<
+    string,
+    ResolvedContentImageVirtualModule
+  >();
 
   const regenerate = async (sourceIds: readonly string[]) => {
     await Promise.all(
@@ -121,7 +133,32 @@ export function contentImages({
       initialGeneration ??= regenerate(sources.map((source) => source.id));
       await initialGeneration;
     },
-    resolveId(id) {
+    async resolveId(id, importer) {
+      const contentImageRequest = parseContentImageVirtualModuleRequest(id);
+      if (contentImageRequest) {
+        if (!importer) {
+          throw new Error(
+            `${contentImageRequest.src} must be imported from an application module`,
+          );
+        }
+        const resolvedSource = await this.resolve(
+          contentImageRequest.src,
+          importer,
+          { skipSelf: true },
+        );
+        if (!resolvedSource || resolvedSource.external) {
+          throw new Error(
+            `Unable to resolve content image: ${contentImageRequest.src}`,
+          );
+        }
+        const resolvedModule = resolveContentImageVirtualModule({
+          ...contentImageRequest,
+          sourcePath: resolvedSource.id,
+        });
+        resolvedContentImageModules.set(resolvedModule.id, resolvedModule);
+        return resolvedModule.id;
+      }
+
       const sourceId = resolveContentImageSource(id, sourceDirectories);
       if (sourceId) {
         return sourceId;
@@ -139,7 +176,30 @@ export function contentImages({
         return resolvedId;
       }
     },
-    load(id) {
+    async load(id) {
+      const contentImageModule = resolvedContentImageModules.get(id);
+      if (contentImageModule) {
+        this.addWatchFile(contentImageModule.sourcePath);
+        if (!enabled) {
+          const metadata = await sharp(
+            contentImageModule.sourcePath,
+          ).metadata();
+          const width = metadata.autoOrient.width;
+          const height = metadata.autoOrient.height;
+          if (!width || !height) {
+            throw new Error(
+              `Image dimensions are unavailable: ${contentImageModule.src}`,
+            );
+          }
+          return createUnoptimizedContentImageVirtualModule({
+            height,
+            sourcePath: contentImageModule.sourcePath,
+            width,
+          });
+        }
+        return createContentImageVirtualModule(contentImageModule);
+      }
+
       const request = parseContentImagesVirtualModuleRequest(id);
       if (request) {
         const source = sourcesById.get(request.sourceId);
@@ -196,10 +256,6 @@ function validateSources(
   cacheDirectory: string,
   sources: readonly ContentImageSourceOptions[],
 ): ResolvedContentImageSource[] {
-  if (sources.length === 0) {
-    throw new Error('contentImages requires at least one source');
-  }
-
   const resolvedCacheDirectory = path.resolve(cacheDirectory);
   const resolvedSources = sources.map((source) => ({
     ...source,

@@ -114,7 +114,7 @@ export function createContentImagesVirtualModule({
       createVariantImport({
         format: 'avif',
         identifier: avifIdentifier,
-        quality: 50,
+        quality: 60,
         relativePath,
         sourceId,
         widths: widthDirective,

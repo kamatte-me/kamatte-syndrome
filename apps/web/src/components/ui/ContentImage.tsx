@@ -1,40 +1,59 @@
 import type {
+  ContentImageEntry,
   ContentImageManifest,
   ContentImageVariant,
 } from '@kamatte-syndrome/vite-plugin-content-images';
 import type { ComponentPropsWithRef } from 'react';
 
-export type ContentImageProps = Omit<
+type ContentImageBaseProps = Omit<
   ComponentPropsWithRef<'img'>,
-  'alt' | 'children'
+  'alt' | 'children' | 'src'
 > & {
   alt: string;
-  /** Build-time generated image variants used by this rendering context. */
-  manifest: ContentImageManifest;
   /** Props applied when optimized sources render an outer picture element. */
   pictureProps?: Omit<ComponentPropsWithRef<'picture'>, 'children'>;
 };
 
-export function ContentImage({
-  alt,
-  height,
-  sizes,
-  src,
-  srcSet,
-  width,
-  manifest,
-  pictureProps,
-  ...props
-}: ContentImageProps) {
-  const entry = typeof src === 'string' ? manifest[src] : undefined;
+export type ContentImageProps = ContentImageBaseProps &
+  (
+    | {
+        /** A single image imported from virtual:content-image. */
+        image: ContentImageEntry;
+        manifest?: never;
+        src?: never;
+      }
+    | {
+        image?: never;
+        /** Build-time generated image variants used by this rendering context. */
+        manifest: ContentImageManifest;
+        src?: ComponentPropsWithRef<'img'>['src'];
+      }
+  );
+
+export function ContentImage(props: ContentImageProps) {
+  const {
+    alt,
+    height,
+    image,
+    manifest,
+    sizes,
+    src,
+    srcSet,
+    width,
+    pictureProps,
+    ...imageProps
+  } = props;
+  const entry =
+    image ?? (typeof src === 'string' ? manifest?.[src] : undefined);
+  const fallbackSrc = entry?.src ?? src;
   const avif = entry?.avif ?? [];
   const webp = entry?.webp ?? [];
 
   if (!entry || srcSet || (avif.length === 0 && webp.length === 0)) {
     return (
       <img
-        {...props}
-        src={src}
+        {...imageProps}
+        src={fallbackSrc}
         srcSet={srcSet}
         sizes={sizes}
         width={width ?? entry?.width}
@@ -53,7 +72,7 @@ export function ContentImage({
         <source type="image/webp" srcSet={createSrcSet(webp)} sizes={sizes} />
       ) : null}
       <img
-        {...props}
+        {...imageProps}
         src={entry.src}
         sizes={sizes}
         width={width ?? entry.width}

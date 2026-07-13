@@ -152,6 +152,82 @@ describe('contentImages', () => {
     expect(assetMetadata).toMatchObject({ height: 80, width: 100 });
   });
 
+  it('builds an importer-relative single image without a configured source', async () => {
+    const rootDirectory = await mkdtemp(
+      path.join(tmpdir(), 'content-image-vite-'),
+    );
+    temporaryDirectories.push(rootDirectory);
+    const sourceDirectory = path.join(rootDirectory, 'src');
+    const outputDirectory = path.join(rootDirectory, 'dist');
+    await mkdir(sourceDirectory, { recursive: true });
+    await sharp({
+      create: {
+        background: { b: 180, g: 120, r: 60 },
+        channels: 3,
+        height: 80,
+        width: 100,
+      },
+    })
+      .jpeg()
+      .toFile(path.join(sourceDirectory, 'image.jpg'));
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import image from 'virtual:content-image?src=./src/image.jpg&widths=40;80;160';",
+        'console.log(image);',
+        '',
+      ].join('\n'),
+    );
+
+    await build({
+      build: {
+        assetsInlineLimit: 0,
+        outDir: outputDirectory,
+        rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+      },
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        contentImages({
+          cacheDirectory: path.join(rootDirectory, 'cache'),
+        }),
+      ],
+      root: rootDirectory,
+    });
+
+    const assetDirectory = path.join(outputDirectory, 'assets');
+    const assetFiles = await readdir(assetDirectory);
+    await expectVariantWidths(
+      assetDirectory,
+      assetFiles,
+      '.avif',
+      [40, 80, 100],
+    );
+    await expectVariantWidths(
+      assetDirectory,
+      assetFiles,
+      '.webp',
+      [40, 80, 100],
+    );
+
+    const fallbackFile = assetFiles.find((file) => /\.jpe?g$/.test(file));
+    expect(fallbackFile).toBeDefined();
+    await expect(
+      sharp(path.join(assetDirectory, fallbackFile ?? '')).metadata(),
+    ).resolves.toMatchObject({ height: 80, width: 100 });
+
+    const bundleFile = assetFiles.find((file) => file.endsWith('.js'));
+    expect(bundleFile).toBeDefined();
+    const bundle = await readFile(
+      path.join(assetDirectory, bundleFile ?? ''),
+      'utf8',
+    );
+    expect(bundle).toContain('width:40');
+    expect(bundle).toContain('width:80');
+    expect(bundle).toContain('width:100');
+    expect(bundle).toContain('height:80');
+  });
+
   it('rejects source configurations that could overwrite each other', () => {
     const contentSource = {
       id: 'content',
@@ -161,8 +237,8 @@ describe('contentImages', () => {
     };
 
     expect(() =>
-      contentImages({ cacheDirectory: '/cache', sources: [] }),
-    ).toThrow('requires at least one source');
+      contentImages({ cacheDirectory: '/cache', enabled: false }),
+    ).not.toThrow();
     expect(() =>
       contentImages({
         cacheDirectory: '/cache',

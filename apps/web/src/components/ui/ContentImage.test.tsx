@@ -1,4 +1,7 @@
-import type { ContentImageManifest } from '@kamatte-syndrome/vite-plugin-content-images';
+import type {
+  ContentImageEntry,
+  ContentImageManifest,
+} from '@kamatte-syndrome/vite-plugin-content-images';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { ContentImage } from './ContentImage';
@@ -99,6 +102,47 @@ describe('ContentImage', () => {
     ).toHaveAttribute(
       'srcset',
       '/media/_optimized/example.jpg.hash.320w.webp 320w',
+    );
+  });
+
+  it('renders a directly imported content image', () => {
+    const image = manifest['/media/example.jpg'] satisfies ContentImageEntry;
+    const { container } = render(
+      <ContentImage
+        image={image}
+        alt="Direct"
+        sizes="120px"
+        width={120}
+        height={90}
+      />,
+    );
+
+    expect(container.querySelector('picture')).not.toBeNull();
+    expect(screen.getByRole('img', { name: 'Direct' })).toHaveAttribute(
+      'src',
+      '/media/example.jpg',
+    );
+    expect(screen.getByRole('img', { name: 'Direct' })).toHaveAttribute(
+      'width',
+      '120',
+    );
+    expect(
+      container.querySelector('source[type="image/avif"]'),
+    ).toHaveAttribute('sizes', '120px');
+  });
+
+  it('uses the direct image fallback when variants are empty', () => {
+    const image = {
+      ...manifest['/media/example.jpg'],
+      avif: [],
+      webp: [],
+    } satisfies ContentImageEntry;
+    const { container } = render(<ContentImage image={image} alt="Fallback" />);
+
+    expect(container.querySelector('picture')).toBeNull();
+    expect(screen.getByRole('img', { name: 'Fallback' })).toHaveAttribute(
+      'src',
+      '/media/example.jpg',
     );
   });
 
