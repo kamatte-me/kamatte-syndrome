@@ -1,13 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
-
-vi.mock(
-  'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960',
-  () => ({
-    imageVariantManifest: {},
-    default: {},
-  }),
-);
+import { describe, expect, it } from 'vitest';
 
 import { contentImageMdxComponents } from './contentImageMdxComponents';
 
