@@ -192,11 +192,13 @@ export function createContentImagesVirtualModule({
     }
 
     const index = entries.length;
+    const originalIdentifier = `contentImageOriginal${index}`;
     const avifIdentifier = `contentImageAvif${index}`;
     const webpIdentifier = `contentImageWebp${index}`;
     const widthDirective = clampImageWidths(widths, entry.width).join(';');
 
     imports.push(
+      `import ${originalIdentifier} from ${JSON.stringify(sourcePath)};`,
       createVariantImport({
         format: 'avif',
         identifier: avifIdentifier,
@@ -213,7 +215,7 @@ export function createContentImagesVirtualModule({
       }),
     );
     entries.push(
-      `${JSON.stringify(publicUrl)}:{avif:toVariants(${avifIdentifier}),height:${entry.height},src:${JSON.stringify(entry.src)},webp:toVariants(${webpIdentifier}),width:${entry.width}}`,
+      `${JSON.stringify(publicUrl)}:{avif:toVariants(${avifIdentifier}),height:${entry.height},src:${originalIdentifier},webp:toVariants(${webpIdentifier}),width:${entry.width}}`,
     );
   }
 

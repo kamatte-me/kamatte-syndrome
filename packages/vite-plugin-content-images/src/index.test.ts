@@ -165,8 +165,9 @@ describe('contentImages', () => {
       path.join(rootDirectory, 'main.js'),
       [
         "import contentImages from 'virtual:content-images?src=@@/content-media&base=/media&widths=100;160';",
+        "import compactContentImages from 'virtual:content-images?src=@@/content-media&base=/media&widths=100';",
         "import assetImages from 'virtual:content-images?src=./src/assets/images&base=/app-images&widths=24;48';",
-        'console.log(contentImages, assetImages);',
+        'console.log(contentImages, compactContentImages, assetImages);',
         '',
       ].join('\n'),
     );
@@ -206,6 +207,24 @@ describe('contentImages', () => {
       [24, 48, 100, 100, 120, 160],
     );
 
+    const originalAssets = assetFiles.filter((file) => /\.jpe?g$/i.test(file));
+    expect(originalAssets).toHaveLength(3);
+    const photoAsset = await expectOriginalAsset({
+      assetDirectory,
+      assetFiles: originalAssets,
+      sourcePath: path.join(contentSourceDirectory, 'photo.JPG'),
+    });
+    await expectOriginalAsset({
+      assetDirectory,
+      assetFiles: originalAssets,
+      sourcePath: path.join(contentSourceDirectory, 'oriented.jpg'),
+    });
+    await expectOriginalAsset({
+      assetDirectory,
+      assetFiles: originalAssets,
+      sourcePath: path.join(assetSourceDirectory, 'hoge.jpg'),
+    });
+
     const bundleFile = assetFiles.find((file) => file.endsWith('.js'));
     expect(bundleFile).toBeDefined();
     const bundle = await readFile(
@@ -215,6 +234,7 @@ describe('contentImages', () => {
     expect(bundle).toContain('/media/photo.JPG');
     expect(bundle).toContain('/media/oriented.jpg');
     expect(bundle).toContain('/app-images/hoge.jpg');
+    expect(bundle).toContain(`/assets/${photoAsset}`);
     expect(bundle).toContain('width:24');
     expect(bundle).toContain('width:48');
     expect(bundle).toContain('width:160');
@@ -363,4 +383,28 @@ async function expectVariantWidths(
   );
 
   expect(widths.sort((a, b) => (a ?? 0) - (b ?? 0))).toEqual(expectedWidths);
+}
+
+async function expectOriginalAsset({
+  assetDirectory,
+  assetFiles,
+  sourcePath,
+}: Readonly<{
+  assetDirectory: string;
+  assetFiles: readonly string[];
+  sourcePath: string;
+}>) {
+  const sourceExtension = path.extname(sourcePath).toLowerCase();
+  const sourceName = path.basename(sourcePath, path.extname(sourcePath));
+  const assetFile = assetFiles.find(
+    (file) =>
+      file.startsWith(`${sourceName}-`) &&
+      path.extname(file).toLowerCase() === sourceExtension,
+  );
+
+  expect(assetFile).toBeDefined();
+  await expect(
+    readFile(path.join(assetDirectory, assetFile ?? '')),
+  ).resolves.toEqual(await readFile(sourcePath));
+  return assetFile ?? '';
 }

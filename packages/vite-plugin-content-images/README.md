@@ -48,7 +48,7 @@ import contentImages from 'virtual:content-images?src=@@/content/media&base=/med
 ```ts
 {
   '/media/nested/image.jpg': {
-    src: '/media/nested/image.jpg',
+    src: '/assets/image-[hash].jpg',
     width: 800,
     height: 600,
     avif: [/* Vite assets */],
@@ -66,7 +66,9 @@ import contentImages from 'virtual:content-images?src=@@/content/media&base=/med
 />
 ```
 
-プラグインは`src`を読み取り、AVIF/WebPだけをVite assetとして出力します。fallback URLのファイルは書き込まないため、アプリケーションのpublicディレクトリや`vite-plugin-static-copy`などで`base`以下を別途配信してください。
+manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、`ContentImage`のfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。
+
+プラグインは`base`以下へファイルを書き込まないため、RSS、Open Graph、JSON-LDなどで論理URLを使う場合は、アプリケーションのpublicディレクトリや`vite-plugin-static-copy`などで元画像を別途配信してください。
 
 ```ts
 viteStaticCopy({
@@ -80,7 +82,7 @@ viteStaticCopy({
 })
 ```
 
-collectionの元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当します。
+この構成では元画像がhash付きVite assetと安定URLの`base`以下にそれぞれ1つずつ含まれます。派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当します。Viteのasset inline上限より小さい元画像はdata URLになる場合があります。
 
 queryの順序や幅の指定順が異なっても、同じ解決済みディレクトリ、base、幅なら同じvirtual module IDへ正規化されます。派生幅はEXIF orientation適用後の自然幅までに制限され、拡大されません。dev中はsymlinkの実体を含む対象ディレクトリの追加・変更・削除を監視し、manifestを更新します。
 

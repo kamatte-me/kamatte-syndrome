@@ -112,7 +112,7 @@ describe('virtual content images', () => {
     expect(realWatchDirectory.watchDirectory).toBe('/real/content/media');
   });
 
-  it('generates direct static vite-imagetools imports and a manifest export', () => {
+  it('generates original and responsive asset imports with a manifest export', () => {
     const code = createContentImagesVirtualModule({
       base: '/media',
       manifest: {
@@ -128,12 +128,17 @@ describe('virtual content images', () => {
       widths: [160, 320],
     });
 
+    expect(code).toContain(
+      'import contentImageOriginal0 from "/content/nested/example.jpg";',
+    );
     expect(code).toContain('/content/nested/example.jpg?');
     expect(code).toContain('format=avif');
     expect(code).toContain('quality=60');
     expect(code).toContain('format=webp');
     expect(code).toContain('quality=80');
     expect(code).toContain('w=160%3B320');
+    expect(code).toContain('src:contentImageOriginal0');
+    expect(code).not.toContain('src:"/media/nested/example.jpg"');
     expect(code).not.toContain('virtual:content-image-source');
     expect(code).toContain('export default contentImageManifest');
   });

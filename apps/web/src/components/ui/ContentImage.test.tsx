@@ -9,12 +9,12 @@ import { ContentImage } from './ContentImage';
 const manifest = {
   '/media/example.jpg': {
     avif: [
-      { src: '/media/_optimized/example.jpg.hash.320w.avif', width: 320 },
-      { src: '/media/_optimized/example.jpg.hash.640w.avif', width: 640 },
+      { src: '/assets/example-320.hash.avif', width: 320 },
+      { src: '/assets/example-640.hash.avif', width: 640 },
     ],
     height: 600,
-    src: '/media/example.jpg',
-    webp: [{ src: '/media/_optimized/example.jpg.hash.320w.webp', width: 320 }],
+    src: '/assets/example.hash.jpg',
+    webp: [{ src: '/assets/example-320.hash.webp', width: 320 }],
     width: 800,
   },
 } satisfies ContentImageManifest;
@@ -35,7 +35,7 @@ describe('ContentImage', () => {
     const image = screen.getByRole('img', { name: 'Example' });
     const sources = container.querySelectorAll('source');
 
-    expect(image).toHaveAttribute('src', '/media/example.jpg');
+    expect(image).toHaveAttribute('src', '/assets/example.hash.jpg');
     expect(image).toHaveAttribute('width', '800');
     expect(image).toHaveAttribute('height', '600');
     expect(image).toHaveAttribute('loading', 'lazy');
@@ -45,7 +45,7 @@ describe('ContentImage', () => {
     expect(sources[0]).toHaveAttribute('type', 'image/avif');
     expect(sources[0]).toHaveAttribute(
       'srcset',
-      '/media/_optimized/example.jpg.hash.320w.avif 320w, /media/_optimized/example.jpg.hash.640w.avif 640w',
+      '/assets/example-320.hash.avif 320w, /assets/example-640.hash.avif 640w',
     );
     expect(sources[1]).toHaveAttribute('type', 'image/webp');
     expect(sources[1]).toHaveAttribute('sizes', '480px');
@@ -95,13 +95,13 @@ describe('ContentImage', () => {
       container.querySelector('source[type="image/avif"]'),
     ).toHaveAttribute(
       'srcset',
-      '/media/_optimized/example.jpg.hash.320w.avif 320w',
+      '/assets/example-320.hash.avif 320w',
     );
     expect(
       container.querySelector('source[type="image/webp"]'),
     ).toHaveAttribute(
       'srcset',
-      '/media/_optimized/example.jpg.hash.320w.webp 320w',
+      '/assets/example-320.hash.webp 320w',
     );
   });
 
@@ -120,7 +120,7 @@ describe('ContentImage', () => {
     expect(container.querySelector('picture')).not.toBeNull();
     expect(screen.getByRole('img', { name: 'Direct' })).toHaveAttribute(
       'src',
-      '/media/example.jpg',
+      '/assets/example.hash.jpg',
     );
     expect(screen.getByRole('img', { name: 'Direct' })).toHaveAttribute(
       'width',
@@ -142,7 +142,7 @@ describe('ContentImage', () => {
     expect(container.querySelector('picture')).toBeNull();
     expect(screen.getByRole('img', { name: 'Fallback' })).toHaveAttribute(
       'src',
-      '/media/example.jpg',
+      '/assets/example.hash.jpg',
     );
   });
 

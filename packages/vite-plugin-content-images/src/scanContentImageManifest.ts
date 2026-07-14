@@ -18,7 +18,8 @@ export type ScanContentImageManifestOptions = Readonly<{
 
 /**
  * Reads image metadata without modifying the source directory or writing
- * public assets. Responsive variants are added later by the Vite module.
+ * public assets. Original assets and responsive variants are added later by
+ * the Vite module.
  */
 export async function scanContentImageManifest({
   publicPath,
