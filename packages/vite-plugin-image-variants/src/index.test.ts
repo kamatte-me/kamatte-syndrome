@@ -15,7 +15,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { build, createServer, type ViteDevServer } from 'vite';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { contentImages } from './index.ts';
+import { imageVariants } from './index.ts';
 
 const temporaryDirectories: string[] = [];
 
@@ -27,9 +27,9 @@ afterEach(async () => {
   );
 });
 
-describe('contentImages', () => {
+describe('imageVariants', () => {
   it('shares read-only image metadata across build environments', () => {
-    const [plugin] = contentImages({
+    const [plugin] = imageVariants({
       cacheDirectory: '/cache',
       enabled: false,
     });
@@ -38,8 +38,8 @@ describe('contentImages', () => {
   });
 
   it('keeps dev image watchers active until the server closes', async () => {
-    const cacheDirectory = await createRootDirectory('content-images-cache-');
-    const [plugin] = contentImages({ cacheDirectory });
+    const cacheDirectory = await createRootDirectory('image-variants-cache-');
+    const [plugin] = imageVariants({ cacheDirectory });
     if (!plugin || typeof plugin.configureServer !== 'function') {
       throw new Error('Expected a configureServer hook');
     }
@@ -73,10 +73,10 @@ describe('contentImages', () => {
 
   it('watches the real directory behind a collection symlink', async () => {
     const rootDirectory = await realpath(
-      await createRootDirectory('content-images-root-'),
+      await createRootDirectory('image-variants-root-'),
     );
     const realSourceDirectory = await realpath(
-      await createRootDirectory('content-images-source-'),
+      await createRootDirectory('image-variants-source-'),
     );
     const sourceDirectory = path.join(rootDirectory, 'content-media');
     const imagePath = path.join(realSourceDirectory, 'image.png');
@@ -84,14 +84,14 @@ describe('contentImages', () => {
     await writeTestPng(imagePath, 'red');
     await writeFile(
       path.join(rootDirectory, 'main.js'),
-      "import 'virtual:content-images?src=/content-media&base=/media&widths=40';\n",
+      "import 'virtual:image-variants?src=/content-media&base=/media&widths=40';\n",
     );
 
     const server = await createServer({
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        contentImages({
+        imageVariants({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -124,7 +124,7 @@ describe('contentImages', () => {
   });
 
   it('builds collection widths from self-contained virtual imports', async () => {
-    const rootDirectory = await createRootDirectory('content-images-vite-');
+    const rootDirectory = await createRootDirectory('image-variants-vite-');
     const contentSourceDirectory = path.join(rootDirectory, 'content-media');
     const assetSourceDirectory = path.join(rootDirectory, 'src/assets/images');
     const outputDirectory = path.join(rootDirectory, 'dist');
@@ -164,10 +164,10 @@ describe('contentImages', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import contentImages from 'virtual:content-images?src=@@/content-media&base=/media&widths=100;160';",
-        "import compactContentImages from 'virtual:content-images?src=@@/content-media&base=/media&widths=100';",
-        "import assetImages from 'virtual:content-images?src=./src/assets/images&base=/app-images&widths=24;48';",
-        'console.log(contentImages, compactContentImages, assetImages);',
+        "import imageVariants from 'virtual:image-variants?src=@@/content-media&base=/media&widths=100;160';",
+        "import compactImageVariants from 'virtual:image-variants?src=@@/content-media&base=/media&widths=100';",
+        "import assetImages from 'virtual:image-variants?src=./src/assets/images&base=/app-images&widths=24;48';",
+        'console.log(imageVariants, compactImageVariants, assetImages);',
         '',
       ].join('\n'),
     );
@@ -181,7 +181,7 @@ describe('contentImages', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        contentImages({
+        imageVariants({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -245,7 +245,7 @@ describe('contentImages', () => {
   });
 
   it('builds an importer-relative single image', async () => {
-    const rootDirectory = await createRootDirectory('content-image-vite-');
+    const rootDirectory = await createRootDirectory('image-variant-vite-');
     const sourceDirectory = path.join(rootDirectory, 'src');
     const outputDirectory = path.join(rootDirectory, 'dist');
     await mkdir(sourceDirectory, { recursive: true });
@@ -263,7 +263,7 @@ describe('contentImages', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import image from 'virtual:content-image?src=./src/image.jpg&widths=40;100;160';",
+        "import image from 'virtual:image-variant?src=./src/image.jpg&widths=40;100;160';",
         'console.log(image);',
         '',
       ].join('\n'),
@@ -278,7 +278,7 @@ describe('contentImages', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        contentImages({
+        imageVariants({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -319,10 +319,10 @@ describe('contentImages', () => {
   });
 
   it('rejects a collection source that is not a directory', async () => {
-    const rootDirectory = await createRootDirectory('content-images-error-');
+    const rootDirectory = await createRootDirectory('image-variants-error-');
     await writeFile(
       path.join(rootDirectory, 'main.js'),
-      "import 'virtual:content-images?src=/missing&base=/media&widths=320';\n",
+      "import 'virtual:image-variants?src=/missing&base=/media&widths=320';\n",
     );
 
     await expect(
@@ -334,14 +334,14 @@ describe('contentImages', () => {
         configFile: false,
         logLevel: 'silent',
         plugins: [
-          contentImages({
+          imageVariants({
             cacheDirectory: path.join(rootDirectory, 'cache'),
           }),
         ],
         publicDir: false,
         root: rootDirectory,
       }),
-    ).rejects.toThrow('Unable to read content image directory: /missing');
+    ).rejects.toThrow('Unable to read image source directory: /missing');
   });
 });
 

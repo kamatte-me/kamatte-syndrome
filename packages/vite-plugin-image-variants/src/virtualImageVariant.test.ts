@@ -1,40 +1,40 @@
 import { describe, expect, it } from 'vitest';
 import {
-  createContentImageVirtualModule,
-  createUnoptimizedContentImageVirtualModule,
-  parseContentImageVirtualModuleRequest,
-  resolveContentImageVirtualModule,
-} from './virtualContentImage.ts';
+  createImageVariantVirtualModule,
+  createUnoptimizedImageVariantVirtualModule,
+  parseImageVariantVirtualModuleRequest,
+  resolveImageVariantVirtualModule,
+} from './virtualImageVariant.ts';
 
-describe('virtual content image', () => {
+describe('virtual image variant', () => {
   it('parses, normalizes, and validates a single image request', () => {
     expect(
-      parseContentImageVirtualModuleRequest(
-        'virtual:content-image?src=.%2Fimage.jpg&widths=320;160;320',
+      parseImageVariantVirtualModuleRequest(
+        'virtual:image-variant?src=.%2Fimage.jpg&widths=320;160;320',
       ),
     ).toEqual({ lossless: false, src: './image.jpg', widths: [160, 320] });
     expect(
-      parseContentImageVirtualModuleRequest('virtual:content-image'),
+      parseImageVariantVirtualModuleRequest('virtual:image-variant'),
     ).toBeNull();
     expect(() =>
-      parseContentImageVirtualModuleRequest(
-        'virtual:content-image?widths=160;320',
+      parseImageVariantVirtualModuleRequest(
+        'virtual:image-variant?widths=160;320',
       ),
     ).toThrow('requires a src query');
     expect(() =>
-      parseContentImageVirtualModuleRequest(
-        'virtual:content-image?src=./image.jpg&widths=160;fluid',
+      parseImageVariantVirtualModuleRequest(
+        'virtual:image-variant?src=./image.jpg&widths=160;fluid',
       ),
     ).toThrow('widths must be positive integers');
     expect(() =>
-      parseContentImageVirtualModuleRequest(
-        'virtual:content-image?src=.%2Fimage%3Fname.jpg&widths=160',
+      parseImageVariantVirtualModuleRequest(
+        'virtual:image-variant?src=.%2Fimage%3Fname.jpg&widths=160',
       ),
     ).toThrow('src must not contain ? or #');
   });
 
   it('creates a canonical id without exposing the resolved source path', () => {
-    const resolved = resolveContentImageVirtualModule({
+    const resolved = resolveImageVariantVirtualModule({
       lossless: false,
       sourcePath: '/project/src/image.jpg',
       src: './image.jpg',
@@ -42,14 +42,14 @@ describe('virtual content image', () => {
     });
 
     expect(resolved.id).toMatch(
-      /^\0virtual:content-image:resolved:[a-f0-9]{64}$/,
+      /^\0virtual:image-variant:resolved:[a-f0-9]{64}$/,
     );
     expect(resolved.id).not.toContain('/project');
     expect(resolved.sourcePath).toBe('/project/src/image.jpg');
   });
 
   it('generates static fallback, AVIF, and WebP imports', () => {
-    const code = createContentImageVirtualModule({
+    const code = createImageVariantVirtualModule({
       lossless: false,
       naturalWidth: 240,
       sourcePath: '/project/src/image.jpg',
@@ -63,19 +63,19 @@ describe('virtual content image', () => {
     expect(code).toContain('format=webp&quality=80');
     expect(code).toContain('allowUpscale=true');
     expect(code).toContain('w=160%3B240');
-    expect(code).toContain('export default contentImage');
+    expect(code).toContain('export default imageVariant');
   });
 
   it('generates lossless variants when requested', () => {
-    const request = parseContentImageVirtualModuleRequest(
-      'virtual:content-image?src=./code.png&widths=140;280&lossless=true',
+    const request = parseImageVariantVirtualModuleRequest(
+      'virtual:image-variant?src=./code.png&widths=140;280&lossless=true',
     );
     expect(request).toEqual({
       lossless: true,
       src: './code.png',
       widths: [140, 280],
     });
-    const code = createContentImageVirtualModule({
+    const code = createImageVariantVirtualModule({
       lossless: true,
       naturalWidth: 200,
       sourcePath: '/project/src/code.png',
@@ -89,14 +89,14 @@ describe('virtual content image', () => {
   });
 
   it('generates an unoptimized fallback when image processing is disabled', () => {
-    const code = createUnoptimizedContentImageVirtualModule({
+    const code = createUnoptimizedImageVariantVirtualModule({
       height: 80,
       sourcePath: '/project/src/image.jpg',
       width: 100,
     });
 
     expect(code).toContain(
-      'import contentImageFallback from "/project/src/image.jpg"',
+      'import imageVariantFallback from "/project/src/image.jpg"',
     );
     expect(code).toContain('avif:[]');
     expect(code).toContain('height:80');
@@ -105,7 +105,7 @@ describe('virtual content image', () => {
 
   it('rejects unsupported source formats', () => {
     expect(() =>
-      resolveContentImageVirtualModule({
+      resolveImageVariantVirtualModule({
         lossless: false,
         sourcePath: '/project/src/image.svg',
         src: './image.svg',

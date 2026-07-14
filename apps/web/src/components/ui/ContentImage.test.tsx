@@ -1,7 +1,7 @@
 import type {
-  ContentImageEntry,
-  ContentImageManifest,
-} from '@kamatte-syndrome/vite-plugin-content-images';
+  ImageVariantEntry,
+  ImageVariantManifest,
+} from '@kamatte-syndrome/vite-plugin-image-variants';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { ContentImage } from './ContentImage';
@@ -17,7 +17,7 @@ const manifest = {
     webp: [{ src: '/assets/example-320.hash.webp', width: 320 }],
     width: 800,
   },
-} satisfies ContentImageManifest;
+} satisfies ImageVariantManifest;
 
 describe('ContentImage', () => {
   it('renders responsive picture sources for a generated content image', () => {
@@ -81,7 +81,7 @@ describe('ContentImage', () => {
         avif: [manifest['/media/example.jpg'].avif[0]],
         webp: [manifest['/media/example.jpg'].webp[0]],
       },
-    } satisfies ContentImageManifest;
+    } satisfies ImageVariantManifest;
     const { container } = render(
       <ContentImage
         src="/media/example.jpg"
@@ -93,20 +93,14 @@ describe('ContentImage', () => {
 
     expect(
       container.querySelector('source[type="image/avif"]'),
-    ).toHaveAttribute(
-      'srcset',
-      '/assets/example-320.hash.avif 320w',
-    );
+    ).toHaveAttribute('srcset', '/assets/example-320.hash.avif 320w');
     expect(
       container.querySelector('source[type="image/webp"]'),
-    ).toHaveAttribute(
-      'srcset',
-      '/assets/example-320.hash.webp 320w',
-    );
+    ).toHaveAttribute('srcset', '/assets/example-320.hash.webp 320w');
   });
 
   it('renders a directly imported content image', () => {
-    const image = manifest['/media/example.jpg'] satisfies ContentImageEntry;
+    const image = manifest['/media/example.jpg'] satisfies ImageVariantEntry;
     const { container } = render(
       <ContentImage
         image={image}
@@ -136,7 +130,7 @@ describe('ContentImage', () => {
       ...manifest['/media/example.jpg'],
       avif: [],
       webp: [],
-    } satisfies ContentImageEntry;
+    } satisfies ImageVariantEntry;
     const { container } = render(<ContentImage image={image} alt="Fallback" />);
 
     expect(container.querySelector('picture')).toBeNull();

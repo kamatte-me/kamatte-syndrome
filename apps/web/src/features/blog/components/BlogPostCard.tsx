@@ -1,4 +1,4 @@
-import blogCardContentImages from 'virtual:content-images?src=@@/kamatte-syndrome-content/media&base=/media&widths=72;120;144;240';
+import blogCardImageVariants from 'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=72;120;144;240';
 import { Link } from '@tanstack/react-router';
 import { ContentImage } from '@/components/ui/ContentImage';
 import { formatPostDate } from '@/utils/posts';
@@ -23,7 +23,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
             width={120}
             height={120}
             loading="lazy"
-            manifest={blogCardContentImages}
+            manifest={blogCardImageVariants}
             sizes="(min-width: 640px) 120px, 72px"
             className="size-full object-cover"
           />

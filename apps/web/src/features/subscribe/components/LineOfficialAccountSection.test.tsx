@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { LineOfficialAccountSection } from './LineOfficialAccountSection';
 
 vi.mock(
-  'virtual:content-image?src=../assets/line_qr.png&widths=140;280',
+  'virtual:image-variant?src=../assets/line_qr.png&widths=140;280',
   () => ({
     default: {
       avif: [
@@ -21,7 +21,7 @@ vi.mock(
   }),
 );
 vi.mock(
-  'virtual:content-image?src=../assets/line_button.png&widths=120;240',
+  'virtual:image-variant?src=../assets/line_button.png&widths=120;240',
   () => ({
     default: {
       avif: [

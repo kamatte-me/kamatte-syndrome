@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import type { ContentImageEntry, ContentImageManifest } from './types.ts';
+import type { ImageVariantEntry, ImageVariantManifest } from './types.ts';
 
 const supportedImageExtensions = new Set([
   '.avif',
@@ -11,7 +11,7 @@ const supportedImageExtensions = new Set([
   '.webp',
 ]);
 
-export type ScanContentImageManifestOptions = Readonly<{
+export type ScanImageVariantManifestOptions = Readonly<{
   publicPath: string;
   sourceDirectory: string;
 }>;
@@ -21,17 +21,17 @@ export type ScanContentImageManifestOptions = Readonly<{
  * public assets. Original assets and responsive variants are added later by
  * the Vite module.
  */
-export async function scanContentImageManifest({
+export async function scanImageVariantManifest({
   publicPath,
   sourceDirectory,
-}: ScanContentImageManifestOptions): Promise<ContentImageManifest> {
+}: ScanImageVariantManifestOptions): Promise<ImageVariantManifest> {
   const normalizedPublicPath = normalizePublicPath(publicPath);
-  const manifest: Record<string, ContentImageEntry> = {};
+  const manifest: Record<string, ImageVariantEntry> = {};
 
   for (const relativePath of await listSupportedImageFiles(sourceDirectory)) {
     if (/[?#]/.test(relativePath)) {
       throw new Error(
-        `Content image path must not contain ? or #: ${toPosixPath(relativePath)}`,
+        `Image source path must not contain ? or #: ${toPosixPath(relativePath)}`,
       );
     }
     const sourcePath = path.join(sourceDirectory, relativePath);
@@ -54,7 +54,7 @@ export async function scanContentImageManifest({
       };
     } catch (error) {
       throw new Error(
-        `Failed to read content image metadata: ${toPosixPath(relativePath)}`,
+        `Failed to read image metadata: ${toPosixPath(relativePath)}`,
         { cause: error },
       );
     }

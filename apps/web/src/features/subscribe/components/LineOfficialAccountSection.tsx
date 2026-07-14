@@ -1,5 +1,5 @@
-import lineButtonImage from 'virtual:content-image?src=../assets/line_button.png&widths=120;240';
-import lineQrImage from 'virtual:content-image?src=../assets/line_qr.png&widths=140;280';
+import lineButtonImage from 'virtual:image-variant?src=../assets/line_button.png&widths=120;240';
+import lineQrImage from 'virtual:image-variant?src=../assets/line_qr.png&widths=140;280';
 import { ContentImage } from '@/components/ui/ContentImage';
 import { SubscribeSection } from './SubscribeSection';
 

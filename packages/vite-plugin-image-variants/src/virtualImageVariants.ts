@@ -2,40 +2,40 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 import { clampImageWidths } from './clampImageWidths.ts';
-import type { ContentImageManifest } from './types.ts';
+import type { ImageVariantManifest } from './types.ts';
 
-export const contentImagesVirtualModuleId = 'virtual:content-images';
-const resolvedContentImagesVirtualModulePrefix =
-  '\0virtual:content-images:resolved:';
+export const imageVariantsVirtualModuleId = 'virtual:image-variants';
+const resolvedImageVariantsVirtualModulePrefix =
+  '\0virtual:image-variants:resolved:';
 
-type CreateContentImagesVirtualModuleOptions = {
+type CreateImageVariantsVirtualModuleOptions = {
   base: string;
-  manifest: ContentImageManifest;
+  manifest: ImageVariantManifest;
   sourceDirectory: string;
   widths: readonly number[];
 };
 
-export type ContentImagesVirtualModuleRequest = Readonly<{
+export type ImageVariantsVirtualModuleRequest = Readonly<{
   base: string;
   src: string;
   widths: readonly number[];
 }>;
 
-export type ResolvedContentImagesVirtualModule =
-  ContentImagesVirtualModuleRequest &
+export type ResolvedImageVariantsVirtualModule =
+  ImageVariantsVirtualModuleRequest &
     Readonly<{
       id: string;
       sourceDirectory: string;
       watchDirectory: string;
     }>;
 
-export function parseContentImagesVirtualModuleRequest(
+export function parseImageVariantsVirtualModuleRequest(
   id: string,
-): ContentImagesVirtualModuleRequest | null {
+): ImageVariantsVirtualModuleRequest | null {
   const queryIndex = id.indexOf('?');
   const moduleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
 
-  if (moduleId !== contentImagesVirtualModuleId || queryIndex === -1) {
+  if (moduleId !== imageVariantsVirtualModuleId || queryIndex === -1) {
     return null;
   }
 
@@ -43,26 +43,26 @@ export function parseContentImagesVirtualModuleRequest(
   const src = getSingleParameter(parameters, 'src');
   if (!src) {
     throw new Error(
-      `${contentImagesVirtualModuleId} requires a src query, for example ` +
-        `'${contentImagesVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+      `${imageVariantsVirtualModuleId} requires a src query, for example ` +
+        `'${imageVariantsVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
   if (/[?#]/.test(src)) {
     throw new Error(
-      `${contentImagesVirtualModuleId} src must not contain ? or #: ${src}`,
+      `${imageVariantsVirtualModuleId} src must not contain ? or #: ${src}`,
     );
   }
 
   const rawBase = getSingleParameter(parameters, 'base');
   if (!rawBase) {
     throw new Error(
-      `${contentImagesVirtualModuleId} requires a base query, for example ` +
-        `'${contentImagesVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+      `${imageVariantsVirtualModuleId} requires a base query, for example ` +
+        `'${imageVariantsVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
   if (/[?#]/.test(rawBase)) {
     throw new Error(
-      `${contentImagesVirtualModuleId} base must not contain ? or #: ${rawBase}`,
+      `${imageVariantsVirtualModuleId} base must not contain ? or #: ${rawBase}`,
     );
   }
   const base = normalizeBase(rawBase);
@@ -70,8 +70,8 @@ export function parseContentImagesVirtualModuleRequest(
   const rawWidths = getSingleParameter(parameters, 'widths');
   if (!rawWidths) {
     throw new Error(
-      `${contentImagesVirtualModuleId} requires a widths query, for example ` +
-        `'${contentImagesVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+      `${imageVariantsVirtualModuleId} requires a widths query, for example ` +
+        `'${imageVariantsVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
 
@@ -87,7 +87,7 @@ export function parseContentImagesVirtualModuleRequest(
     })
   ) {
     throw new Error(
-      `${contentImagesVirtualModuleId} widths must be positive integers: ${rawWidths}`,
+      `${imageVariantsVirtualModuleId} widths must be positive integers: ${rawWidths}`,
     );
   }
 
@@ -98,7 +98,7 @@ export function parseContentImagesVirtualModuleRequest(
   };
 }
 
-export function resolveContentImagesSourceDirectory({
+export function resolveImageVariantsSourceDirectory({
   importer,
   rootDirectory,
   src,
@@ -113,7 +113,7 @@ export function resolveContentImagesSourceDirectory({
     );
     if (!isPathInside(rootDirectory, sourceDirectory)) {
       throw new Error(
-        `${contentImagesVirtualModuleId} root-absolute src must stay inside the Vite root: ${src}`,
+        `${imageVariantsVirtualModuleId} root-absolute src must stay inside the Vite root: ${src}`,
       );
     }
     return sourceDirectory;
@@ -121,32 +121,32 @@ export function resolveContentImagesSourceDirectory({
 
   if (!src.startsWith('.')) {
     throw new Error(
-      `${contentImagesVirtualModuleId} src must be Vite-root-absolute or importer-relative: ${src}`,
+      `${imageVariantsVirtualModuleId} src must be Vite-root-absolute or importer-relative: ${src}`,
     );
   }
   if (!importer || importer.startsWith('\0')) {
     throw new Error(
-      `${contentImagesVirtualModuleId} relative src requires an application importer: ${src}`,
+      `${imageVariantsVirtualModuleId} relative src requires an application importer: ${src}`,
     );
   }
 
   const importerPath = importer.split('?')[0];
   if (!importerPath) {
     throw new Error(
-      `${contentImagesVirtualModuleId} relative src requires an application importer: ${src}`,
+      `${imageVariantsVirtualModuleId} relative src requires an application importer: ${src}`,
     );
   }
 
   return normalizePath(path.resolve(path.dirname(importerPath), src));
 }
 
-export function resolveContentImagesVirtualModule({
+export function resolveImageVariantsVirtualModule({
   base,
   sourceDirectory,
   src,
   watchDirectory = sourceDirectory,
   widths,
-}: ContentImagesVirtualModuleRequest & {
+}: ImageVariantsVirtualModuleRequest & {
   sourceDirectory: string;
   watchDirectory?: string;
 }) {
@@ -158,20 +158,20 @@ export function resolveContentImagesVirtualModule({
 
   return {
     base,
-    id: `${resolvedContentImagesVirtualModulePrefix}${hash}`,
+    id: `${resolvedImageVariantsVirtualModulePrefix}${hash}`,
     sourceDirectory: normalizedSourceDirectory,
     src,
     watchDirectory: normalizedWatchDirectory,
     widths,
-  } satisfies ResolvedContentImagesVirtualModule;
+  } satisfies ResolvedImageVariantsVirtualModule;
 }
 
-export function createContentImagesVirtualModule({
+export function createImageVariantsVirtualModule({
   base,
   manifest,
   sourceDirectory,
   widths,
-}: CreateContentImagesVirtualModuleOptions) {
+}: CreateImageVariantsVirtualModuleOptions) {
   const publicPathPrefix = `${base}/`;
   const imports: string[] = [];
   const entries: string[] = [];
@@ -179,7 +179,7 @@ export function createContentImagesVirtualModule({
   for (const [publicUrl, entry] of Object.entries(manifest)) {
     if (!publicUrl.startsWith(publicPathPrefix)) {
       throw new Error(
-        `Content image URL must start with ${publicPathPrefix}: ${publicUrl}`,
+        `Image variant URL must start with ${publicPathPrefix}: ${publicUrl}`,
       );
     }
 
@@ -187,14 +187,14 @@ export function createContentImagesVirtualModule({
     const sourcePath = normalizePath(path.join(sourceDirectory, relativePath));
     if (!isPathInside(sourceDirectory, sourcePath)) {
       throw new Error(
-        `Content image path must stay inside its source directory: ${relativePath}`,
+        `Image source path must stay inside its source directory: ${relativePath}`,
       );
     }
 
     const index = entries.length;
-    const originalIdentifier = `contentImageOriginal${index}`;
-    const avifIdentifier = `contentImageAvif${index}`;
-    const webpIdentifier = `contentImageWebp${index}`;
+    const originalIdentifier = `imageVariantOriginal${index}`;
+    const avifIdentifier = `imageVariantAvif${index}`;
+    const webpIdentifier = `imageVariantWebp${index}`;
     const widthDirective = clampImageWidths(widths, entry.width).join(';');
 
     imports.push(
@@ -222,17 +222,17 @@ export function createContentImagesVirtualModule({
   return [
     ...imports,
     'const toVariants=(value)=>Array.isArray(value)?value:[value];',
-    `const contentImageManifest={${entries.join(',')}};`,
-    'export { contentImageManifest };',
-    'export default contentImageManifest;',
+    `const imageVariantManifest={${entries.join(',')}};`,
+    'export { imageVariantManifest };',
+    'export default imageVariantManifest;',
   ].join('\n');
 }
 
-export function createEmptyContentImagesVirtualModule() {
+export function createEmptyImageVariantsVirtualModule() {
   return [
-    'const contentImageManifest={};',
-    'export { contentImageManifest };',
-    'export default contentImageManifest;',
+    'const imageVariantManifest={};',
+    'export { imageVariantManifest };',
+    'export default imageVariantManifest;',
   ].join('\n');
 }
 
@@ -275,7 +275,7 @@ function getSingleParameter(parameters: URLSearchParams, name: string) {
   const values = parameters.getAll(name);
   if (values.length > 1) {
     throw new Error(
-      `${contentImagesVirtualModuleId} requires exactly one ${name} query parameter`,
+      `${imageVariantsVirtualModuleId} requires exactly one ${name} query parameter`,
     );
   }
   return values[0] || null;
@@ -284,7 +284,7 @@ function getSingleParameter(parameters: URLSearchParams, name: string) {
 function normalizeBase(base: string) {
   const normalizedBase = `/${base.replace(/^\/+|\/+$/g, '')}`;
   if (normalizedBase === '/') {
-    throw new Error(`${contentImagesVirtualModuleId} base must not be root`);
+    throw new Error(`${imageVariantsVirtualModuleId} base must not be root`);
   }
   return normalizedBase;
 }

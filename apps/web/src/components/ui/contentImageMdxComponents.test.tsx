@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock(
-  'virtual:content-images?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960',
+  'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960',
   () => ({
-    contentImageManifest: {},
+    imageVariantManifest: {},
     default: {},
   }),
 );

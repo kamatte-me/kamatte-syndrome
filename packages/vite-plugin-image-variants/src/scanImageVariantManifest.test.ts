@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
-import { scanContentImageManifest } from './scanContentImageManifest.ts';
+import { scanImageVariantManifest } from './scanImageVariantManifest.ts';
 
 const temporaryDirectories: string[] = [];
 
@@ -15,7 +15,7 @@ afterEach(async () => {
   );
 });
 
-describe('scanContentImageManifest', () => {
+describe('scanImageVariantManifest', () => {
   it('recursively scans supported images with auto-oriented dimensions', async () => {
     const sourceDirectory = await createSourceDirectory();
     const nestedDirectory = path.join(sourceDirectory, 'nested');
@@ -44,7 +44,7 @@ describe('scanContentImageManifest', () => {
       .toFile(path.join(sourceDirectory, 'alpha.png'));
 
     const filesBeforeScan = await listRelativeFiles(sourceDirectory);
-    const manifest = await scanContentImageManifest({
+    const manifest = await scanImageVariantManifest({
       publicPath: '/media/',
       sourceDirectory,
     });
@@ -79,7 +79,7 @@ describe('scanContentImageManifest', () => {
     ]);
 
     await expect(
-      scanContentImageManifest({ publicPath: '/', sourceDirectory }),
+      scanImageVariantManifest({ publicPath: '/', sourceDirectory }),
     ).resolves.toEqual({});
   });
 
@@ -100,7 +100,7 @@ describe('scanContentImageManifest', () => {
       sharp(image).webp().toFile(path.join(sourceDirectory, 'image.webp')),
     ]);
 
-    const manifest = await scanContentImageManifest({
+    const manifest = await scanImageVariantManifest({
       publicPath: '/assets',
       sourceDirectory,
     });
@@ -125,13 +125,11 @@ describe('scanContentImageManifest', () => {
     await writeFile(path.join(nestedDirectory, 'broken.webp'), 'not an image');
 
     await expect(
-      scanContentImageManifest({
+      scanImageVariantManifest({
         publicPath: '/media',
         sourceDirectory,
       }),
-    ).rejects.toThrow(
-      'Failed to read content image metadata: nested/broken.webp',
-    );
+    ).rejects.toThrow('Failed to read image metadata: nested/broken.webp');
   });
 
   it('rejects image names that cannot be represented as stable URLs', async () => {
@@ -149,12 +147,12 @@ describe('scanContentImageManifest', () => {
         .toFile(path.join(sourceDirectory, fileName));
 
       await expect(
-        scanContentImageManifest({
+        scanImageVariantManifest({
           publicPath: '/media',
           sourceDirectory,
         }),
       ).rejects.toThrow(
-        `Content image path must not contain ? or #: ${fileName}`,
+        `Image source path must not contain ? or #: ${fileName}`,
       );
     }
   });
@@ -162,7 +160,7 @@ describe('scanContentImageManifest', () => {
 
 async function createSourceDirectory() {
   const sourceDirectory = await mkdtemp(
-    path.join(tmpdir(), 'content-image-manifest-'),
+    path.join(tmpdir(), 'image-variant-manifest-'),
   );
   temporaryDirectories.push(sourceDirectory);
   return sourceDirectory;

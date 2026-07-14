@@ -17,7 +17,7 @@
     "@kamatte-syndrome/remark-gfm-subset": "workspace:*",
     "@kamatte-syndrome/remark-mdx-url-embed": "workspace:*",
     "@kamatte-syndrome/sitemap-generator": "workspace:*",
-    "@kamatte-syndrome/vite-plugin-content-images": "workspace:*",
+    "@kamatte-syndrome/vite-plugin-image-variants": "workspace:*",
     "@radix-ui/react-slot": "1.3.0",
     "@tailwindcss/vite": "4.3.2",
     "@tanstack/intent": "0.3.5",

@@ -1,4 +1,4 @@
-import markdownContentImages from 'virtual:content-images?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960';
+import markdownImageVariants from 'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960';
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentPropsWithoutRef } from 'react';
 import { ContentImage } from './ContentImage';
@@ -18,7 +18,7 @@ function MarkdownContentImage({
       {...props}
       alt={alt ?? ''}
       loading={loading ?? 'lazy'}
-      manifest={markdownContentImages}
+      manifest={markdownImageVariants}
       sizes={sizes ?? '(max-width: 528px) calc(100vw - 3rem), 480px'}
     />
   );

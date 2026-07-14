@@ -1,4 +1,4 @@
-# vite-plugin-content-images
+# vite-plugin-image-variants
 
 アプリケーションから静的importした画像、または画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPを生成するViteプラグインです。
 
@@ -7,7 +7,9 @@
 Vite設定ではvite-imagetools用のcacheディレクトリだけを指定します。
 
 ```ts
-contentImages({
+import { imageVariants } from '@kamatte-syndrome/vite-plugin-image-variants';
+
+imageVariants({
   cacheDirectory,
 })
 ```
@@ -17,7 +19,7 @@ contentImages({
 単一画像を使う場合は、画像パスと必要な幅をquery付きvirtual moduleとして静的importします。`src`はimport元ファイルからの相対パスのほか、Viteに設定されたaliasも解決できます。画像パスにはquery区切りと衝突する`?`または`#`を使用できません。
 
 ```tsx
-import image from 'virtual:content-image?src=../assets/image.jpg&widths=160;320';
+import image from 'virtual:image-variant?src=../assets/image.jpg&widths=160;320';
 
 <ContentImage image={image} sizes="160px" alt="サンプル画像" />
 ```
@@ -27,7 +29,7 @@ import image from 'virtual:content-image?src=../assets/image.jpg&widths=160;320'
 QRコードやピクセルアートなど可逆圧縮が必要な画像では、`lossless=true`を指定できます。この場合は可逆WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。
 
 ```ts
-import qrCode from 'virtual:content-image?src=../assets/qr.png&widths=140;280&lossless=true';
+import qrCode from 'virtual:image-variant?src=../assets/qr.png&widths=140;280&lossless=true';
 ```
 
 ## Image collection
@@ -35,7 +37,7 @@ import qrCode from 'virtual:content-image?src=../assets/qr.png&widths=140;280&lo
 MarkdownやFrontmatterのように実行時のURLから画像を引く場合は、画像ディレクトリ、公開URLのbase、必要な幅をquery付きvirtual moduleとして静的importします。
 
 ```ts
-import contentImages from 'virtual:content-images?src=@@/content/media&base=/media&widths=160;320';
+import imageVariantManifest from 'virtual:image-variants?src=@@/content/media&base=/media&widths=160;320';
 ```
 
 - `src`はViteに設定されたalias、Vite rootからの`/`始まりのパス、またはimport元からの相対パスです。
@@ -60,7 +62,7 @@ import contentImages from 'virtual:content-images?src=@@/content/media&base=/med
 ```tsx
 <ContentImage
   src="/media/nested/image.jpg"
-  manifest={contentImages}
+  manifest={imageVariantManifest}
   sizes="160px"
   alt="サンプル画像"
 />
@@ -91,7 +93,7 @@ queryの順序や幅の指定順が異なっても、同じ解決済みディレ
 virtual moduleの型宣言はパッケージに含まれ、通常はプラグインAPIのimportと一緒に読み込まれます。Vite設定とアプリケーションでTypeScript projectが完全に分かれている場合は、アプリ側の`vite-env.d.ts`などから明示的に参照できます。
 
 ```ts
-/// <reference types="@kamatte-syndrome/vite-plugin-content-images/virtual" />
+/// <reference types="@kamatte-syndrome/vite-plugin-image-variants/virtual" />
 ```
 
 TypeScript上はquery全体をwildcardとして宣言しているため、画像パス、base、幅の誤りはViteの変換時に検証されます。

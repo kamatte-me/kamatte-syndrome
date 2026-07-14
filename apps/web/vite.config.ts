@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url';
 import contentCollections from '@content-collections/vite';
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
-import { contentImages } from '@kamatte-syndrome/vite-plugin-content-images';
+import { imageVariants } from '@kamatte-syndrome/vite-plugin-image-variants';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
@@ -22,8 +22,8 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
 const sourceDirectory = fileURLToPath(new URL('./src/', import.meta.url));
-const contentImageCacheDirectory = fileURLToPath(
-  new URL('./node_modules/.cache/content-images/', import.meta.url),
+const imageVariantCacheDirectory = fileURLToPath(
+  new URL('./node_modules/.cache/image-variants/', import.meta.url),
 );
 
 export default defineConfig(({ mode }) => {
@@ -72,8 +72,8 @@ export default defineConfig(({ mode }) => {
           ],
         }),
       },
-      contentImages({
-        cacheDirectory: contentImageCacheDirectory,
+      imageVariants({
+        cacheDirectory: imageVariantCacheDirectory,
         enabled: !isTest,
       }),
       !isTest &&

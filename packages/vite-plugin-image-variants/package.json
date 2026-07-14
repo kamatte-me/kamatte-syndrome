@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/vite-plugin-content-images",
+  "name": "@kamatte-syndrome/vite-plugin-image-variants",
   "version": "0.0.0",
   "private": true,
   "type": "module",

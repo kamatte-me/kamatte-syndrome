@@ -5,66 +5,66 @@ import path from 'node:path';
 import sharp from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
 import { imagetools } from 'vite-imagetools';
-import { scanContentImageManifest } from './scanContentImageManifest.ts';
-import type { ContentImageManifest } from './types.ts';
+import { scanImageVariantManifest } from './scanImageVariantManifest.ts';
+import type { ImageVariantManifest } from './types.ts';
 import {
-  createContentImageVirtualModule,
-  createUnoptimizedContentImageVirtualModule,
-  parseContentImageVirtualModuleRequest,
-  type ResolvedContentImageVirtualModule,
-  resolveContentImageVirtualModule,
-} from './virtualContentImage.ts';
+  createImageVariantVirtualModule,
+  createUnoptimizedImageVariantVirtualModule,
+  parseImageVariantVirtualModuleRequest,
+  type ResolvedImageVariantVirtualModule,
+  resolveImageVariantVirtualModule,
+} from './virtualImageVariant.ts';
 import {
-  createContentImagesVirtualModule,
-  createEmptyContentImagesVirtualModule,
+  createEmptyImageVariantsVirtualModule,
+  createImageVariantsVirtualModule,
   isPathInside,
-  parseContentImagesVirtualModuleRequest,
-  type ResolvedContentImagesVirtualModule,
-  resolveContentImagesSourceDirectory,
-  resolveContentImagesVirtualModule,
-} from './virtualContentImages.ts';
+  parseImageVariantsVirtualModuleRequest,
+  type ResolvedImageVariantsVirtualModule,
+  resolveImageVariantsSourceDirectory,
+  resolveImageVariantsVirtualModule,
+} from './virtualImageVariants.ts';
 
 export type {
-  ContentImageEntry,
-  ContentImageManifest,
-  ContentImageVariant,
+  ImageVariant,
+  ImageVariantEntry,
+  ImageVariantManifest,
 } from './types.ts';
 
-export type ContentImagesPluginOptions = {
+export type ImageVariantsPluginOptions = {
   cacheDirectory: string;
   enabled?: boolean;
 };
 
-export function contentImages({
+export function imageVariants({
   cacheDirectory,
   enabled = true,
-}: ContentImagesPluginOptions): Plugin[] {
+}: ImageVariantsPluginOptions): Plugin[] {
   let devServer: ViteDevServer | undefined;
   let rootDirectory = process.cwd();
   let invalidationTimer: ReturnType<typeof setTimeout> | undefined;
   const pendingInvalidationIds = new Set<string>();
-  const manifestPromises = new Map<string, Promise<ContentImageManifest>>();
-  const resolvedContentImageModules = new Map<
+  const manifestPromises = new Map<string, Promise<ImageVariantManifest>>();
+  const resolvedImageVariantModules = new Map<
     string,
-    ResolvedContentImageVirtualModule
+    ResolvedImageVariantVirtualModule
   >();
-  const resolvedContentImagesModules = new Map<
+  const resolvedImageVariantsModules = new Map<
     string,
-    ResolvedContentImagesVirtualModule
+    ResolvedImageVariantsVirtualModule
   >();
 
   const getManifest = (
-    contentImagesModule: ResolvedContentImagesVirtualModule,
+    imageVariantsModule: ResolvedImageVariantsVirtualModule,
   ) => {
-    const cacheKey = createManifestCacheKey(contentImagesModule);
+    const cacheKey = createManifestCacheKey(imageVariantsModule);
     const cachedManifest = manifestPromises.get(cacheKey);
     if (cachedManifest) {
       return cachedManifest;
     }
 
-    const manifest = scanContentImageManifest({
-      publicPath: contentImagesModule.base,
-      sourceDirectory: contentImagesModule.sourceDirectory,
+    const manifest = scanImageVariantManifest({
+      publicPath: imageVariantsModule.base,
+      sourceDirectory: imageVariantsModule.sourceDirectory,
     }).catch((error: unknown) => {
       manifestPromises.delete(cacheKey);
       throw error;
@@ -74,18 +74,18 @@ export function contentImages({
   };
 
   const handleSourceChange = (filePath: string) => {
-    const affectedModules = [...resolvedContentImagesModules.values()].filter(
-      (contentImagesModule) =>
-        isPathInside(contentImagesModule.sourceDirectory, filePath) ||
-        isPathInside(contentImagesModule.watchDirectory, filePath),
+    const affectedModules = [...resolvedImageVariantsModules.values()].filter(
+      (imageVariantsModule) =>
+        isPathInside(imageVariantsModule.sourceDirectory, filePath) ||
+        isPathInside(imageVariantsModule.watchDirectory, filePath),
     );
     if (affectedModules.length === 0) {
       return;
     }
 
-    for (const contentImagesModule of affectedModules) {
-      manifestPromises.delete(createManifestCacheKey(contentImagesModule));
-      pendingInvalidationIds.add(contentImagesModule.id);
+    for (const imageVariantsModule of affectedModules) {
+      manifestPromises.delete(createManifestCacheKey(imageVariantsModule));
+      pendingInvalidationIds.add(imageVariantsModule.id);
     }
 
     clearTimeout(invalidationTimer);
@@ -106,120 +106,120 @@ export function contentImages({
   };
 
   const plugin: Plugin = {
-    name: 'content-images',
+    name: 'image-variants',
     enforce: 'pre',
     sharedDuringBuild: true,
     configResolved(config) {
       rootDirectory = config.root;
     },
     async resolveId(id, importer) {
-      const contentImageRequest = parseContentImageVirtualModuleRequest(id);
-      if (contentImageRequest) {
+      const imageVariantRequest = parseImageVariantVirtualModuleRequest(id);
+      if (imageVariantRequest) {
         if (!importer) {
           throw new Error(
-            `${contentImageRequest.src} must be imported from an application module`,
+            `${imageVariantRequest.src} must be imported from an application module`,
           );
         }
         const resolvedSource = await this.resolve(
-          contentImageRequest.src,
+          imageVariantRequest.src,
           importer,
           { skipSelf: true },
         );
         if (!resolvedSource || resolvedSource.external) {
           throw new Error(
-            `Unable to resolve content image: ${contentImageRequest.src}`,
+            `Unable to resolve image source: ${imageVariantRequest.src}`,
           );
         }
-        const resolvedModule = resolveContentImageVirtualModule({
-          ...contentImageRequest,
+        const resolvedModule = resolveImageVariantVirtualModule({
+          ...imageVariantRequest,
           sourcePath: resolvedSource.id,
         });
-        resolvedContentImageModules.set(resolvedModule.id, resolvedModule);
+        resolvedImageVariantModules.set(resolvedModule.id, resolvedModule);
         return resolvedModule.id;
       }
 
-      const contentImagesRequest = parseContentImagesVirtualModuleRequest(id);
-      if (contentImagesRequest) {
+      const imageVariantsRequest = parseImageVariantsVirtualModuleRequest(id);
+      if (imageVariantsRequest) {
         const sourceDirectory =
-          contentImagesRequest.src.startsWith('/') ||
-          contentImagesRequest.src.startsWith('.')
-            ? resolveContentImagesSourceDirectory({
+          imageVariantsRequest.src.startsWith('/') ||
+          imageVariantsRequest.src.startsWith('.')
+            ? resolveImageVariantsSourceDirectory({
                 importer,
                 rootDirectory,
-                src: contentImagesRequest.src,
+                src: imageVariantsRequest.src,
               })
             : await resolveAliasedSourceDirectory({
                 importer,
                 resolve: (source, sourceImporter) =>
                   this.resolve(source, sourceImporter, { skipSelf: true }),
-                src: contentImagesRequest.src,
+                src: imageVariantsRequest.src,
               });
-        await assertSourceDirectory(sourceDirectory, contentImagesRequest.src);
+        await assertSourceDirectory(sourceDirectory, imageVariantsRequest.src);
         const watchDirectory = normalizeSourcePath(
           await realpath(sourceDirectory),
         );
-        const resolvedModule = resolveContentImagesVirtualModule({
-          ...contentImagesRequest,
+        const resolvedModule = resolveImageVariantsVirtualModule({
+          ...imageVariantsRequest,
           sourceDirectory,
           watchDirectory,
         });
-        resolvedContentImagesModules.set(resolvedModule.id, resolvedModule);
+        resolvedImageVariantsModules.set(resolvedModule.id, resolvedModule);
         devServer?.watcher.add([sourceDirectory, watchDirectory]);
         return resolvedModule.id;
       }
     },
     async load(id) {
-      const contentImageModule = resolvedContentImageModules.get(id);
-      if (contentImageModule) {
-        this.addWatchFile(contentImageModule.sourcePath);
-        const metadata = await sharp(contentImageModule.sourcePath).metadata();
+      const imageVariantModule = resolvedImageVariantModules.get(id);
+      if (imageVariantModule) {
+        this.addWatchFile(imageVariantModule.sourcePath);
+        const metadata = await sharp(imageVariantModule.sourcePath).metadata();
         const width = metadata.autoOrient.width;
         const height = metadata.autoOrient.height;
         if (!width || !height) {
           throw new Error(
-            `Image dimensions are unavailable: ${contentImageModule.src}`,
+            `Image dimensions are unavailable: ${imageVariantModule.src}`,
           );
         }
         if (!enabled) {
-          return createUnoptimizedContentImageVirtualModule({
+          return createUnoptimizedImageVariantVirtualModule({
             height,
-            sourcePath: contentImageModule.sourcePath,
+            sourcePath: imageVariantModule.sourcePath,
             width,
           });
         }
-        return createContentImageVirtualModule({
-          ...contentImageModule,
+        return createImageVariantVirtualModule({
+          ...imageVariantModule,
           naturalWidth: width,
         });
       }
 
-      const contentImagesModule = resolvedContentImagesModules.get(id);
-      if (contentImagesModule) {
+      const imageVariantsModule = resolvedImageVariantsModules.get(id);
+      if (imageVariantsModule) {
         if (!enabled) {
-          return createEmptyContentImagesVirtualModule();
+          return createEmptyImageVariantsVirtualModule();
         }
 
-        const manifest = await getManifest(contentImagesModule);
-        const publicPathPrefix = `${contentImagesModule.base}/`;
+        const manifest = await getManifest(imageVariantsModule);
+        const publicPathPrefix = `${imageVariantsModule.base}/`;
         for (const publicUrl of Object.keys(manifest)) {
           this.addWatchFile(
             path.join(
-              contentImagesModule.sourceDirectory,
+              imageVariantsModule.sourceDirectory,
               publicUrl.slice(publicPathPrefix.length),
             ),
           );
           this.addWatchFile(
             path.join(
-              contentImagesModule.watchDirectory,
+              imageVariantsModule.watchDirectory,
               publicUrl.slice(publicPathPrefix.length),
             ),
           );
         }
-        return createContentImagesVirtualModule({
-          base: contentImagesModule.base,
+        return createImageVariantsVirtualModule({
+          base: imageVariantsModule.base,
           manifest,
-          sourceDirectory: contentImagesModule.sourceDirectory,
-          widths: contentImagesModule.widths,
+          sourceDirectory: imageVariantsModule.sourceDirectory,
+          widths: imageVariantsModule.widths,
         });
       }
     },
@@ -230,10 +230,10 @@ export function contentImages({
       }
 
       server.watcher.add(
-        [...resolvedContentImagesModules.values()].flatMap(
-          (contentImagesModule) => [
-            contentImagesModule.sourceDirectory,
-            contentImagesModule.watchDirectory,
+        [...resolvedImageVariantsModules.values()].flatMap(
+          (imageVariantsModule) => [
+            imageVariantsModule.sourceDirectory,
+            imageVariantsModule.watchDirectory,
           ],
         ),
       );
@@ -269,7 +269,7 @@ export function contentImages({
 function createManifestCacheKey({
   base,
   sourceDirectory,
-}: Pick<ResolvedContentImagesVirtualModule, 'base' | 'sourceDirectory'>) {
+}: Pick<ResolvedImageVariantsVirtualModule, 'base' | 'sourceDirectory'>) {
   return `${sourceDirectory}\0${base}`;
 }
 
@@ -280,12 +280,12 @@ async function assertSourceDirectory(sourceDirectory: string, src: string) {
       return;
     }
   } catch (error) {
-    throw new Error(`Unable to read content image directory: ${src}`, {
+    throw new Error(`Unable to read image source directory: ${src}`, {
       cause: error,
     });
   }
 
-  throw new Error(`Content image source is not a directory: ${src}`);
+  throw new Error(`Image source is not a directory: ${src}`);
 }
 
 function normalizeSourcePath(sourcePath: string) {
@@ -312,13 +312,13 @@ async function resolveAliasedSourceDirectory({
 
   const resolvedSource = await resolve(src, importer);
   if (!resolvedSource || resolvedSource.external) {
-    throw new Error(`Unable to resolve content image directory: ${src}`);
+    throw new Error(`Unable to resolve image source directory: ${src}`);
   }
 
   const sourceDirectory = resolvedSource.id.split(/[?#]/, 1)[0];
   if (!sourceDirectory || !path.isAbsolute(sourceDirectory)) {
     throw new Error(
-      `Content image directory alias must resolve to an absolute path: ${src}`,
+      `Image source directory alias must resolve to an absolute path: ${src}`,
     );
   }
 

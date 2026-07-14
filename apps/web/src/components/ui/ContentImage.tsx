@@ -1,8 +1,8 @@
 import type {
-  ContentImageEntry,
-  ContentImageManifest,
-  ContentImageVariant,
-} from '@kamatte-syndrome/vite-plugin-content-images';
+  ImageVariant,
+  ImageVariantEntry,
+  ImageVariantManifest,
+} from '@kamatte-syndrome/vite-plugin-image-variants';
 import type { ComponentPropsWithRef } from 'react';
 
 type ContentImageBaseProps = Omit<
@@ -17,15 +17,15 @@ type ContentImageBaseProps = Omit<
 export type ContentImageProps = ContentImageBaseProps &
   (
     | {
-        /** A single image imported from virtual:content-image. */
-        image: ContentImageEntry;
+        /** A single image imported from virtual:image-variant. */
+        image: ImageVariantEntry;
         manifest?: never;
         src?: never;
       }
     | {
         image?: never;
         /** Build-time generated image variants used by this rendering context. */
-        manifest: ContentImageManifest;
+        manifest: ImageVariantManifest;
         src?: ComponentPropsWithRef<'img'>['src'];
       }
   );
@@ -83,6 +83,6 @@ export function ContentImage(props: ContentImageProps) {
   );
 }
 
-function createSrcSet(variants: readonly ContentImageVariant[]) {
+function createSrcSet(variants: readonly ImageVariant[]) {
   return variants.map(({ src, width }) => `${src} ${width}w`).join(', ');
 }

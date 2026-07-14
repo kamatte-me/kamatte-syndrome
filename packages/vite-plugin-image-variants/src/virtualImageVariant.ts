@@ -3,9 +3,9 @@ import path from 'node:path';
 import { normalizePath } from 'vite';
 import { clampImageWidths } from './clampImageWidths.ts';
 
-export const contentImageVirtualModuleId = 'virtual:content-image';
-const resolvedContentImageVirtualModulePrefix =
-  '\0virtual:content-image:resolved:';
+export const imageVariantVirtualModuleId = 'virtual:image-variant';
+const resolvedImageVariantVirtualModulePrefix =
+  '\0virtual:image-variant:resolved:';
 const supportedImageExtensions = new Set([
   '.avif',
   '.jpeg',
@@ -14,26 +14,26 @@ const supportedImageExtensions = new Set([
   '.webp',
 ]);
 
-export type ContentImageVirtualModuleRequest = Readonly<{
+export type ImageVariantVirtualModuleRequest = Readonly<{
   lossless: boolean;
   src: string;
   widths: readonly number[];
 }>;
 
-export type ResolvedContentImageVirtualModule =
-  ContentImageVirtualModuleRequest &
+export type ResolvedImageVariantVirtualModule =
+  ImageVariantVirtualModuleRequest &
     Readonly<{
       id: string;
       sourcePath: string;
     }>;
 
-export function parseContentImageVirtualModuleRequest(
+export function parseImageVariantVirtualModuleRequest(
   id: string,
-): ContentImageVirtualModuleRequest | null {
+): ImageVariantVirtualModuleRequest | null {
   const queryIndex = id.indexOf('?');
   const moduleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
 
-  if (moduleId !== contentImageVirtualModuleId || queryIndex === -1) {
+  if (moduleId !== imageVariantVirtualModuleId || queryIndex === -1) {
     return null;
   }
 
@@ -41,21 +41,21 @@ export function parseContentImageVirtualModuleRequest(
   const src = getSingleParameter(parameters, 'src');
   if (!src) {
     throw new Error(
-      `${contentImageVirtualModuleId} requires a src query, for example ` +
-        `'${contentImageVirtualModuleId}?src=./image.jpg&widths=160;320'`,
+      `${imageVariantVirtualModuleId} requires a src query, for example ` +
+        `'${imageVariantVirtualModuleId}?src=./image.jpg&widths=160;320'`,
     );
   }
   if (/[?#]/.test(src)) {
     throw new Error(
-      `${contentImageVirtualModuleId} src must not contain ? or #: ${src}`,
+      `${imageVariantVirtualModuleId} src must not contain ? or #: ${src}`,
     );
   }
 
   const rawWidths = getSingleParameter(parameters, 'widths');
   if (!rawWidths) {
     throw new Error(
-      `${contentImageVirtualModuleId} requires a widths query, for example ` +
-        `'${contentImageVirtualModuleId}?src=./image.jpg&widths=160;320'`,
+      `${imageVariantVirtualModuleId} requires a widths query, for example ` +
+        `'${imageVariantVirtualModuleId}?src=./image.jpg&widths=160;320'`,
     );
   }
 
@@ -71,14 +71,14 @@ export function parseContentImageVirtualModuleRequest(
     })
   ) {
     throw new Error(
-      `${contentImageVirtualModuleId} widths must be positive integers: ${rawWidths}`,
+      `${imageVariantVirtualModuleId} widths must be positive integers: ${rawWidths}`,
     );
   }
 
   const rawLossless = getSingleParameter(parameters, 'lossless');
   if (rawLossless && rawLossless !== 'true' && rawLossless !== 'false') {
     throw new Error(
-      `${contentImageVirtualModuleId} lossless must be true or false: ${rawLossless}`,
+      `${imageVariantVirtualModuleId} lossless must be true or false: ${rawLossless}`,
     );
   }
 
@@ -89,16 +89,16 @@ export function parseContentImageVirtualModuleRequest(
   };
 }
 
-export function resolveContentImageVirtualModule({
+export function resolveImageVariantVirtualModule({
   lossless,
   sourcePath,
   src,
   widths,
-}: ContentImageVirtualModuleRequest & { sourcePath: string }) {
+}: ImageVariantVirtualModuleRequest & { sourcePath: string }) {
   const extension = path.extname(sourcePath).toLowerCase();
   if (!supportedImageExtensions.has(extension)) {
     throw new Error(
-      `${contentImageVirtualModuleId} src must be a supported static image: ${src}`,
+      `${imageVariantVirtualModuleId} src must be a supported static image: ${src}`,
     );
   }
 
@@ -108,21 +108,21 @@ export function resolveContentImageVirtualModule({
     .digest('hex');
 
   return {
-    id: `${resolvedContentImageVirtualModulePrefix}${hash}`,
+    id: `${resolvedImageVariantVirtualModulePrefix}${hash}`,
     lossless,
     sourcePath: normalizedSourcePath,
     src,
     widths,
-  } satisfies ResolvedContentImageVirtualModule;
+  } satisfies ResolvedImageVariantVirtualModule;
 }
 
-export function createContentImageVirtualModule({
+export function createImageVariantVirtualModule({
   lossless,
   naturalWidth,
   sourcePath,
   widths,
 }: Pick<
-  ResolvedContentImageVirtualModule,
+  ResolvedImageVariantVirtualModule,
   'lossless' | 'sourcePath' | 'widths'
 > &
   Readonly<{ naturalWidth: number }>) {
@@ -148,28 +148,28 @@ export function createContentImageVirtualModule({
   });
 
   return [
-    `import contentImageFallback from ${JSON.stringify(fallbackImport)};`,
+    `import imageVariantFallback from ${JSON.stringify(fallbackImport)};`,
     ...(avifImport
-      ? [`import contentImageAvif from ${JSON.stringify(avifImport)};`]
+      ? [`import imageVariantAvif from ${JSON.stringify(avifImport)};`]
       : []),
-    `import contentImageWebp from ${JSON.stringify(webpImport)};`,
+    `import imageVariantWebp from ${JSON.stringify(webpImport)};`,
     'const toVariants=(value)=>Array.isArray(value)?value:[value];',
-    `const contentImage={avif:${avifImport ? 'toVariants(contentImageAvif)' : '[]'},height:contentImageFallback.height,src:contentImageFallback.src,webp:toVariants(contentImageWebp),width:contentImageFallback.width};`,
-    'export { contentImage };',
-    'export default contentImage;',
+    `const imageVariant={avif:${avifImport ? 'toVariants(imageVariantAvif)' : '[]'},height:imageVariantFallback.height,src:imageVariantFallback.src,webp:toVariants(imageVariantWebp),width:imageVariantFallback.width};`,
+    'export { imageVariant };',
+    'export default imageVariant;',
   ].join('\n');
 }
 
-export function createUnoptimizedContentImageVirtualModule({
+export function createUnoptimizedImageVariantVirtualModule({
   height,
   sourcePath,
   width,
 }: Readonly<{ height: number; sourcePath: string; width: number }>) {
   return [
-    `import contentImageFallback from ${JSON.stringify(sourcePath)};`,
-    `const contentImage={avif:[],height:${height},src:contentImageFallback,webp:[],width:${width}};`,
-    'export { contentImage };',
-    'export default contentImage;',
+    `import imageVariantFallback from ${JSON.stringify(sourcePath)};`,
+    `const imageVariant={avif:[],height:${height},src:imageVariantFallback,webp:[],width:${width}};`,
+    'export { imageVariant };',
+    'export default imageVariant;',
   ].join('\n');
 }
 
@@ -184,7 +184,7 @@ function getSingleParameter(parameters: URLSearchParams, name: string) {
   const values = parameters.getAll(name);
   if (values.length > 1) {
     throw new Error(
-      `${contentImageVirtualModuleId} requires exactly one ${name} query parameter`,
+      `${imageVariantVirtualModuleId} requires exactly one ${name} query parameter`,
     );
   }
   return values[0] || null;
