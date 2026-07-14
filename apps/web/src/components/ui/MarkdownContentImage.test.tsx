@@ -1,13 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { contentImageMdxComponents } from './contentImageMdxComponents';
+import { MarkdownContentImage } from './MarkdownContentImage';
 
-const MarkdownImage = contentImageMdxComponents.img;
-
-describe('contentImageMdxComponents', () => {
+describe('MarkdownContentImage', () => {
   it('lazy-loads local media without linking it', () => {
-    render(<MarkdownImage src="/media/example.jpg" alt="Example" />);
+    render(<MarkdownContentImage src="/media/example.jpg" alt="Example" />);
 
     const image = screen.getByRole('img', { name: 'Example' });
 
@@ -21,7 +19,7 @@ describe('contentImageMdxComponents', () => {
 
   it('preserves explicit loading and sizes values', () => {
     render(
-      <MarkdownImage
+      <MarkdownContentImage
         src="/media/hero.jpg"
         alt="Hero"
         loading="eager"

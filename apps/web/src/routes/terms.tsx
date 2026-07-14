@@ -4,8 +4,8 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { terms } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
-import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { MarkdownContentImage } from '@/components/ui/MarkdownContentImage';
 import { siteName } from '@/constants/site';
 import {
   createCanonicalLink,
@@ -21,7 +21,7 @@ const getTermsPageData = createServerFn({ method: 'GET' }).handler(async () => {
 
   return {
     body: await renderServerComponent(
-      <MDXContent components={contentImageMdxComponents} />,
+      <MDXContent components={{ img: MarkdownContentImage }} />,
     ),
     revisedAt: terms.revisedAt,
   };

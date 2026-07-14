@@ -1,18 +1,15 @@
 import markdownImageVariants from 'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960';
-import type { MDXComponents } from 'mdx/types';
 import type { ComponentPropsWithoutRef } from 'react';
 import { ContentImage } from './ContentImage';
 
-export const contentImageMdxComponents = {
-  img: MarkdownContentImage,
-} satisfies MDXComponents;
+export type MarkdownContentImageProps = ComponentPropsWithoutRef<'img'>;
 
-function MarkdownContentImage({
+export function MarkdownContentImage({
   alt,
   loading,
   sizes,
   ...props
-}: ComponentPropsWithoutRef<'img'>) {
+}: MarkdownContentImageProps) {
   return (
     <ContentImage
       {...props}

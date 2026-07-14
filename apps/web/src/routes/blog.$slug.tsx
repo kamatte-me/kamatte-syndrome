@@ -4,7 +4,7 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allPosts } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
-import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
+import { MarkdownContentImage } from '@/components/ui/MarkdownContentImage';
 import { slogan } from '@/constants/site';
 import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
@@ -80,7 +80,7 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
       mdx: await renderServerComponent(
         <MDXContent
           components={{
-            ...contentImageMdxComponents,
+            img: MarkdownContentImage,
             LinkCard: BlogPostLinkCard,
             OEmbed: BlogPostOEmbed,
           }}

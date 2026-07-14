@@ -4,8 +4,8 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { privacyPolicy } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
-import { contentImageMdxComponents } from '@/components/ui/contentImageMdxComponents';
 import { MarkdownContent } from '@/components/ui/MarkdownContent';
+import { MarkdownContentImage } from '@/components/ui/MarkdownContentImage';
 import { siteName } from '@/constants/site';
 import {
   createCanonicalLink,
@@ -22,7 +22,7 @@ const getPrivacyPageData = createServerFn({ method: 'GET' }).handler(
 
     return {
       body: await renderServerComponent(
-        <MDXContent components={contentImageMdxComponents} />,
+        <MDXContent components={{ img: MarkdownContentImage }} />,
       ),
       revisedAt: privacyPolicy.revisedAt,
     };
