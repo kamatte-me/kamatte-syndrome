@@ -2,6 +2,15 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 import { clampImageWidths } from './clampImageWidths.ts';
+import {
+  createImageTransformImport,
+  imageVariantAvifQuality,
+  imageVariantWebpQuality,
+} from './imageTransform.ts';
+import {
+  assertKnownQueryParameters,
+  getSingleQueryParameter,
+} from './queryParameters.ts';
 import type { ImageVariantManifest } from './types.ts';
 
 export const imageVariantsVirtualModuleId = 'virtual:image-variants';
@@ -40,7 +49,16 @@ export function parseImageVariantsVirtualModuleRequest(
   }
 
   const parameters = new URLSearchParams(id.slice(queryIndex + 1));
-  const src = getSingleParameter(parameters, 'src');
+  assertKnownQueryParameters(
+    parameters,
+    ['src', 'base', 'widths'],
+    imageVariantsVirtualModuleId,
+  );
+  const src = getSingleQueryParameter(
+    parameters,
+    'src',
+    imageVariantsVirtualModuleId,
+  );
   if (!src) {
     throw new Error(
       `${imageVariantsVirtualModuleId} requires a src query, for example ` +
@@ -53,7 +71,11 @@ export function parseImageVariantsVirtualModuleRequest(
     );
   }
 
-  const rawBase = getSingleParameter(parameters, 'base');
+  const rawBase = getSingleQueryParameter(
+    parameters,
+    'base',
+    imageVariantsVirtualModuleId,
+  );
   if (!rawBase) {
     throw new Error(
       `${imageVariantsVirtualModuleId} requires a base query, for example ` +
@@ -67,7 +89,11 @@ export function parseImageVariantsVirtualModuleRequest(
   }
   const base = normalizeBase(rawBase);
 
-  const rawWidths = getSingleParameter(parameters, 'widths');
+  const rawWidths = getSingleQueryParameter(
+    parameters,
+    'widths',
+    imageVariantsVirtualModuleId,
+  );
   if (!rawWidths) {
     throw new Error(
       `${imageVariantsVirtualModuleId} requires a widths query, for example ` +
@@ -202,14 +228,14 @@ export function createImageVariantsVirtualModule({
       createVariantImport({
         format: 'avif',
         identifier: avifIdentifier,
-        quality: 60,
+        quality: imageVariantAvifQuality,
         sourcePath,
         widths: widthDirective,
       }),
       createVariantImport({
         format: 'webp',
         identifier: webpIdentifier,
-        quality: 80,
+        quality: imageVariantWebpQuality,
         sourcePath,
         widths: widthDirective,
       }),
@@ -260,7 +286,7 @@ function createVariantImport({
   sourcePath,
   widths,
 }: CreateVariantImportOptions) {
-  const parameters = new URLSearchParams({
+  const source = createImageTransformImport(sourcePath, {
     allowUpscale: 'true',
     as: 'metadata:src;width',
     format,
@@ -268,17 +294,7 @@ function createVariantImport({
     w: widths,
   });
 
-  return `import ${identifier} from ${JSON.stringify(`${sourcePath}?${parameters}`)};`;
-}
-
-function getSingleParameter(parameters: URLSearchParams, name: string) {
-  const values = parameters.getAll(name);
-  if (values.length > 1) {
-    throw new Error(
-      `${imageVariantsVirtualModuleId} requires exactly one ${name} query parameter`,
-    );
-  }
-  return values[0] || null;
+  return `import ${identifier} from ${JSON.stringify(source)};`;
 }
 
 function normalizeBase(base: string) {

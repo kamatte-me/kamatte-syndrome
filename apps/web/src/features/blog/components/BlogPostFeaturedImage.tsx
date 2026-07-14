@@ -27,10 +27,11 @@ export function BlogPostFeaturedImage({
       <ContentImage
         src={src}
         alt={title}
+        fetchPriority="high"
         loading="eager"
         manifest={blogFeaturedImageVariants}
         pictureProps={{ className: 'max-w-full' }}
-        sizes="(max-width: 896px) calc(100vw - 3rem), 760px"
+        sizes="(max-width: 639px) calc(100vw - 4rem), (max-width: 767px) calc(100vw - 10.125rem), (max-width: 935px) calc(100vw - 11.125rem), 760px"
         className="max-h-[400px] max-w-full object-contain"
       />
     </div>

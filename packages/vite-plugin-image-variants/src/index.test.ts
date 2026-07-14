@@ -104,6 +104,18 @@ describe('imageVariants', () => {
 
     try {
       await server.transformRequest('/main.js');
+      const resolvedVirtualModule =
+        await server.environments.client.pluginContainer.resolveId(
+          'virtual:image-variants?src=/content-media&base=/media&widths=40',
+          path.join(rootDirectory, 'main.js'),
+        );
+      expect(resolvedVirtualModule).not.toBeNull();
+      await expect(
+        server.environments.client.transformRequest(
+          resolvedVirtualModule?.id ?? '',
+        ),
+      ).resolves.not.toBeNull();
+
       const changedPaths: string[] = [];
       server.watcher.on('change', (filePath) => changedPaths.push(filePath));
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -248,6 +260,7 @@ describe('imageVariants', () => {
     const rootDirectory = await createRootDirectory('image-variant-vite-');
     const sourceDirectory = path.join(rootDirectory, 'src');
     const outputDirectory = path.join(rootDirectory, 'dist');
+    const sourcePath = path.join(sourceDirectory, 'image.jpg');
     await mkdir(sourceDirectory, { recursive: true });
     await sharp({
       create: {
@@ -259,7 +272,7 @@ describe('imageVariants', () => {
     })
       .jpeg()
       .withMetadata({ orientation: 6 })
-      .toFile(path.join(sourceDirectory, 'image.jpg'));
+      .toFile(sourcePath);
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
@@ -303,8 +316,8 @@ describe('imageVariants', () => {
     const fallbackFile = assetFiles.find((file) => /\.jpe?g$/.test(file));
     expect(fallbackFile).toBeDefined();
     await expect(
-      sharp(path.join(assetDirectory, fallbackFile ?? '')).metadata(),
-    ).resolves.toMatchObject({ height: 80, width: 120 });
+      readFile(path.join(assetDirectory, fallbackFile ?? '')),
+    ).resolves.toEqual(await readFile(sourcePath));
 
     const bundleFile = assetFiles.find((file) => file.endsWith('.js'));
     expect(bundleFile).toBeDefined();
@@ -317,6 +330,141 @@ describe('imageVariants', () => {
     expect(bundle).toContain('width:120');
     expect(bundle).toContain('height:80');
   });
+
+  it('leaves ordinary Vite image queries untouched', async () => {
+    const rootDirectory = await createRootDirectory(
+      'image-variants-passthrough-',
+    );
+    const outputDirectory = path.join(rootDirectory, 'dist');
+    await writeTestPng(path.join(rootDirectory, 'image.png'), 'red');
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      "import rawImage from './image.png?raw';\nconsole.log(rawImage);\n",
+    );
+
+    await build({
+      build: {
+        assetsInlineLimit: 0,
+        outDir: outputDirectory,
+        rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+      },
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        imageVariants({
+          cacheDirectory: path.join(rootDirectory, 'cache'),
+        }),
+      ],
+      publicDir: false,
+      root: rootDirectory,
+    });
+
+    const assetFiles = await readdir(path.join(outputDirectory, 'assets'));
+    expect(assetFiles.some((file) => file.endsWith('.png'))).toBe(false);
+  });
+
+  it('refreshes collection metadata during watch builds', async () => {
+    const rootDirectory = await createRootDirectory('image-variants-watch-');
+    const sourceDirectory = path.join(rootDirectory, 'content-media');
+    const outputDirectory = path.join(rootDirectory, 'dist');
+    const imagePath = path.join(sourceDirectory, 'image.png');
+    await mkdir(sourceDirectory);
+    await writeSizedPng(imagePath, 100, 50);
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import images from 'virtual:image-variants?src=/content-media&base=/media&widths=160';",
+        'console.log(images);',
+        '',
+      ].join('\n'),
+    );
+
+    const buildResult = await build({
+      build: {
+        assetsInlineLimit: 0,
+        outDir: outputDirectory,
+        rollupOptions: {
+          input: path.join(rootDirectory, 'main.js'),
+          output: { entryFileNames: 'main.js' },
+        },
+        watch: {},
+      },
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        imageVariants({
+          cacheDirectory: path.join(rootDirectory, 'cache'),
+        }),
+      ],
+      publicDir: false,
+      root: rootDirectory,
+    });
+    if (!('on' in buildResult)) {
+      throw new Error('Expected a Rollup watcher');
+    }
+    const watcher = buildResult;
+    let completedBuildCount = 0;
+    const pendingBuilds: Array<{
+      buildCount: number;
+      reject: (error: unknown) => void;
+      resolve: () => void;
+    }> = [];
+    watcher.on('event', (event) => {
+      if (event.code === 'END') {
+        completedBuildCount += 1;
+        for (const pendingBuild of pendingBuilds.splice(0)) {
+          if (pendingBuild.buildCount <= completedBuildCount) {
+            pendingBuild.resolve();
+          } else {
+            pendingBuilds.push(pendingBuild);
+          }
+        }
+      } else if (event.code === 'ERROR') {
+        for (const pendingBuild of pendingBuilds.splice(0)) {
+          pendingBuild.reject(event.error);
+        }
+      }
+    });
+    const waitForBuild = (buildCount: number) => {
+      if (completedBuildCount >= buildCount) {
+        return Promise.resolve();
+      }
+      return new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(
+            new Error(
+              `Timed out waiting for build ${buildCount}; completed ${completedBuildCount}`,
+            ),
+          );
+        }, 5_000);
+        pendingBuilds.push({
+          buildCount,
+          reject: (error) => {
+            clearTimeout(timeout);
+            reject(error);
+          },
+          resolve: () => {
+            clearTimeout(timeout);
+            resolve();
+          },
+        });
+      });
+    };
+    const readBundle = () =>
+      readFile(path.join(outputDirectory, 'main.js'), 'utf8');
+
+    try {
+      await waitForBuild(1);
+      await expect(readBundle()).resolves.toMatch(/height:50.+width:100/);
+
+      const resizedBuild = waitForBuild(2);
+      await writeSizedPng(imagePath, 200, 70);
+      await resizedBuild;
+      await expect(readBundle()).resolves.toMatch(/height:70.+width:200/);
+    } finally {
+      await watcher.close();
+    }
+  }, 10_000);
 
   it('rejects a collection source that is not a directory', async () => {
     const rootDirectory = await createRootDirectory('image-variants-error-');
@@ -358,6 +506,19 @@ async function writeTestPng(filePath: string, background: 'blue' | 'red') {
       channels: 3,
       height: 60,
       width: 80,
+    },
+  })
+    .png()
+    .toFile(filePath);
+}
+
+async function writeSizedPng(filePath: string, width: number, height: number) {
+  await sharp({
+    create: {
+      background: 'green',
+      channels: 3,
+      height,
+      width,
     },
   })
     .png()

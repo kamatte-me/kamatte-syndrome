@@ -68,10 +68,33 @@ describe('ContentImage', () => {
       'srcset',
       '/custom.jpg 2x',
     );
-    expect(screen.getByRole('img', { name: 'Custom' })).toHaveAttribute(
-      'width',
-      '120',
+    const image = screen.getByRole('img', { name: 'Custom' });
+    expect(image).toHaveAttribute('width', '120');
+    expect(image).toHaveAttribute('height', '120');
+  });
+
+  it.each([
+    { expectedHeight: 90, expectedWidth: 120, height: undefined, width: 120 },
+    { expectedHeight: 120, expectedWidth: 160, height: 120, width: undefined },
+  ])('preserves the natural ratio when only one dimension is provided', ({
+    expectedHeight,
+    expectedWidth,
+    height,
+    width,
+  }) => {
+    render(
+      <ContentImage
+        src="/media/example.jpg"
+        alt="Proportional"
+        manifest={manifest}
+        width={width}
+        height={height}
+      />,
     );
+
+    const image = screen.getByRole('img', { name: 'Proportional' });
+    expect(image).toHaveAttribute('width', String(expectedWidth));
+    expect(image).toHaveAttribute('height', String(expectedHeight));
   });
 
   it('uses only the variants supplied by the rendering context manifest', () => {

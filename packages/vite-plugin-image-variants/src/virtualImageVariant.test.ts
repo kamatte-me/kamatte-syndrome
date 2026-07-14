@@ -31,6 +31,11 @@ describe('virtual image variant', () => {
         'virtual:image-variant?src=.%2Fimage%3Fname.jpg&widths=160',
       ),
     ).toThrow('src must not contain ? or #');
+    expect(() =>
+      parseImageVariantVirtualModuleRequest(
+        'virtual:image-variant?src=./image.jpg&widths=160&lossles=true',
+      ),
+    ).toThrow('does not support the lossles query parameter');
   });
 
   it('creates a canonical id without exposing the resolved source path', () => {
@@ -51,18 +56,24 @@ describe('virtual image variant', () => {
   it('generates static fallback, AVIF, and WebP imports', () => {
     const code = createImageVariantVirtualModule({
       lossless: false,
+      naturalHeight: 180,
       naturalWidth: 240,
       sourcePath: '/project/src/image.jpg',
       widths: [160, 320],
     });
 
-    expect(code).toContain('as=metadata%3Asrc%3Bwidth%3Bheight');
+    expect(code).toContain(
+      'import imageVariantFallback from "/project/src/image.jpg"',
+    );
+    expect(code).toContain('__imageVariants=true');
     expect(code).toContain('format=avif');
     expect(code).toContain('format=avif&quality=60');
     expect(code).toContain('format=webp');
     expect(code).toContain('format=webp&quality=80');
     expect(code).toContain('allowUpscale=true');
     expect(code).toContain('w=160%3B240');
+    expect(code).toContain('height:180');
+    expect(code).toContain('width:240');
     expect(code).toContain('export default imageVariant');
   });
 
@@ -77,6 +88,7 @@ describe('virtual image variant', () => {
     });
     const code = createImageVariantVirtualModule({
       lossless: true,
+      naturalHeight: 200,
       naturalWidth: 200,
       sourcePath: '/project/src/code.png',
       widths: [140, 280],

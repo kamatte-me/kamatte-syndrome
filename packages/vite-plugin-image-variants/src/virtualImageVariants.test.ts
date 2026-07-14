@@ -46,6 +46,11 @@ describe('virtual image variants', () => {
         'virtual:image-variants?src=/content/media&base=%2Fmedia%23images&widths=160',
       ),
     ).toThrow('base must not contain ? or #');
+    expect(() =>
+      parseImageVariantsVirtualModuleRequest(
+        'virtual:image-variants?src=/content/media&base=/media&width=160&widths=320',
+      ),
+    ).toThrow('does not support the width query parameter');
   });
 
   it('resolves Vite-root-absolute and importer-relative source directories', () => {
@@ -132,6 +137,7 @@ describe('virtual image variants', () => {
       'import imageVariantOriginal0 from "/content/nested/example.jpg";',
     );
     expect(code).toContain('/content/nested/example.jpg?');
+    expect(code).toContain('__imageVariants=true');
     expect(code).toContain('format=avif');
     expect(code).toContain('quality=60');
     expect(code).toContain('format=webp');

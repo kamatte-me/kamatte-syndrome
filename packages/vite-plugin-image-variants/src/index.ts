@@ -4,7 +4,11 @@ import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
-import { imagetools } from 'vite-imagetools';
+import {
+  imagetools,
+  resolveConfigs as resolveImagetoolsConfigs,
+} from 'vite-imagetools';
+import { imageTransformQueryParameter } from './imageTransform.ts';
 import { scanImageVariantManifest } from './scanImageVariantManifest.ts';
 import type { ImageVariantManifest } from './types.ts';
 import {
@@ -40,6 +44,7 @@ export function imageVariants({
   enabled = true,
 }: ImageVariantsPluginOptions): Plugin[] {
   let devServer: ViteDevServer | undefined;
+  let isBuild = false;
   let rootDirectory = process.cwd();
   let invalidationTimer: ReturnType<typeof setTimeout> | undefined;
   const pendingInvalidationIds = new Set<string>();
@@ -73,19 +78,30 @@ export function imageVariants({
     return manifest;
   };
 
-  const handleSourceChange = (filePath: string) => {
+  const invalidateAffectedManifests = (filePath: string) => {
     const affectedModules = [...resolvedImageVariantsModules.values()].filter(
       (imageVariantsModule) =>
         isPathInside(imageVariantsModule.sourceDirectory, filePath) ||
         isPathInside(imageVariantsModule.watchDirectory, filePath),
     );
-    if (affectedModules.length === 0) {
-      return;
-    }
 
     for (const imageVariantsModule of affectedModules) {
       manifestPromises.delete(createManifestCacheKey(imageVariantsModule));
-      pendingInvalidationIds.add(imageVariantsModule.id);
+    }
+
+    return affectedModules.map((imageVariantsModule) => imageVariantsModule.id);
+  };
+
+  const handleSourceChange = (filePath: string) => {
+    const affectedModuleIds = invalidateAffectedManifests(
+      normalizeSourcePath(filePath),
+    );
+    if (affectedModuleIds.length === 0) {
+      return;
+    }
+
+    for (const id of affectedModuleIds) {
+      pendingInvalidationIds.add(id);
     }
 
     clearTimeout(invalidationTimer);
@@ -110,6 +126,7 @@ export function imageVariants({
     enforce: 'pre',
     sharedDuringBuild: true,
     configResolved(config) {
+      isBuild = config.command === 'build';
       rootDirectory = config.root;
     },
     async resolveId(id, importer) {
@@ -189,6 +206,7 @@ export function imageVariants({
         }
         return createImageVariantVirtualModule({
           ...imageVariantModule,
+          naturalHeight: height,
           naturalWidth: width,
         });
       }
@@ -197,6 +215,15 @@ export function imageVariants({
       if (imageVariantsModule) {
         if (!enabled) {
           return createEmptyImageVariantsVirtualModule();
+        }
+        if (isBuild) {
+          this.addWatchFile(imageVariantsModule.sourceDirectory);
+          if (
+            imageVariantsModule.watchDirectory !==
+            imageVariantsModule.sourceDirectory
+          ) {
+            this.addWatchFile(imageVariantsModule.watchDirectory);
+          }
         }
 
         const manifest = await getManifest(imageVariantsModule);
@@ -222,6 +249,9 @@ export function imageVariants({
           widths: imageVariantsModule.widths,
         });
       }
+    },
+    watchChange(id) {
+      invalidateAffectedManifests(normalizeSourcePath(id));
     },
     configureServer(server) {
       devServer = server;
@@ -259,7 +289,17 @@ export function imageVariants({
             cache: {
               dir: path.join(cacheDirectory, 'imagetools'),
             },
-            include: /^[^?]+\.(avif|gif|heif|jpeg|jpg|png|tiff|webp)(\?.*)?$/i,
+            include: new RegExp(
+              `^[^?]+\\.(?:avif|gif|heif|jpeg|jpg|png|tiff|webp)\\?${imageTransformQueryParameter}=true(?:&.*)?$`,
+              'i',
+            ),
+            resolveConfigs: (parameters, outputFormats) =>
+              resolveImagetoolsConfigs(
+                parameters.filter(
+                  ([name]) => name !== imageTransformQueryParameter,
+                ),
+                outputFormats,
+              ),
           }),
         ]
       : []),

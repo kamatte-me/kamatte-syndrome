@@ -48,6 +48,7 @@ export function ContentImage(props: ContentImageProps) {
   const fallbackSrc = entry?.src ?? src;
   const avif = entry?.avif ?? [];
   const webp = entry?.webp ?? [];
+  const dimensions = resolveDimensions({ entry, height, width });
 
   if (!entry || srcSet || (avif.length === 0 && webp.length === 0)) {
     return (
@@ -56,8 +57,8 @@ export function ContentImage(props: ContentImageProps) {
         src={fallbackSrc}
         srcSet={srcSet}
         sizes={sizes}
-        width={width ?? entry?.width}
-        height={height ?? entry?.height}
+        width={dimensions.width}
+        height={dimensions.height}
         alt={alt}
       />
     );
@@ -75,8 +76,8 @@ export function ContentImage(props: ContentImageProps) {
         {...imageProps}
         src={entry.src}
         sizes={sizes}
-        width={width ?? entry.width}
-        height={height ?? entry.height}
+        width={dimensions.width}
+        height={dimensions.height}
         alt={alt}
       />
     </picture>
@@ -85,4 +86,44 @@ export function ContentImage(props: ContentImageProps) {
 
 function createSrcSet(variants: readonly ImageVariant[]) {
   return variants.map(({ src, width }) => `${src} ${width}w`).join(', ');
+}
+
+type ImageDimension = ComponentPropsWithRef<'img'>['width'];
+
+function resolveDimensions({
+  entry,
+  height,
+  width,
+}: Readonly<{
+  entry: ImageVariantEntry | undefined;
+  height: ImageDimension;
+  width: ImageDimension;
+}>) {
+  if (!entry || (width !== undefined && height !== undefined)) {
+    return { height, width };
+  }
+
+  if (width === undefined && height === undefined) {
+    return { height: entry.height, width: entry.width };
+  }
+
+  if (width !== undefined) {
+    return {
+      height: scaleDimension(width, entry.height / entry.width),
+      width,
+    };
+  }
+
+  return {
+    height,
+    width: scaleDimension(height, entry.width / entry.height),
+  };
+}
+
+function scaleDimension(value: ImageDimension, ratio: number) {
+  const numericValue = Number(value);
+
+  return Number.isFinite(numericValue)
+    ? Math.round(numericValue * ratio)
+    : undefined;
 }
