@@ -1,10 +1,10 @@
-import ReactImageCollection from 'virtual:react-image/collection?src=./images&base=/media&widths=160;320';
-import ReactImage from 'virtual:react-image?src=./image.jpg&widths=160;320';
+import ReactImageCollection from 'virtual:react-optimized-responsive-image/collection?src=./images&base=/media&widths=160;320';
+import ReactImage from 'virtual:react-optimized-responsive-image?src=./image.jpg&widths=160;320';
 import type {
   ImageVariantEntry,
   ImageVariantManifest,
-} from '@kamatte-syndrome/vite-plugin-image-variants';
-import type { ReactImageCollectionProps } from '@kamatte-syndrome/vite-plugin-image-variants/react';
+} from '@kamatte-syndrome/vite-plugin-react-optimized-responsive-image';
+import type { ReactImageCollectionProps } from '@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react';
 
 const singleImage = <ReactImage alt="Single image" />;
 const collectionImage = (
@@ -23,8 +23,8 @@ const collectionImageWithBlobProps: ReactImageCollectionProps = {
   src: new Blob(),
 };
 
-declare const singleModule: typeof import('virtual:react-image?src=./image.jpg&widths=160;320');
-declare const collectionModule: typeof import('virtual:react-image/collection?src=./images&base=/media&widths=160;320');
+declare const singleModule: typeof import('virtual:react-optimized-responsive-image?src=./image.jpg&widths=160;320');
+declare const collectionModule: typeof import('virtual:react-optimized-responsive-image/collection?src=./images&base=/media&widths=160;320');
 declare const manifest: ImageVariantManifest;
 
 // @ts-expect-error An arbitrary manifest lookup can refer to an unknown image.

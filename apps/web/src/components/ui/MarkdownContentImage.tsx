@@ -1,4 +1,4 @@
-import ContentImage from 'virtual:react-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960';
+import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;480;640;960';
 import type { ComponentPropsWithoutRef } from 'react';
 
 export type MarkdownContentImageProps = ComponentPropsWithoutRef<'img'>;

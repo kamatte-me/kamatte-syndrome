@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/vite-plugin-image-variants",
+  "name": "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image",
   "version": "0.0.0",
   "private": true,
   "type": "module",

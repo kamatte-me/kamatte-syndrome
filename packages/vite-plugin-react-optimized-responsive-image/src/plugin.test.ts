@@ -15,7 +15,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { build, createServer, type ViteDevServer } from 'vite';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { imageVariants } from './index.ts';
+import { optimizedResponsiveImage } from './index.ts';
 
 const temporaryDirectories: string[] = [];
 
@@ -27,19 +27,22 @@ afterEach(async () => {
   );
 });
 
-describe('imageVariants', () => {
+describe('optimizedResponsiveImage', () => {
   it('shares read-only image metadata across build environments', () => {
-    const [plugin] = imageVariants({
+    const [plugin] = optimizedResponsiveImage({
       cacheDirectory: '/cache',
       enabled: false,
     });
 
+    expect(plugin?.name).toBe('react-optimized-responsive-image');
     expect(plugin?.sharedDuringBuild).toBe(true);
   });
 
   it('keeps dev image watchers active until the server closes', async () => {
-    const cacheDirectory = await createRootDirectory('image-variants-cache-');
-    const [plugin] = imageVariants({ cacheDirectory });
+    const cacheDirectory = await createRootDirectory(
+      'optimized-responsive-image-cache-',
+    );
+    const [plugin] = optimizedResponsiveImage({ cacheDirectory });
     if (!plugin || typeof plugin.configureServer !== 'function') {
       throw new Error('Expected a configureServer hook');
     }
@@ -73,10 +76,10 @@ describe('imageVariants', () => {
 
   it('watches the real directory behind a collection symlink', async () => {
     const rootDirectory = await realpath(
-      await createRootDirectory('image-variants-root-'),
+      await createRootDirectory('optimized-responsive-image-root-'),
     );
     const realSourceDirectory = await realpath(
-      await createRootDirectory('image-variants-source-'),
+      await createRootDirectory('optimized-responsive-image-source-'),
     );
     const sourceDirectory = path.join(rootDirectory, 'content-media');
     const imagePath = path.join(realSourceDirectory, 'image.png');
@@ -87,8 +90,8 @@ describe('imageVariants', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import Image from 'virtual:react-image?src=./content-media/image.png&widths=40';",
-        "import Images from 'virtual:react-image/collection?src=/content-media&base=/media&widths=40';",
+        "import Image from 'virtual:react-optimized-responsive-image?src=./content-media/image.png&widths=40';",
+        "import Images from 'virtual:react-optimized-responsive-image/collection?src=/content-media&base=/media&widths=40';",
         'console.log(Image, Images);',
         '',
       ].join('\n'),
@@ -98,7 +101,7 @@ describe('imageVariants', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        imageVariants({
+        optimizedResponsiveImage({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -116,7 +119,7 @@ describe('imageVariants', () => {
       await server.transformRequest('/main.js');
       const resolvedCollectionModule =
         await server.environments.client.pluginContainer.resolveId(
-          'virtual:react-image/collection?src=/content-media&base=/media&widths=40',
+          'virtual:react-optimized-responsive-image/collection?src=/content-media&base=/media&widths=40',
           path.join(rootDirectory, 'main.js'),
         );
       expect(resolvedCollectionModule).not.toBeNull();
@@ -127,7 +130,7 @@ describe('imageVariants', () => {
       ).resolves.not.toBeNull();
       const resolvedImageModule =
         await server.environments.client.pluginContainer.resolveId(
-          'virtual:react-image?src=./content-media/image.png&widths=40',
+          'virtual:react-optimized-responsive-image?src=./content-media/image.png&widths=40',
           path.join(rootDirectory, 'main.js'),
         );
       expect(resolvedImageModule).not.toBeNull();
@@ -157,7 +160,9 @@ describe('imageVariants', () => {
   });
 
   it('builds collection widths from self-contained virtual imports', async () => {
-    const rootDirectory = await createRootDirectory('image-variants-vite-');
+    const rootDirectory = await createRootDirectory(
+      'optimized-responsive-image-vite-',
+    );
     const contentSourceDirectory = path.join(rootDirectory, 'content-media');
     const assetSourceDirectory = path.join(rootDirectory, 'src/assets/images');
     const outputDirectory = path.join(rootDirectory, 'dist');
@@ -199,10 +204,10 @@ describe('imageVariants', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import imageVariants from 'virtual:react-image/collection?src=@@/content-media&base=/media&widths=100;160';",
-        "import compactImageVariants from 'virtual:react-image/collection?src=@@/content-media&base=/media&widths=100';",
-        "import assetImages from 'virtual:react-image/collection?src=./src/assets/images&base=/app-images&widths=24;48';",
-        'console.log(imageVariants, compactImageVariants, assetImages);',
+        "import contentImages from 'virtual:react-optimized-responsive-image/collection?src=@@/content-media&base=/media&widths=100;160';",
+        "import compactImageVariants from 'virtual:react-optimized-responsive-image/collection?src=@@/content-media&base=/media&widths=100';",
+        "import assetImages from 'virtual:react-optimized-responsive-image/collection?src=./src/assets/images&base=/app-images&widths=24;48';",
+        'console.log(contentImages, compactImageVariants, assetImages);',
         '',
       ].join('\n'),
     );
@@ -216,7 +221,7 @@ describe('imageVariants', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        imageVariants({
+        optimizedResponsiveImage({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -304,7 +309,7 @@ describe('imageVariants', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import image from 'virtual:react-image?src=./src/image.jpg&widths=40;100;160';",
+        "import image from 'virtual:react-optimized-responsive-image?src=./src/image.jpg&widths=40;100;160';",
         'console.log(image);',
         '',
       ].join('\n'),
@@ -319,7 +324,7 @@ describe('imageVariants', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        imageVariants({
+        optimizedResponsiveImage({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -362,7 +367,7 @@ describe('imageVariants', () => {
 
   it('leaves ordinary Vite image queries untouched', async () => {
     const rootDirectory = await createRootDirectory(
-      'image-variants-passthrough-',
+      'optimized-responsive-image-passthrough-',
     );
     const outputDirectory = path.join(rootDirectory, 'dist');
     await writeTestPng(path.join(rootDirectory, 'image.png'), 'red');
@@ -380,7 +385,7 @@ describe('imageVariants', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        imageVariants({
+        optimizedResponsiveImage({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -393,7 +398,9 @@ describe('imageVariants', () => {
   });
 
   it('refreshes collection metadata during watch builds', async () => {
-    const rootDirectory = await createRootDirectory('image-variants-watch-');
+    const rootDirectory = await createRootDirectory(
+      'optimized-responsive-image-watch-',
+    );
     const sourceDirectory = path.join(rootDirectory, 'content-media');
     const outputDirectory = path.join(rootDirectory, 'dist');
     const imagePath = path.join(sourceDirectory, 'image.png');
@@ -405,7 +412,7 @@ describe('imageVariants', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import images from 'virtual:react-image/collection?src=/content-media&base=/media&widths=160';",
+        "import images from 'virtual:react-optimized-responsive-image/collection?src=/content-media&base=/media&widths=160';",
         'console.log(images);',
         '',
       ].join('\n'),
@@ -424,7 +431,7 @@ describe('imageVariants', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: [
-        imageVariants({
+        optimizedResponsiveImage({
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
@@ -481,10 +488,12 @@ describe('imageVariants', () => {
   }, 20_000);
 
   it('rejects a collection source that is not a directory', async () => {
-    const rootDirectory = await createRootDirectory('image-variants-error-');
+    const rootDirectory = await createRootDirectory(
+      'optimized-responsive-image-error-',
+    );
     await writeFile(
       path.join(rootDirectory, 'main.js'),
-      "import 'virtual:react-image/collection?src=/missing&base=/media&widths=320';\n",
+      "import 'virtual:react-optimized-responsive-image/collection?src=/missing&base=/media&widths=320';\n",
     );
 
     await expect(
@@ -496,7 +505,7 @@ describe('imageVariants', () => {
         configFile: false,
         logLevel: 'silent',
         plugins: [
-          imageVariants({
+          optimizedResponsiveImage({
             cacheDirectory: path.join(rootDirectory, 'cache'),
           }),
         ],
@@ -524,7 +533,7 @@ async function createReactImageRuntimeAlias(rootDirectory: string) {
     ].join('\n'),
   );
   return {
-    find: '@kamatte-syndrome/vite-plugin-image-variants/react',
+    find: '@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react',
     replacement: runtimePath,
   };
 }

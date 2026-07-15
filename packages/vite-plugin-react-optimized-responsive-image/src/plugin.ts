@@ -34,15 +34,15 @@ import {
   resolveReactImageCollectionVirtualModule,
 } from './virtual/reactImageCollection.ts';
 
-export type ImageVariantsPluginOptions = {
+export type OptimizedResponsiveImagePluginOptions = {
   cacheDirectory: string;
   enabled?: boolean;
 };
 
-export function imageVariants({
+export function optimizedResponsiveImage({
   cacheDirectory,
   enabled = true,
-}: ImageVariantsPluginOptions): Plugin[] {
+}: OptimizedResponsiveImagePluginOptions): Plugin[] {
   let devServer: ViteDevServer | undefined;
   let isBuild = false;
   let isWatchBuild = false;
@@ -135,7 +135,10 @@ export function imageVariants({
   const getBuildWatchMarker = () => {
     buildWatchMarker ??= (() => {
       const directory = mkdtempSync(
-        path.join(tmpdir(), 'vite-plugin-image-variants-watch-'),
+        path.join(
+          tmpdir(),
+          'vite-plugin-react-optimized-responsive-image-watch-',
+        ),
       );
       const filePath = path.join(directory, 'invalidate');
       writeFileSync(filePath, '0');
@@ -192,7 +195,7 @@ export function imageVariants({
   };
 
   const plugin: Plugin = {
-    name: 'image-variants',
+    name: 'react-optimized-responsive-image',
     enforce: 'pre',
     sharedDuringBuild: true,
     configResolved(config) {

@@ -12,7 +12,8 @@ import {
   getSingleQueryParameter,
 } from './queryParameters.ts';
 
-export const reactImageVirtualModuleId = 'virtual:react-image';
+export const reactImageVirtualModuleId =
+  'virtual:react-optimized-responsive-image';
 const supportedImageExtensions = new Set([
   '.avif',
   '.jpeg',
@@ -202,7 +203,7 @@ export function createUnoptimizedReactImageVirtualModule({
 
 function createReactImageModuleCode(statements: string[]) {
   return [
-    `import { createReactImage } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-image-variants/react')};`,
+    `import { createReactImage } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react')};`,
     ...statements,
     'const ReactImage=createReactImage(imageVariant);',
     'export default ReactImage;',

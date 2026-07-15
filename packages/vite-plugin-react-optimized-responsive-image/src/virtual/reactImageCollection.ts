@@ -14,7 +14,7 @@ import {
 } from './queryParameters.ts';
 
 export const reactImageCollectionVirtualModuleId =
-  'virtual:react-image/collection';
+  'virtual:react-optimized-responsive-image/collection';
 
 type CreateReactImageCollectionVirtualModuleOptions = {
   base: string;
@@ -311,7 +311,7 @@ function normalizeBase(base: string) {
 
 function createReactImageCollectionModuleCode(statements: string[]) {
   return [
-    `import { createReactImageCollection } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-image-variants/react')};`,
+    `import { createReactImageCollection } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react')};`,
     ...statements,
     'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
     'export default ReactImageCollection;',

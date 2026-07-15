@@ -10,33 +10,37 @@ describe('virtual React image', () => {
   it('parses, normalizes, and validates a single image request', () => {
     expect(
       parseReactImageVirtualModuleRequest(
-        'virtual:react-image?src=.%2Fimage.jpg&widths=320;160;320',
+        'virtual:react-optimized-responsive-image?src=.%2Fimage.jpg&widths=320;160;320',
       ),
     ).toEqual({ lossless: false, src: './image.jpg', widths: [160, 320] });
     expect(
-      parseReactImageVirtualModuleRequest('virtual:react-image'),
+      parseReactImageVirtualModuleRequest(
+        'virtual:react-optimized-responsive-image',
+      ),
     ).toBeNull();
     expect(
       parseReactImageVirtualModuleRequest(
-        'virtual:react-image/collection?src=./images&base=/media&widths=160',
+        'virtual:react-optimized-responsive-image/collection?src=./images&base=/media&widths=160',
       ),
     ).toBeNull();
     expect(() =>
-      parseReactImageVirtualModuleRequest('virtual:react-image?widths=160;320'),
+      parseReactImageVirtualModuleRequest(
+        'virtual:react-optimized-responsive-image?widths=160;320',
+      ),
     ).toThrow('requires a src query');
     expect(() =>
       parseReactImageVirtualModuleRequest(
-        'virtual:react-image?src=./image.jpg&widths=160;fluid',
+        'virtual:react-optimized-responsive-image?src=./image.jpg&widths=160;fluid',
       ),
     ).toThrow('widths must be positive integers');
     expect(() =>
       parseReactImageVirtualModuleRequest(
-        'virtual:react-image?src=.%2Fimage%3Fname.jpg&widths=160',
+        'virtual:react-optimized-responsive-image?src=.%2Fimage%3Fname.jpg&widths=160',
       ),
     ).toThrow('src must not contain ? or #');
     expect(() =>
       parseReactImageVirtualModuleRequest(
-        'virtual:react-image?src=./image.jpg&widths=160&lossles=true',
+        'virtual:react-optimized-responsive-image?src=./image.jpg&widths=160&lossles=true',
       ),
     ).toThrow('does not support the lossles query parameter');
   });
@@ -50,7 +54,7 @@ describe('virtual React image', () => {
     });
 
     expect(resolved.id).toMatch(
-      /^\0virtual:react-image:resolved:[a-f0-9]{64}$/,
+      /^\0virtual:react-optimized-responsive-image:resolved:[a-f0-9]{64}$/,
     );
     expect(resolved.id).not.toContain('/project');
     expect(resolved.sourcePath).toBe('/project/src/image.jpg');
@@ -66,7 +70,7 @@ describe('virtual React image', () => {
     });
 
     expect(code).toContain(
-      'import { createReactImage } from "@kamatte-syndrome/vite-plugin-image-variants/react";',
+      'import { createReactImage } from "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react";',
     );
     expect(code).toContain(
       'import imageVariantFallback from "/project/src/image.jpg"',
@@ -85,7 +89,7 @@ describe('virtual React image', () => {
 
   it('generates lossless variants when requested', () => {
     const request = parseReactImageVirtualModuleRequest(
-      'virtual:react-image?src=./code.png&widths=140;280&lossless=true',
+      'virtual:react-optimized-responsive-image?src=./code.png&widths=140;280&lossless=true',
     );
     expect(request).toEqual({
       lossless: true,

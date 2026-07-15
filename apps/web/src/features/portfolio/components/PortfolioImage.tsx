@@ -1,4 +1,4 @@
-import ContentImage from 'virtual:react-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=160;176;320;352';
+import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=160;176;320;352';
 import { cn } from '@/utils/classNames';
 import type { PortfolioListItem } from '../types';
 import { PortfolioImagePlaceholder } from './PortfolioImagePlaceholder';

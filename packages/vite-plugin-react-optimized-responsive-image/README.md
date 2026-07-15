@@ -1,6 +1,6 @@
-# vite-plugin-image-variants
+# vite-plugin-react-optimized-responsive-image
 
-アプリケーションから静的importした画像、または画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPを生成するViteプラグインです。対応する変換元はAVIF、JPEG、PNG、WebPです。
+アプリケーションから静的importした画像、または画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPと、それらを描画するReactコンポーネントを生成するViteプラグインです。対応する変換元はAVIF、JPEG、PNG、WebPです。
 
 ## Setup
 
@@ -8,14 +8,17 @@ Vite設定ではvite-imagetools用のcacheディレクトリだけを指定し�
 
 ```ts
 import { fileURLToPath } from 'node:url';
-import { imageVariants } from '@kamatte-syndrome/vite-plugin-image-variants';
+import { optimizedResponsiveImage } from '@kamatte-syndrome/vite-plugin-react-optimized-responsive-image';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [
-    imageVariants({
+    optimizedResponsiveImage({
       cacheDirectory: fileURLToPath(
-        new URL('./node_modules/.cache/image-variants/', import.meta.url),
+        new URL(
+          './node_modules/.cache/optimized-responsive-image/',
+          import.meta.url,
+        ),
       ),
     }),
   ],
@@ -29,7 +32,7 @@ export default defineConfig({
 単一画像を使う場合は、画像パスと必要な幅をquery付きvirtual moduleとして静的importします。`src`はimport元ファイルからの相対パスのほか、Viteに設定されたaliasも解決できます。画像パスにはquery区切りと衝突する`?`または`#`を使用できません。
 
 ```tsx
-import Image from 'virtual:react-image?src=../assets/image.jpg&widths=160;320';
+import Image from 'virtual:react-optimized-responsive-image?src=../assets/image.jpg&widths=160;320';
 
 <Image sizes="160px" alt="サンプル画像" />
 ```
@@ -41,7 +44,7 @@ default exportは生成した画像entryがあらかじめ束縛されたReact�
 QRコードやピクセルアートなど可逆圧縮が必要な画像では、`lossless=true`を指定できます。この場合は可逆WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。
 
 ```tsx
-import QrCode from 'virtual:react-image?src=../assets/qr.png&widths=140;280&lossless=true';
+import QrCode from 'virtual:react-optimized-responsive-image?src=../assets/qr.png&widths=140;280&lossless=true';
 
 <QrCode sizes="140px" alt="QRコード" />
 ```
@@ -51,7 +54,7 @@ import QrCode from 'virtual:react-image?src=../assets/qr.png&widths=140;280&loss
 MarkdownやFrontmatterのように実行時のURLから画像を引く場合は、画像ディレクトリ、公開URLのbase、必要な幅をquery付きvirtual moduleとして静的importします。
 
 ```tsx
-import ContentImage from 'virtual:react-image/collection?src=@@/content/media&base=/media&widths=160;320';
+import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/content/media&base=/media&widths=160;320';
 ```
 
 - `src`はViteに設定されたalias、Vite rootからの`/`始まりのパス、またはimport元からの相対パスです。
@@ -111,7 +114,7 @@ queryの順序や幅の指定順が異なっても、同じ解決済みディレ
 virtual moduleの型宣言はパッケージに含まれています。アプリ側の`compilerOptions.types`へ追加するか、`vite-env.d.ts`などから明示的に参照してください。
 
 ```ts
-/// <reference types="@kamatte-syndrome/vite-plugin-image-variants/react/virtual" />
+/// <reference types="@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react/virtual" />
 ```
 
 TypeScript上はquery全体をwildcardとして宣言しているため、画像パス、base、幅の誤りはViteの変換時に検証されます。

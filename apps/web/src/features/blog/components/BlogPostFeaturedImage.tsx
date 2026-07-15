@@ -1,4 +1,4 @@
-import ContentImage from 'virtual:react-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;640;760;1280;1520';
+import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;640;760;1280;1520';
 import type { Post } from 'content-collections';
 import type { ComponentPropsWithoutRef } from 'react';
 import { cn } from '@/utils/classNames';

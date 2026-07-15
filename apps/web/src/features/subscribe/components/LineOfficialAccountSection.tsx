@@ -1,5 +1,5 @@
-import LineButtonImage from 'virtual:react-image?src=../assets/line_button.png&widths=120;240';
-import LineQrImage from 'virtual:react-image?src=../assets/line_qr.png&widths=140;280';
+import LineButtonImage from 'virtual:react-optimized-responsive-image?src=../assets/line_button.png&widths=120;240';
+import LineQrImage from 'virtual:react-optimized-responsive-image?src=../assets/line_qr.png&widths=140;280';
 import { SubscribeSection } from './SubscribeSection';
 
 export function LineOfficialAccountSection() {

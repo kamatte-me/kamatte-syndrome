@@ -12,7 +12,7 @@ describe('virtual React image collection', () => {
   it('parses, normalizes, and validates a collection request', () => {
     expect(
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?widths=352;160;352;176&base=media/&src=/content/media',
+        'virtual:react-optimized-responsive-image/collection?widths=352;160;352;176&base=media/&src=/content/media',
       ),
     ).toEqual({
       base: '/media',
@@ -21,37 +21,37 @@ describe('virtual React image collection', () => {
     });
     expect(
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection',
+        'virtual:react-optimized-responsive-image/collection',
       ),
     ).toBeNull();
     expect(() =>
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?base=/media&widths=320',
+        'virtual:react-optimized-responsive-image/collection?base=/media&widths=320',
       ),
     ).toThrow('requires a src query');
     expect(() =>
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?src=/content/media&widths=320',
+        'virtual:react-optimized-responsive-image/collection?src=/content/media&widths=320',
       ),
     ).toThrow('requires a base query');
     expect(() =>
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?src=/content/media&base=/media&widths=160;fluid',
+        'virtual:react-optimized-responsive-image/collection?src=/content/media&base=/media&widths=160;fluid',
       ),
     ).toThrow('widths must be positive integers');
     expect(() =>
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?src=%2Fcontent%3Fmedia&base=/media&widths=160',
+        'virtual:react-optimized-responsive-image/collection?src=%2Fcontent%3Fmedia&base=/media&widths=160',
       ),
     ).toThrow('src must not contain ? or #');
     expect(() =>
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?src=/content/media&base=%2Fmedia%23images&widths=160',
+        'virtual:react-optimized-responsive-image/collection?src=/content/media&base=%2Fmedia%23images&widths=160',
       ),
     ).toThrow('base must not contain ? or #');
     expect(() =>
       parseReactImageCollectionVirtualModuleRequest(
-        'virtual:react-image/collection?src=/content/media&base=/media&width=160&widths=320',
+        'virtual:react-optimized-responsive-image/collection?src=/content/media&base=/media&width=160&widths=320',
       ),
     ).toThrow('does not support the width query parameter');
   });
@@ -115,7 +115,7 @@ describe('virtual React image collection', () => {
     });
 
     expect(first.id).toMatch(
-      /^\0virtual:react-image\/collection:resolved:[a-f0-9]{64}$/,
+      /^\0virtual:react-optimized-responsive-image\/collection:resolved:[a-f0-9]{64}$/,
     );
     expect(first.id).toBe(equivalent.id);
     expect(first.id).not.toBe(differentWidths.id);
@@ -140,7 +140,7 @@ describe('virtual React image collection', () => {
     });
 
     expect(code).toContain(
-      'import { createReactImageCollection } from "@kamatte-syndrome/vite-plugin-image-variants/react";',
+      'import { createReactImageCollection } from "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react";',
     );
     expect(code).toContain(
       'import imageVariantOriginal0 from "/content/nested/example.jpg";',

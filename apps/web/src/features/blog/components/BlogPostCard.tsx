@@ -1,4 +1,4 @@
-import ContentImage from 'virtual:react-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=72;120;144;240';
+import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=72;120;144;240';
 import { Link } from '@tanstack/react-router';
 import { formatPostDate } from '@/utils/posts';
 import type { BlogListPost } from '../types';

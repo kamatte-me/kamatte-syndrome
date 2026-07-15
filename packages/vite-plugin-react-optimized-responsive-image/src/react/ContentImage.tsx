@@ -22,7 +22,7 @@ export type ReactImageCollectionProps = ContentImageBaseProps & {
 
 export type ContentImageProps =
   | (ReactImageProps & {
-      /** A single image variant bound by virtual:react-image. */
+      /** A single image variant bound by virtual:react-optimized-responsive-image. */
       image: ImageVariantEntry;
       manifest?: never;
       src?: never;
