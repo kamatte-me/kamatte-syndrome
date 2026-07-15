@@ -17,7 +17,7 @@ export type ContentImageBaseProps = Omit<
 export type ReactImageProps = ContentImageBaseProps;
 
 export type ReactImageCollectionProps = ContentImageBaseProps & {
-  src?: ComponentPropsWithRef<'img'>['src'];
+  src: string;
 };
 
 export type ContentImageProps =
@@ -65,7 +65,11 @@ export function ContentImage(props: ContentImageProps) {
   const webp = entry?.webp ?? [];
   const dimensions = resolveDimensions({ entry, height, width });
 
-  if (!entry || srcSet || (avif.length === 0 && webp.length === 0)) {
+  if (
+    !entry ||
+    srcSet !== undefined ||
+    (avif.length === 0 && webp.length === 0)
+  ) {
     return (
       <img
         {...imageProps}

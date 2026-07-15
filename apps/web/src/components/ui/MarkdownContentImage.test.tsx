@@ -31,4 +31,12 @@ describe('MarkdownContentImage', () => {
     expect(image).toHaveAttribute('loading', 'eager');
     expect(image).toHaveAttribute('sizes', '100vw');
   });
+
+  it('renders a normal image when MDX does not provide a string source', () => {
+    render(<MarkdownContentImage alt="Missing source" />);
+
+    const image = screen.getByRole('img', { name: 'Missing source' });
+    expect(image).not.toHaveAttribute('src');
+    expect(image).toHaveAttribute('loading', 'lazy');
+  });
 });

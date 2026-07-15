@@ -397,6 +397,7 @@ describe('imageVariants', () => {
     const sourceDirectory = path.join(rootDirectory, 'content-media');
     const outputDirectory = path.join(rootDirectory, 'dist');
     const imagePath = path.join(sourceDirectory, 'image.png');
+    const addedImagePath = path.join(sourceDirectory, 'added.png');
     const reactImageRuntimeAlias =
       await createReactImageRuntimeAlias(rootDirectory);
     await mkdir(sourceDirectory);
@@ -435,68 +436,49 @@ describe('imageVariants', () => {
       throw new Error('Expected a Rollup watcher');
     }
     const watcher = buildResult;
-    let completedBuildCount = 0;
-    const pendingBuilds: Array<{
-      buildCount: number;
-      reject: (error: unknown) => void;
-      resolve: () => void;
-    }> = [];
+    let buildError: unknown;
     watcher.on('event', (event) => {
-      if (event.code === 'END') {
-        completedBuildCount += 1;
-        for (const pendingBuild of pendingBuilds.splice(0)) {
-          if (pendingBuild.buildCount <= completedBuildCount) {
-            pendingBuild.resolve();
-          } else {
-            pendingBuilds.push(pendingBuild);
-          }
-        }
-      } else if (event.code === 'ERROR') {
-        for (const pendingBuild of pendingBuilds.splice(0)) {
-          pendingBuild.reject(event.error);
-        }
+      if (event.code === 'ERROR') {
+        buildError = event.error;
       }
     });
-    const waitForBuild = (buildCount: number) => {
-      if (completedBuildCount >= buildCount) {
-        return Promise.resolve();
-      }
-      return new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(
-            new Error(
-              `Timed out waiting for build ${buildCount}; completed ${completedBuildCount}`,
-            ),
-          );
-        }, 5_000);
-        pendingBuilds.push({
-          buildCount,
-          reject: (error) => {
-            clearTimeout(timeout);
-            reject(error);
-          },
-          resolve: () => {
-            clearTimeout(timeout);
-            resolve();
-          },
-        });
-      });
-    };
     const readBundle = () =>
       readFile(path.join(outputDirectory, 'main.js'), 'utf8');
+    const waitForBundle = (assertBundle: (bundle: string) => void) =>
+      vi.waitFor(
+        async () => {
+          if (buildError) {
+            throw buildError;
+          }
+          assertBundle(await readBundle());
+        },
+        { interval: 25, timeout: 5_000 },
+      );
 
     try {
-      await waitForBuild(1);
-      await expect(readBundle()).resolves.toMatch(/height:50.+width:100/);
+      await waitForBundle((bundle) =>
+        expect(bundle).toMatch(/height:50.+width:100/),
+      );
 
-      const resizedBuild = waitForBuild(2);
       await writeSizedPng(imagePath, 200, 70);
-      await resizedBuild;
-      await expect(readBundle()).resolves.toMatch(/height:70.+width:200/);
+      await waitForBundle((bundle) =>
+        expect(bundle).toMatch(/height:70.+width:200/),
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      await writeSizedPng(addedImagePath, 90, 40);
+      await waitForBundle((bundle) =>
+        expect(bundle).toContain('/media/added.png'),
+      );
+
+      await rm(imagePath);
+      await waitForBundle((bundle) =>
+        expect(bundle).not.toContain('/media/image.png'),
+      );
     } finally {
       await watcher.close();
     }
-  }, 10_000);
+  }, 20_000);
 
   it('rejects a collection source that is not a directory', async () => {
     const rootDirectory = await createRootDirectory('image-variants-error-');

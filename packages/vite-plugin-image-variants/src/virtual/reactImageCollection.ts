@@ -205,6 +205,10 @@ export function createReactImageCollectionVirtualModule({
   const entries: string[] = [];
 
   for (const [publicUrl, entry] of Object.entries(manifest)) {
+    if (!entry) {
+      continue;
+    }
+
     if (!publicUrl.startsWith(publicPathPrefix)) {
       throw new Error(
         `Image variant URL must start with ${publicPathPrefix}: ${publicUrl}`,
@@ -310,7 +314,6 @@ function createReactImageCollectionModuleCode(statements: string[]) {
     `import { createReactImageCollection } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-image-variants/react')};`,
     ...statements,
     'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
-    'export { imageVariantManifest as manifest };',
     'export default ReactImageCollection;',
   ].join('\n');
 }

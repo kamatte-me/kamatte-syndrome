@@ -205,7 +205,6 @@ function createReactImageModuleCode(statements: string[]) {
     `import { createReactImage } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-image-variants/react')};`,
     ...statements,
     'const ReactImage=createReactImage(imageVariant);',
-    'export { imageVariant as variant };',
     'export default ReactImage;',
   ].join('\n');
 }

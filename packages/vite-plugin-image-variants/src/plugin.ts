@@ -1,4 +1,12 @@
+import {
+  type FSWatcher,
+  mkdtempSync,
+  rmSync,
+  watch,
+  writeFileSync,
+} from 'node:fs';
 import { realpath, stat } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
@@ -37,9 +45,20 @@ export function imageVariants({
 }: ImageVariantsPluginOptions): Plugin[] {
   let devServer: ViteDevServer | undefined;
   let isBuild = false;
+  let isWatchBuild = false;
   let rootDirectory = process.cwd();
   let invalidationTimer: ReturnType<typeof setTimeout> | undefined;
+  let buildWatchTimer: ReturnType<typeof setTimeout> | undefined;
+  let buildWatchMarkerVersion = 0;
+  let buildWatchError: Error | undefined;
+  let buildWatchMarker:
+    | Readonly<{ directory: string; filePath: string }>
+    | undefined;
   const pendingInvalidationIds = new Set<string>();
+  const buildWatchDirectories = new Map<
+    string,
+    Readonly<{ cacheKeys: Set<string>; watcher: FSWatcher }>
+  >();
   const manifestPromises = new Map<string, Promise<ImageVariantManifest>>();
   const resolvedImageVariantModules = new Map<
     string,
@@ -113,12 +132,72 @@ export function imageVariants({
     }, 100);
   };
 
+  const getBuildWatchMarker = () => {
+    buildWatchMarker ??= (() => {
+      const directory = mkdtempSync(
+        path.join(tmpdir(), 'vite-plugin-image-variants-watch-'),
+      );
+      const filePath = path.join(directory, 'invalidate');
+      writeFileSync(filePath, '0');
+      return { directory, filePath };
+    })();
+    return buildWatchMarker;
+  };
+
+  const scheduleBuildWatch = (cacheKeys: ReadonlySet<string>) => {
+    for (const cacheKey of cacheKeys) {
+      manifestPromises.delete(cacheKey);
+    }
+    clearTimeout(buildWatchTimer);
+    buildWatchTimer = setTimeout(() => {
+      try {
+        const marker = getBuildWatchMarker();
+        buildWatchMarkerVersion += 1;
+        writeFileSync(marker.filePath, String(buildWatchMarkerVersion));
+      } catch (error) {
+        buildWatchError = new Error(
+          'Unable to invalidate the image collection watch build',
+          { cause: error },
+        );
+      }
+    }, 100);
+  };
+
+  const watchBuildDirectory = (
+    directory: string,
+    imageVariantsModule: ResolvedReactImageCollectionVirtualModule,
+  ) => {
+    const normalizedDirectory = normalizeSourcePath(directory);
+    const cacheKey = createManifestCacheKey(imageVariantsModule);
+    const existingWatch = buildWatchDirectories.get(normalizedDirectory);
+    if (existingWatch) {
+      existingWatch.cacheKeys.add(cacheKey);
+      return;
+    }
+
+    const cacheKeys = new Set([cacheKey]);
+    const watcher = watch(normalizedDirectory, { recursive: true }, (event) => {
+      if (event === 'rename') {
+        scheduleBuildWatch(cacheKeys);
+      }
+    });
+    watcher.on('error', (error) => {
+      buildWatchError = new Error(
+        `Unable to watch image collection directory: ${normalizedDirectory}`,
+        { cause: error },
+      );
+      scheduleBuildWatch(cacheKeys);
+    });
+    buildWatchDirectories.set(normalizedDirectory, { cacheKeys, watcher });
+  };
+
   const plugin: Plugin = {
     name: 'image-variants',
     enforce: 'pre',
     sharedDuringBuild: true,
     configResolved(config) {
       isBuild = config.command === 'build';
+      isWatchBuild = isBuild && config.build.watch != null;
       rootDirectory = config.root;
     },
     async resolveId(id, importer) {
@@ -218,6 +297,26 @@ export function imageVariants({
             this.addWatchFile(imageVariantsModule.watchDirectory);
           }
         }
+        let buildWatchMarkerPath: string | undefined;
+        if (isWatchBuild) {
+          if (buildWatchError) {
+            throw buildWatchError;
+          }
+          buildWatchMarkerPath = getBuildWatchMarker().filePath;
+          watchBuildDirectory(
+            imageVariantsModule.sourceDirectory,
+            imageVariantsModule,
+          );
+          if (
+            imageVariantsModule.watchDirectory !==
+            imageVariantsModule.sourceDirectory
+          ) {
+            watchBuildDirectory(
+              imageVariantsModule.watchDirectory,
+              imageVariantsModule,
+            );
+          }
+        }
 
         const manifest = await getManifest(imageVariantsModule);
         const publicPathPrefix = `${imageVariantsModule.base}/`;
@@ -235,16 +334,30 @@ export function imageVariants({
             ),
           );
         }
-        return createReactImageCollectionVirtualModule({
+        const moduleCode = createReactImageCollectionVirtualModule({
           base: imageVariantsModule.base,
           manifest,
           sourceDirectory: imageVariantsModule.sourceDirectory,
           widths: imageVariantsModule.widths,
         });
+        return buildWatchMarkerPath
+          ? `import ${JSON.stringify(`${buildWatchMarkerPath}?raw`)};\n${moduleCode}`
+          : moduleCode;
       }
     },
     watchChange(id) {
       invalidateAffectedManifests(normalizeSourcePath(id));
+    },
+    closeWatcher() {
+      clearTimeout(buildWatchTimer);
+      for (const { watcher } of buildWatchDirectories.values()) {
+        watcher.close();
+      }
+      buildWatchDirectories.clear();
+      if (buildWatchMarker) {
+        rmSync(buildWatchMarker.directory, { force: true, recursive: true });
+        buildWatchMarker = undefined;
+      }
     },
     configureServer(server) {
       devServer = server;

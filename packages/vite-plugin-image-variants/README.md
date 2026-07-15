@@ -29,12 +29,12 @@ export default defineConfig({
 単一画像を使う場合は、画像パスと必要な幅をquery付きvirtual moduleとして静的importします。`src`はimport元ファイルからの相対パスのほか、Viteに設定されたaliasも解決できます。画像パスにはquery区切りと衝突する`?`または`#`を使用できません。
 
 ```tsx
-import Image, { variant } from 'virtual:react-image?src=../assets/image.jpg&widths=160;320';
+import Image from 'virtual:react-image?src=../assets/image.jpg&widths=160;320';
 
 <Image sizes="160px" alt="サンプル画像" />
 ```
 
-default exportは生成した画像entryがあらかじめ束縛されたReactコンポーネントです。`className`、`loading`、`sizes`などの標準的な`img` propsと、`picture`へ渡す`pictureProps`を指定できます。名前付きの`variant` exportから画像entryを直接取得することもできます。
+default exportは生成した画像entryがあらかじめ束縛されたReactコンポーネントです。`className`、`loading`、`sizes`などの標準的な`img` propsと、`picture`へ渡す`pictureProps`を指定できます。`srcSet`を明示した場合は、空文字を含めて呼び出し側の指定を優先し、生成した`picture`のsourceは使用しません。
 
 元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。
 
@@ -51,9 +51,7 @@ import QrCode from 'virtual:react-image?src=../assets/qr.png&widths=140;280&loss
 MarkdownやFrontmatterのように実行時のURLから画像を引く場合は、画像ディレクトリ、公開URLのbase、必要な幅をquery付きvirtual moduleとして静的importします。
 
 ```tsx
-import ContentImage, {
-  manifest,
-} from 'virtual:react-image/collection?src=@@/content/media&base=/media&widths=160;320';
+import ContentImage from 'virtual:react-image/collection?src=@@/content/media&base=/media&widths=160;320';
 ```
 
 - `src`はViteに設定されたalias、Vite rootからの`/`始まりのパス、またはimport元からの相対パスです。
@@ -84,7 +82,7 @@ import ContentImage, {
 />
 ```
 
-default exportはmanifestがあらかじめ束縛されたReactコンポーネントです。`src`にmanifestの論理URLを渡します。名前付きの`manifest` exportから生成データを直接取得することもできます。
+default exportはmanifestがあらかじめ束縛されたReactコンポーネントです。必須の`src`にmanifestの論理URLを文字列で渡します。virtual moduleはこのReactコンポーネントだけをexportし、内部の画像entryやmanifestは公開しません。
 
 manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。GIF、SVG、その他の形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
 

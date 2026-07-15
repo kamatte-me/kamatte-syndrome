@@ -157,7 +157,7 @@ describe('virtual React image collection', () => {
     expect(code).toContain(
       'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
     );
-    expect(code).toContain('export { imageVariantManifest as manifest };');
+    expect(code).not.toContain('export { imageVariantManifest as manifest };');
     expect(code).toContain('export default ReactImageCollection;');
 
     const emptyCode = createEmptyReactImageCollectionVirtualModule();

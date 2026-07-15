@@ -79,7 +79,7 @@ describe('virtual React image', () => {
     expect(code).toContain('height:180');
     expect(code).toContain('width:240');
     expect(code).toContain('const ReactImage=createReactImage(imageVariant);');
-    expect(code).toContain('export { imageVariant as variant };');
+    expect(code).not.toContain('export { imageVariant as variant };');
     expect(code).toContain('export default ReactImage;');
   });
 

@@ -79,6 +79,22 @@ describe('ContentImage', () => {
     expect(image).toHaveAttribute('height', '120');
   });
 
+  it('treats an empty source set as an explicit override', () => {
+    const { container } = render(
+      <ContentImage
+        src="/media/example.jpg"
+        srcSet=""
+        alt="Empty source set"
+        manifest={manifest}
+      />,
+    );
+
+    expect(container.querySelector('picture')).toBeNull();
+    expect(
+      screen.getByRole('img', { name: 'Empty source set' }),
+    ).toHaveAttribute('srcset', '');
+  });
+
   it.each([
     { expectedHeight: 90, expectedWidth: 120, height: undefined, width: 120 },
     { expectedHeight: 120, expectedWidth: 160, height: 120, width: undefined },

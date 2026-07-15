@@ -11,4 +11,6 @@ export type ImageVariantEntry = Readonly<{
   width: number;
 }>;
 
-export type ImageVariantManifest = Readonly<Record<string, ImageVariantEntry>>;
+export type ImageVariantManifest = Readonly<
+  Record<string, ImageVariantEntry | undefined>
+>;

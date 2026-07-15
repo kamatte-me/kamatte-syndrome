@@ -113,7 +113,8 @@ describe('scanImageVariantManifest', () => {
     ]);
     expect(
       Object.values(manifest).every(
-        ({ height, width }) => height === 20 && width === 30,
+        (entry) =>
+          entry !== undefined && entry.height === 20 && entry.width === 30,
       ),
     ).toBe(true);
   });
