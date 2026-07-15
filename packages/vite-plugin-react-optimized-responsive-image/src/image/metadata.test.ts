@@ -119,6 +119,29 @@ describe('scanImageVariantManifest', () => {
     ).toBe(true);
   });
 
+  it('uses frame dimensions for an animated WebP fallback', async () => {
+    const sourceDirectory = await createSourceDirectory();
+    const sourcePath = path.join(sourceDirectory, 'animated.webp');
+    await sharp(createAnimatedGif(), { animated: true })
+      .webp()
+      .toFile(sourcePath);
+
+    await expect(
+      scanImageVariantManifest({
+        publicPath: '/media',
+        sourceDirectory,
+      }),
+    ).resolves.toEqual({
+      '/media/animated.webp': {
+        avif: [],
+        height: 1,
+        src: '/media/animated.webp',
+        webp: [],
+        width: 1,
+      },
+    });
+  });
+
   it('reports the relative path of a corrupt supported image', async () => {
     const sourceDirectory = await createSourceDirectory();
     const nestedDirectory = path.join(sourceDirectory, 'nested');
@@ -165,6 +188,19 @@ async function createSourceDirectory() {
   );
   temporaryDirectories.push(sourceDirectory);
   return sourceDirectory;
+}
+
+function createAnimatedGif() {
+  return Buffer.from(
+    [
+      '47494638396101000100800000000000ffffff',
+      '21ff0b4e45545343415045322e300301000000',
+      '21f904000a0000002c0000000001000100000202440100',
+      '21f904000a0000002c00000000010001000002024c0100',
+      '3b',
+    ].join(''),
+    'hex',
+  );
 }
 
 async function listRelativeFiles(directory: string, relativeDirectory = '') {

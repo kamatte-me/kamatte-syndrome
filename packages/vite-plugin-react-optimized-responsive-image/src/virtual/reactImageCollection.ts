@@ -2,10 +2,11 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 import {
-  clampImageWidths,
   createImageTransformImport,
+  type ImageVariantWidths,
   imageVariantAvifQuality,
   imageVariantWebpQuality,
+  selectImageVariantWidths,
 } from '../image/transform.ts';
 import type { ImageVariantManifest } from '../types.ts';
 import {
@@ -20,7 +21,7 @@ type CreateReactImageCollectionVirtualModuleOptions = {
   base: string;
   manifest: ImageVariantManifest;
   sourceDirectory: string;
-  widths: readonly number[];
+  variantWidths: Readonly<Record<string, ImageVariantWidths | undefined>>;
 };
 
 export type ReactImageCollectionVirtualModuleRequest = Readonly<{
@@ -198,7 +199,7 @@ export function createReactImageCollectionVirtualModule({
   base,
   manifest,
   sourceDirectory,
-  widths,
+  variantWidths,
 }: CreateReactImageCollectionVirtualModuleOptions) {
   const publicPathPrefix = `${base}/`;
   const imports: string[] = [];
@@ -209,45 +210,48 @@ export function createReactImageCollectionVirtualModule({
       continue;
     }
 
-    if (!publicUrl.startsWith(publicPathPrefix)) {
-      throw new Error(
-        `Image variant URL must start with ${publicPathPrefix}: ${publicUrl}`,
-      );
-    }
-
-    const relativePath = publicUrl.slice(publicPathPrefix.length);
-    const sourcePath = normalizePath(path.join(sourceDirectory, relativePath));
-    if (!isPathInside(sourceDirectory, sourcePath)) {
-      throw new Error(
-        `Image source path must stay inside its source directory: ${relativePath}`,
-      );
-    }
+    const sourcePath = resolveManifestSourcePath({
+      publicPathPrefix,
+      publicUrl,
+      sourceDirectory,
+    });
 
     const index = entries.length;
     const originalIdentifier = `imageVariantOriginal${index}`;
     const avifIdentifier = `imageVariantAvif${index}`;
     const webpIdentifier = `imageVariantWebp${index}`;
-    const widthDirective = clampImageWidths(widths, entry.width).join(';');
+    const entryVariantWidths = variantWidths[publicUrl] ?? {
+      avif: [],
+      webp: [],
+    };
 
     imports.push(
       `import ${originalIdentifier} from ${JSON.stringify(sourcePath)};`,
-      createVariantImport({
-        format: 'avif',
-        identifier: avifIdentifier,
-        quality: imageVariantAvifQuality,
-        sourcePath,
-        widths: widthDirective,
-      }),
-      createVariantImport({
-        format: 'webp',
-        identifier: webpIdentifier,
-        quality: imageVariantWebpQuality,
-        sourcePath,
-        widths: widthDirective,
-      }),
     );
+    if (entryVariantWidths.avif.length > 0) {
+      imports.push(
+        createVariantImport({
+          format: 'avif',
+          identifier: avifIdentifier,
+          quality: imageVariantAvifQuality,
+          sourcePath,
+          widths: entryVariantWidths.avif.join(';'),
+        }),
+      );
+    }
+    if (entryVariantWidths.webp.length > 0) {
+      imports.push(
+        createVariantImport({
+          format: 'webp',
+          identifier: webpIdentifier,
+          quality: imageVariantWebpQuality,
+          sourcePath,
+          widths: entryVariantWidths.webp.join(';'),
+        }),
+      );
+    }
     entries.push(
-      `${JSON.stringify(publicUrl)}:{avif:toVariants(${avifIdentifier}),height:${entry.height},src:${originalIdentifier},webp:toVariants(${webpIdentifier}),width:${entry.width}}`,
+      `${JSON.stringify(publicUrl)}:{avif:${entryVariantWidths.avif.length > 0 ? `toVariants(${avifIdentifier})` : '[]'},height:${entry.height},src:${originalIdentifier},webp:${entryVariantWidths.webp.length > 0 ? `toVariants(${webpIdentifier})` : '[]'},width:${entry.width}}`,
     );
   }
 
@@ -256,6 +260,44 @@ export function createReactImageCollectionVirtualModule({
     'const toVariants=(value)=>Array.isArray(value)?value:[value];',
     `const imageVariantManifest={${entries.join(',')}};`,
   ]);
+}
+
+export async function selectReactImageCollectionVariantWidths({
+  base,
+  manifest,
+  sourceDirectory,
+  widths,
+}: Omit<CreateReactImageCollectionVirtualModuleOptions, 'variantWidths'> & {
+  widths: readonly number[];
+}) {
+  const publicPathPrefix = `${base}/`;
+  const publicUrls = Object.keys(manifest).filter(
+    (publicUrl) => manifest[publicUrl] !== undefined,
+  );
+  const variants: [string, ImageVariantWidths][] = [];
+  const batchSize = 4;
+  for (let index = 0; index < publicUrls.length; index += batchSize) {
+    const batch = publicUrls.slice(index, index + batchSize);
+    variants.push(
+      ...(await Promise.all(
+        batch.map(async (publicUrl) => {
+          const sourcePath = resolveManifestSourcePath({
+            publicPathPrefix,
+            publicUrl,
+            sourceDirectory,
+          });
+          return [
+            publicUrl,
+            await selectImageVariantWidths({ sourcePath, widths }),
+          ] satisfies [string, ImageVariantWidths];
+        }),
+      )),
+    );
+  }
+
+  return Object.fromEntries(variants) as Readonly<
+    Record<string, ImageVariantWidths>
+  >;
 }
 
 export function createEmptyReactImageCollectionVirtualModule() {
@@ -307,6 +349,31 @@ function normalizeBase(base: string) {
     );
   }
   return normalizedBase;
+}
+
+function resolveManifestSourcePath({
+  publicPathPrefix,
+  publicUrl,
+  sourceDirectory,
+}: Readonly<{
+  publicPathPrefix: string;
+  publicUrl: string;
+  sourceDirectory: string;
+}>) {
+  if (!publicUrl.startsWith(publicPathPrefix)) {
+    throw new Error(
+      `Image variant URL must start with ${publicPathPrefix}: ${publicUrl}`,
+    );
+  }
+
+  const relativePath = publicUrl.slice(publicPathPrefix.length);
+  const sourcePath = normalizePath(path.join(sourceDirectory, relativePath));
+  if (!isPathInside(sourceDirectory, sourcePath)) {
+    throw new Error(
+      `Image source path must stay inside its source directory: ${relativePath}`,
+    );
+  }
+  return sourcePath;
 }
 
 function createReactImageCollectionModuleCode(statements: string[]) {

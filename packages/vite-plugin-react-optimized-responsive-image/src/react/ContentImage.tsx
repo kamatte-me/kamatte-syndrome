@@ -7,12 +7,22 @@ import type {
 
 export type ContentImageBaseProps = Omit<
   ComponentPropsWithRef<'img'>,
-  'alt' | 'children' | 'src'
+  'alt' | 'children' | 'sizes' | 'src'
 > & {
   alt: string;
   /** Props applied when optimized sources render an outer picture element. */
   pictureProps?: Omit<ComponentPropsWithRef<'picture'>, 'children'>;
+  /**
+   * Responsive slot sizes, or a resolver for layouts whose slot depends on
+   * the image's natural aspect ratio.
+   */
+  sizes?: string | ((dimensions: ContentImageDimensions) => string);
 };
+
+export type ContentImageDimensions = Readonly<{
+  height: number;
+  width: number;
+}>;
 
 export type ReactImageProps = ContentImageBaseProps;
 
@@ -64,6 +74,12 @@ export function ContentImage(props: ContentImageProps) {
   const avif = entry?.avif ?? [];
   const webp = entry?.webp ?? [];
   const dimensions = resolveDimensions({ entry, height, width });
+  const resolvedSizes =
+    typeof sizes === 'function'
+      ? entry
+        ? sizes({ height: entry.height, width: entry.width })
+        : undefined
+      : sizes;
 
   if (
     !entry ||
@@ -75,7 +91,7 @@ export function ContentImage(props: ContentImageProps) {
         {...imageProps}
         src={fallbackSrc}
         srcSet={srcSet}
-        sizes={sizes}
+        sizes={resolvedSizes}
         width={dimensions.width}
         height={dimensions.height}
         alt={alt}
@@ -86,15 +102,23 @@ export function ContentImage(props: ContentImageProps) {
   return (
     <picture {...pictureProps}>
       {avif.length > 0 ? (
-        <source type="image/avif" srcSet={createSrcSet(avif)} sizes={sizes} />
+        <source
+          type="image/avif"
+          srcSet={createSrcSet(avif)}
+          sizes={resolvedSizes}
+        />
       ) : null}
       {webp.length > 0 ? (
-        <source type="image/webp" srcSet={createSrcSet(webp)} sizes={sizes} />
+        <source
+          type="image/webp"
+          srcSet={createSrcSet(webp)}
+          sizes={resolvedSizes}
+        />
       ) : null}
       <img
         {...imageProps}
         src={entry.src}
-        sizes={sizes}
+        sizes={resolvedSizes}
         width={dimensions.width}
         height={dimensions.height}
         alt={alt}

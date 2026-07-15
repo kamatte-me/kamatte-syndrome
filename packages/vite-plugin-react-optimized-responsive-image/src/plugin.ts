@@ -14,8 +14,14 @@ import {
   imagetools,
   resolveConfigs as resolveImagetoolsConfigs,
 } from 'vite-imagetools';
-import { scanImageVariantManifest } from './image/metadata.ts';
-import { imageTransformQueryParameter } from './image/transform.ts';
+import {
+  getImageDisplayDimensions,
+  scanImageVariantManifest,
+} from './image/metadata.ts';
+import {
+  imageTransformQueryParameter,
+  selectImageVariantWidths,
+} from './image/transform.ts';
 import type { ImageVariantManifest } from './types.ts';
 import {
   createReactImageVirtualModule,
@@ -32,6 +38,7 @@ import {
   type ResolvedReactImageCollectionVirtualModule,
   resolveReactImageCollectionSourceDirectory,
   resolveReactImageCollectionVirtualModule,
+  selectReactImageCollectionVariantWidths,
 } from './virtual/reactImageCollection.ts';
 
 export type OptimizedResponsiveImagePluginOptions = {
@@ -55,6 +62,7 @@ export function optimizedResponsiveImage({
     | Readonly<{ directory: string; filePath: string }>
     | undefined;
   const pendingInvalidationIds = new Set<string>();
+  const failedBuildWatchManifestCacheKeys = new Set<string>();
   const buildWatchDirectories = new Map<
     string,
     Readonly<{ cacheKeys: Set<string>; watcher: FSWatcher }>
@@ -182,6 +190,16 @@ export function optimizedResponsiveImage({
     const watcher = watch(normalizedDirectory, { recursive: true }, (event) => {
       if (event === 'rename') {
         scheduleBuildWatch(cacheKeys);
+        return;
+      }
+
+      const failedCacheKeys = new Set(
+        [...cacheKeys].filter((key) =>
+          failedBuildWatchManifestCacheKeys.has(key),
+        ),
+      );
+      if (failedCacheKeys.size > 0) {
+        scheduleBuildWatch(failedCacheKeys);
       }
     });
     watcher.on('error', (error) => {
@@ -265,8 +283,7 @@ export function optimizedResponsiveImage({
       if (imageVariantModule) {
         this.addWatchFile(imageVariantModule.sourcePath);
         const metadata = await sharp(imageVariantModule.sourcePath).metadata();
-        const width = metadata.autoOrient.width;
-        const height = metadata.autoOrient.height;
+        const { height, width } = getImageDisplayDimensions(metadata);
         if (!width || !height) {
           throw new Error(
             `Image dimensions are unavailable: ${imageVariantModule.src}`,
@@ -279,10 +296,16 @@ export function optimizedResponsiveImage({
             width,
           });
         }
+        const variantWidths = await selectImageVariantWidths({
+          lossless: imageVariantModule.lossless,
+          sourcePath: imageVariantModule.sourcePath,
+          widths: imageVariantModule.widths,
+        });
         return createReactImageVirtualModule({
           ...imageVariantModule,
           naturalHeight: height,
           naturalWidth: width,
+          variantWidths,
         });
       }
 
@@ -306,6 +329,7 @@ export function optimizedResponsiveImage({
             throw buildWatchError;
           }
           buildWatchMarkerPath = getBuildWatchMarker().filePath;
+          this.addWatchFile(buildWatchMarkerPath);
           watchBuildDirectory(
             imageVariantsModule.sourceDirectory,
             imageVariantsModule,
@@ -321,7 +345,39 @@ export function optimizedResponsiveImage({
           }
         }
 
-        const manifest = await getManifest(imageVariantsModule);
+        let manifest: ImageVariantManifest;
+        let variantWidths: Awaited<
+          ReturnType<typeof selectReactImageCollectionVariantWidths>
+        >;
+        try {
+          manifest = await getManifest(imageVariantsModule);
+          variantWidths = await selectReactImageCollectionVariantWidths({
+            base: imageVariantsModule.base,
+            manifest,
+            sourceDirectory: imageVariantsModule.sourceDirectory,
+            widths: imageVariantsModule.widths,
+          });
+        } catch (error) {
+          if (!buildWatchMarkerPath) {
+            throw error;
+          }
+          const manifestError =
+            error instanceof Error
+              ? error
+              : new Error('Unable to scan the image collection', {
+                  cause: error,
+                });
+          failedBuildWatchManifestCacheKeys.add(
+            createManifestCacheKey(imageVariantsModule),
+          );
+          this.warn(
+            `${manifestError.message}. The watch build will use unoptimized image fallbacks until the source changes.`,
+          );
+          return `import ${JSON.stringify(`${buildWatchMarkerPath}?raw`)};\n${createEmptyReactImageCollectionVirtualModule()}`;
+        }
+        failedBuildWatchManifestCacheKeys.delete(
+          createManifestCacheKey(imageVariantsModule),
+        );
         const publicPathPrefix = `${imageVariantsModule.base}/`;
         for (const publicUrl of Object.keys(manifest)) {
           this.addWatchFile(
@@ -341,7 +397,7 @@ export function optimizedResponsiveImage({
           base: imageVariantsModule.base,
           manifest,
           sourceDirectory: imageVariantsModule.sourceDirectory,
-          widths: imageVariantsModule.widths,
+          variantWidths,
         });
         return buildWatchMarkerPath
           ? `import ${JSON.stringify(`${buildWatchMarkerPath}?raw`)};\n${moduleCode}`
@@ -357,6 +413,7 @@ export function optimizedResponsiveImage({
         watcher.close();
       }
       buildWatchDirectories.clear();
+      failedBuildWatchManifestCacheKeys.clear();
       if (buildWatchMarker) {
         rmSync(buildWatchMarker.directory, { force: true, recursive: true });
         buildWatchMarker = undefined;

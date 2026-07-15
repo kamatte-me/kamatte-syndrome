@@ -11,10 +11,7 @@ describe('BlogPostFeaturedImage', () => {
     expect(image).toHaveAttribute('src', '/media/example.png');
     expect(image).toHaveAttribute('fetchpriority', 'high');
     expect(image).toHaveAttribute('loading', 'eager');
-    expect(image).toHaveAttribute(
-      'sizes',
-      '(max-width: 639px) calc(100vw - 4rem), (max-width: 767px) calc(100vw - 10.125rem), (max-width: 935px) calc(100vw - 11.125rem), 760px',
-    );
+    expect(image).toHaveClass('w-auto');
     expect(screen.queryByRole('link')).toBeNull();
   });
 

@@ -3,6 +3,8 @@ import type { ComponentPropsWithoutRef } from 'react';
 
 export type MarkdownContentImageProps = ComponentPropsWithoutRef<'img'>;
 
+const markdownImageSizes = '(max-width: 528px) calc(100vw - 3rem), 480px';
+
 export function MarkdownContentImage({
   alt,
   loading,
@@ -12,7 +14,11 @@ export function MarkdownContentImage({
 }: MarkdownContentImageProps) {
   const resolvedAlt = alt ?? '';
   const resolvedLoading = loading ?? 'lazy';
-  const resolvedSizes = sizes ?? '(max-width: 528px) calc(100vw - 3rem), 480px';
+  const resolvedSizes =
+    sizes ??
+    (resolvedLoading === 'lazy'
+      ? `auto, ${markdownImageSizes}`
+      : markdownImageSizes);
 
   if (typeof src !== 'string') {
     return (

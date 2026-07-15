@@ -365,6 +365,76 @@ describe('optimizedResponsiveImage', () => {
     expect(bundle).toContain('height:80');
   });
 
+  it('keeps animated and non-smaller image candidates as fallbacks only', async () => {
+    const rootDirectory = await createRootDirectory(
+      'image-variant-fallback-only-',
+    );
+    const sourceDirectory = path.join(rootDirectory, 'src/images');
+    const outputDirectory = path.join(rootDirectory, 'dist');
+    const compactSourcePath = path.join(sourceDirectory, 'compact.webp');
+    const animatedSourcePath = path.join(sourceDirectory, 'animated.webp');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
+    await mkdir(sourceDirectory, { recursive: true });
+    await sharp({
+      create: {
+        background: 'black',
+        channels: 3,
+        height: 1,
+        width: 1,
+      },
+    })
+      .webp({ quality: 80 })
+      .toFile(compactSourcePath);
+    await sharp(createAnimatedGif(), { animated: true })
+      .webp()
+      .toFile(animatedSourcePath);
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import Compact from 'virtual:react-optimized-responsive-image?src=./src/images/compact.webp&widths=1';",
+        "import Animated from 'virtual:react-optimized-responsive-image?src=./src/images/animated.webp&widths=1';",
+        "import Images from 'virtual:react-optimized-responsive-image/collection?src=./src/images&base=/images&widths=1';",
+        'console.log(Compact, Animated, Images);',
+        '',
+      ].join('\n'),
+    );
+
+    await build({
+      build: {
+        assetsInlineLimit: 0,
+        outDir: outputDirectory,
+        rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+      },
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        optimizedResponsiveImage({
+          cacheDirectory: path.join(rootDirectory, 'cache'),
+        }),
+      ],
+      publicDir: false,
+      resolve: { alias: [reactImageRuntimeAlias] },
+      root: rootDirectory,
+    });
+
+    const assetDirectory = path.join(outputDirectory, 'assets');
+    const assetFiles = await readdir(assetDirectory);
+    expect(assetFiles.filter((file) => file.endsWith('.avif'))).toEqual([]);
+    const webpFiles = assetFiles.filter((file) => file.endsWith('.webp'));
+    expect(webpFiles).toHaveLength(2);
+    await expect(
+      Promise.all(
+        webpFiles.map(async (file) => {
+          const metadata = await sharp(path.join(assetDirectory, file), {
+            animated: true,
+          }).metadata();
+          return metadata.pages ?? 1;
+        }),
+      ),
+    ).resolves.toEqual(expect.arrayContaining([1, 2]));
+  });
+
   it('leaves ordinary Vite image queries untouched', async () => {
     const rootDirectory = await createRootDirectory(
       'optimized-responsive-image-passthrough-',
@@ -487,6 +557,84 @@ describe('optimizedResponsiveImage', () => {
     }
   }, 20_000);
 
+  it('falls back and recovers after an invalid watch image is replaced', async () => {
+    const rootDirectory = await createRootDirectory(
+      'optimized-responsive-image-watch-recovery-',
+    );
+    const sourceDirectory = path.join(rootDirectory, 'content-media');
+    const outputDirectory = path.join(rootDirectory, 'dist');
+    const imagePath = path.join(sourceDirectory, 'image.png');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
+    await mkdir(sourceDirectory);
+    await writeFile(imagePath, 'invalid png');
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import images from 'virtual:react-optimized-responsive-image/collection?src=/content-media&base=/media&widths=160';",
+        'console.log(images);',
+        '',
+      ].join('\n'),
+    );
+
+    let initialBuildReachedBuildEnd = false;
+    const buildResult = await build({
+      build: {
+        assetsInlineLimit: 0,
+        outDir: outputDirectory,
+        rollupOptions: {
+          input: path.join(rootDirectory, 'main.js'),
+          output: { entryFileNames: 'main.js' },
+        },
+        watch: {},
+      },
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        {
+          name: 'capture-initial-watch-build-end',
+          enforce: 'pre',
+          buildEnd() {
+            initialBuildReachedBuildEnd = true;
+          },
+        },
+        optimizedResponsiveImage({
+          cacheDirectory: path.join(rootDirectory, 'cache'),
+        }),
+      ],
+      publicDir: false,
+      resolve: { alias: [reactImageRuntimeAlias] },
+      root: rootDirectory,
+    });
+    if (!('on' in buildResult)) {
+      throw new Error('Expected a Rollup watcher');
+    }
+    const watcher = buildResult;
+    try {
+      await vi.waitFor(() => expect(initialBuildReachedBuildEnd).toBe(true), {
+        interval: 25,
+        timeout: 5_000,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      await expect(
+        readFile(path.join(outputDirectory, 'main.js'), 'utf8'),
+      ).resolves.not.toContain('/media/image.png');
+
+      await writeSizedPng(imagePath, 100, 50);
+
+      await vi.waitFor(
+        async () => {
+          await expect(
+            readFile(path.join(outputDirectory, 'main.js'), 'utf8'),
+          ).resolves.toMatch(/height:50.+width:100/);
+        },
+        { interval: 25, timeout: 5_000 },
+      );
+    } finally {
+      await watcher.close();
+    }
+  }, 20_000);
+
   it('rejects a collection source that is not a directory', async () => {
     const rootDirectory = await createRootDirectory(
       'optimized-responsive-image-error-',
@@ -562,6 +710,19 @@ async function writeSizedPng(filePath: string, width: number, height: number) {
   })
     .png()
     .toFile(filePath);
+}
+
+function createAnimatedGif() {
+  return Buffer.from(
+    [
+      '47494638396101000100800000000000ffffff',
+      '21ff0b4e45545343415045322e300301000000',
+      '21f904000a0000002c0000000001000100000202440100',
+      '21f904000a0000002c00000000010001000002024c0100',
+      '3b',
+    ].join(''),
+    'hex',
+  );
 }
 
 function isSamePath(firstPath: string, secondPath: string) {

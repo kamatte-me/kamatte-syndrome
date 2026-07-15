@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 import {
-  clampImageWidths,
   createImageTransformImport,
+  type ImageVariantWidths,
   imageVariantAvifQuality,
   imageVariantWebpQuality,
 } from '../image/transform.ts';
@@ -122,7 +122,7 @@ export function resolveReactImageVirtualModule({
   const extension = path.extname(sourcePath).toLowerCase();
   if (!supportedImageExtensions.has(extension)) {
     throw new Error(
-      `${reactImageVirtualModuleId} src must be a supported static image: ${src}`,
+      `${reactImageVirtualModuleId} src must be a supported image: ${src}`,
     );
   }
 
@@ -142,45 +142,54 @@ export function resolveReactImageVirtualModule({
 
 type CreateReactImageVirtualModuleOptions = Pick<
   ResolvedReactImageVirtualModule,
-  'lossless' | 'sourcePath' | 'widths'
+  'lossless' | 'sourcePath'
 > &
-  Readonly<{ naturalHeight: number; naturalWidth: number }>;
+  Readonly<{
+    naturalHeight: number;
+    naturalWidth: number;
+    variantWidths: ImageVariantWidths;
+  }>;
 
 export function createReactImageVirtualModule({
   lossless,
   naturalHeight,
   naturalWidth,
   sourcePath,
-  widths,
+  variantWidths,
 }: CreateReactImageVirtualModuleOptions) {
-  const variantWidths = clampImageWidths(widths, naturalWidth);
-  const avifImport = lossless
-    ? null
-    : createImageTransformImport(sourcePath, {
-        allowUpscale: 'true',
-        as: 'metadata:src;width',
-        format: 'avif',
-        quality: String(imageVariantAvifQuality),
-        w: variantWidths.join(';'),
-      });
-  const webpImport = createImageTransformImport(sourcePath, {
-    allowUpscale: 'true',
-    as: 'metadata:src;width',
-    format: 'webp',
-    ...(lossless
-      ? { lossless: 'true' }
-      : { quality: String(imageVariantWebpQuality) }),
-    w: variantWidths.join(';'),
-  });
+  const avifImport =
+    lossless || variantWidths.avif.length === 0
+      ? null
+      : createImageTransformImport(sourcePath, {
+          allowUpscale: 'true',
+          as: 'metadata:src;width',
+          format: 'avif',
+          quality: String(imageVariantAvifQuality),
+          w: variantWidths.avif.join(';'),
+        });
+  const webpImport =
+    variantWidths.webp.length === 0
+      ? null
+      : createImageTransformImport(sourcePath, {
+          allowUpscale: 'true',
+          as: 'metadata:src;width',
+          format: 'webp',
+          ...(lossless
+            ? { lossless: 'true' }
+            : { quality: String(imageVariantWebpQuality) }),
+          w: variantWidths.webp.join(';'),
+        });
 
   return createReactImageModuleCode([
     `import imageVariantFallback from ${JSON.stringify(sourcePath)};`,
     ...(avifImport
       ? [`import imageVariantAvif from ${JSON.stringify(avifImport)};`]
       : []),
-    `import imageVariantWebp from ${JSON.stringify(webpImport)};`,
+    ...(webpImport
+      ? [`import imageVariantWebp from ${JSON.stringify(webpImport)};`]
+      : []),
     'const toVariants=(value)=>Array.isArray(value)?value:[value];',
-    `const imageVariant={avif:${avifImport ? 'toVariants(imageVariantAvif)' : '[]'},height:${naturalHeight},src:imageVariantFallback,webp:toVariants(imageVariantWebp),width:${naturalWidth}};`,
+    `const imageVariant={avif:${avifImport ? 'toVariants(imageVariantAvif)' : '[]'},height:${naturalHeight},src:imageVariantFallback,webp:${webpImport ? 'toVariants(imageVariantWebp)' : '[]'},width:${naturalWidth}};`,
   ]);
 }
 

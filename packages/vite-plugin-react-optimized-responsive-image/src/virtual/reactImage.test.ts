@@ -66,7 +66,7 @@ describe('virtual React image', () => {
       naturalHeight: 180,
       naturalWidth: 240,
       sourcePath: '/project/src/image.jpg',
-      widths: [160, 320],
+      variantWidths: { avif: [160, 240], webp: [160, 240] },
     });
 
     expect(code).toContain(
@@ -101,13 +101,32 @@ describe('virtual React image', () => {
       naturalHeight: 200,
       naturalWidth: 200,
       sourcePath: '/project/src/code.png',
-      widths: [140, 280],
+      variantWidths: { avif: [], webp: [140, 200] },
     });
 
     expect(code).toContain('lossless=true');
     expect(code).not.toContain('quality=');
     expect(code).not.toContain('format=avif');
     expect(code).toContain('avif:[]');
+  });
+
+  it('generates only the fallback when no derived candidate is useful', () => {
+    const code = createReactImageVirtualModule({
+      lossless: false,
+      naturalHeight: 80,
+      naturalWidth: 100,
+      sourcePath: '/project/src/image.webp',
+      variantWidths: { avif: [], webp: [] },
+    });
+
+    expect(code).toContain(
+      'import imageVariantFallback from "/project/src/image.webp"',
+    );
+    expect(code).not.toContain('__imageVariants=true');
+    expect(code).not.toContain('imageVariantAvif');
+    expect(code).not.toContain('imageVariantWebp');
+    expect(code).toContain('avif:[]');
+    expect(code).toContain('webp:[]');
   });
 
   it('generates a bound fallback component when processing is disabled', () => {
@@ -135,6 +154,6 @@ describe('virtual React image', () => {
         src: './image.svg',
         widths: [160],
       }),
-    ).toThrow('must be a supported static image');
+    ).toThrow('must be a supported image');
   });
 });

@@ -10,6 +10,13 @@ const singleImage = <ReactImage alt="Single image" />;
 const collectionImage = (
   <ReactImageCollection src="/media/image.jpg" alt="Collection image" />
 );
+const aspectAwareCollectionImage = (
+  <ReactImageCollection
+    src="/media/image.jpg"
+    alt="Aspect-aware collection image"
+    sizes={({ height, width }) => `${width}x${height}`}
+  />
+);
 
 // @ts-expect-error A single image already has its source bound at build time.
 const singleImageWithSource = <ReactImage src="/other.jpg" alt="Invalid" />;
@@ -39,6 +46,7 @@ void collectionModule.manifest;
 void [
   singleImage,
   collectionImage,
+  aspectAwareCollectionImage,
   singleImageWithSource,
   collectionImageWithoutSource,
   collectionImageWithBlobProps,

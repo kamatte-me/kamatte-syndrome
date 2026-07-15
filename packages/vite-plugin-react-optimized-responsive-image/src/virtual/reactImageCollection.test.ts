@@ -136,7 +136,12 @@ describe('virtual React image collection', () => {
         },
       },
       sourceDirectory: '/content',
-      widths: [160, 320],
+      variantWidths: {
+        '/media/nested/example.jpg': {
+          avif: [160, 320],
+          webp: [160, 320],
+        },
+      },
     });
 
     expect(code).toContain(
@@ -179,9 +184,35 @@ describe('virtual React image collection', () => {
           },
         },
         sourceDirectory: '/content',
-        widths: [320],
+        variantWidths: {},
       }),
     ).toThrow('must start with /media/');
+  });
+
+  it('keeps entries with no useful variants as fallback-only images', () => {
+    const code = createReactImageCollectionVirtualModule({
+      base: '/media',
+      manifest: {
+        '/media/animated.webp': {
+          avif: [],
+          height: 100,
+          src: '/media/animated.webp',
+          webp: [],
+          width: 100,
+        },
+      },
+      sourceDirectory: '/content',
+      variantWidths: {},
+    });
+
+    expect(code).toContain(
+      'import imageVariantOriginal0 from "/content/animated.webp";',
+    );
+    expect(code).not.toContain('__imageVariants=true');
+    expect(code).not.toContain('imageVariantAvif0');
+    expect(code).not.toContain('imageVariantWebp0');
+    expect(code).toContain('avif:[]');
+    expect(code).toContain('webp:[]');
   });
 
   it('recognizes paths within a source directory', () => {

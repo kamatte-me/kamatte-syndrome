@@ -37,9 +37,18 @@ import Image from 'virtual:react-optimized-responsive-image?src=../assets/image.
 <Image sizes="160px" alt="サンプル画像" />
 ```
 
-default exportは生成した画像entryがあらかじめ束縛されたReactコンポーネントです。`className`、`loading`、`sizes`などの標準的な`img` propsと、`picture`へ渡す`pictureProps`を指定できます。`srcSet`を明示した場合は、空文字を含めて呼び出し側の指定を優先し、生成した`picture`のsourceは使用しません。
+default exportは生成した画像entryがあらかじめ束縛されたReactコンポーネントです。`className`、`loading`、`sizes`などの標準的な`img` propsと、`picture`へ渡す`pictureProps`を指定できます。`sizes`には文字列のほか、自然寸法の`{ width, height }`から文字列を返す関数も指定できます。`srcSet`を明示した場合は、空文字を含めて呼び出し側の指定を優先し、生成した`picture`のsourceは使用しません。
 
-元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。
+```tsx
+<Image
+  sizes={({ width, height }) =>
+    `min(760px, ${Math.ceil(Math.min(width, (width / height) * 400))}px)`
+  }
+  alt="サンプル画像"
+/>
+```
+
+元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。変換後もfallback以上の容量になる候補は出力しません。アニメーションを持つAVIF/WebPは静止画化を避けるため、元画像だけをfallbackとして使用します。
 
 QRコードやピクセルアートなど可逆圧縮が必要な画像では、`lossless=true`を指定できます。この場合は可逆WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。
 
@@ -87,7 +96,7 @@ import ContentImage from 'virtual:react-optimized-responsive-image/collection?sr
 
 default exportはmanifestがあらかじめ束縛されたReactコンポーネントです。必須の`src`にmanifestの論理URLを文字列で渡します。virtual moduleはこのReactコンポーネントだけをexportし、内部の画像entryやmanifestは公開しません。
 
-manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。GIF、SVG、その他の形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
+manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。アニメーションを持つAVIF/WebPもmanifestには含まれますが、派生画像は生成しません。GIF、SVG、その他の形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
 
 プラグインは`base`以下へファイルを書き込まないため、RSS、Open Graph、JSON-LDなどで論理URLを使う場合は、アプリケーションのpublicディレクトリや`vite-plugin-static-copy`などで元画像を別途配信してください。
 
@@ -107,7 +116,9 @@ viteStaticCopy({
 
 queryの順序や幅の指定順が異なっても、同じ解決済みディレクトリ、base、幅なら同じvirtual module IDへ正規化されます。派生幅はEXIF orientation適用後の自然幅までに制限され、拡大されません。dev中はsymlinkの実体を含む対象ディレクトリの追加・変更・削除を監視し、manifestを更新します。
 
-コレクションimportは対象ディレクトリ内の全対応画像について、指定された全幅を生成します。大きなディレクトリや多くの幅セットを使うとビルド時間と成果物数が増えるため、利用箇所に必要な幅だけを指定してください。同じ画像・形式・幅の生成物はViteによって共有されます。
+`vite build --watch`では、保存途中などでコレクション内の画像を一時的に読めない場合、そのbuildだけ警告と空のmanifestへfallbackします。対象画像が変更されると再走査して通常のmanifestへ戻ります。watchではないbuildは従来どおりエラーで停止します。
+
+コレクションimportは対象ディレクトリ内の全対応画像について指定幅を事前変換し、fallbackより小さくなる候補だけをvite-imagetoolsへ渡します。大きなディレクトリや多くの幅セットを使うと事前判定の時間と成果物数が増えるため、利用箇所に必要な幅だけを指定してください。同じ画像内容・形式・品質・幅の容量判定はプロセス内でcacheされ、同じ生成物はViteによって共有されます。
 
 ## TypeScript
 

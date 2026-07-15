@@ -144,6 +144,39 @@ describe('ContentImage', () => {
     ).toHaveAttribute('srcset', '/assets/example-320.hash.webp 320w');
   });
 
+  it('resolves sizes from the natural image dimensions', () => {
+    const { container } = render(
+      <ContentImage
+        src="/media/example.jpg"
+        alt="Aspect-aware sizes"
+        manifest={manifest}
+        sizes={({ height, width }) => `${Math.round(width / height)}px`}
+      />,
+    );
+
+    expect(
+      container.querySelector('source[type="image/avif"]'),
+    ).toHaveAttribute('sizes', '1px');
+    expect(
+      screen.getByRole('img', { name: 'Aspect-aware sizes' }),
+    ).toHaveAttribute('sizes', '1px');
+  });
+
+  it('omits functional sizes when a collection source is unknown', () => {
+    render(
+      <ContentImage
+        src="https://example.com/image.jpg"
+        alt="Unknown dimensions"
+        manifest={manifest}
+        sizes={() => '320px'}
+      />,
+    );
+
+    expect(
+      screen.getByRole('img', { name: 'Unknown dimensions' }),
+    ).not.toHaveAttribute('sizes');
+  });
+
   it('renders a directly imported content image', () => {
     const image = manifest['/media/example.jpg'] satisfies ImageVariantEntry;
     const { container } = render(

@@ -12,7 +12,7 @@ describe('MarkdownContentImage', () => {
     expect(image).toHaveAttribute('loading', 'lazy');
     expect(image).toHaveAttribute(
       'sizes',
-      '(max-width: 528px) calc(100vw - 3rem), 480px',
+      'auto, (max-width: 528px) calc(100vw - 3rem), 480px',
     );
     expect(screen.queryByRole('link')).toBeNull();
   });
@@ -30,6 +30,17 @@ describe('MarkdownContentImage', () => {
     const image = screen.getByRole('img', { name: 'Hero' });
     expect(image).toHaveAttribute('loading', 'eager');
     expect(image).toHaveAttribute('sizes', '100vw');
+  });
+
+  it('omits auto sizes when explicitly loaded eagerly', () => {
+    render(
+      <MarkdownContentImage src="/media/hero.jpg" alt="Hero" loading="eager" />,
+    );
+
+    expect(screen.getByRole('img', { name: 'Hero' })).toHaveAttribute(
+      'sizes',
+      '(max-width: 528px) calc(100vw - 3rem), 480px',
+    );
   });
 
   it('renders a normal image when MDX does not provide a string source', () => {

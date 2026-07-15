@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import sharp from 'sharp';
+import sharp, { type Metadata } from 'sharp';
 import type { ImageVariantEntry, ImageVariantManifest } from '../types.ts';
 
 const supportedImageExtensions = new Set([
@@ -39,7 +39,7 @@ export async function scanImageVariantManifest({
 
     try {
       const metadata = await sharp(sourcePath).metadata();
-      const { height, width } = metadata.autoOrient;
+      const { height, width } = getImageDisplayDimensions(metadata);
 
       if (!width || !height) {
         throw new Error('Image dimensions are unavailable');
@@ -61,6 +61,16 @@ export async function scanImageVariantManifest({
   }
 
   return manifest;
+}
+
+export function getImageDisplayDimensions(metadata: Metadata) {
+  return {
+    height:
+      (metadata.pages ?? 1) > 1
+        ? (metadata.pageHeight ?? metadata.autoOrient.height)
+        : metadata.autoOrient.height,
+    width: metadata.autoOrient.width,
+  };
 }
 
 async function listSupportedImageFiles(
