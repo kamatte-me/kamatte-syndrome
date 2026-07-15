@@ -1,12 +1,12 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
-import { clampImageWidths } from './clampImageWidths.ts';
 import {
+  clampImageWidths,
   createImageTransformImport,
   imageVariantAvifQuality,
   imageVariantWebpQuality,
-} from './imageTransform.ts';
+} from '../image/transform.ts';
 import {
   assertKnownQueryParameters,
   getSingleQueryParameter,

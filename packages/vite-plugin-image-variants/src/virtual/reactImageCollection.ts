@@ -1,17 +1,17 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
-import { clampImageWidths } from './clampImageWidths.ts';
 import {
+  clampImageWidths,
   createImageTransformImport,
   imageVariantAvifQuality,
   imageVariantWebpQuality,
-} from './imageTransform.ts';
+} from '../image/transform.ts';
+import type { ImageVariantManifest } from '../types.ts';
 import {
   assertKnownQueryParameters,
   getSingleQueryParameter,
 } from './queryParameters.ts';
-import type { ImageVariantManifest } from './types.ts';
 
 export const reactImageCollectionVirtualModuleId =
   'virtual:react-image/collection';

@@ -4,7 +4,7 @@ import {
   createUnoptimizedReactImageVirtualModule,
   parseReactImageVirtualModuleRequest,
   resolveReactImageVirtualModule,
-} from './virtualImageVariant.ts';
+} from './reactImage.ts';
 
 describe('virtual React image', () => {
   it('parses, normalizes, and validates a single image request', () => {

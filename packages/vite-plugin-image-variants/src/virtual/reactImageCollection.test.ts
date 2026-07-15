@@ -6,7 +6,7 @@ import {
   parseReactImageCollectionVirtualModuleRequest,
   resolveReactImageCollectionSourceDirectory,
   resolveReactImageCollectionVirtualModule,
-} from './virtualImageVariants.ts';
+} from './reactImageCollection.ts';
 
 describe('virtual React image collection', () => {
   it('parses, normalizes, and validates a collection request', () => {

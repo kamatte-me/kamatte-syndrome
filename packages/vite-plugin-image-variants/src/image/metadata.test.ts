@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
-import { scanImageVariantManifest } from './scanImageVariantManifest.ts';
+import { scanImageVariantManifest } from './metadata.ts';
 
 const temporaryDirectories: string[] = [];
 

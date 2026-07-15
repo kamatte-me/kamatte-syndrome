@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import type { ImageVariantEntry, ImageVariantManifest } from './types.ts';
+import type { ImageVariantEntry, ImageVariantManifest } from '../types.ts';
 
 const supportedImageExtensions = new Set([
   '.avif',
