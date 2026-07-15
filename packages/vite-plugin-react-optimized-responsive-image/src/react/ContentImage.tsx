@@ -64,6 +64,7 @@ export function ContentImage(props: ContentImageProps) {
     sizes,
     src,
     srcSet,
+    style,
     width,
     pictureProps,
     ...imageProps
@@ -80,6 +81,11 @@ export function ContentImage(props: ContentImageProps) {
         ? sizes({ height: entry.height, width: entry.width })
         : undefined
       : sizes;
+  const resolvedStyle = resolveImageStyle({
+    entry,
+    sizes: resolvedSizes,
+    style,
+  });
 
   if (
     !entry ||
@@ -92,6 +98,7 @@ export function ContentImage(props: ContentImageProps) {
         src={fallbackSrc}
         srcSet={srcSet}
         sizes={resolvedSizes}
+        style={resolvedStyle}
         width={dimensions.width}
         height={dimensions.height}
         alt={alt}
@@ -119,6 +126,7 @@ export function ContentImage(props: ContentImageProps) {
         {...imageProps}
         src={entry.src}
         sizes={resolvedSizes}
+        style={resolvedStyle}
         width={dimensions.width}
         height={dimensions.height}
         alt={alt}
@@ -129,6 +137,27 @@ export function ContentImage(props: ContentImageProps) {
 
 function createSrcSet(variants: readonly ImageVariant[]) {
   return variants.map(({ src, width }) => `${src} ${width}w`).join(', ');
+}
+
+type ImageStyle = ComponentPropsWithRef<'img'>['style'];
+
+function resolveImageStyle({
+  entry,
+  sizes,
+  style,
+}: Readonly<{
+  entry: ImageVariantEntry | undefined;
+  sizes: string | undefined;
+  style: ImageStyle;
+}>) {
+  if (!entry || !/^auto(?:\s*,|$)/i.test(sizes?.trimStart() ?? '')) {
+    return style;
+  }
+
+  return {
+    containIntrinsicSize: `${entry.width}px ${entry.height}px`,
+    ...style,
+  } satisfies ImageStyle;
 }
 
 type ImageDimension = ComponentPropsWithRef<'img'>['width'];

@@ -162,6 +162,38 @@ describe('ContentImage', () => {
     ).toHaveAttribute('sizes', '1px');
   });
 
+  it('uses natural dimensions for an auto-sized image placeholder', () => {
+    render(
+      <ContentImage
+        src="/media/example.jpg"
+        alt="Auto sizes"
+        manifest={manifest}
+        sizes="auto, 480px"
+        loading="lazy"
+      />,
+    );
+
+    expect(screen.getByRole('img', { name: 'Auto sizes' })).toHaveStyle({
+      containIntrinsicSize: '800px 600px',
+    });
+  });
+
+  it('preserves an explicit auto-sized image placeholder', () => {
+    render(
+      <ContentImage
+        src="/media/example.jpg"
+        alt="Custom auto sizes"
+        manifest={manifest}
+        sizes="auto, 480px"
+        style={{ containIntrinsicSize: '400px 300px' }}
+      />,
+    );
+
+    expect(screen.getByRole('img', { name: 'Custom auto sizes' })).toHaveStyle({
+      containIntrinsicSize: '400px 300px',
+    });
+  });
+
   it('omits functional sizes when a collection source is unknown', () => {
     render(
       <ContentImage
