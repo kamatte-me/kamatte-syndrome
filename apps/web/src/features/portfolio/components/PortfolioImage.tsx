@@ -1,5 +1,4 @@
-import portfolioImageVariants from 'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=160;176;320;352';
-import { ContentImage } from '@/components/ui/ContentImage';
+import ContentImage from 'virtual:react-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=160;176;320;352';
 import { cn } from '@/utils/classNames';
 import type { PortfolioListItem } from '../types';
 import { PortfolioImagePlaceholder } from './PortfolioImagePlaceholder';
@@ -21,7 +20,6 @@ export function PortfolioImage({ item, link }: PortfolioImageProps) {
       width={176}
       height={176}
       loading="lazy"
-      manifest={portfolioImageVariants}
       sizes="(min-width: 640px) 176px, 160px"
       className="h-full w-full object-contain"
     />

@@ -82,9 +82,16 @@ describe('imageVariants', () => {
     const imagePath = path.join(realSourceDirectory, 'image.png');
     await symlink(realSourceDirectory, sourceDirectory, 'dir');
     await writeTestPng(imagePath, 'red');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
     await writeFile(
       path.join(rootDirectory, 'main.js'),
-      "import 'virtual:image-variants?src=/content-media&base=/media&widths=40';\n",
+      [
+        "import Image from 'virtual:react-image?src=./content-media/image.png&widths=40';",
+        "import Images from 'virtual:react-image/collection?src=/content-media&base=/media&widths=40';",
+        'console.log(Image, Images);',
+        '',
+      ].join('\n'),
     );
 
     const server = await createServer({
@@ -96,6 +103,9 @@ describe('imageVariants', () => {
         }),
       ],
       root: rootDirectory,
+      resolve: {
+        alias: [reactImageRuntimeAlias],
+      },
       server: {
         fs: { allow: [rootDirectory, realSourceDirectory] },
         middlewareMode: true,
@@ -104,15 +114,26 @@ describe('imageVariants', () => {
 
     try {
       await server.transformRequest('/main.js');
-      const resolvedVirtualModule =
+      const resolvedCollectionModule =
         await server.environments.client.pluginContainer.resolveId(
-          'virtual:image-variants?src=/content-media&base=/media&widths=40',
+          'virtual:react-image/collection?src=/content-media&base=/media&widths=40',
           path.join(rootDirectory, 'main.js'),
         );
-      expect(resolvedVirtualModule).not.toBeNull();
+      expect(resolvedCollectionModule).not.toBeNull();
       await expect(
         server.environments.client.transformRequest(
-          resolvedVirtualModule?.id ?? '',
+          resolvedCollectionModule?.id ?? '',
+        ),
+      ).resolves.not.toBeNull();
+      const resolvedImageModule =
+        await server.environments.client.pluginContainer.resolveId(
+          'virtual:react-image?src=./content-media/image.png&widths=40',
+          path.join(rootDirectory, 'main.js'),
+        );
+      expect(resolvedImageModule).not.toBeNull();
+      await expect(
+        server.environments.client.transformRequest(
+          resolvedImageModule?.id ?? '',
         ),
       ).resolves.not.toBeNull();
 
@@ -140,6 +161,8 @@ describe('imageVariants', () => {
     const contentSourceDirectory = path.join(rootDirectory, 'content-media');
     const assetSourceDirectory = path.join(rootDirectory, 'src/assets/images');
     const outputDirectory = path.join(rootDirectory, 'dist');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
     await mkdir(contentSourceDirectory, { recursive: true });
     await mkdir(assetSourceDirectory, { recursive: true });
     await sharp({
@@ -176,9 +199,9 @@ describe('imageVariants', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import imageVariants from 'virtual:image-variants?src=@@/content-media&base=/media&widths=100;160';",
-        "import compactImageVariants from 'virtual:image-variants?src=@@/content-media&base=/media&widths=100';",
-        "import assetImages from 'virtual:image-variants?src=./src/assets/images&base=/app-images&widths=24;48';",
+        "import imageVariants from 'virtual:react-image/collection?src=@@/content-media&base=/media&widths=100;160';",
+        "import compactImageVariants from 'virtual:react-image/collection?src=@@/content-media&base=/media&widths=100';",
+        "import assetImages from 'virtual:react-image/collection?src=./src/assets/images&base=/app-images&widths=24;48';",
         'console.log(imageVariants, compactImageVariants, assetImages);',
         '',
       ].join('\n'),
@@ -199,7 +222,10 @@ describe('imageVariants', () => {
       ],
       publicDir: false,
       resolve: {
-        alias: [{ find: /^@@\//, replacement: `${rootDirectory}/` }],
+        alias: [
+          reactImageRuntimeAlias,
+          { find: /^@@\//, replacement: `${rootDirectory}/` },
+        ],
       },
       root: rootDirectory,
     });
@@ -261,6 +287,8 @@ describe('imageVariants', () => {
     const sourceDirectory = path.join(rootDirectory, 'src');
     const outputDirectory = path.join(rootDirectory, 'dist');
     const sourcePath = path.join(sourceDirectory, 'image.jpg');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
     await mkdir(sourceDirectory, { recursive: true });
     await sharp({
       create: {
@@ -276,7 +304,7 @@ describe('imageVariants', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import image from 'virtual:image-variant?src=./src/image.jpg&widths=40;100;160';",
+        "import image from 'virtual:react-image?src=./src/image.jpg&widths=40;100;160';",
         'console.log(image);',
         '',
       ].join('\n'),
@@ -295,6 +323,7 @@ describe('imageVariants', () => {
           cacheDirectory: path.join(rootDirectory, 'cache'),
         }),
       ],
+      resolve: { alias: [reactImageRuntimeAlias] },
       root: rootDirectory,
     });
 
@@ -368,12 +397,14 @@ describe('imageVariants', () => {
     const sourceDirectory = path.join(rootDirectory, 'content-media');
     const outputDirectory = path.join(rootDirectory, 'dist');
     const imagePath = path.join(sourceDirectory, 'image.png');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
     await mkdir(sourceDirectory);
     await writeSizedPng(imagePath, 100, 50);
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import images from 'virtual:image-variants?src=/content-media&base=/media&widths=160';",
+        "import images from 'virtual:react-image/collection?src=/content-media&base=/media&widths=160';",
         'console.log(images);',
         '',
       ].join('\n'),
@@ -397,6 +428,7 @@ describe('imageVariants', () => {
         }),
       ],
       publicDir: false,
+      resolve: { alias: [reactImageRuntimeAlias] },
       root: rootDirectory,
     });
     if (!('on' in buildResult)) {
@@ -470,7 +502,7 @@ describe('imageVariants', () => {
     const rootDirectory = await createRootDirectory('image-variants-error-');
     await writeFile(
       path.join(rootDirectory, 'main.js'),
-      "import 'virtual:image-variants?src=/missing&base=/media&widths=320';\n",
+      "import 'virtual:react-image/collection?src=/missing&base=/media&widths=320';\n",
     );
 
     await expect(
@@ -497,6 +529,22 @@ async function createRootDirectory(prefix: string) {
   const rootDirectory = await mkdtemp(path.join(tmpdir(), prefix));
   temporaryDirectories.push(rootDirectory);
   return rootDirectory;
+}
+
+async function createReactImageRuntimeAlias(rootDirectory: string) {
+  const runtimePath = path.join(rootDirectory, 'react-image-runtime.js');
+  await writeFile(
+    runtimePath,
+    [
+      'export const createReactImage = (variant) => variant;',
+      'export const createReactImageCollection = (manifest) => manifest;',
+      '',
+    ].join('\n'),
+  );
+  return {
+    find: '@kamatte-syndrome/vite-plugin-image-variants/react',
+    replacement: runtimePath,
+  };
 }
 
 async function writeTestPng(filePath: string, background: 'blue' | 'red') {

@@ -1,5 +1,3 @@
-/// <reference path="./virtual.d.ts" />
-
 import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
@@ -12,20 +10,20 @@ import { imageTransformQueryParameter } from './imageTransform.ts';
 import { scanImageVariantManifest } from './scanImageVariantManifest.ts';
 import type { ImageVariantManifest } from './types.ts';
 import {
-  createImageVariantVirtualModule,
-  createUnoptimizedImageVariantVirtualModule,
-  parseImageVariantVirtualModuleRequest,
-  type ResolvedImageVariantVirtualModule,
-  resolveImageVariantVirtualModule,
+  createReactImageVirtualModule,
+  createUnoptimizedReactImageVirtualModule,
+  parseReactImageVirtualModuleRequest,
+  type ResolvedReactImageVirtualModule,
+  resolveReactImageVirtualModule,
 } from './virtualImageVariant.ts';
 import {
-  createEmptyImageVariantsVirtualModule,
-  createImageVariantsVirtualModule,
+  createEmptyReactImageCollectionVirtualModule,
+  createReactImageCollectionVirtualModule,
   isPathInside,
-  parseImageVariantsVirtualModuleRequest,
-  type ResolvedImageVariantsVirtualModule,
-  resolveImageVariantsSourceDirectory,
-  resolveImageVariantsVirtualModule,
+  parseReactImageCollectionVirtualModuleRequest,
+  type ResolvedReactImageCollectionVirtualModule,
+  resolveReactImageCollectionSourceDirectory,
+  resolveReactImageCollectionVirtualModule,
 } from './virtualImageVariants.ts';
 
 export type {
@@ -51,15 +49,15 @@ export function imageVariants({
   const manifestPromises = new Map<string, Promise<ImageVariantManifest>>();
   const resolvedImageVariantModules = new Map<
     string,
-    ResolvedImageVariantVirtualModule
+    ResolvedReactImageVirtualModule
   >();
   const resolvedImageVariantsModules = new Map<
     string,
-    ResolvedImageVariantsVirtualModule
+    ResolvedReactImageCollectionVirtualModule
   >();
 
   const getManifest = (
-    imageVariantsModule: ResolvedImageVariantsVirtualModule,
+    imageVariantsModule: ResolvedReactImageCollectionVirtualModule,
   ) => {
     const cacheKey = createManifestCacheKey(imageVariantsModule);
     const cachedManifest = manifestPromises.get(cacheKey);
@@ -130,7 +128,7 @@ export function imageVariants({
       rootDirectory = config.root;
     },
     async resolveId(id, importer) {
-      const imageVariantRequest = parseImageVariantVirtualModuleRequest(id);
+      const imageVariantRequest = parseReactImageVirtualModuleRequest(id);
       if (imageVariantRequest) {
         if (!importer) {
           throw new Error(
@@ -147,7 +145,7 @@ export function imageVariants({
             `Unable to resolve image source: ${imageVariantRequest.src}`,
           );
         }
-        const resolvedModule = resolveImageVariantVirtualModule({
+        const resolvedModule = resolveReactImageVirtualModule({
           ...imageVariantRequest,
           sourcePath: resolvedSource.id,
         });
@@ -155,12 +153,13 @@ export function imageVariants({
         return resolvedModule.id;
       }
 
-      const imageVariantsRequest = parseImageVariantsVirtualModuleRequest(id);
+      const imageVariantsRequest =
+        parseReactImageCollectionVirtualModuleRequest(id);
       if (imageVariantsRequest) {
         const sourceDirectory =
           imageVariantsRequest.src.startsWith('/') ||
           imageVariantsRequest.src.startsWith('.')
-            ? resolveImageVariantsSourceDirectory({
+            ? resolveReactImageCollectionSourceDirectory({
                 importer,
                 rootDirectory,
                 src: imageVariantsRequest.src,
@@ -175,7 +174,7 @@ export function imageVariants({
         const watchDirectory = normalizeSourcePath(
           await realpath(sourceDirectory),
         );
-        const resolvedModule = resolveImageVariantsVirtualModule({
+        const resolvedModule = resolveReactImageCollectionVirtualModule({
           ...imageVariantsRequest,
           sourceDirectory,
           watchDirectory,
@@ -198,13 +197,13 @@ export function imageVariants({
           );
         }
         if (!enabled) {
-          return createUnoptimizedImageVariantVirtualModule({
+          return createUnoptimizedReactImageVirtualModule({
             height,
             sourcePath: imageVariantModule.sourcePath,
             width,
           });
         }
-        return createImageVariantVirtualModule({
+        return createReactImageVirtualModule({
           ...imageVariantModule,
           naturalHeight: height,
           naturalWidth: width,
@@ -214,7 +213,7 @@ export function imageVariants({
       const imageVariantsModule = resolvedImageVariantsModules.get(id);
       if (imageVariantsModule) {
         if (!enabled) {
-          return createEmptyImageVariantsVirtualModule();
+          return createEmptyReactImageCollectionVirtualModule();
         }
         if (isBuild) {
           this.addWatchFile(imageVariantsModule.sourceDirectory);
@@ -242,7 +241,7 @@ export function imageVariants({
             ),
           );
         }
-        return createImageVariantsVirtualModule({
+        return createReactImageCollectionVirtualModule({
           base: imageVariantsModule.base,
           manifest,
           sourceDirectory: imageVariantsModule.sourceDirectory,
@@ -309,7 +308,10 @@ export function imageVariants({
 function createManifestCacheKey({
   base,
   sourceDirectory,
-}: Pick<ResolvedImageVariantsVirtualModule, 'base' | 'sourceDirectory'>) {
+}: Pick<
+  ResolvedReactImageCollectionVirtualModule,
+  'base' | 'sourceDirectory'
+>) {
   return `${sourceDirectory}\0${base}`;
 }
 

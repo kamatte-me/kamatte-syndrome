@@ -1,7 +1,6 @@
-import blogFeaturedImageVariants from 'virtual:image-variants?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;640;760;1280;1520';
+import ContentImage from 'virtual:react-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=320;640;760;1280;1520';
 import type { Post } from 'content-collections';
 import type { ComponentPropsWithoutRef } from 'react';
-import { ContentImage } from '@/components/ui/ContentImage';
 import { cn } from '@/utils/classNames';
 
 export type BlogPostFeaturedImageProps = Omit<
@@ -29,7 +28,6 @@ export function BlogPostFeaturedImage({
         alt={title}
         fetchPriority="high"
         loading="eager"
-        manifest={blogFeaturedImageVariants}
         pictureProps={{ className: 'max-w-full' }}
         sizes="(max-width: 639px) calc(100vw - 4rem), (max-width: 767px) calc(100vw - 10.125rem), (max-width: 935px) calc(100vw - 11.125rem), 760px"
         className="max-h-[400px] max-w-full object-contain"

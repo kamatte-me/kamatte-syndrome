@@ -1,11 +1,11 @@
+import type { ComponentPropsWithRef } from 'react';
 import type {
   ImageVariant,
   ImageVariantEntry,
   ImageVariantManifest,
-} from '@kamatte-syndrome/vite-plugin-image-variants';
-import type { ComponentPropsWithRef } from 'react';
+} from '../types.ts';
 
-type ContentImageBaseProps = Omit<
+export type ContentImageBaseProps = Omit<
   ComponentPropsWithRef<'img'>,
   'alt' | 'children' | 'src'
 > & {
@@ -14,21 +14,36 @@ type ContentImageBaseProps = Omit<
   pictureProps?: Omit<ComponentPropsWithRef<'picture'>, 'children'>;
 };
 
-export type ContentImageProps = ContentImageBaseProps &
-  (
-    | {
-        /** A single image imported from virtual:image-variant. */
-        image: ImageVariantEntry;
-        manifest?: never;
-        src?: never;
-      }
-    | {
-        image?: never;
-        /** Build-time generated image variants used by this rendering context. */
-        manifest: ImageVariantManifest;
-        src?: ComponentPropsWithRef<'img'>['src'];
-      }
-  );
+export type ReactImageProps = ContentImageBaseProps;
+
+export type ReactImageCollectionProps = ContentImageBaseProps & {
+  src?: ComponentPropsWithRef<'img'>['src'];
+};
+
+export type ContentImageProps =
+  | (ReactImageProps & {
+      /** A single image variant bound by virtual:react-image. */
+      image: ImageVariantEntry;
+      manifest?: never;
+      src?: never;
+    })
+  | (ReactImageCollectionProps & {
+      image?: never;
+      /** Build-time generated image variants used by this rendering context. */
+      manifest: ImageVariantManifest;
+    });
+
+export function createReactImage(image: ImageVariantEntry) {
+  return function ReactImage(props: ReactImageProps) {
+    return <ContentImage {...props} image={image} />;
+  };
+}
+
+export function createReactImageCollection(manifest: ImageVariantManifest) {
+  return function ReactImageCollection(props: ReactImageCollectionProps) {
+    return <ContentImage {...props} manifest={manifest} />;
+  };
+}
 
 export function ContentImage(props: ContentImageProps) {
   const {

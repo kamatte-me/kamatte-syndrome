@@ -22,34 +22,38 @@ export default defineConfig({
 });
 ```
 
-`enabled: false`では単一画像を元画像だけのentry、画像コレクションを空のmanifestとして返します。Vitestなど、画像変換を行わない環境で使用できます。
+`enabled: false`では単一画像を元画像だけのentry、画像コレクションを空のmanifestとしてReactコンポーネントへ束縛します。Vitestなど、画像変換を行わない環境で使用できます。
 
 ## Single image
 
 単一画像を使う場合は、画像パスと必要な幅をquery付きvirtual moduleとして静的importします。`src`はimport元ファイルからの相対パスのほか、Viteに設定されたaliasも解決できます。画像パスにはquery区切りと衝突する`?`または`#`を使用できません。
 
 ```tsx
-import image from 'virtual:image-variant?src=../assets/image.jpg&widths=160;320';
+import Image, { variant } from 'virtual:react-image?src=../assets/image.jpg&widths=160;320';
 
-<ContentImage image={image} sizes="160px" alt="サンプル画像" />
+<Image sizes="160px" alt="サンプル画像" />
 ```
+
+default exportは生成した画像entryがあらかじめ束縛されたReactコンポーネントです。`className`、`loading`、`sizes`などの標準的な`img` propsと、`picture`へ渡す`pictureProps`を指定できます。名前付きの`variant` exportから画像entryを直接取得することもできます。
 
 元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。
 
 QRコードやピクセルアートなど可逆圧縮が必要な画像では、`lossless=true`を指定できます。この場合は可逆WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。
 
-```ts
-import qrCode from 'virtual:image-variant?src=../assets/qr.png&widths=140;280&lossless=true';
-```
+```tsx
+import QrCode from 'virtual:react-image?src=../assets/qr.png&widths=140;280&lossless=true';
 
-`ContentImage`は利用側のrendererを表す例で、このパッケージには含まれません。virtual moduleが返すentryにはfallbackの`src`、自然な`width`と`height`、AVIF/WebPそれぞれの`{ src, width }[]`が含まれます。
+<QrCode sizes="140px" alt="QRコード" />
+```
 
 ## Image collection
 
 MarkdownやFrontmatterのように実行時のURLから画像を引く場合は、画像ディレクトリ、公開URLのbase、必要な幅をquery付きvirtual moduleとして静的importします。
 
-```ts
-import imageVariantManifest from 'virtual:image-variants?src=@@/content/media&base=/media&widths=160;320';
+```tsx
+import ContentImage, {
+  manifest,
+} from 'virtual:react-image/collection?src=@@/content/media&base=/media&widths=160;320';
 ```
 
 - `src`はViteに設定されたalias、Vite rootからの`/`始まりのパス、またはimport元からの相対パスです。
@@ -75,13 +79,14 @@ import imageVariantManifest from 'virtual:image-variants?src=@@/content/media&ba
 ```tsx
 <ContentImage
   src="/media/nested/image.jpg"
-  manifest={imageVariantManifest}
   sizes="160px"
   alt="サンプル画像"
 />
 ```
 
-manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、`ContentImage`のfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。GIF、SVG、その他の形式はmanifestに含まれないため、利用側で通常の画像URLへfallbackしてください。
+default exportはmanifestがあらかじめ束縛されたReactコンポーネントです。`src`にmanifestの論理URLを渡します。名前付きの`manifest` exportから生成データを直接取得することもできます。
+
+manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。GIF、SVG、その他の形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
 
 プラグインは`base`以下へファイルを書き込まないため、RSS、Open Graph、JSON-LDなどで論理URLを使う場合は、アプリケーションのpublicディレクトリや`vite-plugin-static-copy`などで元画像を別途配信してください。
 
@@ -105,10 +110,10 @@ queryの順序や幅の指定順が異なっても、同じ解決済みディレ
 
 ## TypeScript
 
-virtual moduleの型宣言はパッケージに含まれ、通常はプラグインAPIのimportと一緒に読み込まれます。Vite設定とアプリケーションでTypeScript projectが完全に分かれている場合は、アプリ側の`vite-env.d.ts`などから明示的に参照できます。
+virtual moduleの型宣言はパッケージに含まれています。アプリ側の`compilerOptions.types`へ追加するか、`vite-env.d.ts`などから明示的に参照してください。
 
 ```ts
-/// <reference types="@kamatte-syndrome/vite-plugin-image-variants/virtual" />
+/// <reference types="@kamatte-syndrome/vite-plugin-image-variants/react/virtual" />
 ```
 
 TypeScript上はquery全体をwildcardとして宣言しているため、画像パス、base、幅の誤りはViteの変換時に検証されます。

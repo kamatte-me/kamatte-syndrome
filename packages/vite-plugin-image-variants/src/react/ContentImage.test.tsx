@@ -1,10 +1,14 @@
-import type {
-  ImageVariantEntry,
-  ImageVariantManifest,
-} from '@kamatte-syndrome/vite-plugin-image-variants';
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { ContentImage } from './ContentImage';
+// @vitest-environment happy-dom
+
+import '@testing-library/jest-dom/vitest';
+import { cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
+import type { ImageVariantEntry, ImageVariantManifest } from '../types.ts';
+import {
+  ContentImage,
+  createReactImage,
+  createReactImageCollection,
+} from './ContentImage.tsx';
 
 const manifest = {
   '/media/example.jpg': {
@@ -18,6 +22,8 @@ const manifest = {
     width: 800,
   },
 } satisfies ImageVariantManifest;
+
+afterEach(cleanup);
 
 describe('ContentImage', () => {
   it('renders responsive picture sources for a generated content image', () => {
@@ -177,5 +183,34 @@ describe('ContentImage', () => {
       'src',
       'https://example.com/image.jpg',
     );
+  });
+
+  it('creates a component bound to one image variant', () => {
+    const Image = createReactImage(manifest['/media/example.jpg']);
+    const { container } = render(
+      <Image alt="Bound image" sizes="320px" loading="lazy" />,
+    );
+
+    expect(container.querySelector('picture')).not.toBeNull();
+    expect(screen.getByRole('img', { name: 'Bound image' })).toHaveAttribute(
+      'src',
+      '/assets/example.hash.jpg',
+    );
+  });
+
+  it('creates a component bound to an image collection', () => {
+    const CollectionImage = createReactImageCollection(manifest);
+    const { container } = render(
+      <CollectionImage
+        src="/media/example.jpg"
+        alt="Collection image"
+        sizes="320px"
+      />,
+    );
+
+    expect(container.querySelector('picture')).not.toBeNull();
+    expect(
+      screen.getByRole('img', { name: 'Collection image' }),
+    ).toHaveAttribute('src', '/assets/example.hash.jpg');
   });
 });

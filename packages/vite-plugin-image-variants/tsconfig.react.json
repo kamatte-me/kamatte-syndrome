@@ -1,0 +1,4 @@
+{
+  "extends": "@kamatte-syndrome/tsconfig/tsconfig.react.json",
+  "include": ["src/react/**/*.ts", "src/react/**/*.tsx"]
+}

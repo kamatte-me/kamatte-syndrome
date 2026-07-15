@@ -13,38 +13,40 @@ import {
 } from './queryParameters.ts';
 import type { ImageVariantManifest } from './types.ts';
 
-export const imageVariantsVirtualModuleId = 'virtual:image-variants';
-const resolvedImageVariantsVirtualModulePrefix =
-  '\0virtual:image-variants:resolved:';
+export const reactImageCollectionVirtualModuleId =
+  'virtual:react-image/collection';
 
-type CreateImageVariantsVirtualModuleOptions = {
+type CreateReactImageCollectionVirtualModuleOptions = {
   base: string;
   manifest: ImageVariantManifest;
   sourceDirectory: string;
   widths: readonly number[];
 };
 
-export type ImageVariantsVirtualModuleRequest = Readonly<{
+export type ReactImageCollectionVirtualModuleRequest = Readonly<{
   base: string;
   src: string;
   widths: readonly number[];
 }>;
 
-export type ResolvedImageVariantsVirtualModule =
-  ImageVariantsVirtualModuleRequest &
+export type ResolvedReactImageCollectionVirtualModule =
+  ReactImageCollectionVirtualModuleRequest &
     Readonly<{
       id: string;
       sourceDirectory: string;
       watchDirectory: string;
     }>;
 
-export function parseImageVariantsVirtualModuleRequest(
+export function parseReactImageCollectionVirtualModuleRequest(
   id: string,
-): ImageVariantsVirtualModuleRequest | null {
+): ReactImageCollectionVirtualModuleRequest | null {
   const queryIndex = id.indexOf('?');
-  const moduleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
+  const requestModuleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
 
-  if (moduleId !== imageVariantsVirtualModuleId || queryIndex === -1) {
+  if (
+    requestModuleId !== reactImageCollectionVirtualModuleId ||
+    queryIndex === -1
+  ) {
     return null;
   }
 
@@ -52,39 +54,39 @@ export function parseImageVariantsVirtualModuleRequest(
   assertKnownQueryParameters(
     parameters,
     ['src', 'base', 'widths'],
-    imageVariantsVirtualModuleId,
+    reactImageCollectionVirtualModuleId,
   );
   const src = getSingleQueryParameter(
     parameters,
     'src',
-    imageVariantsVirtualModuleId,
+    reactImageCollectionVirtualModuleId,
   );
   if (!src) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} requires a src query, for example ` +
-        `'${imageVariantsVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+      `${reactImageCollectionVirtualModuleId} requires a src query, for example ` +
+        `'${reactImageCollectionVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
   if (/[?#]/.test(src)) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} src must not contain ? or #: ${src}`,
+      `${reactImageCollectionVirtualModuleId} src must not contain ? or #: ${src}`,
     );
   }
 
   const rawBase = getSingleQueryParameter(
     parameters,
     'base',
-    imageVariantsVirtualModuleId,
+    reactImageCollectionVirtualModuleId,
   );
   if (!rawBase) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} requires a base query, for example ` +
-        `'${imageVariantsVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+      `${reactImageCollectionVirtualModuleId} requires a base query, for example ` +
+        `'${reactImageCollectionVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
   if (/[?#]/.test(rawBase)) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} base must not contain ? or #: ${rawBase}`,
+      `${reactImageCollectionVirtualModuleId} base must not contain ? or #: ${rawBase}`,
     );
   }
   const base = normalizeBase(rawBase);
@@ -92,12 +94,12 @@ export function parseImageVariantsVirtualModuleRequest(
   const rawWidths = getSingleQueryParameter(
     parameters,
     'widths',
-    imageVariantsVirtualModuleId,
+    reactImageCollectionVirtualModuleId,
   );
   if (!rawWidths) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} requires a widths query, for example ` +
-        `'${imageVariantsVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
+      `${reactImageCollectionVirtualModuleId} requires a widths query, for example ` +
+        `'${reactImageCollectionVirtualModuleId}?src=/content/media&base=/media&widths=320;640'`,
     );
   }
 
@@ -113,7 +115,7 @@ export function parseImageVariantsVirtualModuleRequest(
     })
   ) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} widths must be positive integers: ${rawWidths}`,
+      `${reactImageCollectionVirtualModuleId} widths must be positive integers: ${rawWidths}`,
     );
   }
 
@@ -124,7 +126,7 @@ export function parseImageVariantsVirtualModuleRequest(
   };
 }
 
-export function resolveImageVariantsSourceDirectory({
+export function resolveReactImageCollectionSourceDirectory({
   importer,
   rootDirectory,
   src,
@@ -139,7 +141,7 @@ export function resolveImageVariantsSourceDirectory({
     );
     if (!isPathInside(rootDirectory, sourceDirectory)) {
       throw new Error(
-        `${imageVariantsVirtualModuleId} root-absolute src must stay inside the Vite root: ${src}`,
+        `${reactImageCollectionVirtualModuleId} root-absolute src must stay inside the Vite root: ${src}`,
       );
     }
     return sourceDirectory;
@@ -147,32 +149,32 @@ export function resolveImageVariantsSourceDirectory({
 
   if (!src.startsWith('.')) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} src must be Vite-root-absolute or importer-relative: ${src}`,
+      `${reactImageCollectionVirtualModuleId} src must be Vite-root-absolute or importer-relative: ${src}`,
     );
   }
   if (!importer || importer.startsWith('\0')) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} relative src requires an application importer: ${src}`,
+      `${reactImageCollectionVirtualModuleId} relative src requires an application importer: ${src}`,
     );
   }
 
   const importerPath = importer.split('?')[0];
   if (!importerPath) {
     throw new Error(
-      `${imageVariantsVirtualModuleId} relative src requires an application importer: ${src}`,
+      `${reactImageCollectionVirtualModuleId} relative src requires an application importer: ${src}`,
     );
   }
 
   return normalizePath(path.resolve(path.dirname(importerPath), src));
 }
 
-export function resolveImageVariantsVirtualModule({
+export function resolveReactImageCollectionVirtualModule({
   base,
   sourceDirectory,
   src,
   watchDirectory = sourceDirectory,
   widths,
-}: ImageVariantsVirtualModuleRequest & {
+}: ReactImageCollectionVirtualModuleRequest & {
   sourceDirectory: string;
   watchDirectory?: string;
 }) {
@@ -184,20 +186,20 @@ export function resolveImageVariantsVirtualModule({
 
   return {
     base,
-    id: `${resolvedImageVariantsVirtualModulePrefix}${hash}`,
+    id: `\0${reactImageCollectionVirtualModuleId}:resolved:${hash}`,
     sourceDirectory: normalizedSourceDirectory,
     src,
     watchDirectory: normalizedWatchDirectory,
     widths,
-  } satisfies ResolvedImageVariantsVirtualModule;
+  } satisfies ResolvedReactImageCollectionVirtualModule;
 }
 
-export function createImageVariantsVirtualModule({
+export function createReactImageCollectionVirtualModule({
   base,
   manifest,
   sourceDirectory,
   widths,
-}: CreateImageVariantsVirtualModuleOptions) {
+}: CreateReactImageCollectionVirtualModuleOptions) {
   const publicPathPrefix = `${base}/`;
   const imports: string[] = [];
   const entries: string[] = [];
@@ -245,21 +247,17 @@ export function createImageVariantsVirtualModule({
     );
   }
 
-  return [
+  return createReactImageCollectionModuleCode([
     ...imports,
     'const toVariants=(value)=>Array.isArray(value)?value:[value];',
     `const imageVariantManifest={${entries.join(',')}};`,
-    'export { imageVariantManifest };',
-    'export default imageVariantManifest;',
-  ].join('\n');
+  ]);
 }
 
-export function createEmptyImageVariantsVirtualModule() {
-  return [
+export function createEmptyReactImageCollectionVirtualModule() {
+  return createReactImageCollectionModuleCode([
     'const imageVariantManifest={};',
-    'export { imageVariantManifest };',
-    'export default imageVariantManifest;',
-  ].join('\n');
+  ]);
 }
 
 export function isPathInside(directory: string, filePath: string) {
@@ -300,7 +298,19 @@ function createVariantImport({
 function normalizeBase(base: string) {
   const normalizedBase = `/${base.replace(/^\/+|\/+$/g, '')}`;
   if (normalizedBase === '/') {
-    throw new Error(`${imageVariantsVirtualModuleId} base must not be root`);
+    throw new Error(
+      `${reactImageCollectionVirtualModuleId} base must not be root`,
+    );
   }
   return normalizedBase;
+}
+
+function createReactImageCollectionModuleCode(statements: string[]) {
+  return [
+    `import { createReactImageCollection } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-image-variants/react')};`,
+    ...statements,
+    'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
+    'export { imageVariantManifest as manifest };',
+    'export default ReactImageCollection;',
+  ].join('\n');
 }

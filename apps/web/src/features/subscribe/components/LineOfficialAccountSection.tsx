@@ -1,6 +1,5 @@
-import lineButtonImage from 'virtual:image-variant?src=../assets/line_button.png&widths=120;240';
-import lineQrImage from 'virtual:image-variant?src=../assets/line_qr.png&widths=140;280';
-import { ContentImage } from '@/components/ui/ContentImage';
+import LineButtonImage from 'virtual:react-image?src=../assets/line_button.png&widths=120;240';
+import LineQrImage from 'virtual:react-image?src=../assets/line_qr.png&widths=140;280';
 import { SubscribeSection } from './SubscribeSection';
 
 export function LineOfficialAccountSection() {
@@ -8,8 +7,7 @@ export function LineOfficialAccountSection() {
     <SubscribeSection heading="LINE公式アカウント">
       <div className="grid gap-6 md:grid-cols-[180px_1fr] md:items-start">
         <div className="flex flex-col items-center gap-3">
-          <ContentImage
-            image={lineQrImage}
+          <LineQrImage
             alt="友だち追加QRコード"
             width={140}
             height={140}
@@ -21,8 +19,7 @@ export function LineOfficialAccountSection() {
             href="https://lin.ee/ZsmmUMP"
             className="inline-flex hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole"
           >
-            <ContentImage
-              image={lineButtonImage}
+            <LineButtonImage
               alt="友だち追加"
               width={120}
               height={36}

@@ -12,9 +12,7 @@ import {
   getSingleQueryParameter,
 } from './queryParameters.ts';
 
-export const imageVariantVirtualModuleId = 'virtual:image-variant';
-const resolvedImageVariantVirtualModulePrefix =
-  '\0virtual:image-variant:resolved:';
+export const reactImageVirtualModuleId = 'virtual:react-image';
 const supportedImageExtensions = new Set([
   '.avif',
   '.jpeg',
@@ -23,26 +21,25 @@ const supportedImageExtensions = new Set([
   '.webp',
 ]);
 
-export type ImageVariantVirtualModuleRequest = Readonly<{
+export type ReactImageVirtualModuleRequest = Readonly<{
   lossless: boolean;
   src: string;
   widths: readonly number[];
 }>;
 
-export type ResolvedImageVariantVirtualModule =
-  ImageVariantVirtualModuleRequest &
-    Readonly<{
-      id: string;
-      sourcePath: string;
-    }>;
+export type ResolvedReactImageVirtualModule = ReactImageVirtualModuleRequest &
+  Readonly<{
+    id: string;
+    sourcePath: string;
+  }>;
 
-export function parseImageVariantVirtualModuleRequest(
+export function parseReactImageVirtualModuleRequest(
   id: string,
-): ImageVariantVirtualModuleRequest | null {
+): ReactImageVirtualModuleRequest | null {
   const queryIndex = id.indexOf('?');
-  const moduleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
+  const requestModuleId = queryIndex === -1 ? id : id.slice(0, queryIndex);
 
-  if (moduleId !== imageVariantVirtualModuleId || queryIndex === -1) {
+  if (requestModuleId !== reactImageVirtualModuleId || queryIndex === -1) {
     return null;
   }
 
@@ -50,34 +47,34 @@ export function parseImageVariantVirtualModuleRequest(
   assertKnownQueryParameters(
     parameters,
     ['src', 'widths', 'lossless'],
-    imageVariantVirtualModuleId,
+    reactImageVirtualModuleId,
   );
   const src = getSingleQueryParameter(
     parameters,
     'src',
-    imageVariantVirtualModuleId,
+    reactImageVirtualModuleId,
   );
   if (!src) {
     throw new Error(
-      `${imageVariantVirtualModuleId} requires a src query, for example ` +
-        `'${imageVariantVirtualModuleId}?src=./image.jpg&widths=160;320'`,
+      `${reactImageVirtualModuleId} requires a src query, for example ` +
+        `'${reactImageVirtualModuleId}?src=./image.jpg&widths=160;320'`,
     );
   }
   if (/[?#]/.test(src)) {
     throw new Error(
-      `${imageVariantVirtualModuleId} src must not contain ? or #: ${src}`,
+      `${reactImageVirtualModuleId} src must not contain ? or #: ${src}`,
     );
   }
 
   const rawWidths = getSingleQueryParameter(
     parameters,
     'widths',
-    imageVariantVirtualModuleId,
+    reactImageVirtualModuleId,
   );
   if (!rawWidths) {
     throw new Error(
-      `${imageVariantVirtualModuleId} requires a widths query, for example ` +
-        `'${imageVariantVirtualModuleId}?src=./image.jpg&widths=160;320'`,
+      `${reactImageVirtualModuleId} requires a widths query, for example ` +
+        `'${reactImageVirtualModuleId}?src=./image.jpg&widths=160;320'`,
     );
   }
 
@@ -93,18 +90,18 @@ export function parseImageVariantVirtualModuleRequest(
     })
   ) {
     throw new Error(
-      `${imageVariantVirtualModuleId} widths must be positive integers: ${rawWidths}`,
+      `${reactImageVirtualModuleId} widths must be positive integers: ${rawWidths}`,
     );
   }
 
   const rawLossless = getSingleQueryParameter(
     parameters,
     'lossless',
-    imageVariantVirtualModuleId,
+    reactImageVirtualModuleId,
   );
   if (rawLossless && rawLossless !== 'true' && rawLossless !== 'false') {
     throw new Error(
-      `${imageVariantVirtualModuleId} lossless must be true or false: ${rawLossless}`,
+      `${reactImageVirtualModuleId} lossless must be true or false: ${rawLossless}`,
     );
   }
 
@@ -115,16 +112,16 @@ export function parseImageVariantVirtualModuleRequest(
   };
 }
 
-export function resolveImageVariantVirtualModule({
+export function resolveReactImageVirtualModule({
   lossless,
   sourcePath,
   src,
   widths,
-}: ImageVariantVirtualModuleRequest & { sourcePath: string }) {
+}: ReactImageVirtualModuleRequest & { sourcePath: string }) {
   const extension = path.extname(sourcePath).toLowerCase();
   if (!supportedImageExtensions.has(extension)) {
     throw new Error(
-      `${imageVariantVirtualModuleId} src must be a supported static image: ${src}`,
+      `${reactImageVirtualModuleId} src must be a supported static image: ${src}`,
     );
   }
 
@@ -134,25 +131,27 @@ export function resolveImageVariantVirtualModule({
     .digest('hex');
 
   return {
-    id: `${resolvedImageVariantVirtualModulePrefix}${hash}`,
+    id: `\0${reactImageVirtualModuleId}:resolved:${hash}`,
     lossless,
     sourcePath: normalizedSourcePath,
     src,
     widths,
-  } satisfies ResolvedImageVariantVirtualModule;
+  } satisfies ResolvedReactImageVirtualModule;
 }
 
-export function createImageVariantVirtualModule({
+type CreateReactImageVirtualModuleOptions = Pick<
+  ResolvedReactImageVirtualModule,
+  'lossless' | 'sourcePath' | 'widths'
+> &
+  Readonly<{ naturalHeight: number; naturalWidth: number }>;
+
+export function createReactImageVirtualModule({
   lossless,
   naturalHeight,
   naturalWidth,
   sourcePath,
   widths,
-}: Pick<
-  ResolvedImageVariantVirtualModule,
-  'lossless' | 'sourcePath' | 'widths'
-> &
-  Readonly<{ naturalHeight: number; naturalWidth: number }>) {
+}: CreateReactImageVirtualModuleOptions) {
   const variantWidths = clampImageWidths(widths, naturalWidth);
   const avifImport = lossless
     ? null
@@ -173,7 +172,7 @@ export function createImageVariantVirtualModule({
     w: variantWidths.join(';'),
   });
 
-  return [
+  return createReactImageModuleCode([
     `import imageVariantFallback from ${JSON.stringify(sourcePath)};`,
     ...(avifImport
       ? [`import imageVariantAvif from ${JSON.stringify(avifImport)};`]
@@ -181,20 +180,32 @@ export function createImageVariantVirtualModule({
     `import imageVariantWebp from ${JSON.stringify(webpImport)};`,
     'const toVariants=(value)=>Array.isArray(value)?value:[value];',
     `const imageVariant={avif:${avifImport ? 'toVariants(imageVariantAvif)' : '[]'},height:${naturalHeight},src:imageVariantFallback,webp:toVariants(imageVariantWebp),width:${naturalWidth}};`,
-    'export { imageVariant };',
-    'export default imageVariant;',
-  ].join('\n');
+  ]);
 }
 
-export function createUnoptimizedImageVariantVirtualModule({
+type CreateUnoptimizedReactImageVirtualModuleOptions = Readonly<{
+  height: number;
+  sourcePath: string;
+  width: number;
+}>;
+
+export function createUnoptimizedReactImageVirtualModule({
   height,
   sourcePath,
   width,
-}: Readonly<{ height: number; sourcePath: string; width: number }>) {
-  return [
+}: CreateUnoptimizedReactImageVirtualModuleOptions) {
+  return createReactImageModuleCode([
     `import imageVariantFallback from ${JSON.stringify(sourcePath)};`,
     `const imageVariant={avif:[],height:${height},src:imageVariantFallback,webp:[],width:${width}};`,
-    'export { imageVariant };',
-    'export default imageVariant;',
+  ]);
+}
+
+function createReactImageModuleCode(statements: string[]) {
+  return [
+    `import { createReactImage } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-image-variants/react')};`,
+    ...statements,
+    'const ReactImage=createReactImage(imageVariant);',
+    'export { imageVariant as variant };',
+    'export default ReactImage;',
   ].join('\n');
 }

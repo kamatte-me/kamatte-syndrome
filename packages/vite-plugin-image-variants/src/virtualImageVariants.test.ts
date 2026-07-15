@@ -1,17 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
-  createImageVariantsVirtualModule,
+  createEmptyReactImageCollectionVirtualModule,
+  createReactImageCollectionVirtualModule,
   isPathInside,
-  parseImageVariantsVirtualModuleRequest,
-  resolveImageVariantsSourceDirectory,
-  resolveImageVariantsVirtualModule,
+  parseReactImageCollectionVirtualModuleRequest,
+  resolveReactImageCollectionSourceDirectory,
+  resolveReactImageCollectionVirtualModule,
 } from './virtualImageVariants.ts';
 
-describe('virtual image variants', () => {
-  it('parses, normalizes, and validates a self-contained request', () => {
+describe('virtual React image collection', () => {
+  it('parses, normalizes, and validates a collection request', () => {
     expect(
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?widths=352;160;352;176&base=media/&src=/content/media',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?widths=352;160;352;176&base=media/&src=/content/media',
       ),
     ).toEqual({
       base: '/media',
@@ -19,64 +20,66 @@ describe('virtual image variants', () => {
       widths: [160, 176, 352],
     });
     expect(
-      parseImageVariantsVirtualModuleRequest('virtual:image-variants'),
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection',
+      ),
     ).toBeNull();
     expect(() =>
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?base=/media&widths=320',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?base=/media&widths=320',
       ),
     ).toThrow('requires a src query');
     expect(() =>
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?src=/content/media&widths=320',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?src=/content/media&widths=320',
       ),
     ).toThrow('requires a base query');
     expect(() =>
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?src=/content/media&base=/media&widths=160;fluid',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?src=/content/media&base=/media&widths=160;fluid',
       ),
     ).toThrow('widths must be positive integers');
     expect(() =>
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?src=%2Fcontent%3Fmedia&base=/media&widths=160',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?src=%2Fcontent%3Fmedia&base=/media&widths=160',
       ),
     ).toThrow('src must not contain ? or #');
     expect(() =>
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?src=/content/media&base=%2Fmedia%23images&widths=160',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?src=/content/media&base=%2Fmedia%23images&widths=160',
       ),
     ).toThrow('base must not contain ? or #');
     expect(() =>
-      parseImageVariantsVirtualModuleRequest(
-        'virtual:image-variants?src=/content/media&base=/media&width=160&widths=320',
+      parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-image/collection?src=/content/media&base=/media&width=160&widths=320',
       ),
     ).toThrow('does not support the width query parameter');
   });
 
-  it('resolves Vite-root-absolute and importer-relative source directories', () => {
+  it('resolves Vite-root-absolute and importer-relative directories', () => {
     expect(
-      resolveImageVariantsSourceDirectory({
+      resolveReactImageCollectionSourceDirectory({
         importer: '/app/src/component.tsx',
         rootDirectory: '/app',
         src: '/content/media',
       }),
     ).toBe('/app/content/media');
     expect(
-      resolveImageVariantsSourceDirectory({
+      resolveReactImageCollectionSourceDirectory({
         importer: '/app/src/component.tsx?import',
         rootDirectory: '/app',
         src: '../content/media',
       }),
     ).toBe('/app/content/media');
     expect(() =>
-      resolveImageVariantsSourceDirectory({
+      resolveReactImageCollectionSourceDirectory({
         importer: '/app/src/component.tsx',
         rootDirectory: '/app',
         src: '@content/media',
       }),
     ).toThrow('must be Vite-root-absolute or importer-relative');
     expect(() =>
-      resolveImageVariantsSourceDirectory({
+      resolveReactImageCollectionSourceDirectory({
         importer: '/app/src/component.tsx',
         rootDirectory: '/app',
         src: '/../outside',
@@ -85,25 +88,25 @@ describe('virtual image variants', () => {
   });
 
   it('canonicalizes resolved modules by source, base, and widths', () => {
-    const first = resolveImageVariantsVirtualModule({
+    const first = resolveReactImageCollectionVirtualModule({
       base: '/media',
       sourceDirectory: '/app/content/media',
       src: '/content/media',
       widths: [160, 320],
     });
-    const equivalent = resolveImageVariantsVirtualModule({
+    const equivalent = resolveReactImageCollectionVirtualModule({
       base: '/media',
       sourceDirectory: '/app/content/media',
       src: '../content/media',
       widths: [160, 320],
     });
-    const differentWidths = resolveImageVariantsVirtualModule({
+    const differentWidths = resolveReactImageCollectionVirtualModule({
       base: '/media',
       sourceDirectory: '/app/content/media',
       src: '/content/media',
       widths: [320],
     });
-    const realWatchDirectory = resolveImageVariantsVirtualModule({
+    const realWatchDirectory = resolveReactImageCollectionVirtualModule({
       base: '/media',
       sourceDirectory: '/app/content/media',
       src: '/content/media',
@@ -111,14 +114,17 @@ describe('virtual image variants', () => {
       widths: [160, 320],
     });
 
+    expect(first.id).toMatch(
+      /^\0virtual:react-image\/collection:resolved:[a-f0-9]{64}$/,
+    );
     expect(first.id).toBe(equivalent.id);
     expect(first.id).not.toBe(differentWidths.id);
     expect(realWatchDirectory.id).toBe(first.id);
     expect(realWatchDirectory.watchDirectory).toBe('/real/content/media');
   });
 
-  it('generates original and responsive asset imports with a manifest export', () => {
-    const code = createImageVariantsVirtualModule({
+  it('generates responsive assets and a component bound to the manifest', () => {
+    const code = createReactImageCollectionVirtualModule({
       base: '/media',
       manifest: {
         '/media/nested/example.jpg': {
@@ -134,6 +140,9 @@ describe('virtual image variants', () => {
     });
 
     expect(code).toContain(
+      'import { createReactImageCollection } from "@kamatte-syndrome/vite-plugin-image-variants/react";',
+    );
+    expect(code).toContain(
       'import imageVariantOriginal0 from "/content/nested/example.jpg";',
     );
     expect(code).toContain('/content/nested/example.jpg?');
@@ -145,13 +154,20 @@ describe('virtual image variants', () => {
     expect(code).toContain('w=160%3B320');
     expect(code).toContain('src:imageVariantOriginal0');
     expect(code).not.toContain('src:"/media/nested/example.jpg"');
-    expect(code).not.toContain('virtual:image-variant-source');
-    expect(code).toContain('export default imageVariantManifest');
+    expect(code).toContain(
+      'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
+    );
+    expect(code).toContain('export { imageVariantManifest as manifest };');
+    expect(code).toContain('export default ReactImageCollection;');
+
+    const emptyCode = createEmptyReactImageCollectionVirtualModule();
+    expect(emptyCode).toContain('const imageVariantManifest={}');
+    expect(emptyCode).toContain('export default ReactImageCollection;');
   });
 
   it('rejects manifest URLs outside the requested base', () => {
     expect(() =>
-      createImageVariantsVirtualModule({
+      createReactImageCollectionVirtualModule({
         base: '/media',
         manifest: {
           '/other/example.jpg': {
