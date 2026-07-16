@@ -65,6 +65,17 @@ export function formatPostDate(date?: Date) {
   }).format(date);
 }
 
+export function filterPostsPublishedAtOrBefore<T extends PostWithDate>(
+  posts: T[],
+  now = new Date(),
+) {
+  return posts.filter(
+    (post) =>
+      post.publishedAt !== undefined &&
+      post.publishedAt.getTime() <= now.getTime(),
+  );
+}
+
 export function sortPostsByPublishedAtDesc<T extends PostWithDate>(posts: T[]) {
   return [...posts].sort((a, b) => {
     const aTime = a.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;

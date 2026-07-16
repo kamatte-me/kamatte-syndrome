@@ -13,6 +13,7 @@ import {
   formatPageTitle,
 } from '@/utils/pageMeta';
 import {
+  filterPostsPublishedAtOrBefore,
   paginateItems,
   parseBlogPageSearchParam,
   sortPostsByPublishedAtDesc,
@@ -39,14 +40,14 @@ function hasPageSearchParam(searchStr: string) {
 const getBlogIndex = createServerFn({ method: 'GET' })
   .validator((input: BlogIndexInput) => input)
   .handler(async ({ data: { page } }) => {
-    const posts: BlogListPost[] = sortPostsByPublishedAtDesc(allPosts).map(
-      ({ featuredImage, publishedAt, slug, title }) => ({
-        featuredImage,
-        publishedAt,
-        slug,
-        title,
-      }),
-    );
+    const posts: BlogListPost[] = sortPostsByPublishedAtDesc(
+      filterPostsPublishedAtOrBefore(allPosts),
+    ).map(({ featuredImage, publishedAt, slug, title }) => ({
+      featuredImage,
+      publishedAt,
+      slug,
+      title,
+    }));
     const { items, pageInfo } = paginateItems(posts, page);
 
     if (page > pageInfo.totalPages) {

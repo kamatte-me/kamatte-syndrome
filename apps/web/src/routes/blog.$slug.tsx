@@ -31,6 +31,7 @@ import {
 } from '@/utils/pageMeta';
 import {
   createPostDescription,
+  filterPostsPublishedAtOrBefore,
   formatPostDate,
   sortPostsByPublishedAtDesc,
 } from '@/utils/posts';
@@ -64,7 +65,9 @@ function BlogPostOEmbed({ className, ...props }: OEmbedProps) {
 const getPostBySlugServerFn = createServerFn({ method: 'GET' })
   .validator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    const posts = sortPostsByPublishedAtDesc(allPosts);
+    const posts = sortPostsByPublishedAtDesc(
+      filterPostsPublishedAtOrBefore(allPosts),
+    );
     const currentIndex = posts.findIndex((post) => post.slug === slug);
     const post = posts[currentIndex];
 

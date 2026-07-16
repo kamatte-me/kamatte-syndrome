@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createPostDescription,
+  filterPostsPublishedAtOrBefore,
   formatPostDate,
   paginateItems,
   parseBlogPageSearchParam,
@@ -39,6 +40,20 @@ This is **strong** and [linked](https://example.com). ${'a'.repeat(100)}`;
       'older',
       'missing',
     ]);
+  });
+
+  it('includes only posts published at or before now', () => {
+    const posts = filterPostsPublishedAtOrBefore(
+      [
+        { publishedAt: undefined, title: 'missing' },
+        { publishedAt: new Date('2026-07-15T23:59:59+09:00'), title: 'past' },
+        { publishedAt: new Date('2026-07-16T00:00:00+09:00'), title: 'now' },
+        { publishedAt: new Date('2026-07-16T00:00:01+09:00'), title: 'future' },
+      ],
+      new Date('2026-07-16T00:00:00+09:00'),
+    );
+
+    expect(posts.map((post) => post.title)).toEqual(['past', 'now']);
   });
 
   it('paginates 26 items into 6 pages with 5 items per page', () => {

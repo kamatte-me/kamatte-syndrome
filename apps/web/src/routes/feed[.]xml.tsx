@@ -6,7 +6,10 @@ import {
   createFeedSummaryFromHtml,
   renderFeedContentHtml,
 } from '@/features/feed/server/feedContent.server';
-import { sortPostsByPublishedAtDesc } from '@/utils/posts';
+import {
+  filterPostsPublishedAtOrBefore,
+  sortPostsByPublishedAtDesc,
+} from '@/utils/posts';
 
 const feedItemLimit = 10;
 
@@ -20,7 +23,7 @@ export const Route = createFileRoute('/feed.xml')({
     handlers: {
       GET: async () => {
         const entries = await Promise.all(
-          sortPostsByPublishedAtDesc(allPosts)
+          sortPostsByPublishedAtDesc(filterPostsPublishedAtOrBefore(allPosts))
             .slice(0, feedItemLimit)
             .map(async (post) => {
               const url = createAbsoluteUrl(`/blog/${post.slug}`);

@@ -13,7 +13,10 @@ import {
   terms,
 } from 'content-collections';
 import { baseUrl } from '@/constants/site';
-import { sortPostsByPublishedAtDesc } from '@/utils/posts';
+import {
+  filterPostsPublishedAtOrBefore,
+  sortPostsByPublishedAtDesc,
+} from '@/utils/posts';
 
 export const Route = createFileRoute('/sitemap.xml')({
   server: {
@@ -82,7 +85,9 @@ function createStaticPageEntries(): SitemapEntry[] {
 }
 
 function createBlogIndexEntry(): SitemapEntry {
-  const posts = sortPostsByPublishedAtDesc(allPosts);
+  const posts = sortPostsByPublishedAtDesc(
+    filterPostsPublishedAtOrBefore(allPosts),
+  );
   const latestPost = posts[0];
   const lastmod = latestPost?.publishedAt ?? latestPost?.revisedAt;
 
@@ -95,7 +100,9 @@ function createBlogIndexEntry(): SitemapEntry {
 }
 
 function createBlogPostEntries(): SitemapEntry[] {
-  return sortPostsByPublishedAtDesc(allPosts).map((post) => ({
+  return sortPostsByPublishedAtDesc(
+    filterPostsPublishedAtOrBefore(allPosts),
+  ).map((post) => ({
     path: `/blog/${post.slug}`,
     changefreq: 'yearly',
     lastmod: post.revisedAt ?? post.publishedAt,
