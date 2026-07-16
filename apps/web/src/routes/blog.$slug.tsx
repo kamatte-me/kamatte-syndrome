@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
-import { allPosts } from 'content-collections';
+import type { Post } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
 import { MarkdownContentImage } from '@/components/ui/MarkdownContentImage';
@@ -9,6 +9,7 @@ import { slogan } from '@/constants/site';
 import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
+import { getPosts } from '@/features/blog/server/getPosts.server';
 import type { BlogAdjacentPost } from '@/features/blog/types';
 import {
   createBlogBreadcrumbStructuredData,
@@ -29,16 +30,9 @@ import {
   createPageMeta,
   formatPageTitle,
 } from '@/utils/pageMeta';
-import {
-  createPostDescription,
-  filterPostsPublishedAtOrBefore,
-  formatPostDate,
-  sortPostsByPublishedAtDesc,
-} from '@/utils/posts';
+import { createPostDescription, formatPostDate } from '@/utils/posts';
 
-function toAdjacentPost(
-  post: (typeof allPosts)[number] | undefined,
-): BlogAdjacentPost | null {
+function toAdjacentPost(post: Post | undefined): BlogAdjacentPost | null {
   if (!post) {
     return null;
   }
@@ -65,9 +59,7 @@ function BlogPostOEmbed({ className, ...props }: OEmbedProps) {
 const getPostBySlugServerFn = createServerFn({ method: 'GET' })
   .validator((slug: string) => slug)
   .handler(async ({ data: slug }) => {
-    const posts = sortPostsByPublishedAtDesc(
-      filterPostsPublishedAtOrBefore(allPosts),
-    );
+    const posts = getPosts();
     const currentIndex = posts.findIndex((post) => post.slug === slug);
     const post = posts[currentIndex];
 

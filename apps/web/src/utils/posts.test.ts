@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   createPostDescription,
-  filterPostsPublishedAtOrBefore,
   formatPostDate,
   paginateItems,
   parseBlogPageSearchParam,
-  sortPostsByPublishedAtDesc,
 } from './posts';
 
 describe('posts helpers', () => {
@@ -26,34 +24,6 @@ This is **strong** and [linked](https://example.com). ${'a'.repeat(100)}`;
     expect(formatPostDate(new Date('2026-07-03T10:00:00+09:00'))).toBe(
       '2026/7/3',
     );
-  });
-
-  it('sorts newer posts first and leaves missing dates last', () => {
-    const posts = sortPostsByPublishedAtDesc([
-      { publishedAt: undefined, title: 'missing' },
-      { publishedAt: new Date('2024-01-01T00:00:00+09:00'), title: 'older' },
-      { publishedAt: new Date('2025-01-01T00:00:00+09:00'), title: 'newer' },
-    ]);
-
-    expect(posts.map((post) => post.title)).toEqual([
-      'newer',
-      'older',
-      'missing',
-    ]);
-  });
-
-  it('includes only posts published at or before now', () => {
-    const posts = filterPostsPublishedAtOrBefore(
-      [
-        { publishedAt: undefined, title: 'missing' },
-        { publishedAt: new Date('2026-07-15T23:59:59+09:00'), title: 'past' },
-        { publishedAt: new Date('2026-07-16T00:00:00+09:00'), title: 'now' },
-        { publishedAt: new Date('2026-07-16T00:00:01+09:00'), title: 'future' },
-      ],
-      new Date('2026-07-16T00:00:00+09:00'),
-    );
-
-    expect(posts.map((post) => post.title)).toEqual(['past', 'now']);
   });
 
   it('paginates 26 items into 6 pages with 5 items per page', () => {

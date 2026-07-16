@@ -1,15 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { allPosts } from 'content-collections';
 import { type Author, Feed as FeedGenerator } from 'feed';
 import { author, baseUrl, siteName, slogan } from '@/constants/site';
+import { getPosts } from '@/features/blog/server/getPosts.server';
 import {
   createFeedSummaryFromHtml,
   renderFeedContentHtml,
 } from '@/features/feed/server/feedContent.server';
-import {
-  filterPostsPublishedAtOrBefore,
-  sortPostsByPublishedAtDesc,
-} from '@/utils/posts';
 
 const feedItemLimit = 10;
 
@@ -23,7 +19,7 @@ export const Route = createFileRoute('/feed.xml')({
     handlers: {
       GET: async () => {
         const entries = await Promise.all(
-          sortPostsByPublishedAtDesc(filterPostsPublishedAtOrBefore(allPosts))
+          getPosts()
             .slice(0, feedItemLimit)
             .map(async (post) => {
               const url = createAbsoluteUrl(`/blog/${post.slug}`);

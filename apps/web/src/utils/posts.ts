@@ -1,7 +1,3 @@
-type PostWithDate = {
-  publishedAt?: Date;
-};
-
 export const BLOG_POSTS_PER_PAGE = 5;
 
 export function createPostDescription(content: string) {
@@ -63,24 +59,4 @@ export function formatPostDate(date?: Date) {
     timeZone: 'Asia/Tokyo',
     year: 'numeric',
   }).format(date);
-}
-
-export function filterPostsPublishedAtOrBefore<T extends PostWithDate>(
-  posts: T[],
-  now = new Date(),
-) {
-  return posts.filter(
-    (post) =>
-      post.publishedAt !== undefined &&
-      post.publishedAt.getTime() <= now.getTime(),
-  );
-}
-
-export function sortPostsByPublishedAtDesc<T extends PostWithDate>(posts: T[]) {
-  return [...posts].sort((a, b) => {
-    const aTime = a.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;
-    const bTime = b.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;
-
-    return bTime - aTime;
-  });
 }

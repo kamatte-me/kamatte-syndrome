@@ -6,17 +6,13 @@ import { createFileRoute } from '@tanstack/react-router';
 import {
   allCultures,
   allPortfolios,
-  allPosts,
   biography,
   privacyPolicy,
   skills,
   terms,
 } from 'content-collections';
 import { baseUrl } from '@/constants/site';
-import {
-  filterPostsPublishedAtOrBefore,
-  sortPostsByPublishedAtDesc,
-} from '@/utils/posts';
+import { getPosts } from '@/features/blog/server/getPosts.server';
 
 export const Route = createFileRoute('/sitemap.xml')({
   server: {
@@ -85,9 +81,7 @@ function createStaticPageEntries(): SitemapEntry[] {
 }
 
 function createBlogIndexEntry(): SitemapEntry {
-  const posts = sortPostsByPublishedAtDesc(
-    filterPostsPublishedAtOrBefore(allPosts),
-  );
+  const posts = getPosts();
   const latestPost = posts[0];
   const lastmod = latestPost?.publishedAt ?? latestPost?.revisedAt;
 
@@ -100,9 +94,7 @@ function createBlogIndexEntry(): SitemapEntry {
 }
 
 function createBlogPostEntries(): SitemapEntry[] {
-  return sortPostsByPublishedAtDesc(
-    filterPostsPublishedAtOrBefore(allPosts),
-  ).map((post) => ({
+  return getPosts().map((post) => ({
     path: `/blog/${post.slug}`,
     changefreq: 'yearly',
     lastmod: post.revisedAt ?? post.publishedAt,
