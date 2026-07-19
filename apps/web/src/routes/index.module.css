@@ -1,5 +1,5 @@
 .logoMask {
-  mask: url("/logo.svg") center / contain no-repeat;
+  mask: url("../assets/logo.svg") center / contain no-repeat;
 }
 
 .speechBubble {

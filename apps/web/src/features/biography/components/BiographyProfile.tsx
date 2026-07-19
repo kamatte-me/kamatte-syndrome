@@ -1,4 +1,5 @@
 import type { Biography } from 'content-collections';
+import avatarImage from '@/assets/avatar.svg';
 import githubIcon from '@/assets/github_white.svg';
 import { author, authorGitHubUrl } from '@/constants/site';
 import { HistoryList } from './HistoryList';
@@ -12,7 +13,7 @@ export function BiographyProfile({ history }: BiographyProfileProps) {
     <section className="mx-auto grid max-w-full md:w-fit md:grid-cols-[256px_minmax(0,max-content)] md:items-start md:gap-8 lg:grid-cols-[288px_minmax(0,max-content)] lg:gap-12">
       <div className="flex justify-center md:justify-start">
         <img
-          src="/avatar.svg"
+          src={avatarImage}
           alt={author}
           width={288}
           height={288}

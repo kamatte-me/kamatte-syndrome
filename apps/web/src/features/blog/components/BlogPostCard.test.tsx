@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import avatarImage from '@/assets/avatar.svg';
 import { renderWithRouter } from '@/testing/renderWithRouter';
 import type { BlogListPost } from '../types';
 import { BlogPostCard } from './BlogPostCard';
@@ -41,7 +42,7 @@ describe('BlogPostCard', () => {
 
     expect(screen.getByRole('img', { name: 'Example Post' })).toHaveAttribute(
       'src',
-      '/avatar.svg',
+      avatarImage,
     );
   });
 });

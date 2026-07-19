@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import avatarImage from '@/assets/avatar.svg';
 import { author, siteName, slogan } from '@/constants/site';
 import { websiteStructuredData } from '@/features/index/constants/jsonLd';
 import { cn } from '@/utils/classNames';
@@ -33,7 +34,7 @@ function App() {
           className="order-2 block size-32 md:order-1 md:mt-14 md:size-36 lg:mt-16 lg:size-40"
         >
           <img
-            src="/avatar.svg"
+            src={avatarImage}
             alt={author}
             width={180}
             height={180}

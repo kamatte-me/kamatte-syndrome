@@ -1,5 +1,6 @@
 import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=72;120;144;240';
 import { Link } from '@tanstack/react-router';
+import avatarImage from '@/assets/avatar.svg';
 import { formatPostDate } from '@/utils/posts';
 import type { BlogListPost } from '../types';
 
@@ -17,7 +18,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
       >
         <div className="size-18 shrink-0 overflow-hidden sm:size-30">
           <ContentImage
-            src={post.featuredImage ?? '/avatar.svg'}
+            src={post.featuredImage ?? avatarImage}
             alt={post.title}
             width={120}
             height={120}

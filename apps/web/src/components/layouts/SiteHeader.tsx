@@ -12,6 +12,7 @@ import {
 } from 'react';
 import closeFillIcon from '@/assets/icons/close_fill.svg';
 import menuFillIcon from '@/assets/icons/menu_fill.svg';
+import logoImage from '@/assets/logo.svg';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/utils/classNames';
 import { addViewportListeners, createRafScheduler } from '@/utils/viewportRaf';
@@ -504,7 +505,7 @@ function HeaderLogoLink({
       href="/"
       onClick={onClick}
     >
-      <Icon className="size-full" src="/logo.svg" />
+      <Icon className="size-full" src={logoImage} />
     </a>
   );
 }

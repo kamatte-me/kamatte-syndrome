@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import avatarImage from '@/assets/avatar.svg';
 import { author } from '@/constants/site';
 import { BiographyProfile } from './BiographyProfile';
 
@@ -19,7 +20,7 @@ describe('BiographyProfile', () => {
     ).toBeInTheDocument();
 
     const avatar = screen.getByRole('img', { name: author });
-    expect(avatar).toHaveAttribute('src', '/avatar.svg');
+    expect(avatar).toHaveAttribute('src', avatarImage);
     expect(avatar).toHaveAttribute('width', '288');
     expect(avatar).toHaveAttribute('height', '288');
 
