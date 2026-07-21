@@ -18,6 +18,7 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
@@ -76,6 +77,10 @@ export default defineConfig(({ mode }) => {
         cacheDirectory: optimizedResponsiveImageCacheDirectory,
         enabled: !isTest,
       }),
+      !isTest &&
+        ViteImageOptimizer({
+          test: /\.svg$/i,
+        }),
       !isTest &&
         viteStaticCopy({
           targets: [
