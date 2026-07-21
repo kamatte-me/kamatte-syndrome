@@ -111,7 +111,6 @@ export const Route = createFileRoute('/blog/$slug')({
     };
   },
   component: PostDetailPage,
-  pendingComponent: () => <div>Loading...</div>,
 });
 
 function PostDetailPage() {
