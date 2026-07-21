@@ -4,8 +4,27 @@ import sharp from 'sharp';
 
 export const imageTransformQueryParameter = '__imageVariants';
 
-export const imageVariantAvifQuality = 60;
-export const imageVariantWebpQuality = 80;
+export type ImageVariantFormatOptions = Readonly<{
+  /** Compression effort. AVIF accepts 0-9 and WebP accepts 0-6. */
+  effort?: number;
+  /** Output quality from 1 to 100. */
+  quality?: number;
+}>;
+
+export type ResolvedImageVariantFormatOptions = Readonly<{
+  effort?: number;
+  quality: number;
+}>;
+
+export type ImageVariantFormatSettings = Readonly<{
+  avif: ResolvedImageVariantFormatOptions;
+  webp: ResolvedImageVariantFormatOptions;
+}>;
+
+export const defaultImageVariantFormatSettings = {
+  avif: { quality: 60 },
+  webp: { quality: 80 },
+} as const satisfies ImageVariantFormatSettings;
 
 export type ImageVariantWidths = Readonly<{
   avif: readonly number[];
@@ -27,6 +46,43 @@ export function createImageTransformImport(
   return `${sourcePath}?${parameters}`;
 }
 
+export function createImageVariantFormatDirectives({
+  format,
+  lossless = false,
+  options,
+}: Readonly<{
+  format: 'avif' | 'webp';
+  lossless?: boolean;
+  options: ResolvedImageVariantFormatOptions;
+}>) {
+  return {
+    format,
+    ...(lossless ? { lossless: 'true' } : { quality: String(options.quality) }),
+    ...(options.effort === undefined ? {} : { effort: String(options.effort) }),
+  };
+}
+
+export function resolveImageVariantFormatSettings({
+  avif,
+  webp,
+}: Readonly<{
+  avif?: ImageVariantFormatOptions;
+  webp?: ImageVariantFormatOptions;
+}> = {}): ImageVariantFormatSettings {
+  return {
+    avif: resolveImageVariantFormatOptions(
+      'avif',
+      avif,
+      defaultImageVariantFormatSettings.avif.quality,
+    ),
+    webp: resolveImageVariantFormatOptions(
+      'webp',
+      webp,
+      defaultImageVariantFormatSettings.webp.quality,
+    ),
+  };
+}
+
 export function clampImageWidths(
   widths: readonly number[],
   naturalWidth: number,
@@ -37,10 +93,12 @@ export function clampImageWidths(
 }
 
 export async function selectImageVariantWidths({
+  formatSettings = defaultImageVariantFormatSettings,
   lossless = false,
   sourcePath,
   widths,
 }: Readonly<{
+  formatSettings?: ImageVariantFormatSettings;
   lossless?: boolean;
   sourcePath: string;
   widths: readonly number[];
@@ -63,7 +121,7 @@ export async function selectImageVariantWidths({
       ? Promise.resolve([])
       : selectSmallerWidths({
           format: 'avif',
-          quality: imageVariantAvifQuality,
+          options: formatSettings.avif,
           source,
           sourceHash,
           widths: candidateWidths,
@@ -71,7 +129,7 @@ export async function selectImageVariantWidths({
     selectSmallerWidths({
       format: 'webp',
       lossless,
-      quality: imageVariantWebpQuality,
+      options: formatSettings.webp,
       source,
       sourceHash,
       widths: candidateWidths,
@@ -84,14 +142,14 @@ export async function selectImageVariantWidths({
 async function selectSmallerWidths({
   format,
   lossless = false,
-  quality,
+  options,
   source,
   sourceHash,
   widths,
 }: Readonly<{
   format: 'avif' | 'webp';
   lossless?: boolean;
-  quality: number;
+  options: ResolvedImageVariantFormatOptions;
   source: Buffer;
   sourceHash: string;
   widths: readonly number[];
@@ -101,7 +159,7 @@ async function selectSmallerWidths({
       const size = await getVariantSize({
         format,
         lossless,
-        quality,
+        options,
         source,
         sourceHash,
         width,
@@ -116,19 +174,20 @@ async function selectSmallerWidths({
 function getVariantSize({
   format,
   lossless,
-  quality,
+  options,
   source,
   sourceHash,
   width,
 }: Readonly<{
   format: 'avif' | 'webp';
   lossless: boolean;
-  quality: number;
+  options: ResolvedImageVariantFormatOptions;
   source: Buffer;
   sourceHash: string;
   width: number;
 }>) {
-  const cacheKey = `${sourceHash}\0${format}\0${quality}\0${String(lossless)}\0${width}`;
+  const quality = lossless ? undefined : options.quality;
+  const cacheKey = `${sourceHash}\0${format}\0${quality ?? ''}\0${options.effort ?? ''}\0${String(lossless)}\0${width}`;
   const cachedSize = variantSizePromises.get(cacheKey);
   if (cachedSize) {
     return cachedSize;
@@ -137,8 +196,9 @@ function getVariantSize({
   const size = sharp(source)
     .autoOrient()
     .toFormat(format, {
+      effort: options.effort,
       lossless: lossless ? true : undefined,
-      quality: lossless ? undefined : quality,
+      quality,
     })
     .resize({ width, withoutEnlargement: true })
     .toBuffer()
@@ -155,4 +215,40 @@ function getVariantSize({
     }
   }
   return size;
+}
+
+function resolveImageVariantFormatOptions(
+  format: 'avif' | 'webp',
+  options: ImageVariantFormatOptions | undefined,
+  defaultQuality: number,
+): ResolvedImageVariantFormatOptions {
+  const quality = options?.quality ?? defaultQuality;
+  assertIntegerInRange(`${format}.quality`, quality, 1, 100);
+  const effort = options?.effort;
+  if (effort !== undefined) {
+    assertIntegerInRange(
+      `${format}.effort`,
+      effort,
+      0,
+      format === 'avif' ? 9 : 6,
+    );
+  }
+
+  return {
+    quality,
+    ...(effort === undefined ? {} : { effort }),
+  };
+}
+
+function assertIntegerInRange(
+  option: string,
+  value: number,
+  minimum: number,
+  maximum: number,
+) {
+  if (!Number.isInteger(value) || value < minimum || value > maximum) {
+    throw new Error(
+      `optimizedResponsiveImage ${option} must be an integer between ${minimum} and ${maximum}: ${String(value)}`,
+    );
+  }
 }

@@ -23,9 +23,6 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
 const sourceDirectory = fileURLToPath(new URL('./src/', import.meta.url));
-const optimizedResponsiveImageCacheDirectory = fileURLToPath(
-  new URL('./node_modules/.cache/optimized-responsive-image/', import.meta.url),
-);
 
 export default defineConfig(({ mode }) => {
   const isTest = process.env.VITEST === 'true';
@@ -74,7 +71,6 @@ export default defineConfig(({ mode }) => {
         }),
       },
       optimizedResponsiveImage({
-        cacheDirectory: optimizedResponsiveImageCacheDirectory,
         enabled: !isTest,
       }),
       !isTest &&

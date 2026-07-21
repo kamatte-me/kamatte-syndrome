@@ -3,9 +3,11 @@ import path from 'node:path';
 import { normalizePath } from 'vite';
 import {
   createImageTransformImport,
+  createImageVariantFormatDirectives,
+  defaultImageVariantFormatSettings,
+  type ImageVariantFormatSettings,
   type ImageVariantWidths,
-  imageVariantAvifQuality,
-  imageVariantWebpQuality,
+  type ResolvedImageVariantFormatOptions,
   selectImageVariantWidths,
 } from '../image/transform.ts';
 import type { ImageVariantManifest } from '../types.ts';
@@ -19,6 +21,8 @@ export const reactImageCollectionVirtualModuleId =
 
 type CreateReactImageCollectionVirtualModuleOptions = {
   base: string;
+  formatSettings?: ImageVariantFormatSettings;
+  lossless?: boolean;
   manifest: ImageVariantManifest;
   sourceDirectory: string;
   variantWidths: Readonly<Record<string, ImageVariantWidths | undefined>>;
@@ -197,6 +201,8 @@ export function resolveReactImageCollectionVirtualModule({
 
 export function createReactImageCollectionVirtualModule({
   base,
+  formatSettings = defaultImageVariantFormatSettings,
+  lossless = false,
   manifest,
   sourceDirectory,
   variantWidths,
@@ -224,34 +230,37 @@ export function createReactImageCollectionVirtualModule({
       avif: [],
       webp: [],
     };
+    const hasAvifVariants = !lossless && entryVariantWidths.avif.length > 0;
+    const hasWebpVariants = entryVariantWidths.webp.length > 0;
 
     imports.push(
       `import ${originalIdentifier} from ${JSON.stringify(sourcePath)};`,
     );
-    if (entryVariantWidths.avif.length > 0) {
+    if (hasAvifVariants) {
       imports.push(
         createVariantImport({
           format: 'avif',
           identifier: avifIdentifier,
-          quality: imageVariantAvifQuality,
+          options: formatSettings.avif,
           sourcePath,
           widths: entryVariantWidths.avif.join(';'),
         }),
       );
     }
-    if (entryVariantWidths.webp.length > 0) {
+    if (hasWebpVariants) {
       imports.push(
         createVariantImport({
           format: 'webp',
           identifier: webpIdentifier,
-          quality: imageVariantWebpQuality,
+          lossless,
+          options: formatSettings.webp,
           sourcePath,
           widths: entryVariantWidths.webp.join(';'),
         }),
       );
     }
     entries.push(
-      `${JSON.stringify(publicUrl)}:{avif:${entryVariantWidths.avif.length > 0 ? `toVariants(${avifIdentifier})` : '[]'},height:${entry.height},src:${originalIdentifier},webp:${entryVariantWidths.webp.length > 0 ? `toVariants(${webpIdentifier})` : '[]'},width:${entry.width}}`,
+      `${JSON.stringify(publicUrl)}:{avif:${hasAvifVariants ? `toVariants(${avifIdentifier})` : '[]'},height:${entry.height},src:${originalIdentifier},webp:${hasWebpVariants ? `toVariants(${webpIdentifier})` : '[]'},width:${entry.width}}`,
     );
   }
 
@@ -264,6 +273,8 @@ export function createReactImageCollectionVirtualModule({
 
 export async function selectReactImageCollectionVariantWidths({
   base,
+  formatSettings = defaultImageVariantFormatSettings,
+  lossless = false,
   manifest,
   sourceDirectory,
   widths,
@@ -288,7 +299,12 @@ export async function selectReactImageCollectionVariantWidths({
           });
           return [
             publicUrl,
-            await selectImageVariantWidths({ sourcePath, widths }),
+            await selectImageVariantWidths({
+              formatSettings,
+              lossless,
+              sourcePath,
+              widths,
+            }),
           ] satisfies [string, ImageVariantWidths];
         }),
       )),
@@ -318,7 +334,8 @@ export function isPathInside(directory: string, filePath: string) {
 type CreateVariantImportOptions = {
   format: 'avif' | 'webp';
   identifier: string;
-  quality: number;
+  lossless?: boolean;
+  options: ResolvedImageVariantFormatOptions;
   sourcePath: string;
   widths: string;
 };
@@ -326,15 +343,15 @@ type CreateVariantImportOptions = {
 function createVariantImport({
   format,
   identifier,
-  quality,
+  lossless = false,
+  options,
   sourcePath,
   widths,
 }: CreateVariantImportOptions) {
   const source = createImageTransformImport(sourcePath, {
     allowUpscale: 'true',
     as: 'metadata:src;width',
-    format,
-    quality: String(quality),
+    ...createImageVariantFormatDirectives({ format, lossless, options }),
     w: widths,
   });
 

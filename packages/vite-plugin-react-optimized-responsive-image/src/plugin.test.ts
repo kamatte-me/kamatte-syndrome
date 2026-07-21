@@ -30,7 +30,6 @@ afterEach(async () => {
 describe('optimizedResponsiveImage', () => {
   it('shares read-only image metadata across build environments', () => {
     const [plugin] = optimizedResponsiveImage({
-      cacheDirectory: '/cache',
       enabled: false,
     });
 
@@ -363,6 +362,166 @@ describe('optimizedResponsiveImage', () => {
     expect(bundle).toContain('width:100');
     expect(bundle).toContain('width:120');
     expect(bundle).toContain('height:80');
+  });
+
+  it('applies compression settings without reusing incompatible cache entries', async () => {
+    const rootDirectory = await createRootDirectory(
+      'image-variant-compression-vite-',
+    );
+    const sourceDirectory = path.join(rootDirectory, 'src');
+    const sourcePath = path.join(sourceDirectory, 'image.png');
+    const cacheDirectory = path.join(rootDirectory, 'cache');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
+    await mkdir(sourceDirectory, { recursive: true });
+    const pixels = Buffer.alloc(160 * 160 * 3);
+    for (let index = 0; index < pixels.length; index += 1) {
+      pixels[index] = index % 251;
+    }
+    await sharp(pixels, {
+      raw: { channels: 3, height: 160, width: 160 },
+    })
+      .png({ compressionLevel: 0 })
+      .toFile(sourcePath);
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import image from 'virtual:react-optimized-responsive-image?src=./src/image.png&widths=160';",
+        'console.log(image);',
+        '',
+      ].join('\n'),
+    );
+
+    const buildVariants = async (name: string, quality: number) => {
+      const outputDirectory = path.join(rootDirectory, name);
+      await build({
+        build: {
+          assetsInlineLimit: 0,
+          outDir: outputDirectory,
+          rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+        },
+        configFile: false,
+        logLevel: 'silent',
+        plugins: [
+          optimizedResponsiveImage({
+            avif: { effort: 0, quality },
+            cacheDirectory,
+            webp: { effort: 0, quality },
+          }),
+        ],
+        publicDir: false,
+        resolve: { alias: [reactImageRuntimeAlias] },
+        root: rootDirectory,
+      });
+
+      const assetDirectory = path.join(outputDirectory, 'assets');
+      const files = await readdir(assetDirectory);
+      const readVariant = async (extension: '.avif' | '.webp') => {
+        const file = files.find((assetFile) => assetFile.endsWith(extension));
+        if (!file) {
+          throw new Error(`Expected a generated ${extension} variant`);
+        }
+        return readFile(path.join(assetDirectory, file));
+      };
+      return {
+        avif: await readVariant('.avif'),
+        webp: await readVariant('.webp'),
+      };
+    };
+
+    const lowQuality = await buildVariants('low-quality', 20);
+    const highQuality = await buildVariants('high-quality', 90);
+
+    expect(lowQuality.avif).not.toEqual(highQuality.avif);
+    expect(lowQuality.webp).not.toEqual(highQuality.webp);
+    expect(lowQuality.avif.byteLength).toBeLessThan(
+      highQuality.avif.byteLength,
+    );
+    expect(lowQuality.webp.byteLength).toBeLessThan(
+      highQuality.webp.byteLength,
+    );
+  });
+
+  it('applies global lossless mode to single images and collections', async () => {
+    const rootDirectory = await createRootDirectory(
+      'image-variant-lossless-vite-',
+    );
+    const sourceDirectory = path.join(rootDirectory, 'src');
+    const collectionDirectory = path.join(rootDirectory, 'content');
+    const cacheDirectory = path.join(rootDirectory, 'cache');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
+    await mkdir(sourceDirectory, { recursive: true });
+    await mkdir(collectionDirectory, { recursive: true });
+    await writeUncompressedTestPng(
+      path.join(sourceDirectory, 'single.png'),
+      160,
+      160,
+      17,
+    );
+    await writePatternedTestJpeg(
+      path.join(collectionDirectory, 'collection.jpg'),
+      160,
+      160,
+      43,
+    );
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import Single from 'virtual:react-optimized-responsive-image?src=./src/single.png&widths=80&lossless=false';",
+        "import Collection from 'virtual:react-optimized-responsive-image/collection?src=/content&base=/media&widths=160';",
+        'console.log(Single, Collection);',
+        '',
+      ].join('\n'),
+    );
+
+    const buildVariants = async (name: string, lossless: boolean) => {
+      const outputDirectory = path.join(rootDirectory, name);
+      await build({
+        build: {
+          assetsInlineLimit: 0,
+          outDir: outputDirectory,
+          rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+        },
+        configFile: false,
+        logLevel: 'silent',
+        plugins: [
+          optimizedResponsiveImage({
+            cacheDirectory,
+            lossless,
+            webp: { effort: 0 },
+          }),
+        ],
+        publicDir: false,
+        resolve: { alias: [reactImageRuntimeAlias] },
+        root: rootDirectory,
+      });
+
+      const assetDirectory = path.join(outputDirectory, 'assets');
+      const files = await readdir(assetDirectory);
+      return {
+        avif: files.filter((file) => file.endsWith('.avif')),
+        webp: await Promise.all(
+          files
+            .filter((file) => file.endsWith('.webp'))
+            .map((file) => readFile(path.join(assetDirectory, file))),
+        ),
+      };
+    };
+
+    const lossy = await buildVariants('lossy', false);
+    const lossless = await buildVariants('lossless', true);
+
+    expect(lossy.avif).toHaveLength(2);
+    expect(lossy.webp).toHaveLength(2);
+    expect(lossless.avif).toEqual([]);
+    expect(lossless.webp).toHaveLength(1);
+    const lossyVariants = new Set(
+      lossy.webp.map((variant) => variant.toString('base64')),
+    );
+    for (const variant of lossless.webp) {
+      expect(lossyVariants.has(variant.toString('base64'))).toBe(false);
+    }
   });
 
   it('keeps animated and non-smaller image candidates as fallbacks only', async () => {
@@ -710,6 +869,38 @@ async function writeSizedPng(filePath: string, width: number, height: number) {
   })
     .png()
     .toFile(filePath);
+}
+
+async function writeUncompressedTestPng(
+  filePath: string,
+  width: number,
+  height: number,
+  offset: number,
+) {
+  const pixels = createPatternedPixels(width, height, offset);
+  await sharp(pixels, { raw: { channels: 3, height, width } })
+    .png({ compressionLevel: 0 })
+    .toFile(filePath);
+}
+
+async function writePatternedTestJpeg(
+  filePath: string,
+  width: number,
+  height: number,
+  offset: number,
+) {
+  const pixels = createPatternedPixels(width, height, offset);
+  await sharp(pixels, { raw: { channels: 3, height, width } })
+    .jpeg({ quality: 90 })
+    .toFile(filePath);
+}
+
+function createPatternedPixels(width: number, height: number, offset: number) {
+  const pixels = Buffer.alloc(width * height * 3);
+  for (let index = 0; index < pixels.length; index += 1) {
+    pixels[index] = (index + offset) % 251;
+  }
+  return pixels;
 }
 
 function createAnimatedGif() {

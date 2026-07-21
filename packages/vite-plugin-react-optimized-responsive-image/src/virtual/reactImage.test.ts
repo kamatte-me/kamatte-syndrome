@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { resolveImageVariantFormatSettings } from '../image/transform.ts';
 import {
   createReactImageVirtualModule,
   createUnoptimizedReactImageVirtualModule,
@@ -87,6 +88,23 @@ describe('virtual React image', () => {
     expect(code).toContain('export default ReactImage;');
   });
 
+  it('generates variants with custom compression settings', () => {
+    const code = createReactImageVirtualModule({
+      formatSettings: resolveImageVariantFormatSettings({
+        avif: { effort: 8, quality: 55 },
+        webp: { effort: 6, quality: 75 },
+      }),
+      lossless: false,
+      naturalHeight: 180,
+      naturalWidth: 240,
+      sourcePath: '/project/src/image.jpg',
+      variantWidths: { avif: [160], webp: [160] },
+    });
+
+    expect(code).toContain('format=avif&quality=55&effort=8');
+    expect(code).toContain('format=webp&quality=75&effort=6');
+  });
+
   it('generates lossless variants when requested', () => {
     const request = parseReactImageVirtualModuleRequest(
       'virtual:react-optimized-responsive-image?src=./code.png&widths=140;280&lossless=true',
@@ -97,6 +115,9 @@ describe('virtual React image', () => {
       widths: [140, 280],
     });
     const code = createReactImageVirtualModule({
+      formatSettings: resolveImageVariantFormatSettings({
+        webp: { effort: 6, quality: 75 },
+      }),
       lossless: true,
       naturalHeight: 200,
       naturalWidth: 200,
@@ -105,6 +126,7 @@ describe('virtual React image', () => {
     });
 
     expect(code).toContain('lossless=true');
+    expect(code).toContain('effort=6');
     expect(code).not.toContain('quality=');
     expect(code).not.toContain('format=avif');
     expect(code).toContain('avif:[]');

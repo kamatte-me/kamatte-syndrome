@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { resolveImageVariantFormatSettings } from '../image/transform.ts';
 import {
   createEmptyReactImageCollectionVirtualModule,
   createReactImageCollectionVirtualModule,
@@ -168,6 +169,61 @@ describe('virtual React image collection', () => {
     const emptyCode = createEmptyReactImageCollectionVirtualModule();
     expect(emptyCode).toContain('const imageVariantManifest={}');
     expect(emptyCode).toContain('export default ReactImageCollection;');
+  });
+
+  it('generates collection variants with custom compression settings', () => {
+    const code = createReactImageCollectionVirtualModule({
+      base: '/media',
+      formatSettings: resolveImageVariantFormatSettings({
+        avif: { effort: 7, quality: 50 },
+        webp: { effort: 5, quality: 70 },
+      }),
+      manifest: {
+        '/media/example.jpg': {
+          avif: [],
+          height: 600,
+          src: '/media/example.jpg',
+          webp: [],
+          width: 800,
+        },
+      },
+      sourceDirectory: '/content',
+      variantWidths: {
+        '/media/example.jpg': { avif: [320], webp: [320] },
+      },
+    });
+
+    expect(code).toContain('format=avif&quality=50&effort=7');
+    expect(code).toContain('format=webp&quality=70&effort=5');
+  });
+
+  it('generates only lossless WebP variants in lossless mode', () => {
+    const code = createReactImageCollectionVirtualModule({
+      base: '/media',
+      formatSettings: resolveImageVariantFormatSettings({
+        avif: { effort: 7, quality: 50 },
+        webp: { effort: 5, quality: 70 },
+      }),
+      lossless: true,
+      manifest: {
+        '/media/example.png': {
+          avif: [],
+          height: 600,
+          src: '/media/example.png',
+          webp: [],
+          width: 800,
+        },
+      },
+      sourceDirectory: '/content',
+      variantWidths: {
+        '/media/example.png': { avif: [320], webp: [320] },
+      },
+    });
+
+    expect(code).toContain('format=webp&lossless=true&effort=5');
+    expect(code).not.toContain('format=avif');
+    expect(code).not.toContain('quality=');
+    expect(code).toContain('avif:[]');
   });
 
   it('rejects manifest URLs outside the requested base', () => {

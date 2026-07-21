@@ -4,26 +4,38 @@
 
 ## Setup
 
-Vite設定ではvite-imagetools用のcacheディレクトリだけを指定します。
+Vite設定では追加オプションなしで利用できます。
 
 ```ts
-import { fileURLToPath } from 'node:url';
 import { optimizedResponsiveImage } from '@kamatte-syndrome/vite-plugin-react-optimized-responsive-image';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [
-    optimizedResponsiveImage({
-      cacheDirectory: fileURLToPath(
-        new URL(
-          './node_modules/.cache/optimized-responsive-image/',
-          import.meta.url,
-        ),
-      ),
-    }),
-  ],
+  plugins: [optimizedResponsiveImage()],
 });
 ```
+
+変換cacheはデフォルトで、Vite起動時のカレントディレクトリから見た`node_modules/.cache/vite-plugin-react-optimized-responsive-image/imagetools`に保存されます。保存先を変える場合は`cacheDirectory`を指定し、その配下の`imagetools`を使用します。
+
+AVIFとWebPは`quality`と`effort`を個別に設定できます。`quality`は1から100で、デフォルトはAVIFが60、WebPが80です。`effort`は未指定の場合、Sharpのデフォルト値を使用します。AVIFの`effort`は0から9、WebPは0から6を指定できます。
+
+```ts
+optimizedResponsiveImage({
+  avif: { quality: 55, effort: 6 },
+  webp: { quality: 75, effort: 5 },
+});
+```
+
+すべての単一画像と画像コレクションをlossless変換する場合は、`lossless: true`を指定します。デフォルトは`false`です。このモードではlossless WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。`webp.quality`は使用せず、`webp.effort`だけを適用します。
+
+```ts
+optimizedResponsiveImage({
+  lossless: true,
+  webp: { effort: 6 },
+});
+```
+
+グローバルな`lossless: true`はすべての画像に適用されるため、単一画像queryの`lossless=false`では解除されません。JPG写真などでは容量が大きく増えるため、QRコードやピクセルアートなどに限定する場合は画像ごとのqueryを使用します。
 
 `enabled: false`では単一画像を元画像だけのentry、画像コレクションを空のmanifestとしてReactコンポーネントへ束縛します。Vitestなど、画像変換を行わない環境で使用できます。
 
@@ -51,6 +63,7 @@ default exportは生成した画像entryがあらかじめ束縛されたReact�
 元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。変換後もfallback以上の容量になる候補は出力しません。アニメーションを持つAVIF/WebPは静止画化を避けるため、元画像だけをfallbackとして使用します。
 
 QRコードやピクセルアートなど可逆圧縮が必要な画像では、`lossless=true`を指定できます。この場合は可逆WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。
+WebPの`quality`設定はlossless変換では使用せず、`effort`だけを適用します。
 
 ```tsx
 import QrCode from 'virtual:react-optimized-responsive-image?src=../assets/qr.png&widths=140;280&lossless=true';
@@ -112,7 +125,7 @@ viteStaticCopy({
 })
 ```
 
-この構成では元画像がhash付きVite assetと安定URLの`base`以下にそれぞれ1つずつ含まれます。派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当し、AVIFはquality 60、WebPはquality 80で出力します。Viteのasset inline上限より小さい元画像はdata URLになる場合があります。
+この構成では元画像がhash付きVite assetと安定URLの`base`以下にそれぞれ1つずつ含まれます。派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当し、デフォルトではAVIFをquality 60、WebPをquality 80で出力します。Viteのasset inline上限より小さい元画像はdata URLになる場合があります。
 
 queryの順序や幅の指定順が異なっても、同じ解決済みディレクトリ、base、幅なら同じvirtual module IDへ正規化されます。派生幅はEXIF orientation適用後の自然幅までに制限され、拡大されません。dev中はsymlinkの実体を含む対象ディレクトリの追加・変更・削除を監視し、manifestを更新します。
 

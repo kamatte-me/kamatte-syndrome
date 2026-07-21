@@ -3,9 +3,10 @@ import path from 'node:path';
 import { normalizePath } from 'vite';
 import {
   createImageTransformImport,
+  createImageVariantFormatDirectives,
+  defaultImageVariantFormatSettings,
+  type ImageVariantFormatSettings,
   type ImageVariantWidths,
-  imageVariantAvifQuality,
-  imageVariantWebpQuality,
 } from '../image/transform.ts';
 import {
   assertKnownQueryParameters,
@@ -145,12 +146,14 @@ type CreateReactImageVirtualModuleOptions = Pick<
   'lossless' | 'sourcePath'
 > &
   Readonly<{
+    formatSettings?: ImageVariantFormatSettings;
     naturalHeight: number;
     naturalWidth: number;
     variantWidths: ImageVariantWidths;
   }>;
 
 export function createReactImageVirtualModule({
+  formatSettings = defaultImageVariantFormatSettings,
   lossless,
   naturalHeight,
   naturalWidth,
@@ -163,8 +166,10 @@ export function createReactImageVirtualModule({
       : createImageTransformImport(sourcePath, {
           allowUpscale: 'true',
           as: 'metadata:src;width',
-          format: 'avif',
-          quality: String(imageVariantAvifQuality),
+          ...createImageVariantFormatDirectives({
+            format: 'avif',
+            options: formatSettings.avif,
+          }),
           w: variantWidths.avif.join(';'),
         });
   const webpImport =
@@ -173,10 +178,11 @@ export function createReactImageVirtualModule({
       : createImageTransformImport(sourcePath, {
           allowUpscale: 'true',
           as: 'metadata:src;width',
-          format: 'webp',
-          ...(lossless
-            ? { lossless: 'true' }
-            : { quality: String(imageVariantWebpQuality) }),
+          ...createImageVariantFormatDirectives({
+            format: 'webp',
+            lossless,
+            options: formatSettings.webp,
+          }),
           w: variantWidths.webp.join(';'),
         });
 

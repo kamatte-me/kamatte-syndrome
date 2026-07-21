@@ -19,7 +19,9 @@ import {
   scanImageVariantManifest,
 } from './image/metadata.ts';
 import {
+  type ImageVariantFormatOptions,
   imageTransformQueryParameter,
+  resolveImageVariantFormatSettings,
   selectImageVariantWidths,
 } from './image/transform.ts';
 import type { ImageVariantManifest } from './types.ts';
@@ -41,15 +43,33 @@ import {
   selectReactImageCollectionVariantWidths,
 } from './virtual/reactImageCollection.ts';
 
-export type OptimizedResponsiveImagePluginOptions = {
-  cacheDirectory: string;
+export type OptimizedResponsiveImagePluginOptions = Readonly<{
+  /** AVIF compression settings. Quality defaults to 60. */
+  avif?: ImageVariantFormatOptions;
+  /** Parent directory for the vite-imagetools cache. */
+  cacheDirectory?: string;
   enabled?: boolean;
-};
+  /**
+   * Generate lossless WebP variants for every image and omit AVIF variants.
+   * @default false
+   */
+  lossless?: boolean;
+  /** WebP compression settings. Quality defaults to 80. */
+  webp?: ImageVariantFormatOptions;
+}>;
 
 export function optimizedResponsiveImage({
+  avif,
   cacheDirectory,
   enabled = true,
-}: OptimizedResponsiveImagePluginOptions): Plugin[] {
+  lossless = false,
+  webp,
+}: OptimizedResponsiveImagePluginOptions = {}): Plugin[] {
+  const formatSettings = resolveImageVariantFormatSettings({ avif, webp });
+  const resolvedCacheDirectory = path.resolve(
+    cacheDirectory ??
+      'node_modules/.cache/vite-plugin-react-optimized-responsive-image',
+  );
   let devServer: ViteDevServer | undefined;
   let isBuild = false;
   let isWatchBuild = false;
@@ -296,13 +316,17 @@ export function optimizedResponsiveImage({
             width,
           });
         }
+        const effectiveLossless = lossless || imageVariantModule.lossless;
         const variantWidths = await selectImageVariantWidths({
-          lossless: imageVariantModule.lossless,
+          formatSettings,
+          lossless: effectiveLossless,
           sourcePath: imageVariantModule.sourcePath,
           widths: imageVariantModule.widths,
         });
         return createReactImageVirtualModule({
           ...imageVariantModule,
+          formatSettings,
+          lossless: effectiveLossless,
           naturalHeight: height,
           naturalWidth: width,
           variantWidths,
@@ -353,6 +377,8 @@ export function optimizedResponsiveImage({
           manifest = await getManifest(imageVariantsModule);
           variantWidths = await selectReactImageCollectionVariantWidths({
             base: imageVariantsModule.base,
+            formatSettings,
+            lossless,
             manifest,
             sourceDirectory: imageVariantsModule.sourceDirectory,
             widths: imageVariantsModule.widths,
@@ -395,6 +421,8 @@ export function optimizedResponsiveImage({
         }
         const moduleCode = createReactImageCollectionVirtualModule({
           base: imageVariantsModule.base,
+          formatSettings,
+          lossless,
           manifest,
           sourceDirectory: imageVariantsModule.sourceDirectory,
           variantWidths,
@@ -453,7 +481,7 @@ export function optimizedResponsiveImage({
       ? [
           imagetools({
             cache: {
-              dir: path.join(cacheDirectory, 'imagetools'),
+              dir: path.join(resolvedCacheDirectory, 'imagetools'),
             },
             include: new RegExp(
               `^[^?]+\\.(?:avif|gif|heif|jpeg|jpg|png|tiff|webp)\\?${imageTransformQueryParameter}=true(?:&.*)?$`,

@@ -3,7 +3,10 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
-import { selectImageVariantWidths } from './transform.ts';
+import {
+  resolveImageVariantFormatSettings,
+  selectImageVariantWidths,
+} from './transform.ts';
 
 const temporaryDirectories: string[] = [];
 
@@ -53,6 +56,51 @@ describe('selectImageVariantWidths', () => {
         widths: [1],
       }),
     ).resolves.toEqual({ avif: [], webp: [] });
+  });
+
+  it('uses compression settings when selecting smaller variants', async () => {
+    const directory = await createTemporaryDirectory();
+    const sourcePath = path.join(directory, 'source.webp');
+    const pixels = Buffer.alloc(160 * 160 * 3);
+    for (let index = 0; index < pixels.length; index += 1) {
+      pixels[index] = index % 251;
+    }
+    await sharp(pixels, {
+      raw: { channels: 3, height: 160, width: 160 },
+    })
+      .webp({ quality: 50 })
+      .toFile(sourcePath);
+
+    const lowQuality = await selectImageVariantWidths({
+      formatSettings: resolveImageVariantFormatSettings({
+        webp: { effort: 0, quality: 10 },
+      }),
+      sourcePath,
+      widths: [160],
+    });
+    const highQuality = await selectImageVariantWidths({
+      formatSettings: resolveImageVariantFormatSettings({
+        webp: { effort: 0, quality: 100 },
+      }),
+      sourcePath,
+      widths: [160],
+    });
+
+    expect(lowQuality.webp).toEqual([160]);
+    expect(highQuality.webp).toEqual([]);
+  });
+
+  it('resolves defaults and validates compression settings', () => {
+    expect(resolveImageVariantFormatSettings()).toEqual({
+      avif: { quality: 60 },
+      webp: { quality: 80 },
+    });
+    expect(() =>
+      resolveImageVariantFormatSettings({ avif: { quality: 0 } }),
+    ).toThrow('avif.quality must be an integer between 1 and 100');
+    expect(() =>
+      resolveImageVariantFormatSettings({ webp: { effort: 7 } }),
+    ).toThrow('webp.effort must be an integer between 0 and 6');
   });
 
   it('keeps animated WebP sources as fallback-only images', async () => {
