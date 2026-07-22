@@ -17,7 +17,8 @@
     "vercel:env:pull": "pnpm -r vercel:env:pull"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.5"
+    "@biomejs/biome": "2.5.5",
+    "@tanstack/intent": "0.3.6"
   },
   "engines": {
     "node": "24.x"
