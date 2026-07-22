@@ -13,12 +13,10 @@ describe('createGoogleAnalyticsScripts', () => {
     expect(scripts[1]?.children).toContain('gtag(\'config\', "G-TEST123");');
   });
 
-  it.each([
-    undefined,
-    '',
-    'invalid-id',
-    'G-TEST<script>',
-  ])('omits scripts for an invalid measurement ID: %s', (measurementId) => {
-    expect(createGoogleAnalyticsScripts(measurementId)).toEqual([]);
-  });
+  it.each([undefined, '', 'invalid-id', 'G-TEST<script>'])(
+    'omits scripts for an invalid measurement ID: %s',
+    (measurementId) => {
+      expect(createGoogleAnalyticsScripts(measurementId)).toEqual([]);
+    },
+  );
 });
