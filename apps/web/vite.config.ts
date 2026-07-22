@@ -114,10 +114,6 @@ export default defineConfig(({ mode }) => {
         plugins: [autoprefixer()],
       },
     },
-    build: {
-      // Keep Autoprefixer as the single CSS prefixing pass.
-      cssMinify: 'esbuild',
-    },
     resolve: {
       alias: [
         { find: /^@@\//, replacement: appDirectory },
