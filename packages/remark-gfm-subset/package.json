@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
-    "@types/mdast": "4.0.4",
+    "@types/mdast": "catalog:",
     "remark-parse": "11.0.0",
     "typescript": "catalog:",
     "unified": "11.0.5",

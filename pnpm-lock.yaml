@@ -6,9 +6,39 @@ settings:
 
 catalogs:
   default:
+    '@testing-library/jest-dom':
+      specifier: 7.0.0
+      version: 7.0.0
+    '@testing-library/react':
+      specifier: 16.3.2
+      version: 16.3.2
+    '@types/mdast':
+      specifier: 4.0.4
+      version: 4.0.4
+    '@types/node':
+      specifier: 24.13.3
+      version: 24.13.3
+    '@types/react':
+      specifier: 19.2.17
+      version: 19.2.17
+    '@types/react-dom':
+      specifier: 19.2.3
+      version: 19.2.3
+    happy-dom:
+      specifier: 20.11.0
+      version: 20.11.0
+    react:
+      specifier: 19.2.8
+      version: 19.2.8
+    react-dom:
+      specifier: 19.2.8
+      version: 19.2.8
     typescript:
       specifier: 7.0.2
       version: 7.0.2
+    vite:
+      specifier: 8.1.5
+      version: 8.1.5
     vitest:
       specifier: 4.1.10
       version: 4.1.10
@@ -54,10 +84,10 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
       react:
-        specifier: 19.2.8
+        specifier: 'catalog:'
         version: 19.2.8
       react-dom:
-        specifier: 19.2.8
+        specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
       tailwind-merge:
         specifier: 3.6.0
@@ -103,22 +133,22 @@ importers:
         specifier: 10.4.1
         version: 10.4.1
       '@testing-library/jest-dom':
-        specifier: 7.0.0
+        specifier: 'catalog:'
         version: 7.0.0(@testing-library/dom@10.4.1)
       '@testing-library/react':
-        specifier: 16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@types/mdx':
         specifier: 2.0.14
         version: 2.0.14
       '@types/node':
-        specifier: 24.13.3
+        specifier: 'catalog:'
         version: 24.13.3
       '@types/react':
-        specifier: 19.2.17
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: 6.0.3
@@ -136,7 +166,7 @@ importers:
         specifier: 0.28.1
         version: 0.28.1
       happy-dom:
-        specifier: 20.11.0
+        specifier: 'catalog:'
         version: 20.11.0
       msw:
         specifier: 2.15.0
@@ -172,7 +202,7 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)
       vite-plugin-image-optimizer:
         specifier: 2.0.3
@@ -228,7 +258,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/mdast':
-        specifier: 4.0.4
+        specifier: 'catalog:'
         version: 4.0.4
       remark-parse:
         specifier: 11.0.0
@@ -253,7 +283,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/mdast':
-        specifier: 4.0.4
+        specifier: 'catalog:'
         version: 4.0.4
       mdast-util-mdx-jsx:
         specifier: 3.2.0
@@ -271,7 +301,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 24.13.3
+        specifier: 'catalog:'
         version: 24.13.3
       typescript:
         specifier: 'catalog:'
@@ -295,34 +325,34 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@testing-library/jest-dom':
-        specifier: 7.0.0
+        specifier: 'catalog:'
         version: 7.0.0(@testing-library/dom@10.4.1)
       '@testing-library/react':
-        specifier: 16.3.2
+        specifier: 'catalog:'
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@types/node':
-        specifier: 24.13.3
+        specifier: 'catalog:'
         version: 24.13.3
       '@types/react':
-        specifier: 19.2.17
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: 19.2.3
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       happy-dom:
-        specifier: 20.11.0
+        specifier: 'catalog:'
         version: 20.11.0
       react:
-        specifier: 19.2.8
+        specifier: 'catalog:'
         version: 19.2.8
       react-dom:
-        specifier: 19.2.8
+        specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
       vite:
-        specifier: 8.1.5
+        specifier: 'catalog:'
         version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)
       vitest:
         specifier: 'catalog:'
