@@ -90,24 +90,27 @@ export const Route = createFileRoute('/blog/$slug')({
   loader: ({ params: { slug } }) => getPostBySlugServerFn({ data: slug }),
   head: ({ loaderData }) => {
     const post = loaderData;
-    const path = post ? `/blog/${post.slug}` : '/blog';
+
+    if (!post) {
+      return {};
+    }
+
+    const path = `/blog/${post.slug}`;
 
     return {
       links: [createCanonicalLink(path)],
       meta: createPageMeta({
-        title: formatPageTitle(post?.title ?? 'Blog'),
-        openGraphTitle: post?.title ?? 'Blog',
-        description: post?.description ?? slogan,
+        title: formatPageTitle(post.title),
+        openGraphTitle: post.title,
+        description: post.description ?? slogan,
         path,
-        image: post?.featuredImage,
+        image: post.featuredImage,
         type: 'article',
       }),
-      scripts: post
-        ? [
-            createJsonLdScript(createBlogPostingStructuredData(post)),
-            createJsonLdScript(createBlogBreadcrumbStructuredData(post)),
-          ]
-        : [],
+      scripts: [
+        createJsonLdScript(createBlogPostingStructuredData(post)),
+        createJsonLdScript(createBlogBreadcrumbStructuredData(post)),
+      ],
     };
   },
   component: PostDetailPage,
