@@ -4,6 +4,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { GlobalLayout } from '@/components/layouts/GlobalLayout';
 import { createGoogleAnalyticsScripts } from '@/features/analytics/utils/googleAnalytics';
 import { NotFoundPage } from '@/features/not-found/components/NotFoundPage';
+import { notFoundMessage } from '@/features/not-found/constants/notFound';
 import { getOpenGraph } from '@/features/url-embeds/api/openGraph.functions';
 import '../styles.css';
 import { siteName, slogan } from '@/constants/site';
@@ -66,7 +67,7 @@ export const Route = createRootRoute({
         { name: 'twitter:site', content: '@kamatte_me' },
         ...createPageMeta({
           title: isNotFound ? formatPageTitle('404') : siteName,
-          description: slogan,
+          description: isNotFound ? notFoundMessage : slogan,
           path: '/',
         }),
       ],

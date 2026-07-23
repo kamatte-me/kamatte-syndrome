@@ -1,4 +1,5 @@
 import { PageMain } from '@/components/layouts/PageMain';
+import { notFoundMessage } from '@/features/not-found/constants/notFound';
 
 export function NotFoundPage() {
   return (
@@ -7,7 +8,7 @@ export function NotFoundPage() {
         404
       </h1>
       <p className="m-0 font-display text-md leading-relaxed sm:text-2xl lg:text-3xl">
-        This page exists in the future!!!
+        {notFoundMessage}
       </p>
     </PageMain>
   );
