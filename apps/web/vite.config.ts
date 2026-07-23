@@ -123,9 +123,9 @@ export default defineConfig(({ mode }) => {
       preserveSymlinks: isTest,
     },
     ssr: {
-      // Cheerio's dependency tree ships sourcemaps with package-external
-      // sourceRoot entries, which makes Vite warn during SSR dev transforms.
-      external: ['cheerio'],
+      // These server-only dependencies ship unusable sourcemaps, which makes
+      // Vite warn while transforming them during SSR development.
+      external: ['cheerio', 'feed'],
     },
     test: {
       setupFiles: ['src/testing/setup-tests.ts'],
