@@ -7,6 +7,7 @@ import {
   defaultImageVariantFormatSettings,
   type ImageVariantFormatSettings,
   type ImageVariantWidths,
+  type RequestedImageVariantWidth,
   type ResolvedImageVariantFormatOptions,
   selectImageVariantWidths,
 } from '../image/transform.ts';
@@ -31,7 +32,7 @@ type CreateReactImageCollectionVirtualModuleOptions = {
 export type ReactImageCollectionVirtualModuleRequest = Readonly<{
   base: string;
   src: string;
-  widths: readonly number[];
+  widths: readonly RequestedImageVariantWidth[];
 }>;
 
 export type ResolvedReactImageCollectionVirtualModule =
@@ -109,8 +110,11 @@ export function parseReactImageCollectionVirtualModuleRequest(
   }
 
   const widthTokens = rawWidths.split(/[;,]/);
+  const numericWidthTokens = widthTokens.filter(
+    (width) => width !== 'original',
+  );
   if (
-    widthTokens.some((width) => {
+    numericWidthTokens.some((width) => {
       const numericWidth = Number(width);
       return (
         !/^\d+$/.test(width) ||
@@ -120,14 +124,17 @@ export function parseReactImageCollectionVirtualModuleRequest(
     })
   ) {
     throw new Error(
-      `${reactImageCollectionVirtualModuleId} widths must be positive integers: ${rawWidths}`,
+      `${reactImageCollectionVirtualModuleId} widths must be positive integers or original: ${rawWidths}`,
     );
   }
 
   return {
     base,
     src,
-    widths: [...new Set(widthTokens.map(Number))].sort((a, b) => a - b),
+    widths: [
+      ...new Set(numericWidthTokens.map(Number).sort((a, b) => a - b)),
+      ...(widthTokens.includes('original') ? (['original'] as const) : []),
+    ],
   };
 }
 
@@ -279,7 +286,7 @@ export async function selectReactImageCollectionVariantWidths({
   sourceDirectory,
   widths,
 }: Omit<CreateReactImageCollectionVirtualModuleOptions, 'variantWidths'> & {
-  widths: readonly number[];
+  widths: readonly RequestedImageVariantWidth[];
 }) {
   const publicPathPrefix = `${base}/`;
   const publicUrls = Object.keys(manifest).filter(
@@ -398,6 +405,7 @@ function createReactImageCollectionModuleCode(statements: string[]) {
     `import { createReactImageCollection } from ${JSON.stringify('@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react')};`,
     ...statements,
     'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
+    'export { imageVariantManifest as manifest };',
     'export default ReactImageCollection;',
   ].join('\n');
 }

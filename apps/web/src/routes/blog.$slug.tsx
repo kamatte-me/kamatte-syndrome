@@ -4,9 +4,11 @@ import { renderServerComponent } from '@tanstack/react-start/rsc';
 import type { Post } from 'content-collections';
 import { ArticleLayout } from '@/components/layouts/ArticleLayout';
 import { PageMain } from '@/components/layouts/PageMain';
-import { MarkdownContentImage } from '@/components/ui/MarkdownContentImage';
+import { ImageLightboxController } from '@/components/ui/ImageLightbox/ImageLightboxController';
 import { slogan } from '@/constants/site';
 import { BlogPostBody } from '@/features/blog/components/BlogPostBody';
+import { BlogPostContentImage } from '@/features/blog/components/BlogPostContentImage';
+import { BlogPostContentLink } from '@/features/blog/components/BlogPostContentLink';
 import { BlogPostFeaturedImage } from '@/features/blog/components/BlogPostFeaturedImage';
 import { BlogPostNavigation } from '@/features/blog/components/BlogPostNavigation';
 import { getPosts } from '@/features/blog/server/getPosts.server';
@@ -75,7 +77,8 @@ const getPostBySlugServerFn = createServerFn({ method: 'GET' })
       mdx: await renderServerComponent(
         <MDXContent
           components={{
-            img: MarkdownContentImage,
+            a: BlogPostContentLink,
+            img: BlogPostContentImage,
             LinkCard: BlogPostLinkCard,
             OEmbed: BlogPostOEmbed,
           }}
@@ -121,14 +124,19 @@ function PostDetailPage() {
 
   return (
     <PageMain size="narrow">
-      <ArticleLayout
-        metadata={formatPostDate(post.publishedAt)}
-        title={post.title}
-      >
-        <BlogPostFeaturedImage src={post.featuredImage} title={post.title} />
-        <BlogPostBody>{post.mdx}</BlogPostBody>
-        <BlogPostNavigation next={post.nextPost} previous={post.previousPost} />
-      </ArticleLayout>
+      <ImageLightboxController key={post.slug}>
+        <ArticleLayout
+          metadata={formatPostDate(post.publishedAt)}
+          title={post.title}
+        >
+          <BlogPostFeaturedImage src={post.featuredImage} title={post.title} />
+          <BlogPostBody>{post.mdx}</BlogPostBody>
+          <BlogPostNavigation
+            next={post.nextPost}
+            previous={post.previousPost}
+          />
+        </ArticleLayout>
+      </ImageLightboxController>
     </PageMain>
   );
 }

@@ -12,6 +12,9 @@ describe('BlogPostFeaturedImage', () => {
     expect(image).toHaveAttribute('fetchpriority', 'high');
     expect(image).toHaveAttribute('loading', 'eager');
     expect(image).toHaveClass('w-auto');
+    expect(
+      screen.getByRole('button', { name: 'Exampleを拡大表示' }),
+    ).toHaveAttribute('data-image-lightbox-src', '/media/example.png');
     expect(screen.queryByRole('link')).toBeNull();
   });
 

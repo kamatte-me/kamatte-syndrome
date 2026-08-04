@@ -7,6 +7,7 @@ import {
   defaultImageVariantFormatSettings,
   type ImageVariantFormatSettings,
   type ImageVariantWidths,
+  type RequestedImageVariantWidth,
 } from '../image/transform.ts';
 import {
   assertKnownQueryParameters,
@@ -26,7 +27,7 @@ const supportedImageExtensions = new Set([
 export type ReactImageVirtualModuleRequest = Readonly<{
   lossless: boolean;
   src: string;
-  widths: readonly number[];
+  widths: readonly RequestedImageVariantWidth[];
 }>;
 
 export type ResolvedReactImageVirtualModule = ReactImageVirtualModuleRequest &
@@ -81,8 +82,11 @@ export function parseReactImageVirtualModuleRequest(
   }
 
   const widthTokens = rawWidths.split(/[;,]/);
+  const numericWidthTokens = widthTokens.filter(
+    (width) => width !== 'original',
+  );
   if (
-    widthTokens.some((width) => {
+    numericWidthTokens.some((width) => {
       const numericWidth = Number(width);
       return (
         !/^\d+$/.test(width) ||
@@ -92,7 +96,7 @@ export function parseReactImageVirtualModuleRequest(
     })
   ) {
     throw new Error(
-      `${reactImageVirtualModuleId} widths must be positive integers: ${rawWidths}`,
+      `${reactImageVirtualModuleId} widths must be positive integers or original: ${rawWidths}`,
     );
   }
 
@@ -110,7 +114,10 @@ export function parseReactImageVirtualModuleRequest(
   return {
     lossless: rawLossless === 'true',
     src,
-    widths: [...new Set(widthTokens.map(Number))].sort((a, b) => a - b),
+    widths: [
+      ...new Set(numericWidthTokens.map(Number).sort((a, b) => a - b)),
+      ...(widthTokens.includes('original') ? (['original'] as const) : []),
+    ],
   };
 }
 

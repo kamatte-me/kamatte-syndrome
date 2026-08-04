@@ -47,7 +47,7 @@ describe('selectImageVariantWidths', () => {
     await expect(
       selectImageVariantWidths({
         sourcePath: compressibleSource,
-        widths: [80, 160, 320],
+        widths: [80, 'original', 320],
       }),
     ).resolves.toEqual({ avif: [80, 160], webp: [80, 160] });
     await expect(

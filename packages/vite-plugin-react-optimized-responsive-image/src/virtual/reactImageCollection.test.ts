@@ -22,6 +22,15 @@ describe('virtual React image collection', () => {
     });
     expect(
       parseReactImageCollectionVirtualModuleRequest(
+        'virtual:react-optimized-responsive-image/collection?widths=original;160;original&base=/media&src=/content/media',
+      ),
+    ).toEqual({
+      base: '/media',
+      src: '/content/media',
+      widths: [160, 'original'],
+    });
+    expect(
+      parseReactImageCollectionVirtualModuleRequest(
         'virtual:react-optimized-responsive-image/collection',
       ),
     ).toBeNull();
@@ -163,11 +172,12 @@ describe('virtual React image collection', () => {
     expect(code).toContain(
       'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
     );
-    expect(code).not.toContain('export { imageVariantManifest as manifest };');
+    expect(code).toContain('export { imageVariantManifest as manifest };');
     expect(code).toContain('export default ReactImageCollection;');
 
     const emptyCode = createEmptyReactImageCollectionVirtualModule();
     expect(emptyCode).toContain('const imageVariantManifest={}');
+    expect(emptyCode).toContain('export { imageVariantManifest as manifest };');
     expect(emptyCode).toContain('export default ReactImageCollection;');
   });
 

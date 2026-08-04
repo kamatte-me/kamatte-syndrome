@@ -1,4 +1,6 @@
-import ReactImageCollection from 'virtual:react-optimized-responsive-image/collection?src=./images&base=/media&widths=160;320';
+import ReactImageCollection, {
+  manifest as imageManifest,
+} from 'virtual:react-optimized-responsive-image/collection?src=./images&base=/media&widths=160;original';
 import ReactImage from 'virtual:react-optimized-responsive-image?src=./image.jpg&widths=160;320';
 import type {
   ImageVariantEntry,
@@ -40,8 +42,7 @@ const requiredEntry: ImageVariantEntry = manifest['/media/unknown.jpg'];
 // @ts-expect-error Low-level image entries are intentionally not exported.
 void singleModule.variant;
 
-// @ts-expect-error Low-level image manifests are intentionally not exported.
-void collectionModule.manifest;
+const exportedManifest: ImageVariantManifest = collectionModule.manifest;
 
 void [
   singleImage,
@@ -50,5 +51,7 @@ void [
   singleImageWithSource,
   collectionImageWithoutSource,
   collectionImageWithBlobProps,
+  exportedManifest,
+  imageManifest,
   requiredEntry,
 ];

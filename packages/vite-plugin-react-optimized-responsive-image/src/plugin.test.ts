@@ -203,10 +203,10 @@ describe('optimizedResponsiveImage', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import contentImages from 'virtual:react-optimized-responsive-image/collection?src=@@/content-media&base=/media&widths=100;160';",
+        "import contentImages, { manifest as contentImageManifest } from 'virtual:react-optimized-responsive-image/collection?src=@@/content-media&base=/media&widths=100;160';",
         "import compactImageVariants from 'virtual:react-optimized-responsive-image/collection?src=@@/content-media&base=/media&widths=100';",
         "import assetImages from 'virtual:react-optimized-responsive-image/collection?src=./src/assets/images&base=/app-images&widths=24;48';",
-        'console.log(contentImages, compactImageVariants, assetImages);',
+        'console.log(contentImages, contentImageManifest, compactImageVariants, assetImages);',
         '',
       ].join('\n'),
     );
@@ -308,7 +308,7 @@ describe('optimizedResponsiveImage', () => {
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
-        "import image from 'virtual:react-optimized-responsive-image?src=./src/image.jpg&widths=40;100;160';",
+        "import image from 'virtual:react-optimized-responsive-image?src=./src/image.jpg&widths=40;100;original';",
         'console.log(image);',
         '',
       ].join('\n'),

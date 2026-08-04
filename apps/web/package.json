@@ -22,6 +22,7 @@
     "cheerio": "1.2.0",
     "clsx": "2.1.1",
     "feed": "6.0.0",
+    "photoswipe": "5.4.4",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwind-merge": "3.6.0"

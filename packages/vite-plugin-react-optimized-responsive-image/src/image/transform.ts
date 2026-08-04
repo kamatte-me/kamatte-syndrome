@@ -31,6 +31,8 @@ export type ImageVariantWidths = Readonly<{
   webp: readonly number[];
 }>;
 
+export type RequestedImageVariantWidth = number | 'original';
+
 const variantSizePromises = new Map<string, Promise<number>>();
 const maxCachedVariantSizes = 1_000;
 
@@ -84,11 +86,15 @@ export function resolveImageVariantFormatSettings({
 }
 
 export function clampImageWidths(
-  widths: readonly number[],
+  widths: readonly RequestedImageVariantWidth[],
   naturalWidth: number,
 ) {
   return [
-    ...new Set(widths.map((width) => Math.min(width, naturalWidth))),
+    ...new Set(
+      widths.map((width) =>
+        width === 'original' ? naturalWidth : Math.min(width, naturalWidth),
+      ),
+    ),
   ].sort((a, b) => a - b);
 }
 
@@ -101,7 +107,7 @@ export async function selectImageVariantWidths({
   formatSettings?: ImageVariantFormatSettings;
   lossless?: boolean;
   sourcePath: string;
-  widths: readonly number[];
+  widths: readonly RequestedImageVariantWidth[];
 }>): Promise<ImageVariantWidths> {
   const source = await readFile(sourcePath);
   const metadata = await sharp(source).metadata();

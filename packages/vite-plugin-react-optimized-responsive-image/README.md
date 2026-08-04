@@ -81,7 +81,7 @@ import ContentImage from 'virtual:react-optimized-responsive-image/collection?sr
 
 - `src`はViteに設定されたalias、Vite rootからの`/`始まりのパス、またはimport元からの相対パスです。
 - `base`はmanifestのキーとfallbackに使う公開URLです。
-- `widths`は正の整数を`;`または`,`区切りで指定します。
+- `widths`は正の整数または`original`を`;`または`,`区切りで指定します。`original`は画像ごとの自然幅に解決されます。
 - 画像ファイル名にURL区切り文字の`?`または`#`は使用できません。
 - 未知のquery parameterや同じparameterの重複指定はエラーになります。
 
@@ -107,7 +107,15 @@ import ContentImage from 'virtual:react-optimized-responsive-image/collection?sr
 />
 ```
 
-default exportはmanifestがあらかじめ束縛されたReactコンポーネントです。必須の`src`にmanifestの論理URLを文字列で渡します。virtual moduleはこのReactコンポーネントだけをexportし、内部の画像entryやmanifestは公開しません。
+default exportはmanifestがあらかじめ束縛されたReactコンポーネントです。必須の`src`にmanifestの論理URLを文字列で渡します。
+
+named exportの`manifest`からは、論理URLごとの元画像URL、自然寸法、AVIF/WebPバリアントを取得できます。Reactコンポーネント以外の画像ビューアーへ同じ生成物を渡す場合に使用します。
+
+```ts
+import { manifest } from 'virtual:react-optimized-responsive-image/collection?src=@@/content/media&base=/media&widths=original';
+
+const image = manifest['/media/nested/image.jpg'];
+```
 
 manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。アニメーションを持つAVIF/WebPもmanifestには含まれますが、派生画像は生成しません。GIF、SVG、その他の形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
 

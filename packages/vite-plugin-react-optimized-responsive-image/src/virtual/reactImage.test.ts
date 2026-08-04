@@ -16,6 +16,15 @@ describe('virtual React image', () => {
     ).toEqual({ lossless: false, src: './image.jpg', widths: [160, 320] });
     expect(
       parseReactImageVirtualModuleRequest(
+        'virtual:react-optimized-responsive-image?src=.%2Fimage.jpg&widths=original;160;original',
+      ),
+    ).toEqual({
+      lossless: false,
+      src: './image.jpg',
+      widths: [160, 'original'],
+    });
+    expect(
+      parseReactImageVirtualModuleRequest(
         'virtual:react-optimized-responsive-image',
       ),
     ).toBeNull();
