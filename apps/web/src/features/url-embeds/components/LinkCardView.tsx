@@ -37,7 +37,7 @@ export function LinkCardView({ url, state, className }: LinkCardViewProps) {
       target="_blank"
     >
       <span className="flex min-h-full min-w-0 flex-col gap-1.5 p-3 sm:p-4">
-        <span className="line-clamp-2 min-w-0 font-bold text-base leading-5">
+        <span className="line-clamp-2 min-w-0 font-bold text-sm leading-5">
           {title}
         </span>
         {description ? (
@@ -50,7 +50,7 @@ export function LinkCardView({ url, state, className }: LinkCardViewProps) {
             {description}
           </span>
         ) : null}
-        <span className="mt-auto flex min-w-0 items-center gap-1.5 text-[11px] text-cutout-muted leading-4">
+        <span className="mt-auto flex min-w-0 items-center gap-1.5 text-cutout-muted text-xs leading-4">
           {metadata?.favicon ? (
             <img
               alt=""
