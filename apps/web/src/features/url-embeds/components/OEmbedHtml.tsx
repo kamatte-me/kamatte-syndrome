@@ -11,15 +11,27 @@ type OEmbedHtmlProps = {
 };
 
 const anyScriptPattern = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
-const externalScriptPattern = /<script[^>]+src=(['"])(.*?)\1/i;
-const injectedScriptPattern =
-  /<script[\s\S]*?>[\s\S]*?createElement[\s\S]*?src\s?=\s?(['"])(.*?)\1/i;
+const injectedScriptPattern = /createElement[\s\S]*?src\s?=\s?(['"])(.*?)\1/gi;
+const scriptPlaceholderAttribute = 'data-oembed-script-placeholder';
 
-const scriptLoads = new Map<string, Promise<boolean>>();
+type ScriptLoad = {
+  promise: Promise<boolean>;
+  script: HTMLScriptElement;
+};
+
+type EmbedScriptState = {
+  active: boolean;
+  hasHydrated: boolean;
+  html: string;
+  operation: Promise<void>;
+};
+
+const scriptLoads = new Map<string, ScriptLoad>();
 
 export const OEmbedHtml = memo(
   function OEmbedHtml({ fitIframes, heightSyncKey, html }: OEmbedHtmlProps) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const scriptStateRef = useRef<EmbedScriptState | undefined>(undefined);
     const markup = stripScripts(html);
 
     useEffect(() => {
@@ -38,12 +50,42 @@ export const OEmbedHtml = memo(
         return stopHeightSync;
       }
 
-      hydrateProviderEmbeds(html, container);
+      let scriptState = scriptStateRef.current;
+      if (!scriptState || scriptState.html !== html) {
+        scriptState = {
+          active: true,
+          hasHydrated: false,
+          html,
+          operation: Promise.resolve(),
+        };
+        scriptStateRef.current = scriptState;
+      } else {
+        scriptState.active = true;
+      }
 
-      const handlePageShow = () => hydrateProviderEmbeds(html, container);
+      if (!scriptState.hasHydrated) {
+        scriptState.hasHydrated = true;
+        scriptState.operation = hydrateProviderEmbeds(
+          html,
+          container,
+          scriptState,
+          true,
+        );
+      }
+
+      const handlePageShow = (event: PageTransitionEvent) => {
+        if (!event.persisted) {
+          return;
+        }
+
+        const reload = () =>
+          hydrateProviderEmbeds(html, container, scriptState, false);
+        scriptState.operation = scriptState.operation.then(reload, reload);
+      };
       window.addEventListener('pageshow', handlePageShow);
 
       return () => {
+        scriptState.active = false;
         stopHeightSync?.();
         window.removeEventListener('pageshow', handlePageShow);
       };
@@ -171,59 +213,150 @@ const providerRuntimes: Record<string, ProviderRuntime> = {
   },
 };
 
-function hydrateProviderEmbeds(html: string, container: HTMLElement) {
-  for (const src of getProviderScriptUrls(html)) {
-    const runtime = getProviderRuntime(src);
+async function hydrateProviderEmbeds(
+  html: string,
+  container: HTMLElement,
+  scriptState: EmbedScriptState,
+  executeInlineScripts: boolean,
+) {
+  const runtimes = new Set<ProviderRuntime>();
+  const asyncLoads = new Set<Promise<boolean>>();
+  const deferredScripts: HTMLScriptElement[] = [];
 
-    if (runtime?.isLoaded()) {
-      runtime.reload(container);
+  for (const [scriptIndex, sourceScript] of getEmbedScripts(html).entries()) {
+    if (!isScriptStateActive(scriptState, container)) {
+      return;
+    }
+
+    const src = sourceScript.getAttribute('src');
+    if (!src) {
+      addProviderRuntimes(sourceScript, runtimes);
+      if (executeInlineScripts) {
+        executeInlineScript(sourceScript, container, scriptIndex);
+      }
+
+      for (const injectedSrc of getInjectedScriptSrcs(sourceScript)) {
+        const runtime = getProviderRuntime(injectedSrc);
+        if (runtime) {
+          runtimes.add(runtime);
+          if (runtime.isLoaded()) {
+            continue;
+          }
+        }
+
+        const load = loadScript(injectedSrc);
+        asyncLoads.add(load);
+      }
       continue;
     }
 
-    const load = loadScript(src);
+    const runtime = getProviderRuntime(src);
     if (runtime) {
-      void load.then((isLoaded) => {
-        if (isLoaded) {
-          runtime.reload(container);
-        }
-      });
+      runtimes.add(runtime);
+    }
+
+    if (
+      sourceScript.hasAttribute('defer') &&
+      !sourceScript.hasAttribute('async')
+    ) {
+      deferredScripts.push(sourceScript);
+      continue;
+    }
+
+    const load = loadExternalScript(sourceScript);
+    if (!load) {
+      continue;
+    }
+
+    if (sourceScript.hasAttribute('async')) {
+      asyncLoads.add(load);
+    } else {
+      await load;
+    }
+  }
+
+  for (const sourceScript of deferredScripts) {
+    if (!isScriptStateActive(scriptState, container)) {
+      return;
+    }
+
+    const load = loadExternalScript(sourceScript);
+    if (load) {
+      await load;
+    }
+  }
+
+  if (asyncLoads.size > 0) {
+    await Promise.all(asyncLoads);
+  }
+
+  if (!isScriptStateActive(scriptState, container)) {
+    return;
+  }
+
+  for (const runtime of runtimes) {
+    if (runtime.isLoaded()) {
+      runtime.reload(container);
     }
   }
 }
 
-function getProviderScriptUrls(html: string) {
-  const scripts = html.match(anyScriptPattern);
-  if (!scripts) {
-    return [];
-  }
-
-  return unique(scripts.map(extractScriptUrl).filter(isString));
-}
-
 function stripScripts(html: string) {
-  return html.replace(anyScriptPattern, '');
-}
-
-function extractScriptUrl(script: string) {
-  return (
-    extractExternalScriptUrl(script) ?? extractInjectedScriptUrl(script) ?? null
+  let scriptIndex = 0;
+  return html.replace(
+    anyScriptPattern,
+    () =>
+      `<template ${scriptPlaceholderAttribute}="${scriptIndex++}"></template>`,
   );
 }
 
-function extractExternalScriptUrl(script: string) {
-  return script.match(externalScriptPattern)?.[2] ?? null;
+function getEmbedScripts(html: string) {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  return [...template.content.querySelectorAll('script')];
 }
 
-function extractInjectedScriptUrl(script: string) {
-  return script.match(injectedScriptPattern)?.[2] ?? null;
+function executeInlineScript(
+  sourceScript: HTMLScriptElement,
+  container: HTMLElement,
+  scriptIndex: number,
+) {
+  const script = copyScriptAttributes(
+    sourceScript,
+    document.createElement('script'),
+  );
+  script.textContent = sourceScript.textContent;
+  const placeholder = container.querySelector<HTMLTemplateElement>(
+    `template[${scriptPlaceholderAttribute}="${scriptIndex}"]`,
+  );
+  placeholder?.replaceWith(script);
+  script.remove();
 }
 
-function unique(values: string[]) {
-  return [...new Set(values)];
+function getInjectedScriptSrcs(sourceScript: HTMLScriptElement) {
+  const source = sourceScript.textContent ?? '';
+  return [...source.matchAll(injectedScriptPattern)].flatMap((match) =>
+    match[2] ? [match[2]] : [],
+  );
 }
 
-function isString(value: string | null): value is string {
-  return typeof value === 'string';
+function addProviderRuntimes(
+  script: HTMLScriptElement,
+  runtimes: Set<ProviderRuntime>,
+) {
+  const source = `${script.getAttribute('src') ?? ''}\n${script.textContent}`;
+  for (const [key, runtime] of Object.entries(providerRuntimes)) {
+    if (source.includes(key)) {
+      runtimes.add(runtime);
+    }
+  }
+}
+
+function isScriptStateActive(
+  scriptState: EmbedScriptState,
+  container: HTMLElement,
+) {
+  return scriptState.active && container.isConnected;
 }
 
 function getProviderRuntime(src: string) {
@@ -232,26 +365,80 @@ function getProviderRuntime(src: string) {
   )?.[1];
 }
 
-function normalizeScriptSrc(src: string) {
-  return src.replaceAll('&amp;', '&');
+function loadExternalScript(sourceScript: HTMLScriptElement) {
+  const src = sourceScript.getAttribute('src');
+  if (!src) {
+    return undefined;
+  }
+
+  const runtime = getProviderRuntime(src);
+  return runtime?.isLoaded() ? undefined : loadScript(sourceScript);
 }
 
-function loadScript(src: string) {
+function normalizeScriptSrc(src: string) {
+  const decodedSrc = src.replaceAll('&amp;', '&');
+
+  try {
+    return new URL(decodedSrc, document.baseURI).href;
+  } catch {
+    return decodedSrc;
+  }
+}
+
+function loadScript(source: HTMLScriptElement | string) {
+  const src =
+    typeof source === 'string' ? source : (source.getAttribute('src') ?? '');
   const normalizedSrc = normalizeScriptSrc(src);
   const existingLoad = scriptLoads.get(normalizedSrc);
   if (existingLoad) {
-    return existingLoad;
+    return existingLoad.promise;
   }
 
-  const script = document.createElement('script');
+  const existingScript = [
+    ...document.querySelectorAll<HTMLScriptElement>('script[src]'),
+  ].find(
+    (script) =>
+      normalizeScriptSrc(script.getAttribute('src') ?? '') === normalizedSrc,
+  );
+  if (existingScript) {
+    return trackScriptLoad(existingScript, normalizedSrc);
+  }
+
+  const script =
+    typeof source === 'string'
+      ? document.createElement('script')
+      : copyScriptAttributes(source, document.createElement('script'));
   script.src = normalizedSrc;
-  const load = createScriptLoadPromise(script, () => {
-    scriptLoads.delete(normalizedSrc);
-    script.remove();
-  });
-  scriptLoads.set(normalizedSrc, load);
+  const load = trackScriptLoad(script, normalizedSrc);
   document.head.appendChild(script);
   return load;
+}
+
+function trackScriptLoad(script: HTMLScriptElement, src: string) {
+  const existingLoad = scriptLoads.get(src);
+  if (existingLoad) {
+    return existingLoad.promise;
+  }
+
+  let promise: Promise<boolean>;
+  promise = createScriptLoadPromise(script, () => {
+    if (scriptLoads.get(src)?.promise === promise) {
+      scriptLoads.delete(src);
+    }
+    script.remove();
+  });
+  scriptLoads.set(src, { promise, script });
+  return promise;
+}
+
+function copyScriptAttributes(
+  source: HTMLScriptElement,
+  target: HTMLScriptElement,
+) {
+  for (const attribute of source.attributes) {
+    target.setAttribute(attribute.name, attribute.value);
+  }
+  return target;
 }
 
 function createScriptLoadPromise(
