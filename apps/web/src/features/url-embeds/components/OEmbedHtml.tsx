@@ -2,10 +2,12 @@
 
 import { memo, useEffect, useRef } from 'react';
 import { cn } from '@/utils/classNames';
+import styles from './OEmbedHtml.module.css';
 
 type OEmbedHtmlProps = {
   fitIframes: boolean;
   html: string;
+  heightSyncKey: string;
 };
 
 const anyScriptPattern = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
@@ -13,16 +15,27 @@ const externalScriptPattern = /<script[^>]+src=(['"])(.*?)\1/i;
 const injectedScriptPattern =
   /<script[\s\S]*?>[\s\S]*?createElement[\s\S]*?src\s?=\s?(['"])(.*?)\1/i;
 
-const scriptLoads = new Map<string, Promise<void>>();
+const scriptLoads = new Map<string, Promise<boolean>>();
 
 export const OEmbedHtml = memo(
-  function OEmbedHtml({ fitIframes, html }: OEmbedHtmlProps) {
+  function OEmbedHtml({ fitIframes, heightSyncKey, html }: OEmbedHtmlProps) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const markup = stripScripts(html);
 
     useEffect(() => {
       const container = containerRef.current;
       if (!container) {
         return;
+      }
+
+      const cutoutLayer = getCutoutLayer(container);
+      const stopHeightSync = fitIframes
+        ? undefined
+        : syncStencilHeight(container, heightSyncKey);
+
+      if (cutoutLayer === 'stencil' || cutoutLayer === 'modal-stencil') {
+        preventStencilProviderHydration(container);
+        return stopHeightSync;
       }
 
       hydrateProviderEmbeds(html, container);
@@ -31,31 +44,104 @@ export const OEmbedHtml = memo(
       window.addEventListener('pageshow', handlePageShow);
 
       return () => {
+        stopHeightSync?.();
         window.removeEventListener('pageshow', handlePageShow);
       };
-    }, [html]);
+    }, [fitIframes, heightSyncKey, html]);
 
     return (
       <div
         className={cn(
+          styles.root,
           'w-full [&_iframe]:max-w-full [&_iframe]:border-0 [&_img]:max-w-full',
           fitIframes
             ? 'h-full [&_iframe]:h-full [&_iframe]:max-h-full [&_iframe]:w-full [&_img]:max-h-full'
-            : 'my-3',
+            : 'my-3 overflow-hidden',
         )}
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: oEmbed provider HTML is trusted by product choice and provider scripts are executed deliberately.
-        dangerouslySetInnerHTML={{ __html: html }}
+        data-oembed-height-sync-key={heightSyncKey}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: oEmbed provider markup is trusted by product choice; scripts are loaded after hydration.
+        dangerouslySetInnerHTML={{ __html: markup }}
         ref={containerRef}
       />
     );
   },
   (previous, next) =>
-    previous.fitIframes === next.fitIframes && previous.html === next.html,
+    previous.fitIframes === next.fitIframes &&
+    previous.heightSyncKey === next.heightSyncKey &&
+    previous.html === next.html,
 );
+
+const heightSyncSelector = '[data-oembed-height-sync-key]';
+
+function syncStencilHeight(source: HTMLElement, heightSyncKey: string) {
+  if (getCutoutLayer(source) !== 'content') {
+    return undefined;
+  }
+
+  let target: HTMLElement | undefined;
+
+  const updateStencilHeight = () => {
+    const sources = getLayerEmbeds('content', heightSyncKey);
+    const sourceIndex = sources.indexOf(source);
+    const nextTarget = getLayerEmbeds('stencil', heightSyncKey)[sourceIndex];
+
+    if (target !== nextTarget) {
+      target?.style.removeProperty('height');
+      target = nextTarget;
+    }
+
+    if (!target) {
+      return;
+    }
+
+    target.style.height = `${source.getBoundingClientRect().height}px`;
+  };
+
+  const resizeObserver = new ResizeObserver(updateStencilHeight);
+  resizeObserver.observe(source);
+  updateStencilHeight();
+
+  return () => {
+    resizeObserver.disconnect();
+    target?.style.removeProperty('height');
+  };
+}
+
+function getLayerEmbeds(layer: string, heightSyncKey: string) {
+  const layerRoot = document.querySelector<HTMLElement>(
+    `[data-cutout-layer="${layer}"]`,
+  );
+
+  if (!layerRoot) {
+    return [];
+  }
+
+  return [
+    ...layerRoot.querySelectorAll<HTMLElement>(heightSyncSelector),
+  ].filter((embed) => embed.dataset.oembedHeightSyncKey === heightSyncKey);
+}
+
+function getCutoutLayer(element: HTMLElement) {
+  return element.closest<HTMLElement>('[data-cutout-layer]')?.dataset
+    .cutoutLayer;
+}
+
+function preventStencilProviderHydration(container: HTMLElement) {
+  for (const blockquote of container.querySelectorAll(
+    'blockquote.twitter-tweet',
+  )) {
+    blockquote.classList.remove('twitter-tweet');
+  }
+}
 
 type ProviderRuntime = {
   isLoaded: () => boolean;
   reload: (container: HTMLElement) => void;
+};
+
+const twitterRuntime: ProviderRuntime = {
+  isLoaded: () => window.twttr?.widgets?.load !== undefined,
+  reload: (container) => window.twttr?.widgets?.load(container),
 };
 
 const providerRuntimes: Record<string, ProviderRuntime> = {
@@ -73,10 +159,8 @@ const providerRuntimes: Record<string, ProviderRuntime> = {
     isLoaded: () => window.instgrm?.Embeds?.process !== undefined,
     reload: () => window.instgrm?.Embeds?.process(),
   },
-  'platform.twitter.com': {
-    isLoaded: () => window.twttr?.widgets?.load !== undefined,
-    reload: () => window.twttr?.widgets?.load(),
-  },
+  'platform.twitter.com': twitterRuntime,
+  'platform.x.com': twitterRuntime,
   'trellocdn.com': {
     isLoaded: () => window.TrelloCards?.load !== undefined,
     reload: () =>
@@ -98,7 +182,11 @@ function hydrateProviderEmbeds(html: string, container: HTMLElement) {
 
     const load = loadScript(src);
     if (runtime) {
-      void load.then(() => runtime.reload(container));
+      void load.then((isLoaded) => {
+        if (isLoaded) {
+          runtime.reload(container);
+        }
+      });
     }
   }
 }
@@ -110,6 +198,10 @@ function getProviderScriptUrls(html: string) {
   }
 
   return unique(scripts.map(extractScriptUrl).filter(isString));
+}
+
+function stripScripts(html: string) {
+  return html.replace(anyScriptPattern, '');
 }
 
 function extractScriptUrl(script: string) {
@@ -153,27 +245,40 @@ function loadScript(src: string) {
 
   const script = document.createElement('script');
   script.src = normalizedSrc;
-  const load = createScriptLoadPromise(script);
+  const load = createScriptLoadPromise(script, () => {
+    scriptLoads.delete(normalizedSrc);
+    script.remove();
+  });
   scriptLoads.set(normalizedSrc, load);
   document.head.appendChild(script);
   return load;
 }
 
-function createScriptLoadPromise(script: HTMLScriptElement) {
+function createScriptLoadPromise(
+  script: HTMLScriptElement,
+  handleError: () => void,
+) {
   if (script.dataset.oembedScriptLoaded === 'true') {
-    return Promise.resolve();
+    return Promise.resolve(true);
   }
 
-  return new Promise<void>((resolve) => {
+  return new Promise<boolean>((resolve) => {
     script.addEventListener(
       'load',
       () => {
         script.dataset.oembedScriptLoaded = 'true';
-        resolve();
+        resolve(true);
       },
       { once: true },
     );
-    script.addEventListener('error', () => resolve(), { once: true });
+    script.addEventListener(
+      'error',
+      () => {
+        handleError();
+        resolve(false);
+      },
+      { once: true },
+    );
   });
 }
 

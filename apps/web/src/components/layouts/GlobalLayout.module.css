@@ -74,11 +74,13 @@
 }
 
 .stencilLayer :where(img, video, iframe, canvas) {
-  visibility: hidden;
+  /* biome-ignore lint/complexity/noImportantStyles: Provider widgets set visibility inline; stencil media must stay out of the filter source. */
+  visibility: hidden !important;
 }
 
 .modalStencilLayer :where(img, video, iframe, canvas) {
-  visibility: hidden;
+  /* biome-ignore lint/complexity/noImportantStyles: Provider widgets set visibility inline; stencil media must stay out of the filter source. */
+  visibility: hidden !important;
 }
 
 .contentLayer :where(img, video, iframe, canvas) {
@@ -87,10 +89,7 @@
 
 @media (width < 48rem) {
   .mobileMenuSuppressed {
-    visibility: hidden;
-  }
-
-  .contentLayer .mobileMenuSuppressed :where(img, video, iframe, canvas) {
+    opacity: 0;
     visibility: hidden;
   }
 }

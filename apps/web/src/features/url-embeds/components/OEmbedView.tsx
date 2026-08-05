@@ -45,7 +45,11 @@ export function OEmbedView({ metadata, url, className }: OEmbedViewProps) {
             : undefined
         }
       >
-        <OEmbedHtml fitIframes={fixedAspect} html={metadata.html} />
+        <OEmbedHtml
+          fitIframes={fixedAspect}
+          heightSyncKey={url}
+          html={metadata.html}
+        />
       </div>
     );
   }

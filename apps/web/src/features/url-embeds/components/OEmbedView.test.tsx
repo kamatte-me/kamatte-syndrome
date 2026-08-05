@@ -83,9 +83,7 @@ describe('OEmbedView', () => {
     expect(shell?.className).not.toContain('p-4');
     expect(providerPost).toBeInTheDocument();
     expect(providerPost).toHaveTextContent('Provider HTML');
-    expect(container.querySelector('script')?.textContent).toContain(
-      'window.__providerWidget = true;',
-    );
+    expect(container.querySelector('script')).toBeNull();
     expect(shell?.style.aspectRatio).toBe('');
     expect(htmlShell?.className).not.toContain('[&_iframe]:h-full');
   });
