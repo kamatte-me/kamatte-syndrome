@@ -347,7 +347,7 @@ export function Modal({
         aria-modal="true"
         className={cn(
           styles.panel,
-          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-6xl flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[calc(100dvh-4rem)] sm:w-[calc(100vw-4rem)] md:h-[80dvh] md:max-h-[48rem] md:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-2rem)]',
+          'relative flex h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-6xl flex-col overflow-hidden border-8 border-cutout-hole outline-none sm:h-[calc(100dvh-4rem)] sm:w-[calc(100vw-4rem)] md:h-[80dvh] md:max-h-[48rem] md:w-[80vw] [@media_(orientation:landscape)_and_(max-height:500px)]:h-[calc(100dvh-2rem)] [@media_(orientation:landscape)_and_(max-height:500px)]:w-[calc(100vw-4rem)]',
           customDialogClassName,
         )}
         data-ui-modal-dialog=""
@@ -358,11 +358,11 @@ export function Modal({
           <button
             type="button"
             aria-label={closeLabel}
-            className="flex size-13 cursor-pointer items-center justify-center text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-14 [@media_(orientation:landscape)_and_(max-height:500px)]:size-9"
+            className="flex size-13 cursor-pointer items-center justify-center text-cutout-hole hover:text-cutout-hole focus-visible:outline focus-visible:outline-2 focus-visible:outline-cutout-hole sm:size-14 [@media_(orientation:landscape)_and_(max-height:500px)]:size-13"
             onClick={onClose}
           >
             <Icon
-              className="size-12 sm:size-14 [@media_(orientation:landscape)_and_(max-height:500px)]:size-5"
+              className="size-12 sm:size-14 [@media_(orientation:landscape)_and_(max-height:500px)]:size-10"
               src={closeFillIcon}
             />
           </button>

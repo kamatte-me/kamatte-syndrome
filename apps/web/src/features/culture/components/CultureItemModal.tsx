@@ -11,8 +11,8 @@ export function CultureItemModal({ item, onClose }: CultureItemModalProps) {
   return (
     <Modal onClose={onClose} titleId="culture-modal-title">
       {({ isContentLayer }) => (
-        <div className="w-full md:grid md:grid-cols-[48%_1fr] md:self-start">
-          <div className="shrink-0 px-4 sm:px-5 md:col-start-1 md:row-start-2 md:px-7 md:pt-6 md:pb-7 [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:items-start [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:px-4">
+        <div className="w-full md:grid md:grid-cols-[48%_1fr] md:self-start [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:flex">
+          <div className="shrink-0 px-4 sm:px-5 md:col-start-1 md:row-start-2 md:px-7 md:pt-6 md:pb-7 [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:flex [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:w-[48%] [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:items-start [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:justify-center [@media_(orientation:landscape)_and_(max-width:767px)_and_(max-height:500px)]:px-4">
             <div className="mx-auto aspect-video w-full max-w-xl lg:max-w-none [@media_(min-width:768px)_and_(max-width:1023px)_and_(max-height:900px)]:max-w-md">
               {isContentLayer ? (
                 <iframe
