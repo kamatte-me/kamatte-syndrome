@@ -538,7 +538,7 @@ function MobileMenuButton({
       type="button"
     >
       <Icon
-        className={isMobileMenuOpen ? 'size-12' : 'size-6'}
+        className={isMobileMenuOpen ? 'size-12' : 'size-7'}
         src={isMobileMenuOpen ? closeFillIcon : menuFillIcon}
       />
     </button>
