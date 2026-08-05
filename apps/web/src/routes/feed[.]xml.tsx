@@ -41,7 +41,7 @@ export const Route = createFileRoute('/feed.xml')({
           author: feedAuthor,
           copyright: `© ${String(new Date().getFullYear())} ${siteName}`,
           description: slogan,
-          favicon: createAbsoluteUrl('/favicon.ico'),
+          favicon: createAbsoluteUrl('/favicon.png'),
           feedLinks: {
             atom: createAbsoluteUrl('/feed.xml'),
           },

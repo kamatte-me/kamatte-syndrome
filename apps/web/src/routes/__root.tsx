@@ -38,8 +38,9 @@ export const Route = createRootRoute({
           href: 'https://fonts.googleapis.com/css2?family=Matemasie&display=block',
         },
         {
-          rel: 'shortcut icon',
-          href: '/favicon.ico',
+          rel: 'icon',
+          type: 'image/png',
+          href: '/favicon.png',
         },
         {
           rel: 'apple-touch-icon',
