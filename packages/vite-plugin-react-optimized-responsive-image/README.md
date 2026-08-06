@@ -1,6 +1,6 @@
 # vite-plugin-react-optimized-responsive-image
 
-アプリケーションから静的importした画像、または画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPと、それらを描画するReactコンポーネントを生成するViteプラグインです。対応する変換元はAVIF、JPEG、PNG、WebPです。
+アプリケーションから静的importした画像、または画像ディレクトリから、利用箇所ごとに指定された幅のAVIF/WebPと、それらを描画するReactコンポーネントを生成するViteプラグインです。対応する変換元はAVIF、GIF、HEIF、JPEG、PNG、TIFF、WebPです。
 
 ## Setup
 
@@ -60,7 +60,7 @@ default exportは生成した画像entryがあらかじめ束縛されたReact�
 />
 ```
 
-元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。変換後もfallback以上の容量になる候補は出力しません。アニメーションを持つAVIF/WebPは静止画化を避けるため、元画像だけをfallbackとして使用します。
+元形式・元解像度のfallbackと、指定幅のAVIF/WebPがVite assetとして出力されます。ファイル名は元画像が`<元ファイル名>.<hash>.<ext>`、派生画像が`<元ファイル名>.<幅>x<高さ>.<hash>.<ext>`です。fallbackは再エンコードせず元ファイルのバイト列とメタデータを維持します。指定幅は重複除去・昇順化され、EXIF orientation適用後の自然幅より大きく拡大されません。変換後もfallback以上の容量になる候補は出力しません。アニメーションを持つAVIF/WebPは静止画化を避けるため、元画像だけをfallbackとして使用します。
 
 QRコードやピクセルアートなど可逆圧縮が必要な画像では、`lossless=true`を指定できます。この場合は可逆WebPと元形式のfallbackを出力し、容量が大きくなりやすいlossless AVIFは生成しません。
 WebPの`quality`設定はlossless変換では使用せず、`effort`だけを適用します。
@@ -90,7 +90,7 @@ import ContentImage from 'virtual:react-optimized-responsive-image/collection?sr
 ```ts
 {
   '/media/nested/image.jpg': {
-    src: '/assets/image-[hash].jpg',
+    src: '/assets/image.[hash].jpg',
     width: 800,
     height: 600,
     avif: [/* Vite assets */],
@@ -117,23 +117,15 @@ import { manifest } from 'virtual:react-optimized-responsive-image/collection?sr
 const image = manifest['/media/nested/image.jpg'];
 ```
 
-manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。アニメーションを持つAVIF/WebPもmanifestには含まれますが、派生画像は生成しません。GIF、SVG、その他の形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
+manifestのキーはMarkdownやFrontmatterに記録された論理URLのままですが、entryの`src`はViteが出力するhash付きの元画像URLになります。AVIF/WebPだけでなく元画像もVite asset graphに含まれ、Reactコンポーネントのfallbackとして使われます。元画像は変更・再encodeされず、EXIFを含むメタデータもそのまま保持されます。アニメーションを持つ画像もmanifestには含まれますが、派生画像は生成しません。SVGなどの対応外形式はmanifestに含まれないため、通常の`img`として論理URLへfallbackします。
 
-プラグインは`base`以下へファイルを書き込まないため、RSS、Open Graph、JSON-LDなどで論理URLを使う場合は、アプリケーションのpublicディレクトリや`vite-plugin-static-copy`などで元画像を別途配信してください。
+RSS、Open Graph、JSON-LDなどで元画像を使う場合も、named exportの`manifest`から論理URLに対応する`src`を取得してください。元画像をpublicディレクトリへコピーせず、同じhash付きVite asset URLを利用できます。
 
 ```ts
-viteStaticCopy({
-  targets: [
-    {
-      src: 'content/media/**/*',
-      dest: 'media',
-      rename: { stripBase: 2 },
-    },
-  ],
-})
+const imageUrl = manifest['/media/nested/image.jpg']?.src;
 ```
 
-この構成では元画像がhash付きVite assetと安定URLの`base`以下にそれぞれ1つずつ含まれます。派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当し、デフォルトではAVIFをquality 60、WebPをquality 80で出力します。Viteのasset inline上限より小さい元画像はdata URLになる場合があります。
+派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当し、デフォルトではAVIFをquality 60、WebPをquality 80で出力します。Viteのasset inline上限より小さい元画像はdata URLになる場合があります。
 
 queryの順序や幅の指定順が異なっても、同じ解決済みディレクトリ、base、幅なら同じvirtual module IDへ正規化されます。派生幅はEXIF orientation適用後の自然幅までに制限され、拡大されません。dev中はsymlinkの実体を含む対象ディレクトリの追加・変更・削除を監視し、manifestを更新します。
 

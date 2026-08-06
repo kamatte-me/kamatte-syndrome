@@ -14,6 +14,10 @@ import {
   imagetools,
   resolveConfigs as resolveImagetoolsConfigs,
 } from 'vite-imagetools';
+import {
+  addImageSourcePath,
+  createImageAssetFileNames,
+} from './image/assetFileNames.ts';
 import { imageSourceExtensions } from './image/formats.ts';
 import {
   getImageDisplayDimensions,
@@ -93,6 +97,7 @@ export function optimizedResponsiveImage({
     Readonly<{ cacheKeys: Set<string>; watcher: FSWatcher }>
   >();
   const manifestPromises = new Map<string, Promise<ImageVariantManifest>>();
+  const imageSourcePaths = new Set<string>();
   const resolvedImageVariantModules = new Map<
     string,
     ResolvedReactImageVirtualModule
@@ -306,6 +311,7 @@ export function optimizedResponsiveImage({
     async load(id) {
       const imageVariantModule = resolvedImageVariantModules.get(id);
       if (imageVariantModule) {
+        addImageSourcePath(imageSourcePaths, imageVariantModule.sourcePath);
         this.addWatchFile(imageVariantModule.sourcePath);
         const metadata = await sharp(imageVariantModule.sourcePath).metadata();
         const { height, width } = getImageDisplayDimensions(metadata);
@@ -380,6 +386,19 @@ export function optimizedResponsiveImage({
         >;
         try {
           manifest = await getManifest(imageVariantsModule);
+          const publicPathPrefix = `${imageVariantsModule.base}/`;
+          for (const publicUrl of Object.keys(manifest)) {
+            if (!manifest[publicUrl]) {
+              continue;
+            }
+            addImageSourcePath(
+              imageSourcePaths,
+              path.join(
+                imageVariantsModule.sourceDirectory,
+                publicUrl.slice(publicPathPrefix.length),
+              ),
+            );
+          }
           variantWidths = await selectReactImageCollectionVariantWidths({
             base: imageVariantsModule.base,
             formatSettings,
@@ -439,6 +458,16 @@ export function optimizedResponsiveImage({
     },
     watchChange(id) {
       invalidateAffectedManifests(normalizeSourcePath(id));
+    },
+    outputOptions(outputOptions) {
+      return {
+        ...outputOptions,
+        assetFileNames: createImageAssetFileNames({
+          assetFileNames: outputOptions.assetFileNames,
+          imageSourcePaths,
+          rootDirectory,
+        }),
+      };
     },
     closeWatcher() {
       clearTimeout(buildWatchTimer);

@@ -248,9 +248,19 @@ describe('optimizedResponsiveImage', () => {
       '.webp',
       [24, 48, 100, 100, 120, 160],
     );
+    for (const assetFile of assetFiles.filter((file) =>
+      /\.(?:avif|webp)$/.test(file),
+    )) {
+      expect(assetFile).toMatch(
+        /^[^.]+\.\d+x\d+\.[A-Za-z0-9_-]+\.(?:avif|webp)$/,
+      );
+    }
 
     const originalAssets = assetFiles.filter((file) => /\.jpe?g$/i.test(file));
     expect(originalAssets).toHaveLength(3);
+    for (const assetFile of originalAssets) {
+      expect(assetFile).toMatch(/^[^.]+\.[A-Za-z0-9_-]+\.jpe?g$/i);
+    }
     const photoAsset = await expectOriginalAsset({
       assetDirectory,
       assetFiles: originalAssets,
