@@ -1,5 +1,6 @@
-import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { createHash, randomUUID } from 'node:crypto';
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import sharp from 'sharp';
 
 export const imageTransformQueryParameter = '__imageVariants';
@@ -35,6 +36,11 @@ export type RequestedImageVariantWidth = number | 'original';
 
 const variantSizePromises = new Map<string, Promise<number>>();
 const maxCachedVariantSizes = 1_000;
+const variantSizeCacheSchemaVersion = 1;
+const variantSizeEncoderVersion = Object.entries(sharp.versions)
+  .sort(([left], [right]) => left.localeCompare(right))
+  .map(([name, version]) => `${name}:${version}`)
+  .join('\0');
 
 export function createImageTransformImport(
   sourcePath: string,
@@ -99,11 +105,13 @@ export function clampImageWidths(
 }
 
 export async function selectImageVariantWidths({
+  cacheDirectory,
   formatSettings = defaultImageVariantFormatSettings,
   lossless = false,
   sourcePath,
   widths,
 }: Readonly<{
+  cacheDirectory?: string;
   formatSettings?: ImageVariantFormatSettings;
   lossless?: boolean;
   sourcePath: string;
@@ -127,6 +135,7 @@ export async function selectImageVariantWidths({
       ? Promise.resolve([])
       : selectSmallerWidths({
           format: 'avif',
+          cacheDirectory,
           options: formatSettings.avif,
           source,
           sourceHash,
@@ -134,6 +143,7 @@ export async function selectImageVariantWidths({
         }),
     selectSmallerWidths({
       format: 'webp',
+      cacheDirectory,
       lossless,
       options: formatSettings.webp,
       source,
@@ -146,6 +156,7 @@ export async function selectImageVariantWidths({
 }
 
 async function selectSmallerWidths({
+  cacheDirectory,
   format,
   lossless = false,
   options,
@@ -153,6 +164,7 @@ async function selectSmallerWidths({
   sourceHash,
   widths,
 }: Readonly<{
+  cacheDirectory?: string;
   format: 'avif' | 'webp';
   lossless?: boolean;
   options: ResolvedImageVariantFormatOptions;
@@ -163,6 +175,7 @@ async function selectSmallerWidths({
   const candidates = await Promise.all(
     widths.map(async (width) => {
       const size = await getVariantSize({
+        cacheDirectory,
         format,
         lossless,
         options,
@@ -178,6 +191,7 @@ async function selectSmallerWidths({
 }
 
 function getVariantSize({
+  cacheDirectory,
   format,
   lossless,
   options,
@@ -185,6 +199,7 @@ function getVariantSize({
   sourceHash,
   width,
 }: Readonly<{
+  cacheDirectory?: string;
   format: 'avif' | 'webp';
   lossless: boolean;
   options: ResolvedImageVariantFormatOptions;
@@ -193,22 +208,40 @@ function getVariantSize({
   width: number;
 }>) {
   const quality = lossless ? undefined : options.quality;
-  const cacheKey = `${sourceHash}\0${format}\0${quality ?? ''}\0${options.effort ?? ''}\0${String(lossless)}\0${width}`;
+  const variantSizeKey = `${variantSizeCacheSchemaVersion}\0${variantSizeEncoderVersion}\0${sourceHash}\0${format}\0${quality ?? ''}\0${options.effort ?? ''}\0${String(lossless)}\0${width}`;
+  const cacheKey = `${cacheDirectory ?? ''}\0${variantSizeKey}`;
   const cachedSize = variantSizePromises.get(cacheKey);
   if (cachedSize) {
     return cachedSize;
   }
 
-  const size = sharp(source)
-    .autoOrient()
-    .toFormat(format, {
-      effort: options.effort,
-      lossless: lossless ? true : undefined,
-      quality,
+  const size = readVariantSizeFromCache({
+    cacheDirectory,
+    variantSizeKey,
+  })
+    .then(async (cachedVariantSize) => {
+      if (cachedVariantSize !== undefined) {
+        return cachedVariantSize;
+      }
+
+      const variantSize = (
+        await sharp(source)
+          .autoOrient()
+          .toFormat(format, {
+            effort: options.effort,
+            lossless: lossless ? true : undefined,
+            quality,
+          })
+          .resize({ width, withoutEnlargement: true })
+          .toBuffer()
+      ).byteLength;
+      await writeVariantSizeToCache({
+        cacheDirectory,
+        variantSize,
+        variantSizeKey,
+      });
+      return variantSize;
     })
-    .resize({ width, withoutEnlargement: true })
-    .toBuffer()
-    .then((buffer) => buffer.byteLength)
     .catch((error: unknown) => {
       variantSizePromises.delete(cacheKey);
       throw error;
@@ -221,6 +254,73 @@ function getVariantSize({
     }
   }
   return size;
+}
+
+async function readVariantSizeFromCache({
+  cacheDirectory,
+  variantSizeKey,
+}: Readonly<{
+  cacheDirectory: string | undefined;
+  variantSizeKey: string;
+}>) {
+  if (!cacheDirectory) {
+    return undefined;
+  }
+
+  try {
+    const value = await readFile(
+      createVariantSizeCachePath(cacheDirectory, variantSizeKey),
+      'utf8',
+    );
+    const variantSize = Number(value);
+    return Number.isSafeInteger(variantSize) &&
+      variantSize > 0 &&
+      String(variantSize) === value
+      ? variantSize
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function writeVariantSizeToCache({
+  cacheDirectory,
+  variantSize,
+  variantSizeKey,
+}: Readonly<{
+  cacheDirectory: string | undefined;
+  variantSize: number;
+  variantSizeKey: string;
+}>) {
+  if (!cacheDirectory) {
+    return;
+  }
+
+  const cachePath = createVariantSizeCachePath(cacheDirectory, variantSizeKey);
+  const temporaryPath = `${cachePath}.${process.pid}-${randomUUID()}.tmp`;
+  try {
+    await mkdir(cacheDirectory, { recursive: true });
+    await writeFile(temporaryPath, String(variantSize));
+    await rename(temporaryPath, cachePath);
+  } catch {
+    // A cache write failure must not prevent image generation.
+  } finally {
+    try {
+      await rm(temporaryPath, { force: true });
+    } catch {
+      // A failed cleanup only leaves an unused temporary cache file.
+    }
+  }
+}
+
+function createVariantSizeCachePath(
+  cacheDirectory: string,
+  variantSizeKey: string,
+) {
+  return path.join(
+    cacheDirectory,
+    createHash('sha256').update(variantSizeKey).digest('hex'),
+  );
 }
 
 function resolveImageVariantFormatOptions(

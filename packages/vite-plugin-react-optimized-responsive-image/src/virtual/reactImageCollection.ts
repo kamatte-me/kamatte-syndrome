@@ -22,6 +22,7 @@ export const reactImageCollectionVirtualModuleId =
 
 type CreateReactImageCollectionVirtualModuleOptions = {
   base: string;
+  cacheDirectory?: string;
   formatSettings?: ImageVariantFormatSettings;
   lossless?: boolean;
   manifest: ImageVariantManifest;
@@ -280,6 +281,7 @@ export function createReactImageCollectionVirtualModule({
 
 export async function selectReactImageCollectionVariantWidths({
   base,
+  cacheDirectory,
   formatSettings = defaultImageVariantFormatSettings,
   lossless = false,
   manifest,
@@ -307,6 +309,7 @@ export async function selectReactImageCollectionVariantWidths({
           return [
             publicUrl,
             await selectImageVariantWidths({
+              cacheDirectory,
               formatSettings,
               lossless,
               sourcePath,

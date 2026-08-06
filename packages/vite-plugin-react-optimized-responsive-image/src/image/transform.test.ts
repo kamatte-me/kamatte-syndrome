@@ -1,8 +1,8 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   resolveImageVariantFormatSettings,
   selectImageVariantWidths,
@@ -11,6 +11,8 @@ import {
 const temporaryDirectories: string[] = [];
 
 afterEach(async () => {
+  vi.doUnmock('sharp');
+  vi.resetModules();
   await Promise.all(
     temporaryDirectories
       .splice(0)
@@ -88,6 +90,102 @@ describe('selectImageVariantWidths', () => {
 
     expect(lowQuality.webp).toEqual([160]);
     expect(highQuality.webp).toEqual([]);
+  });
+
+  it('reuses variant sizes from the persistent cache', async () => {
+    const directory = await createTemporaryDirectory();
+    const cacheDirectory = path.join(directory, 'variant-sizes');
+    const sourcePath = path.join(directory, 'source.png');
+    await sharp({
+      create: {
+        background: 'white',
+        channels: 3,
+        height: 160,
+        width: 160,
+      },
+    })
+      .png({ compressionLevel: 0 })
+      .toFile(sourcePath);
+
+    const expected = await selectImageVariantWidths({
+      cacheDirectory,
+      sourcePath,
+      widths: [80],
+    });
+    await expect(readdir(cacheDirectory)).resolves.toHaveLength(2);
+
+    vi.resetModules();
+    const metadata = vi
+      .fn()
+      .mockResolvedValue({ autoOrient: { height: 160, width: 160 } });
+    const sharpMock = vi.fn(() => ({
+      autoOrient() {
+        throw new Error('Expected a persistent variant size cache hit');
+      },
+      metadata,
+    }));
+    vi.doMock('sharp', () => ({
+      default: Object.assign(sharpMock, { versions: sharp.versions }),
+    }));
+    const { selectImageVariantWidths: selectCachedImageVariantWidths } =
+      await import('./transform.ts');
+
+    await expect(
+      selectCachedImageVariantWidths({
+        cacheDirectory,
+        sourcePath,
+        widths: [80],
+      }),
+    ).resolves.toEqual(expected);
+    expect(metadata).toHaveBeenCalledTimes(1);
+  });
+
+  it('invalidates persistent variant sizes when encoder versions change', async () => {
+    const directory = await createTemporaryDirectory();
+    const cacheDirectory = path.join(directory, 'variant-sizes');
+    const sourcePath = path.join(directory, 'source.png');
+    await sharp({
+      create: {
+        background: 'white',
+        channels: 3,
+        height: 160,
+        width: 160,
+      },
+    })
+      .png({ compressionLevel: 0 })
+      .toFile(sourcePath);
+    await selectImageVariantWidths({
+      cacheDirectory,
+      sourcePath,
+      widths: [80],
+    });
+
+    vi.resetModules();
+    const metadata = vi
+      .fn()
+      .mockResolvedValue({ autoOrient: { height: 160, width: 160 } });
+    const sharpMock = vi.fn(() => ({
+      autoOrient() {
+        throw new Error('Expected a cache miss after an encoder update');
+      },
+      metadata,
+    }));
+    vi.doMock('sharp', () => ({
+      default: Object.assign(sharpMock, {
+        versions: { ...sharp.versions, sharp: 'updated' },
+      }),
+    }));
+    const { selectImageVariantWidths: selectCachedImageVariantWidths } =
+      await import('./transform.ts');
+
+    await expect(
+      selectCachedImageVariantWidths({
+        cacheDirectory,
+        sourcePath,
+        widths: [80],
+      }),
+    ).rejects.toThrow('Expected a cache miss after an encoder update');
+    expect(metadata).toHaveBeenCalledTimes(1);
   });
 
   it('resolves defaults and validates compression settings', () => {

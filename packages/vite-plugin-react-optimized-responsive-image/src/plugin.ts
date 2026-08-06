@@ -79,6 +79,10 @@ export function optimizedResponsiveImage({
     cacheDirectory ??
       'node_modules/.cache/vite-plugin-react-optimized-responsive-image',
   );
+  const variantSizeCacheDirectory = path.join(
+    resolvedCacheDirectory,
+    'variant-sizes',
+  );
   let devServer: ViteDevServer | undefined;
   let isBuild = false;
   let isWatchBuild = false;
@@ -329,6 +333,7 @@ export function optimizedResponsiveImage({
         }
         const effectiveLossless = lossless || imageVariantModule.lossless;
         const variantWidths = await selectImageVariantWidths({
+          cacheDirectory: variantSizeCacheDirectory,
           formatSettings,
           lossless: effectiveLossless,
           sourcePath: imageVariantModule.sourcePath,
@@ -401,6 +406,7 @@ export function optimizedResponsiveImage({
           }
           variantWidths = await selectReactImageCollectionVariantWidths({
             base: imageVariantsModule.base,
+            cacheDirectory: variantSizeCacheDirectory,
             formatSettings,
             lossless,
             manifest,

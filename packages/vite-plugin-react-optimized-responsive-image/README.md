@@ -15,7 +15,7 @@ export default defineConfig({
 });
 ```
 
-変換cacheはデフォルトで、Vite起動時のカレントディレクトリから見た`node_modules/.cache/vite-plugin-react-optimized-responsive-image/imagetools`に保存されます。保存先を変える場合は`cacheDirectory`を指定し、その配下の`imagetools`を使用します。
+変換cacheはデフォルトで、Vite起動時のカレントディレクトリから見た`node_modules/.cache/vite-plugin-react-optimized-responsive-image/`に保存されます。`imagetools`には生成画像、`variant-sizes`には候補画像の容量判定が保存されます。`variant-sizes`はSharpと各コーデックの更新時に自動で無効化されます。保存先を変える場合は`cacheDirectory`を指定してください。
 
 AVIFとWebPは`quality`と`effort`を個別に設定できます。`quality`は1から100で、デフォルトはAVIFが60、WebPが80です。`effort`は未指定の場合、Sharpのデフォルト値を使用します。AVIFの`effort`は0から9、WebPは0から6を指定できます。
 
@@ -131,7 +131,7 @@ queryの順序や幅の指定順が異なっても、同じ解決済みディレ
 
 `vite build --watch`では、保存途中などでコレクション内の画像を一時的に読めない場合、そのbuildだけ警告と空のmanifestへfallbackします。対象画像が変更されると再走査して通常のmanifestへ戻ります。watchではないbuildは従来どおりエラーで停止します。
 
-コレクションimportは対象ディレクトリ内の全対応画像について指定幅を事前変換し、fallbackより小さくなる候補だけをvite-imagetoolsへ渡します。大きなディレクトリや多くの幅セットを使うと事前判定の時間と成果物数が増えるため、利用箇所に必要な幅だけを指定してください。同じ画像内容・形式・品質・幅の容量判定はプロセス内でcacheされ、同じ生成物はViteによって共有されます。
+コレクションimportは対象ディレクトリ内の全対応画像について指定幅を事前変換し、fallbackより小さくなる候補だけをvite-imagetoolsへ渡します。大きなディレクトリや多くの幅セットを使うと事前判定の時間と成果物数が増えるため、利用箇所に必要な幅だけを指定してください。同じ画像内容・形式・品質・幅の容量判定は`cacheDirectory`配下に永続cacheされ、同じ生成物はViteによって共有されます。
 
 ## TypeScript
 
