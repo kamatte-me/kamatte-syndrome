@@ -1,5 +1,15 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { siteName } from '@/constants/site';
+
+vi.mock(
+  'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original',
+  () => ({
+    manifest: {
+      '/media/example.png': { src: '/assets/example.hash.png' },
+    },
+  }),
+);
+
 import {
   createCanonicalLink,
   createPageMeta,
@@ -41,7 +51,10 @@ describe('createPageMeta', () => {
       { property: 'og:url', content: 'https://kamatte.me/blog/example' },
       { property: 'og:site_name', content: siteName },
       { property: 'og:locale', content: 'ja_JP' },
-      { property: 'og:image', content: 'https://kamatte.me/media/example.png' },
+      {
+        property: 'og:image',
+        content: 'https://kamatte.me/assets/example.hash.png',
+      },
     ]);
   });
 

@@ -5,6 +5,7 @@ import {
   schemaOrgContext,
 } from '@/constants/jsonLd';
 import { author, baseUrl } from '@/constants/site';
+import { resolveContentMediaUrl } from '@/utils/contentMedia';
 
 type BlogStructuredDataOptions = {
   description: string;
@@ -40,7 +41,9 @@ export function createBlogPostingStructuredData({
       '@type': 'WebPage',
       '@id': url,
     },
-    image: featuredImage ? new URL(featuredImage, baseUrl).href : undefined,
+    image: featuredImage
+      ? new URL(resolveContentMediaUrl(featuredImage), baseUrl).href
+      : undefined,
     datePublished: publishedAt?.toISOString(),
     dateModified: revisedAt?.toISOString(),
     author: {

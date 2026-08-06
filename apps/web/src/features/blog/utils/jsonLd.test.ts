@@ -1,6 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { author } from '@/constants/site';
 import { createJsonLdScript } from '@/utils/jsonLd';
+
+vi.mock(
+  'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original',
+  () => ({
+    manifest: {
+      '/media/example.png': { src: '/assets/example.hash.png' },
+    },
+  }),
+);
+
 import {
   createBlogBreadcrumbStructuredData,
   createBlogPostingStructuredData,
@@ -28,7 +38,7 @@ describe('createBlogPostingStructuredData', () => {
         '@type': 'WebPage',
         '@id': 'https://kamatte.me/blog/example',
       },
-      image: 'https://kamatte.me/media/example.png',
+      image: 'https://kamatte.me/assets/example.hash.png',
       datePublished: '2026-07-10T01:00:00.000Z',
       dateModified: '2026-07-11T02:00:00.000Z',
       author: {

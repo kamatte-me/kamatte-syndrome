@@ -1,6 +1,7 @@
 import { load } from 'cheerio/slim';
 import type { MDXComponents, MDXContent } from 'mdx/types';
 import type { ComponentPropsWithoutRef } from 'react';
+import { resolveContentMediaUrl } from '@/utils/contentMedia';
 
 type FeedUrlEmbedProps = {
   url: string;
@@ -71,7 +72,9 @@ function FeedImage({
       alt={alt ?? ''}
       loading="lazy"
       src={
-        typeof src === 'string' ? createAbsoluteUrl(src, contentBaseUrl) : src
+        typeof src === 'string'
+          ? createAbsoluteUrl(resolveContentMediaUrl(src), contentBaseUrl)
+          : src
       }
     />
   );

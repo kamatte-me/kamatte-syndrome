@@ -1,4 +1,5 @@
 import { baseUrl, siteName } from '@/constants/site';
+import { resolveContentMediaUrl } from './contentMedia';
 
 type PageMetaOptions = {
   description: string;
@@ -34,7 +35,7 @@ export function createPageMeta({
   type = 'website',
 }: PageMetaOptions): PageMeta[] {
   const url = new URL(path, baseUrl).href;
-  const imageUrl = new URL(image, baseUrl).href;
+  const imageUrl = new URL(resolveContentMediaUrl(image), baseUrl).href;
 
   return [
     { title },

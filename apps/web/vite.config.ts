@@ -1,3 +1,4 @@
+import { realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import contentCollections from '@content-collections/vite';
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
@@ -17,11 +18,14 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, type Plugin, searchForWorkspaceRoot } from 'vite';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
+const contentMediaDirectory = realpathSync(
+  fileURLToPath(new URL('./kamatte-syndrome-content/media/', import.meta.url)),
+);
 const sourceDirectory = fileURLToPath(new URL('./src/', import.meta.url));
 
 export default defineConfig(({ mode }) => {
@@ -121,6 +125,11 @@ export default defineConfig(({ mode }) => {
       ],
       tsconfigPaths: true,
       preserveSymlinks: isTest,
+    },
+    server: {
+      fs: {
+        allow: [searchForWorkspaceRoot(process.cwd()), contentMediaDirectory],
+      },
     },
     ssr: {
       // These server-only dependencies ship unusable sourcemaps, which makes

@@ -6,6 +6,7 @@ import {
   createFeedSummaryFromHtml,
   renderFeedContentHtml,
 } from '@/features/feed/server/feedContent.server';
+import { resolveContentMediaUrl } from '@/utils/contentMedia';
 
 const feedItemLimit = 10;
 
@@ -27,7 +28,8 @@ export const Route = createFileRoute('/feed.xml')({
 
               return {
                 contentHtml,
-                image: post.featuredImage ?? '/avatar.png',
+                image:
+                  resolveContentMediaUrl(post.featuredImage) ?? '/avatar.png',
                 published: post.publishedAt,
                 summary: createFeedSummaryFromHtml(contentHtml),
                 title: post.title,

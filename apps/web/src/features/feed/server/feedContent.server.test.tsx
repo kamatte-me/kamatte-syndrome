@@ -1,6 +1,16 @@
 import type { MDXContent, MDXProps } from 'mdx/types';
 import type { ComponentPropsWithoutRef, ElementType } from 'react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock(
+  'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original',
+  () => ({
+    manifest: {
+      '/media/cover.png': { src: '/assets/cover.hash.png' },
+    },
+  }),
+);
+
 import {
   createFeedSummaryFromHtml,
   renderFeedContentHtml,
@@ -40,7 +50,7 @@ describe('renderFeedContentHtml', () => {
     );
     expect(html).toContain('<img alt="Cover"');
     expect(html).toContain('loading="lazy"');
-    expect(html).toContain('src="https://example.com/media/cover.png"');
+    expect(html).toContain('src="https://example.com/assets/cover.hash.png"');
     expect(html).not.toContain('rel="preload"');
   });
 
