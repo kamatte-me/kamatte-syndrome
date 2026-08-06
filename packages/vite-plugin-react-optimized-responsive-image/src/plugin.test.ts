@@ -286,6 +286,52 @@ describe('optimizedResponsiveImage', () => {
     ).rejects.toThrow();
   });
 
+  it('builds collections for every vite-imagetools input extension', async () => {
+    const rootDirectory = await createRootDirectory(
+      'optimized-responsive-image-supported-formats-',
+    );
+    const sourceDirectory = path.join(rootDirectory, 'src/images');
+    const outputDirectory = path.join(rootDirectory, 'dist');
+    const reactImageRuntimeAlias =
+      await createReactImageRuntimeAlias(rootDirectory);
+    await mkdir(sourceDirectory, { recursive: true });
+    const sourcePaths = await writeViteImagetoolsSourceImages(sourceDirectory);
+    await writeFile(
+      path.join(rootDirectory, 'main.js'),
+      [
+        "import Images from 'virtual:react-optimized-responsive-image/collection?src=./src/images&base=/images&widths=20';",
+        'console.log(Images);',
+        '',
+      ].join('\n'),
+    );
+
+    await build({
+      build: {
+        assetsInlineLimit: 0,
+        outDir: outputDirectory,
+        rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+      },
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        optimizedResponsiveImage({
+          cacheDirectory: path.join(rootDirectory, 'cache'),
+        }),
+      ],
+      publicDir: false,
+      resolve: { alias: [reactImageRuntimeAlias] },
+      root: rootDirectory,
+    });
+
+    const assetDirectory = path.join(outputDirectory, 'assets');
+    const assetFiles = await readdir(assetDirectory);
+    await Promise.all(
+      sourcePaths.map((sourcePath) =>
+        expectOriginalAsset({ assetDirectory, assetFiles, sourcePath }),
+      ),
+    );
+  });
+
   it('builds an importer-relative single image', async () => {
     const rootDirectory = await createRootDirectory('image-variant-vite-');
     const sourceDirectory = path.join(rootDirectory, 'src');
@@ -871,6 +917,40 @@ async function writeSizedPng(filePath: string, width: number, height: number) {
     .toFile(filePath);
 }
 
+async function writeViteImagetoolsSourceImages(directory: string) {
+  const image = {
+    create: {
+      background: 'blue',
+      channels: 3 as const,
+      height: 20,
+      width: 30,
+    },
+  };
+  const sourcePaths = {
+    avif: path.join(directory, 'image.avif'),
+    gif: path.join(directory, 'image.gif'),
+    heif: path.join(directory, 'image.heif'),
+    jpeg: path.join(directory, 'image.jpeg'),
+    jpg: path.join(directory, 'image.jpg'),
+    png: path.join(directory, 'image.png'),
+    tiff: path.join(directory, 'image.tiff'),
+    webp: path.join(directory, 'image.webp'),
+  };
+
+  await Promise.all([
+    sharp(image).avif().toFile(sourcePaths.avif),
+    writeFile(sourcePaths.gif, createStaticGif()),
+    sharp(image).heif({ compression: 'av1' }).toFile(sourcePaths.heif),
+    sharp(image).jpeg().toFile(sourcePaths.jpeg),
+    sharp(image).jpeg().toFile(sourcePaths.jpg),
+    sharp(image).png().toFile(sourcePaths.png),
+    sharp(image).tiff().toFile(sourcePaths.tiff),
+    sharp(image).webp().toFile(sourcePaths.webp),
+  ]);
+
+  return Object.values(sourcePaths);
+}
+
 async function writeUncompressedTestPng(
   filePath: string,
   width: number,
@@ -916,6 +996,17 @@ function createAnimatedGif() {
   );
 }
 
+function createStaticGif() {
+  return Buffer.from(
+    [
+      '47494638396101000100800000000000ffffff',
+      '21f904000a0000002c0000000001000100000202440100',
+      '3b',
+    ].join(''),
+    'hex',
+  );
+}
+
 function isSamePath(firstPath: string, secondPath: string) {
   return path.resolve(firstPath) === path.resolve(secondPath);
 }
@@ -946,17 +1037,18 @@ async function expectOriginalAsset({
   assetFiles: readonly string[];
   sourcePath: string;
 }>) {
-  const sourceExtension = path.extname(sourcePath).toLowerCase();
-  const sourceName = path.basename(sourcePath, path.extname(sourcePath));
-  const assetFile = assetFiles.find(
-    (file) =>
-      file.startsWith(`${sourceName}-`) &&
-      path.extname(file).toLowerCase() === sourceExtension,
-  );
+  const source = await readFile(sourcePath);
+  const assetFile = (
+    await Promise.all(
+      assetFiles.map(async (file) => ({
+        file,
+        isOriginal: (
+          await readFile(path.join(assetDirectory, file))
+        ).equals(source),
+      })),
+    )
+  ).find(({ isOriginal }) => isOriginal)?.file;
 
-  expect(assetFile).toBeDefined();
-  await expect(
-    readFile(path.join(assetDirectory, assetFile ?? '')),
-  ).resolves.toEqual(await readFile(sourcePath));
+  expect(assetFile, sourcePath).toBeDefined();
   return assetFile ?? '';
 }

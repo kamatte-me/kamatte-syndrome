@@ -158,7 +158,7 @@ describe('virtual React image collection', () => {
       'import { createReactImageCollection } from "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react";',
     );
     expect(code).toContain(
-      'import imageVariantOriginal0 from "/content/nested/example.jpg";',
+      'import imageVariantOriginal0 from "/content/nested/example.jpg?url";',
     );
     expect(code).toContain('/content/nested/example.jpg?');
     expect(code).toContain('__imageVariants=true');
@@ -272,7 +272,7 @@ describe('virtual React image collection', () => {
     });
 
     expect(code).toContain(
-      'import imageVariantOriginal0 from "/content/animated.webp";',
+      'import imageVariantOriginal0 from "/content/animated.webp?url";',
     );
     expect(code).not.toContain('__imageVariants=true');
     expect(code).not.toContain('imageVariantAvif0');

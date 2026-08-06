@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
+import { imageSourceExtensions } from '../image/formats.ts';
 import {
   createImageTransformImport,
   createImageVariantFormatDirectives,
@@ -16,13 +17,7 @@ import {
 
 export const reactImageVirtualModuleId =
   'virtual:react-optimized-responsive-image';
-const supportedImageExtensions = new Set([
-  '.avif',
-  '.jpeg',
-  '.jpg',
-  '.png',
-  '.webp',
-]);
+const supportedImageExtensions = new Set<string>(imageSourceExtensions);
 
 export type ReactImageVirtualModuleRequest = Readonly<{
   lossless: boolean;
@@ -194,7 +189,7 @@ export function createReactImageVirtualModule({
         });
 
   return createReactImageModuleCode([
-    `import imageVariantFallback from ${JSON.stringify(sourcePath)};`,
+    `import imageVariantFallback from ${JSON.stringify(`${sourcePath}?url`)};`,
     ...(avifImport
       ? [`import imageVariantAvif from ${JSON.stringify(avifImport)};`]
       : []),
@@ -218,7 +213,7 @@ export function createUnoptimizedReactImageVirtualModule({
   width,
 }: CreateUnoptimizedReactImageVirtualModuleOptions) {
   return createReactImageModuleCode([
-    `import imageVariantFallback from ${JSON.stringify(sourcePath)};`,
+    `import imageVariantFallback from ${JSON.stringify(`${sourcePath}?url`)};`,
     `const imageVariant={avif:[],height:${height},src:imageVariantFallback,webp:[],width:${width}};`,
   ]);
 }

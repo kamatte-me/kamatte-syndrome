@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
@@ -125,6 +125,16 @@ describe('selectImageVariantWidths', () => {
     ).resolves.toEqual({ avif: [], webp: [] });
   });
 
+  it('keeps animated GIF sources as fallback-only images', async () => {
+    const directory = await createTemporaryDirectory();
+    const sourcePath = path.join(directory, 'animated.gif');
+    await writeFile(sourcePath, createAnimatedGif());
+
+    await expect(
+      selectImageVariantWidths({ sourcePath, widths: [1, 2] }),
+    ).resolves.toEqual({ avif: [], webp: [] });
+  });
+
   it('never creates an AVIF candidate for lossless requests', async () => {
     const directory = await createTemporaryDirectory();
     const sourcePath = path.join(directory, 'code.png');
@@ -153,4 +163,17 @@ async function createTemporaryDirectory() {
   const directory = await mkdtemp(path.join(tmpdir(), 'image-transform-'));
   temporaryDirectories.push(directory);
   return directory;
+}
+
+function createAnimatedGif() {
+  return Buffer.from(
+    [
+      '47494638396101000100800000000000ffffff',
+      '21ff0b4e45545343415045322e300301000000',
+      '21f904000a0000002c0000000001000100000202440100',
+      '21f904000a0000002c00000000010001000002024c0100',
+      '3b',
+    ].join(''),
+    'hex',
+  );
 }

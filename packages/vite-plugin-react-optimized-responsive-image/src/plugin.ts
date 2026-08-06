@@ -14,6 +14,7 @@ import {
   imagetools,
   resolveConfigs as resolveImagetoolsConfigs,
 } from 'vite-imagetools';
+import { imageSourceExtensions } from './image/formats.ts';
 import {
   getImageDisplayDimensions,
   scanImageVariantManifest,
@@ -57,6 +58,10 @@ export type OptimizedResponsiveImagePluginOptions = Readonly<{
   /** WebP compression settings. Quality defaults to 80. */
   webp?: ImageVariantFormatOptions;
 }>;
+
+const imageSourceExtensionPattern = imageSourceExtensions
+  .map((extension) => extension.slice(1))
+  .join('|');
 
 export function optimizedResponsiveImage({
   avif,
@@ -484,7 +489,7 @@ export function optimizedResponsiveImage({
               dir: path.join(resolvedCacheDirectory, 'imagetools'),
             },
             include: new RegExp(
-              `^[^?]+\\.(?:avif|gif|heif|jpeg|jpg|png|tiff|webp)\\?${imageTransformQueryParameter}=true(?:&.*)?$`,
+              `^[^?]+\\.(?:${imageSourceExtensionPattern})\\?${imageTransformQueryParameter}=true(?:&.*)?$`,
               'i',
             ),
             resolveConfigs: (parameters, outputFormats) =>

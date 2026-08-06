@@ -2,14 +2,9 @@ import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import sharp, { type Metadata } from 'sharp';
 import type { ImageVariantEntry, ImageVariantManifest } from '../types.ts';
+import { imageSourceExtensions } from './formats.ts';
 
-const supportedImageExtensions = new Set([
-  '.avif',
-  '.jpeg',
-  '.jpg',
-  '.png',
-  '.webp',
-]);
+const supportedImageExtensions = new Set<string>(imageSourceExtensions);
 
 export type ScanImageVariantManifestOptions = Readonly<{
   publicPath: string;

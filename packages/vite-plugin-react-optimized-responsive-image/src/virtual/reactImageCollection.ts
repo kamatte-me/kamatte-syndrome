@@ -241,7 +241,7 @@ export function createReactImageCollectionVirtualModule({
     const hasWebpVariants = entryVariantWidths.webp.length > 0;
 
     imports.push(
-      `import ${originalIdentifier} from ${JSON.stringify(sourcePath)};`,
+      `import ${originalIdentifier} from ${JSON.stringify(`${sourcePath}?url`)};`,
     );
     if (hasAvifVariants) {
       imports.push(

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { imageSourceExtensions } from '../image/formats.ts';
 import { resolveImageVariantFormatSettings } from '../image/transform.ts';
 import {
   createReactImageVirtualModule,
@@ -83,7 +84,7 @@ describe('virtual React image', () => {
       'import { createReactImage } from "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react";',
     );
     expect(code).toContain(
-      'import imageVariantFallback from "/project/src/image.jpg"',
+      'import imageVariantFallback from "/project/src/image.jpg?url"',
     );
     expect(code).toContain('__imageVariants=true');
     expect(code).toContain('format=avif&quality=60');
@@ -151,7 +152,7 @@ describe('virtual React image', () => {
     });
 
     expect(code).toContain(
-      'import imageVariantFallback from "/project/src/image.webp"',
+      'import imageVariantFallback from "/project/src/image.webp?url"',
     );
     expect(code).not.toContain('__imageVariants=true');
     expect(code).not.toContain('imageVariantAvif');
@@ -168,7 +169,7 @@ describe('virtual React image', () => {
     });
 
     expect(code).toContain(
-      'import imageVariantFallback from "/project/src/image.jpg"',
+      'import imageVariantFallback from "/project/src/image.jpg?url"',
     );
     expect(code).toContain('avif:[]');
     expect(code).toContain('height:80');
@@ -186,5 +187,18 @@ describe('virtual React image', () => {
         widths: [160],
       }),
     ).toThrow('must be a supported image');
+  });
+
+  it('accepts every vite-imagetools input extension', () => {
+    for (const extension of imageSourceExtensions) {
+      expect(() =>
+        resolveReactImageVirtualModule({
+          lossless: false,
+          sourcePath: `/project/src/image${extension}`,
+          src: `./image${extension}`,
+          widths: [160],
+        }),
+      ).not.toThrow();
+    }
   });
 });

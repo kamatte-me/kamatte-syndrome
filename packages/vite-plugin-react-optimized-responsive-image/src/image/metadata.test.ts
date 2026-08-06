@@ -70,10 +70,9 @@ describe('scanImageVariantManifest', () => {
     );
   });
 
-  it('ignores GIF, SVG, and unknown files', async () => {
+  it('ignores SVG and unknown files', async () => {
     const sourceDirectory = await createSourceDirectory();
     await Promise.all([
-      writeFile(path.join(sourceDirectory, 'animated.gif'), 'not inspected'),
       writeFile(path.join(sourceDirectory, 'icon.svg'), '<svg />'),
       writeFile(path.join(sourceDirectory, 'notes.txt'), 'notes'),
     ]);
@@ -83,7 +82,7 @@ describe('scanImageVariantManifest', () => {
     ).resolves.toEqual({});
   });
 
-  it('includes each supported static image format', async () => {
+  it('includes each vite-imagetools input format', async () => {
     const sourceDirectory = await createSourceDirectory();
     const image = {
       create: {
@@ -95,8 +94,14 @@ describe('scanImageVariantManifest', () => {
     };
     await Promise.all([
       sharp(image).avif().toFile(path.join(sourceDirectory, 'image.avif')),
+      writeFile(path.join(sourceDirectory, 'image.gif'), createStaticGif()),
+      sharp(image)
+        .heif({ compression: 'av1' })
+        .toFile(path.join(sourceDirectory, 'image.heif')),
       sharp(image).jpeg().toFile(path.join(sourceDirectory, 'image.jpeg')),
+      sharp(image).jpeg().toFile(path.join(sourceDirectory, 'image.jpg')),
       sharp(image).png().toFile(path.join(sourceDirectory, 'image.png')),
+      sharp(image).tiff().toFile(path.join(sourceDirectory, 'image.tiff')),
       sharp(image).webp().toFile(path.join(sourceDirectory, 'image.webp')),
     ]);
 
@@ -107,14 +112,17 @@ describe('scanImageVariantManifest', () => {
 
     expect(Object.keys(manifest)).toEqual([
       '/assets/image.avif',
+      '/assets/image.gif',
+      '/assets/image.heif',
       '/assets/image.jpeg',
+      '/assets/image.jpg',
       '/assets/image.png',
+      '/assets/image.tiff',
       '/assets/image.webp',
     ]);
     expect(
       Object.values(manifest).every(
-        (entry) =>
-          entry !== undefined && entry.height === 20 && entry.width === 30,
+        (entry) => entry !== undefined && entry.height > 0 && entry.width > 0,
       ),
     ).toBe(true);
   });
@@ -197,6 +205,17 @@ function createAnimatedGif() {
       '21ff0b4e45545343415045322e300301000000',
       '21f904000a0000002c0000000001000100000202440100',
       '21f904000a0000002c00000000010001000002024c0100',
+      '3b',
+    ].join(''),
+    'hex',
+  );
+}
+
+function createStaticGif() {
+  return Buffer.from(
+    [
+      '47494638396101000100800000000000ffffff',
+      '21f904000a0000002c0000000001000100000202440100',
       '3b',
     ].join(''),
     'hex',
