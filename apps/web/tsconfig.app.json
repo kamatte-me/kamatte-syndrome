@@ -10,6 +10,7 @@
     "types": [
       "vite/client",
       "@webgpu/types",
+      "@kamatte-syndrome/vite-plugin-optimized-social-image/virtual",
       "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react/virtual"
     ]
   },

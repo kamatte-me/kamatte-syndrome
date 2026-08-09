@@ -3,10 +3,15 @@ import type { ComponentPropsWithoutRef, ElementType } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock(
-  'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original',
+  'virtual:optimized-social-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&width=1200',
   () => ({
     manifest: {
-      '/media/cover.png': { src: '/assets/cover.hash.png' },
+      '/media/cover.png': {
+        format: 'png',
+        height: 800,
+        src: '/assets/cover.1200x800.hash.png',
+        width: 1200,
+      },
     },
   }),
 );
@@ -50,7 +55,9 @@ describe('renderFeedContentHtml', () => {
     );
     expect(html).toContain('<img alt="Cover"');
     expect(html).toContain('loading="lazy"');
-    expect(html).toContain('src="https://example.com/assets/cover.hash.png"');
+    expect(html).toContain(
+      'src="https://example.com/assets/cover.1200x800.hash.png"',
+    );
     expect(html).not.toContain('rel="preload"');
   });
 

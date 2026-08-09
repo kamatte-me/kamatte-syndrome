@@ -3,10 +3,15 @@ import { author } from '@/constants/site';
 import { createJsonLdScript } from '@/utils/jsonLd';
 
 vi.mock(
-  'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original',
+  'virtual:optimized-social-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&width=1200',
   () => ({
     manifest: {
-      '/media/example.png': { src: '/assets/example.hash.png' },
+      '/media/example.png': {
+        format: 'png',
+        height: 800,
+        src: '/assets/example.1200x800.hash.png',
+        width: 1200,
+      },
     },
   }),
 );
@@ -38,7 +43,7 @@ describe('createBlogPostingStructuredData', () => {
         '@type': 'WebPage',
         '@id': 'https://kamatte.me/blog/example',
       },
-      image: 'https://kamatte.me/assets/example.hash.png',
+      image: 'https://kamatte.me/assets/example.1200x800.hash.png',
       datePublished: '2026-07-10T01:00:00.000Z',
       dateModified: '2026-07-11T02:00:00.000Z',
       author: {

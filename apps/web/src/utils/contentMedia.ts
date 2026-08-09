@@ -1,4 +1,4 @@
-import { manifest as contentMediaManifest } from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original';
+import { manifest as contentMediaManifest } from 'virtual:optimized-social-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&width=1200';
 
 export function resolveContentMediaUrl(value: string): string;
 export function resolveContentMediaUrl(value: undefined): undefined;

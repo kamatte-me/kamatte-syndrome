@@ -2,10 +2,15 @@ import { describe, expect, it, vi } from 'vitest';
 import { siteName } from '@/constants/site';
 
 vi.mock(
-  'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=original',
+  'virtual:optimized-social-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&width=1200',
   () => ({
     manifest: {
-      '/media/example.png': { src: '/assets/example.hash.png' },
+      '/media/example.png': {
+        format: 'png',
+        height: 800,
+        src: '/assets/example.1200x800.hash.png',
+        width: 1200,
+      },
     },
   }),
 );
@@ -53,7 +58,7 @@ describe('createPageMeta', () => {
       { property: 'og:locale', content: 'ja_JP' },
       {
         property: 'og:image',
-        content: 'https://kamatte.me/assets/example.hash.png',
+        content: 'https://kamatte.me/assets/example.1200x800.hash.png',
       },
     ]);
   });

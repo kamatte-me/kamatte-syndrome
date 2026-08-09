@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import contentCollections from '@content-collections/vite';
 import { remarkGfmSubset } from '@kamatte-syndrome/remark-gfm-subset';
 import { remarkMdxUrlEmbed } from '@kamatte-syndrome/remark-mdx-url-embed';
+import { optimizedSocialImage } from '@kamatte-syndrome/vite-plugin-optimized-social-image';
 import { optimizedResponsiveImage } from '@kamatte-syndrome/vite-plugin-react-optimized-responsive-image';
 import mdx from '@mdx-js/rollup';
 import tailwindcss from '@tailwindcss/vite';
@@ -20,7 +21,6 @@ import { visualizer } from 'rollup-plugin-visualizer';
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin, searchForWorkspaceRoot } from 'vite';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const appDirectory = fileURLToPath(new URL('.', import.meta.url));
 const contentMediaDirectory = realpathSync(
@@ -77,21 +77,10 @@ export default defineConfig(({ mode }) => {
       optimizedResponsiveImage({
         enabled: !isTest,
       }),
+      optimizedSocialImage(),
       !isTest &&
         ViteImageOptimizer({
           test: /\.svg$/i,
-        }),
-      !isTest &&
-        viteStaticCopy({
-          targets: [
-            {
-              src: 'kamatte-syndrome-content/media/**/*',
-              dest: 'media',
-              rename: {
-                stripBase: 2,
-              },
-            },
-          ],
         }),
       contentCollections({
         environment: 'ssr',
