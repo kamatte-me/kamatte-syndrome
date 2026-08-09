@@ -122,22 +122,27 @@ describe('optimizedResponsiveImage', () => {
           path.join(rootDirectory, 'main.js'),
         );
       expect(resolvedCollectionModule).not.toBeNull();
-      await expect(
-        server.environments.client.transformRequest(
+      const collectionTransform =
+        await server.environments.client.transformRequest(
           resolvedCollectionModule?.id ?? '',
-        ),
-      ).resolves.not.toBeNull();
+        );
+      expect(collectionTransform?.code).toContain(
+        '/@react-optimized-responsive-image/',
+      );
+      expect(collectionTransform?.code).not.toContain('?url');
       const resolvedImageModule =
         await server.environments.client.pluginContainer.resolveId(
           'virtual:react-optimized-responsive-image?src=./content-media/image.png&widths=40',
           path.join(rootDirectory, 'main.js'),
         );
       expect(resolvedImageModule).not.toBeNull();
-      await expect(
-        server.environments.client.transformRequest(
-          resolvedImageModule?.id ?? '',
-        ),
-      ).resolves.not.toBeNull();
+      const imageTransform = await server.environments.client.transformRequest(
+        resolvedImageModule?.id ?? '',
+      );
+      expect(imageTransform?.code).toContain(
+        '/@react-optimized-responsive-image/',
+      );
+      expect(imageTransform?.code).not.toContain('?url');
 
       const changedPaths: string[] = [];
       server.watcher.on('change', (filePath) => changedPaths.push(filePath));
@@ -153,12 +158,22 @@ describe('optimizedResponsiveImage', () => {
         },
         { interval: 25, timeout: 3_000 },
       );
+      await vi.waitFor(
+        async () => {
+          const refreshedImageTransform =
+            await server.environments.client.transformRequest(
+              resolvedImageModule?.id ?? '',
+            );
+          expect(refreshedImageTransform?.code).not.toBe(imageTransform?.code);
+        },
+        { interval: 25, timeout: 3_000 },
+      );
     } finally {
       await server.close();
     }
   });
 
-  it('builds collection widths from self-contained virtual imports', async () => {
+  it('builds collection widths from directly emitted assets', async () => {
     const rootDirectory = await createRootDirectory(
       'optimized-responsive-image-vite-',
     );
@@ -296,7 +311,7 @@ describe('optimizedResponsiveImage', () => {
     ).rejects.toThrow();
   });
 
-  it('builds collections for every vite-imagetools input extension', async () => {
+  it('builds collections for every supported input extension', async () => {
     const rootDirectory = await createRootDirectory(
       'optimized-responsive-image-supported-formats-',
     );
@@ -305,7 +320,7 @@ describe('optimizedResponsiveImage', () => {
     const reactImageRuntimeAlias =
       await createReactImageRuntimeAlias(rootDirectory);
     await mkdir(sourceDirectory, { recursive: true });
-    const sourcePaths = await writeViteImagetoolsSourceImages(sourceDirectory);
+    const sourcePaths = await writeSupportedSourceImages(sourceDirectory);
     await writeFile(
       path.join(rootDirectory, 'main.js'),
       [
@@ -342,7 +357,7 @@ describe('optimizedResponsiveImage', () => {
     );
   });
 
-  it('builds an importer-relative single image', async () => {
+  it('builds an importer-relative single image with a relative Vite base', async () => {
     const rootDirectory = await createRootDirectory('image-variant-vite-');
     const sourceDirectory = path.join(rootDirectory, 'src');
     const outputDirectory = path.join(rootDirectory, 'dist');
@@ -371,10 +386,14 @@ describe('optimizedResponsiveImage', () => {
     );
 
     await build({
+      base: './',
       build: {
         assetsInlineLimit: 0,
         outDir: outputDirectory,
-        rollupOptions: { input: path.join(rootDirectory, 'main.js') },
+        rollupOptions: {
+          input: path.join(rootDirectory, 'main.js'),
+          output: { entryFileNames: 'nested/main.js' },
+        },
       },
       configFile: false,
       logLevel: 'silent',
@@ -408,16 +427,17 @@ describe('optimizedResponsiveImage', () => {
       readFile(path.join(assetDirectory, fallbackFile ?? '')),
     ).resolves.toEqual(await readFile(sourcePath));
 
-    const bundleFile = assetFiles.find((file) => file.endsWith('.js'));
-    expect(bundleFile).toBeDefined();
     const bundle = await readFile(
-      path.join(assetDirectory, bundleFile ?? ''),
+      path.join(outputDirectory, 'nested/main.js'),
       'utf8',
     );
     expect(bundle).toContain('width:40');
     expect(bundle).toContain('width:100');
     expect(bundle).toContain('width:120');
     expect(bundle).toContain('height:80');
+    expect(bundle).toContain(`../assets/${fallbackFile}`);
+    expect(bundle).toContain('import.meta.url');
+    expect(bundle).not.toContain('__VITE_ASSET__');
   });
 
   it('applies compression settings without reusing incompatible cache entries', async () => {
@@ -927,7 +947,7 @@ async function writeSizedPng(filePath: string, width: number, height: number) {
     .toFile(filePath);
 }
 
-async function writeViteImagetoolsSourceImages(directory: string) {
+async function writeSupportedSourceImages(directory: string) {
   const image = {
     create: {
       background: 'blue',

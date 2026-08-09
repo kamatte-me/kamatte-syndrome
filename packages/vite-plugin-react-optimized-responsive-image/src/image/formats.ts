@@ -1,4 +1,4 @@
-/** Input extensions handled by vite-imagetools' default include pattern. */
+/** Input extensions decoded by Sharp for responsive image generation. */
 export const imageSourceExtensions = [
   '.avif',
   '.gif',

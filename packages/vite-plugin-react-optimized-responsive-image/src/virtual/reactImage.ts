@@ -2,14 +2,8 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
 import { imageSourceExtensions } from '../image/formats.ts';
-import {
-  createImageTransformImport,
-  createImageVariantFormatDirectives,
-  defaultImageVariantFormatSettings,
-  type ImageVariantFormatSettings,
-  type ImageVariantWidths,
-  type RequestedImageVariantWidth,
-} from '../image/transform.ts';
+import type { RequestedImageVariantWidth } from '../image/transform.ts';
+import type { ImageVariantEntry } from '../types.ts';
 import {
   assertKnownQueryParameters,
   getSingleQueryParameter,
@@ -143,78 +137,26 @@ export function resolveReactImageVirtualModule({
   } satisfies ResolvedReactImageVirtualModule;
 }
 
-type CreateReactImageVirtualModuleOptions = Pick<
-  ResolvedReactImageVirtualModule,
-  'lossless' | 'sourcePath'
-> &
-  Readonly<{
-    formatSettings?: ImageVariantFormatSettings;
-    naturalHeight: number;
-    naturalWidth: number;
-    variantWidths: ImageVariantWidths;
-  }>;
+type CreateReactImageVirtualModuleOptions = Readonly<{
+  image: ImageVariantEntry;
+}>;
 
 export function createReactImageVirtualModule({
-  formatSettings = defaultImageVariantFormatSettings,
-  lossless,
-  naturalHeight,
-  naturalWidth,
-  sourcePath,
-  variantWidths,
+  image,
 }: CreateReactImageVirtualModuleOptions) {
-  const avifImport =
-    lossless || variantWidths.avif.length === 0
-      ? null
-      : createImageTransformImport(sourcePath, {
-          allowUpscale: 'true',
-          as: 'metadata:src;width',
-          ...createImageVariantFormatDirectives({
-            format: 'avif',
-            options: formatSettings.avif,
-          }),
-          w: variantWidths.avif.join(';'),
-        });
-  const webpImport =
-    variantWidths.webp.length === 0
-      ? null
-      : createImageTransformImport(sourcePath, {
-          allowUpscale: 'true',
-          as: 'metadata:src;width',
-          ...createImageVariantFormatDirectives({
-            format: 'webp',
-            lossless,
-            options: formatSettings.webp,
-          }),
-          w: variantWidths.webp.join(';'),
-        });
-
   return createReactImageModuleCode([
-    `import imageVariantFallback from ${JSON.stringify(`${sourcePath}?url`)};`,
-    ...(avifImport
-      ? [`import imageVariantAvif from ${JSON.stringify(avifImport)};`]
-      : []),
-    ...(webpImport
-      ? [`import imageVariantWebp from ${JSON.stringify(webpImport)};`]
-      : []),
-    'const toVariants=(value)=>Array.isArray(value)?value:[value];',
-    `const imageVariant={avif:${avifImport ? 'toVariants(imageVariantAvif)' : '[]'},height:${naturalHeight},src:imageVariantFallback,webp:${webpImport ? 'toVariants(imageVariantWebp)' : '[]'},width:${naturalWidth}};`,
+    `const imageVariant=${JSON.stringify(image)};`,
   ]);
 }
 
-type CreateUnoptimizedReactImageVirtualModuleOptions = Readonly<{
-  height: number;
-  sourcePath: string;
-  width: number;
-}>;
+type CreateUnoptimizedReactImageVirtualModuleOptions =
+  CreateReactImageVirtualModuleOptions;
 
 export function createUnoptimizedReactImageVirtualModule({
-  height,
-  sourcePath,
-  width,
+  image,
 }: CreateUnoptimizedReactImageVirtualModuleOptions) {
   return createReactImageModuleCode([
-    `import imageVariantFallback from ${JSON.stringify(`${sourcePath}?url`)};`,
-    `const imageVariant={avif:[],height:${height},src:imageVariantFallback,webp:[],width:${width}};`,
+    `const imageVariant=${JSON.stringify({ ...image, avif: [], webp: [] })};`,
   ]);
 }
 

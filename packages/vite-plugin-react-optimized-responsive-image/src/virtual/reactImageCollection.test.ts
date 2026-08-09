@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { resolveImageVariantFormatSettings } from '../image/transform.ts';
 import {
   createEmptyReactImageCollectionVirtualModule,
   createReactImageCollectionVirtualModule,
   isPathInside,
   parseReactImageCollectionVirtualModuleRequest,
+  resolveManifestSourcePath,
   resolveReactImageCollectionSourceDirectory,
   resolveReactImageCollectionVirtualModule,
 } from './reactImageCollection.ts';
@@ -133,23 +133,15 @@ describe('virtual React image collection', () => {
     expect(realWatchDirectory.watchDirectory).toBe('/real/content/media');
   });
 
-  it('generates responsive assets and a component bound to the manifest', () => {
+  it('generates a component bound to direct responsive asset URLs', () => {
     const code = createReactImageCollectionVirtualModule({
-      base: '/media',
       manifest: {
         '/media/nested/example.jpg': {
-          avif: [],
+          avif: [{ src: '/assets/example.160x120.a1b2c3d4.avif', width: 160 }],
           height: 600,
-          src: '/media/nested/example.jpg',
-          webp: [],
+          src: '/assets/example.12345678.jpg',
+          webp: [{ src: '/assets/example.160x120.e5f6a7b8.webp', width: 160 }],
           width: 800,
-        },
-      },
-      sourceDirectory: '/content',
-      variantWidths: {
-        '/media/nested/example.jpg': {
-          avif: [160, 320],
-          webp: [160, 320],
         },
       },
     });
@@ -157,18 +149,10 @@ describe('virtual React image collection', () => {
     expect(code).toContain(
       'import { createReactImageCollection } from "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image/react";',
     );
-    expect(code).toContain(
-      'import imageVariantOriginal0 from "/content/nested/example.jpg?url";',
-    );
-    expect(code).toContain('/content/nested/example.jpg?');
-    expect(code).toContain('__imageVariants=true');
-    expect(code).toContain('format=avif');
-    expect(code).toContain('quality=60');
-    expect(code).toContain('format=webp');
-    expect(code).toContain('quality=80');
-    expect(code).toContain('w=160%3B320');
-    expect(code).toContain('src:imageVariantOriginal0');
-    expect(code).not.toContain('src:"/media/nested/example.jpg"');
+    expect(code).toContain('/assets/example.12345678.jpg');
+    expect(code).toContain('/assets/example.160x120.a1b2c3d4.avif');
+    expect(code).not.toContain('?url');
+    expect(code).not.toContain('__imageVariants');
     expect(code).toContain(
       'const ReactImageCollection=createReactImageCollection(imageVariantManifest);',
     );
@@ -181,104 +165,21 @@ describe('virtual React image collection', () => {
     expect(emptyCode).toContain('export default ReactImageCollection;');
   });
 
-  it('generates collection variants with custom compression settings', () => {
-    const code = createReactImageCollectionVirtualModule({
-      base: '/media',
-      formatSettings: resolveImageVariantFormatSettings({
-        avif: { effort: 7, quality: 50 },
-        webp: { effort: 5, quality: 70 },
-      }),
-      manifest: {
-        '/media/example.jpg': {
-          avif: [],
-          height: 600,
-          src: '/media/example.jpg',
-          webp: [],
-          width: 800,
-        },
-      },
-      sourceDirectory: '/content',
-      variantWidths: {
-        '/media/example.jpg': { avif: [320], webp: [320] },
-      },
-    });
-
-    expect(code).toContain('format=avif&quality=50&effort=7');
-    expect(code).toContain('format=webp&quality=70&effort=5');
-  });
-
-  it('generates only lossless WebP variants in lossless mode', () => {
-    const code = createReactImageCollectionVirtualModule({
-      base: '/media',
-      formatSettings: resolveImageVariantFormatSettings({
-        avif: { effort: 7, quality: 50 },
-        webp: { effort: 5, quality: 70 },
-      }),
-      lossless: true,
-      manifest: {
-        '/media/example.png': {
-          avif: [],
-          height: 600,
-          src: '/media/example.png',
-          webp: [],
-          width: 800,
-        },
-      },
-      sourceDirectory: '/content',
-      variantWidths: {
-        '/media/example.png': { avif: [320], webp: [320] },
-      },
-    });
-
-    expect(code).toContain('format=webp&lossless=true&effort=5');
-    expect(code).not.toContain('format=avif');
-    expect(code).not.toContain('quality=');
-    expect(code).toContain('avif:[]');
-  });
-
-  it('rejects manifest URLs outside the requested base', () => {
-    expect(() =>
-      createReactImageCollectionVirtualModule({
-        base: '/media',
-        manifest: {
-          '/other/example.jpg': {
-            avif: [],
-            height: 600,
-            src: '/other/example.jpg',
-            webp: [],
-            width: 800,
-          },
-        },
+  it('resolves manifest source paths inside the requested base only', () => {
+    expect(
+      resolveManifestSourcePath({
+        publicPathPrefix: '/media/',
+        publicUrl: '/media/nested/example.jpg',
         sourceDirectory: '/content',
-        variantWidths: {},
+      }),
+    ).toBe('/content/nested/example.jpg');
+    expect(() =>
+      resolveManifestSourcePath({
+        publicPathPrefix: '/media/',
+        publicUrl: '/other/example.jpg',
+        sourceDirectory: '/content',
       }),
     ).toThrow('must start with /media/');
-  });
-
-  it('keeps entries with no useful variants as fallback-only images', () => {
-    const code = createReactImageCollectionVirtualModule({
-      base: '/media',
-      manifest: {
-        '/media/animated.webp': {
-          avif: [],
-          height: 100,
-          src: '/media/animated.webp',
-          webp: [],
-          width: 100,
-        },
-      },
-      sourceDirectory: '/content',
-      variantWidths: {},
-    });
-
-    expect(code).toContain(
-      'import imageVariantOriginal0 from "/content/animated.webp?url";',
-    );
-    expect(code).not.toContain('__imageVariants=true');
-    expect(code).not.toContain('imageVariantAvif0');
-    expect(code).not.toContain('imageVariantWebp0');
-    expect(code).toContain('avif:[]');
-    expect(code).toContain('webp:[]');
   });
 
   it('recognizes paths within a source directory', () => {

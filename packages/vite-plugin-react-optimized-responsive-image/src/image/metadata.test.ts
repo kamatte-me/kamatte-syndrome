@@ -82,7 +82,7 @@ describe('scanImageVariantManifest', () => {
     ).resolves.toEqual({});
   });
 
-  it('includes each vite-imagetools input format', async () => {
+  it('includes each supported input format', async () => {
     const sourceDirectory = await createSourceDirectory();
     const image = {
       create: {

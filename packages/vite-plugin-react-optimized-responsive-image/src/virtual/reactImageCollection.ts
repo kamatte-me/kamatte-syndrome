@@ -1,16 +1,7 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { normalizePath } from 'vite';
-import {
-  createImageTransformImport,
-  createImageVariantFormatDirectives,
-  defaultImageVariantFormatSettings,
-  type ImageVariantFormatSettings,
-  type ImageVariantWidths,
-  type RequestedImageVariantWidth,
-  type ResolvedImageVariantFormatOptions,
-  selectImageVariantWidths,
-} from '../image/transform.ts';
+import type { RequestedImageVariantWidth } from '../image/transform.ts';
 import type { ImageVariantManifest } from '../types.ts';
 import {
   assertKnownQueryParameters,
@@ -20,15 +11,9 @@ import {
 export const reactImageCollectionVirtualModuleId =
   'virtual:react-optimized-responsive-image/collection';
 
-type CreateReactImageCollectionVirtualModuleOptions = {
-  base: string;
-  cacheDirectory?: string;
-  formatSettings?: ImageVariantFormatSettings;
-  lossless?: boolean;
+type CreateReactImageCollectionVirtualModuleOptions = Readonly<{
   manifest: ImageVariantManifest;
-  sourceDirectory: string;
-  variantWidths: Readonly<Record<string, ImageVariantWidths | undefined>>;
-};
+}>;
 
 export type ReactImageCollectionVirtualModuleRequest = Readonly<{
   base: string;
@@ -208,122 +193,11 @@ export function resolveReactImageCollectionVirtualModule({
 }
 
 export function createReactImageCollectionVirtualModule({
-  base,
-  formatSettings = defaultImageVariantFormatSettings,
-  lossless = false,
   manifest,
-  sourceDirectory,
-  variantWidths,
 }: CreateReactImageCollectionVirtualModuleOptions) {
-  const publicPathPrefix = `${base}/`;
-  const imports: string[] = [];
-  const entries: string[] = [];
-
-  for (const [publicUrl, entry] of Object.entries(manifest)) {
-    if (!entry) {
-      continue;
-    }
-
-    const sourcePath = resolveManifestSourcePath({
-      publicPathPrefix,
-      publicUrl,
-      sourceDirectory,
-    });
-
-    const index = entries.length;
-    const originalIdentifier = `imageVariantOriginal${index}`;
-    const avifIdentifier = `imageVariantAvif${index}`;
-    const webpIdentifier = `imageVariantWebp${index}`;
-    const entryVariantWidths = variantWidths[publicUrl] ?? {
-      avif: [],
-      webp: [],
-    };
-    const hasAvifVariants = !lossless && entryVariantWidths.avif.length > 0;
-    const hasWebpVariants = entryVariantWidths.webp.length > 0;
-
-    imports.push(
-      `import ${originalIdentifier} from ${JSON.stringify(`${sourcePath}?url`)};`,
-    );
-    if (hasAvifVariants) {
-      imports.push(
-        createVariantImport({
-          format: 'avif',
-          identifier: avifIdentifier,
-          options: formatSettings.avif,
-          sourcePath,
-          widths: entryVariantWidths.avif.join(';'),
-        }),
-      );
-    }
-    if (hasWebpVariants) {
-      imports.push(
-        createVariantImport({
-          format: 'webp',
-          identifier: webpIdentifier,
-          lossless,
-          options: formatSettings.webp,
-          sourcePath,
-          widths: entryVariantWidths.webp.join(';'),
-        }),
-      );
-    }
-    entries.push(
-      `${JSON.stringify(publicUrl)}:{avif:${hasAvifVariants ? `toVariants(${avifIdentifier})` : '[]'},height:${entry.height},src:${originalIdentifier},webp:${hasWebpVariants ? `toVariants(${webpIdentifier})` : '[]'},width:${entry.width}}`,
-    );
-  }
-
   return createReactImageCollectionModuleCode([
-    ...imports,
-    'const toVariants=(value)=>Array.isArray(value)?value:[value];',
-    `const imageVariantManifest={${entries.join(',')}};`,
+    `const imageVariantManifest=${JSON.stringify(manifest)};`,
   ]);
-}
-
-export async function selectReactImageCollectionVariantWidths({
-  base,
-  cacheDirectory,
-  formatSettings = defaultImageVariantFormatSettings,
-  lossless = false,
-  manifest,
-  sourceDirectory,
-  widths,
-}: Omit<CreateReactImageCollectionVirtualModuleOptions, 'variantWidths'> & {
-  widths: readonly RequestedImageVariantWidth[];
-}) {
-  const publicPathPrefix = `${base}/`;
-  const publicUrls = Object.keys(manifest).filter(
-    (publicUrl) => manifest[publicUrl] !== undefined,
-  );
-  const variants: [string, ImageVariantWidths][] = [];
-  const batchSize = 4;
-  for (let index = 0; index < publicUrls.length; index += batchSize) {
-    const batch = publicUrls.slice(index, index + batchSize);
-    variants.push(
-      ...(await Promise.all(
-        batch.map(async (publicUrl) => {
-          const sourcePath = resolveManifestSourcePath({
-            publicPathPrefix,
-            publicUrl,
-            sourceDirectory,
-          });
-          return [
-            publicUrl,
-            await selectImageVariantWidths({
-              cacheDirectory,
-              formatSettings,
-              lossless,
-              sourcePath,
-              widths,
-            }),
-          ] satisfies [string, ImageVariantWidths];
-        }),
-      )),
-    );
-  }
-
-  return Object.fromEntries(variants) as Readonly<
-    Record<string, ImageVariantWidths>
-  >;
 }
 
 export function createEmptyReactImageCollectionVirtualModule() {
@@ -341,33 +215,6 @@ export function isPathInside(directory: string, filePath: string) {
   );
 }
 
-type CreateVariantImportOptions = {
-  format: 'avif' | 'webp';
-  identifier: string;
-  lossless?: boolean;
-  options: ResolvedImageVariantFormatOptions;
-  sourcePath: string;
-  widths: string;
-};
-
-function createVariantImport({
-  format,
-  identifier,
-  lossless = false,
-  options,
-  sourcePath,
-  widths,
-}: CreateVariantImportOptions) {
-  const source = createImageTransformImport(sourcePath, {
-    allowUpscale: 'true',
-    as: 'metadata:src;width',
-    ...createImageVariantFormatDirectives({ format, lossless, options }),
-    w: widths,
-  });
-
-  return `import ${identifier} from ${JSON.stringify(source)};`;
-}
-
 function normalizeBase(base: string) {
   const normalizedBase = `/${base.replace(/^\/+|\/+$/g, '')}`;
   if (normalizedBase === '/') {
@@ -378,7 +225,7 @@ function normalizeBase(base: string) {
   return normalizedBase;
 }
 
-function resolveManifestSourcePath({
+export function resolveManifestSourcePath({
   publicPathPrefix,
   publicUrl,
   sourceDirectory,

@@ -3,8 +3,6 @@ import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 
-export const imageTransformQueryParameter = '__imageVariants';
-
 export type ImageVariantFormatOptions = Readonly<{
   /** Compression effort. AVIF accepts 0-9 and WebP accepts 0-6. */
   effort?: number;
@@ -34,41 +32,35 @@ export type ImageVariantWidths = Readonly<{
 
 export type RequestedImageVariantWidth = number | 'original';
 
-const variantSizePromises = new Map<string, Promise<number>>();
-const maxCachedVariantSizes = 1_000;
-const variantSizeCacheSchemaVersion = 1;
-const variantSizeEncoderVersion = Object.entries(sharp.versions)
+export type GeneratedImageVariant = Readonly<{
+  buffer: Buffer;
+  cacheKey: string;
+  format: 'avif' | 'webp';
+  height: number;
+  width: number;
+}>;
+
+export type GeneratedImageVariants = Readonly<{
+  avif: readonly GeneratedImageVariant[];
+  webp: readonly GeneratedImageVariant[];
+}>;
+
+type CachedImageVariantMetadata = Readonly<{
+  format: 'avif' | 'webp';
+  height: number;
+  width: number;
+}>;
+
+const transformedImagePromises = new Map<
+  string,
+  Promise<GeneratedImageVariant>
+>();
+const maxCachedTransformedImages = 1_000;
+const transformedImageCacheSchemaVersion = 1;
+const transformedImageEncoderVersion = Object.entries(sharp.versions)
   .sort(([left], [right]) => left.localeCompare(right))
   .map(([name, version]) => `${name}:${version}`)
   .join('\0');
-
-export function createImageTransformImport(
-  sourcePath: string,
-  directives: Record<string, string>,
-) {
-  const parameters = new URLSearchParams({
-    [imageTransformQueryParameter]: 'true',
-    ...directives,
-  });
-
-  return `${sourcePath}?${parameters}`;
-}
-
-export function createImageVariantFormatDirectives({
-  format,
-  lossless = false,
-  options,
-}: Readonly<{
-  format: 'avif' | 'webp';
-  lossless?: boolean;
-  options: ResolvedImageVariantFormatOptions;
-}>) {
-  return {
-    format,
-    ...(lossless ? { lossless: 'true' } : { quality: String(options.quality) }),
-    ...(options.effort === undefined ? {} : { effort: String(options.effort) }),
-  };
-}
 
 export function resolveImageVariantFormatSettings({
   avif,
@@ -104,7 +96,12 @@ export function clampImageWidths(
   ].sort((a, b) => a - b);
 }
 
-export async function selectImageVariantWidths({
+/**
+ * Generates the responsive assets themselves, retaining only variants smaller
+ * than the original source. Results are persisted so Vite does not need an
+ * image-transform plugin to recreate them in subsequent builds.
+ */
+export async function generateImageVariants({
   cacheDirectory,
   formatSettings = defaultImageVariantFormatSettings,
   lossless = false,
@@ -116,7 +113,7 @@ export async function selectImageVariantWidths({
   lossless?: boolean;
   sourcePath: string;
   widths: readonly RequestedImageVariantWidth[];
-}>): Promise<ImageVariantWidths> {
+}>): Promise<GeneratedImageVariants> {
   const source = await readFile(sourcePath);
   const metadata = await sharp(source).metadata();
   if ((metadata.pages ?? 1) > 1) {
@@ -133,17 +130,17 @@ export async function selectImageVariantWidths({
   const [avif, webp] = await Promise.all([
     lossless
       ? Promise.resolve([])
-      : selectSmallerWidths({
-          format: 'avif',
+      : generateSmallerVariants({
           cacheDirectory,
+          format: 'avif',
           options: formatSettings.avif,
           source,
           sourceHash,
           widths: candidateWidths,
         }),
-    selectSmallerWidths({
-      format: 'webp',
+    generateSmallerVariants({
       cacheDirectory,
+      format: 'webp',
       lossless,
       options: formatSettings.webp,
       source,
@@ -155,7 +152,18 @@ export async function selectImageVariantWidths({
   return { avif, webp };
 }
 
-async function selectSmallerWidths({
+/** Retained as a small, public selection helper for callers that only need widths. */
+export async function selectImageVariantWidths(
+  options: Parameters<typeof generateImageVariants>[0],
+): Promise<ImageVariantWidths> {
+  const variants = await generateImageVariants(options);
+  return {
+    avif: variants.avif.map(({ width }) => width),
+    webp: variants.webp.map(({ width }) => width),
+  };
+}
+
+async function generateSmallerVariants({
   cacheDirectory,
   format,
   lossless = false,
@@ -172,9 +180,9 @@ async function selectSmallerWidths({
   sourceHash: string;
   widths: readonly number[];
 }>) {
-  const candidates = await Promise.all(
-    widths.map(async (width) => {
-      const size = await getVariantSize({
+  const variants = await Promise.all(
+    widths.map((width) =>
+      getGeneratedImageVariant({
         cacheDirectory,
         format,
         lossless,
@@ -182,15 +190,16 @@ async function selectSmallerWidths({
         source,
         sourceHash,
         width,
-      });
-      return size < source.byteLength ? width : null;
-    }),
+      }),
+    ),
   );
-
-  return candidates.filter((width): width is number => width !== null);
+  return variants.filter(
+    (variant): variant is GeneratedImageVariant =>
+      variant.buffer.byteLength < source.byteLength,
+  );
 }
 
-function getVariantSize({
+function getGeneratedImageVariant({
   cacheDirectory,
   format,
   lossless,
@@ -207,103 +216,183 @@ function getVariantSize({
   sourceHash: string;
   width: number;
 }>) {
-  const quality = lossless ? undefined : options.quality;
-  const variantSizeKey = `${variantSizeCacheSchemaVersion}\0${variantSizeEncoderVersion}\0${sourceHash}\0${format}\0${quality ?? ''}\0${options.effort ?? ''}\0${String(lossless)}\0${width}`;
-  const cacheKey = `${cacheDirectory ?? ''}\0${variantSizeKey}`;
-  const cachedSize = variantSizePromises.get(cacheKey);
-  if (cachedSize) {
-    return cachedSize;
+  const cacheKey = createTransformedImageCacheKey({
+    format,
+    lossless,
+    options,
+    sourceHash,
+    width,
+  });
+  const memoryKey = `${cacheDirectory ?? ''}\0${cacheKey}`;
+  const cached = transformedImagePromises.get(memoryKey);
+  if (cached) {
+    return cached;
   }
 
-  const size = readVariantSizeFromCache({
+  const transformation = readCachedImageVariant({
     cacheDirectory,
-    variantSizeKey,
+    cacheKey,
+    format,
   })
-    .then(async (cachedVariantSize) => {
-      if (cachedVariantSize !== undefined) {
-        return cachedVariantSize;
+    .then(async (cachedVariant) => {
+      if (cachedVariant) {
+        return { ...cachedVariant, cacheKey };
       }
 
-      const variantSize = (
-        await sharp(source)
-          .autoOrient()
-          .toFormat(format, {
-            effort: options.effort,
-            lossless: lossless ? true : undefined,
-            quality,
-          })
-          .resize({ width, withoutEnlargement: true })
-          .toBuffer()
-      ).byteLength;
-      await writeVariantSizeToCache({
+      const buffer = await sharp(source)
+        .autoOrient()
+        .toFormat(format, {
+          effort: options.effort,
+          lossless: lossless ? true : undefined,
+          quality: lossless ? undefined : options.quality,
+        })
+        .resize({ width, withoutEnlargement: true })
+        .toBuffer();
+      const metadata = await sharp(buffer).metadata();
+      const generatedWidth = metadata.width;
+      const generatedHeight = metadata.height;
+      if (!generatedWidth || !generatedHeight) {
+        throw new Error('Generated image dimensions are unavailable');
+      }
+      const generated = {
+        buffer,
+        cacheKey,
+        format,
+        height: generatedHeight,
+        width: generatedWidth,
+      } satisfies GeneratedImageVariant;
+      await writeCachedImageVariant({
         cacheDirectory,
-        variantSize,
-        variantSizeKey,
+        cacheKey,
+        generated,
       });
-      return variantSize;
+      return generated;
     })
     .catch((error: unknown) => {
-      variantSizePromises.delete(cacheKey);
+      transformedImagePromises.delete(memoryKey);
       throw error;
     });
-  variantSizePromises.set(cacheKey, size);
-  if (variantSizePromises.size > maxCachedVariantSizes) {
-    const oldestKey = variantSizePromises.keys().next().value;
+  transformedImagePromises.set(memoryKey, transformation);
+  if (transformedImagePromises.size > maxCachedTransformedImages) {
+    const oldestKey = transformedImagePromises.keys().next().value;
     if (oldestKey) {
-      variantSizePromises.delete(oldestKey);
+      transformedImagePromises.delete(oldestKey);
     }
   }
-  return size;
+  return transformation;
 }
 
-async function readVariantSizeFromCache({
+function createTransformedImageCacheKey({
+  format,
+  lossless,
+  options,
+  sourceHash,
+  width,
+}: Readonly<{
+  format: 'avif' | 'webp';
+  lossless: boolean;
+  options: ResolvedImageVariantFormatOptions;
+  sourceHash: string;
+  width: number;
+}>) {
+  const quality = lossless ? undefined : options.quality;
+  return createHash('sha256')
+    .update(
+      `${transformedImageCacheSchemaVersion}\0${transformedImageEncoderVersion}\0${sourceHash}\0${format}\0${quality ?? ''}\0${options.effort ?? ''}\0${String(lossless)}\0${width}`,
+    )
+    .digest('hex');
+}
+
+async function readCachedImageVariant({
   cacheDirectory,
-  variantSizeKey,
+  cacheKey,
+  format,
 }: Readonly<{
   cacheDirectory: string | undefined;
-  variantSizeKey: string;
+  cacheKey: string;
+  format: 'avif' | 'webp';
 }>) {
   if (!cacheDirectory) {
     return undefined;
   }
 
   try {
-    const value = await readFile(
-      createVariantSizeCachePath(cacheDirectory, variantSizeKey),
-      'utf8',
-    );
-    const variantSize = Number(value);
-    return Number.isSafeInteger(variantSize) &&
-      variantSize > 0 &&
-      String(variantSize) === value
-      ? variantSize
-      : undefined;
+    const [buffer, serializedMetadata] = await Promise.all([
+      readFile(path.join(cacheDirectory, 'assets', `${cacheKey}.${format}`)),
+      readFile(
+        path.join(cacheDirectory, 'metadata', `${cacheKey}.json`),
+        'utf8',
+      ),
+    ]);
+    const metadata = JSON.parse(
+      serializedMetadata,
+    ) as CachedImageVariantMetadata;
+    if (
+      metadata.format !== format ||
+      !Number.isSafeInteger(metadata.width) ||
+      metadata.width <= 0 ||
+      !Number.isSafeInteger(metadata.height) ||
+      metadata.height <= 0
+    ) {
+      return undefined;
+    }
+    return { buffer, ...metadata };
   } catch {
     return undefined;
   }
 }
 
-async function writeVariantSizeToCache({
+async function writeCachedImageVariant({
   cacheDirectory,
-  variantSize,
-  variantSizeKey,
+  cacheKey,
+  generated,
 }: Readonly<{
   cacheDirectory: string | undefined;
-  variantSize: number;
-  variantSizeKey: string;
+  cacheKey: string;
+  generated: GeneratedImageVariant;
 }>) {
   if (!cacheDirectory) {
     return;
   }
 
-  const cachePath = createVariantSizeCachePath(cacheDirectory, variantSizeKey);
-  const temporaryPath = `${cachePath}.${process.pid}-${randomUUID()}.tmp`;
+  const assetDirectory = path.join(cacheDirectory, 'assets');
+  const metadataDirectory = path.join(cacheDirectory, 'metadata');
+  const metadata = {
+    format: generated.format,
+    height: generated.height,
+    width: generated.width,
+  } satisfies CachedImageVariantMetadata;
   try {
-    await mkdir(cacheDirectory, { recursive: true });
-    await writeFile(temporaryPath, String(variantSize));
-    await rename(temporaryPath, cachePath);
+    await Promise.all([
+      mkdir(assetDirectory, { recursive: true }),
+      mkdir(metadataDirectory, { recursive: true }),
+    ]);
+    await Promise.all([
+      writeAtomically({
+        data: generated.buffer,
+        filePath: path.join(assetDirectory, `${cacheKey}.${generated.format}`),
+      }),
+      writeAtomically({
+        data: JSON.stringify(metadata),
+        filePath: path.join(metadataDirectory, `${cacheKey}.json`),
+      }),
+    ]);
   } catch {
     // A cache write failure must not prevent image generation.
+  }
+}
+
+async function writeAtomically({
+  data,
+  filePath,
+}: Readonly<{
+  data: string | Uint8Array;
+  filePath: string;
+}>) {
+  const temporaryPath = `${filePath}.${process.pid}-${randomUUID()}.tmp`;
+  try {
+    await writeFile(temporaryPath, data);
+    await rename(temporaryPath, filePath);
   } finally {
     try {
       await rm(temporaryPath, { force: true });
@@ -311,16 +400,6 @@ async function writeVariantSizeToCache({
       // A failed cleanup only leaves an unused temporary cache file.
     }
   }
-}
-
-function createVariantSizeCachePath(
-  cacheDirectory: string,
-  variantSizeKey: string,
-) {
-  return path.join(
-    cacheDirectory,
-    createHash('sha256').update(variantSizeKey).digest('hex'),
-  );
 }
 
 function resolveImageVariantFormatOptions(

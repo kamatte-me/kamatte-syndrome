@@ -13,8 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "sharp": "0.35.3",
-    "vite-imagetools": "11.0.0"
+    "sharp": "0.35.3"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",

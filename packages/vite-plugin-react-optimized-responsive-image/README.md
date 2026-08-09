@@ -15,7 +15,7 @@ export default defineConfig({
 });
 ```
 
-変換cacheはデフォルトで、Vite起動時のカレントディレクトリから見た`node_modules/.cache/vite-plugin-react-optimized-responsive-image/`に保存されます。`imagetools`には生成画像、`variant-sizes`には候補画像の容量判定が保存されます。`variant-sizes`はSharpと各コーデックの更新時に自動で無効化されます。保存先を変える場合は`cacheDirectory`を指定してください。
+変換cacheはデフォルトで、Vite起動時のカレントディレクトリから見た`node_modules/.cache/vite-plugin-react-optimized-responsive-image/transforms/`に保存されます。Sharpで生成した画像本体と寸法を保存し、元画像内容・出力形式・品質・effort・lossless設定・幅・Sharpと各コーデックのバージョンが変わると自動で無効化されます。保存先を変える場合は`cacheDirectory`を指定してください。
 
 AVIFとWebPは`quality`と`effort`を個別に設定できます。`quality`は1から100で、デフォルトはAVIFが60、WebPが80です。`effort`は未指定の場合、Sharpのデフォルト値を使用します。AVIFの`effort`は0から9、WebPは0から6を指定できます。
 
@@ -125,13 +125,13 @@ RSS、Open Graph、JSON-LDなどで元画像を使う場合も、named exportの
 const imageUrl = manifest['/media/nested/image.jpg']?.src;
 ```
 
-派生画像のメタデータ除去と圧縮はvite-imagetoolsが担当し、デフォルトではAVIFをquality 60、WebPをquality 80で出力します。Viteのasset inline上限より小さい元画像はdata URLになる場合があります。
+派生画像のメタデータ除去と圧縮はSharpが担当し、デフォルトではAVIFをquality 60、WebPをquality 80で出力します。元画像・派生画像ともにプラグインがVite assetとして明示的にemitするため、Viteのasset inline上限には依存しません。devでは専用エンドポイントから同じ変換結果を返すため、外部symlink配下の画像でも`?url` importは発生しません。
 
 queryの順序や幅の指定順が異なっても、同じ解決済みディレクトリ、base、幅なら同じvirtual module IDへ正規化されます。派生幅はEXIF orientation適用後の自然幅までに制限され、拡大されません。dev中はsymlinkの実体を含む対象ディレクトリの追加・変更・削除を監視し、manifestを更新します。
 
 `vite build --watch`では、保存途中などでコレクション内の画像を一時的に読めない場合、そのbuildだけ警告と空のmanifestへfallbackします。対象画像が変更されると再走査して通常のmanifestへ戻ります。watchではないbuildは従来どおりエラーで停止します。
 
-コレクションimportは対象ディレクトリ内の全対応画像について指定幅を事前変換し、fallbackより小さくなる候補だけをvite-imagetoolsへ渡します。大きなディレクトリや多くの幅セットを使うと事前判定の時間と成果物数が増えるため、利用箇所に必要な幅だけを指定してください。同じ画像内容・形式・品質・幅の容量判定は`cacheDirectory`配下に永続cacheされ、同じ生成物はViteによって共有されます。
+コレクションimportは対象ディレクトリ内の全対応画像について指定幅をSharpで事前変換し、fallbackより小さくなる候補だけを出力します。大きなディレクトリや多くの幅セットを使うと変換時間と成果物数が増えるため、利用箇所に必要な幅だけを指定してください。同じ画像内容・形式・品質・effort・lossless設定・幅の変換結果は`cacheDirectory`配下に永続cacheされ、同じ生成物はVite build内で共有されます。
 
 ## TypeScript
 
