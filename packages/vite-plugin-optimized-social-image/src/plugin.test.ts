@@ -201,6 +201,60 @@ describe('optimizedSocialImage', () => {
     }
   });
 
+  it('does not transform images when disabled', async () => {
+    const rootDirectory = await createRootDirectory();
+    const imageDirectory = path.join(rootDirectory, 'images');
+    const cacheDirectory = path.join(rootDirectory, 'cache');
+    await mkdir(imageDirectory, { recursive: true });
+    await writeSizedPng(path.join(imageDirectory, 'image.png'), 100, 50);
+    await writeCollectionImport(rootDirectory);
+
+    const server = await createServer({
+      configFile: false,
+      logLevel: 'silent',
+      plugins: [
+        optimizedSocialImage({
+          cacheDirectory,
+          enabled: false,
+        }),
+      ],
+      root: rootDirectory,
+      server: { middlewareMode: true },
+    });
+
+    try {
+      const module = await server.ssrLoadModule('/main.ts');
+      expect(module.manifest).toEqual({});
+      await expect(stat(cacheDirectory)).rejects.toThrow();
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('separates persistent cache entries by output format settings', async () => {
+    const rootDirectory = await createRootDirectory();
+    const imageDirectory = path.join(rootDirectory, 'images');
+    const cacheDirectory = path.join(rootDirectory, 'cache');
+    await mkdir(imageDirectory, { recursive: true });
+    await writePatternedJpeg(path.join(imageDirectory, 'quality.jpg'));
+    await writeCollectionImport(rootDirectory);
+
+    const lowQualityFileName = await buildSocialImage({
+      cacheDirectory,
+      jpeg: { quality: 30 },
+      outputDirectory: path.join(rootDirectory, 'low-quality-dist'),
+      rootDirectory,
+    });
+    const highQualityFileName = await buildSocialImage({
+      cacheDirectory,
+      jpeg: { quality: 90 },
+      outputDirectory: path.join(rootDirectory, 'high-quality-dist'),
+      rootDirectory,
+    });
+
+    expect(highQualityFileName).not.toBe(lowQualityFileName);
+  });
+
   it('renders directly emitted assets for relative and full Vite bases', async () => {
     const rootDirectory = await createRootDirectory();
     const imageDirectory = path.join(rootDirectory, 'images');
@@ -415,6 +469,50 @@ async function writeSizedPng(filePath: string, width: number, height: number) {
   })
     .png()
     .toFile(filePath);
+}
+
+async function writePatternedJpeg(filePath: string) {
+  const width = 320;
+  const height = 180;
+  const pixels = Buffer.alloc(width * height * 3);
+  for (let index = 0; index < pixels.length; index += 1) {
+    pixels[index] = (index * 31) % 251;
+  }
+  await sharp(pixels, { raw: { channels: 3, height, width } })
+    .jpeg({ quality: 100 })
+    .toFile(filePath);
+}
+
+async function buildSocialImage({
+  cacheDirectory,
+  jpeg,
+  outputDirectory,
+  rootDirectory,
+}: Readonly<{
+  cacheDirectory: string;
+  jpeg: { quality: number };
+  outputDirectory: string;
+  rootDirectory: string;
+}>) {
+  await build({
+    build: {
+      assetsInlineLimit: 0,
+      outDir: outputDirectory,
+      rollupOptions: { input: path.join(rootDirectory, 'main.ts') },
+    },
+    configFile: false,
+    logLevel: 'silent',
+    plugins: [optimizedSocialImage({ cacheDirectory, jpeg })],
+    publicDir: false,
+    root: rootDirectory,
+  });
+
+  const assets = await readdir(path.join(outputDirectory, 'assets'));
+  const asset = assets.find((fileName) => fileName.startsWith('quality.'));
+  if (!asset) {
+    throw new Error('Expected generated quality image asset');
+  }
+  return asset;
 }
 
 async function writeSupportedSourceFixtures(imageDirectory: string) {

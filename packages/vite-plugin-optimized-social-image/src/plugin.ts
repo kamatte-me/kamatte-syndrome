@@ -15,6 +15,13 @@ import {
 } from '@kamatte-syndrome/image-optimization-core';
 import sharp, { type Metadata } from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
+import {
+  type GifSocialImageFormatOptions,
+  type JpegSocialImageFormatOptions,
+  type PngSocialImageFormatOptions,
+  resolveSocialImageFormatSettings,
+  type SocialImageFormatSettings,
+} from './format.ts';
 import type { SocialImageFormat } from './types.ts';
 import {
   parseSocialImageCollectionVirtualModuleRequest,
@@ -26,6 +33,14 @@ import {
 export type OptimizedSocialImagePluginOptions = Readonly<{
   /** Parent directory for persistent transformed social-image assets. */
   cacheDirectory?: string;
+  /** Disable transformations and expose an empty manifest. */
+  enabled?: boolean;
+  /** GIF encoding settings. */
+  gif?: GifSocialImageFormatOptions;
+  /** JPEG encoding settings. */
+  jpeg?: JpegSocialImageFormatOptions;
+  /** PNG encoding settings. */
+  png?: PngSocialImageFormatOptions;
 }>;
 
 const cacheSchemaVersion = 1;
@@ -60,7 +75,12 @@ type DevelopmentAsset = Readonly<{
 
 export function optimizedSocialImage({
   cacheDirectory,
+  enabled = true,
+  gif,
+  jpeg,
+  png,
 }: OptimizedSocialImagePluginOptions = {}): Plugin {
+  const formatSettings = resolveSocialImageFormatSettings({ gif, jpeg, png });
   let devServer: ViteDevServer | undefined;
   let isBuild = false;
   let rootDirectory = process.cwd();
@@ -167,6 +187,7 @@ export function optimizedSocialImage({
     const cacheKey = createCacheKey({
       animated,
       format,
+      formatSettings,
       sourceHash,
       targetWidth,
     });
@@ -177,6 +198,7 @@ export function optimizedSocialImage({
         animated,
         cacheKey,
         format,
+        formatSettings,
         source,
         sourceHeight,
         sourceWidth,
@@ -194,6 +216,7 @@ export function optimizedSocialImage({
     animated,
     cacheKey,
     format,
+    formatSettings,
     source,
     sourceHeight,
     sourceWidth,
@@ -202,6 +225,7 @@ export function optimizedSocialImage({
     animated: boolean;
     cacheKey: string;
     format: SocialImageFormat;
+    formatSettings: SocialImageFormatSettings;
     source: Buffer;
     sourceHeight: number;
     sourceWidth: number;
@@ -222,11 +246,13 @@ export function optimizedSocialImage({
       };
     }
 
-    const buffer = await sharp(source, animated ? { animated: true } : {})
-      .autoOrient()
-      .resize({ width: targetWidth, withoutEnlargement: true })
-      .toFormat(format)
-      .toBuffer();
+    const buffer = await createSocialImageBuffer({
+      animated,
+      format,
+      formatSettings,
+      source,
+      targetWidth,
+    });
     const metadata = await sharp(buffer, animated ? { animated: true } : {})
       .metadata()
       .catch((error: unknown) => {
@@ -333,16 +359,22 @@ export function optimizedSocialImage({
         watchDirectory,
       });
       resolvedModules.set(collection.id, collection);
-      devServer?.watcher.add([
-        collection.sourceDirectory,
-        collection.watchDirectory,
-      ]);
+      if (enabled) {
+        devServer?.watcher.add([
+          collection.sourceDirectory,
+          collection.watchDirectory,
+        ]);
+      }
       return collection.id;
     },
     async load(id) {
       const collection = resolvedModules.get(id);
       if (!collection) {
         return;
+      }
+
+      if (!enabled) {
+        return createEmptyCollectionModule();
       }
 
       const entries = await getCollection(collection);
@@ -375,23 +407,29 @@ export function optimizedSocialImage({
       });
     },
     watchChange(id) {
-      invalidateAffectedCollections(normalizeSourcePath(id));
+      if (enabled) {
+        invalidateAffectedCollections(normalizeSourcePath(id));
+      }
     },
     configureServer(server) {
       devServer = server;
-      server.watcher.add(
-        [...resolvedModules.values()].flatMap((collection) => [
-          collection.sourceDirectory,
-          collection.watchDirectory,
-        ]),
-      );
+      if (enabled) {
+        server.watcher.add(
+          [...resolvedModules.values()].flatMap((collection) => [
+            collection.sourceDirectory,
+            collection.watchDirectory,
+          ]),
+        );
+      }
 
       const handleSourceChange = (filePath: string) => {
         invalidateAffectedCollections(normalizeSourcePath(filePath));
       };
-      server.watcher.on('add', handleSourceChange);
-      server.watcher.on('change', handleSourceChange);
-      server.watcher.on('unlink', handleSourceChange);
+      if (enabled) {
+        server.watcher.on('add', handleSourceChange);
+        server.watcher.on('change', handleSourceChange);
+        server.watcher.on('unlink', handleSourceChange);
+      }
       server.middlewares.use((request, response, next) => {
         if (!request.url) {
           return next();
@@ -415,9 +453,11 @@ export function optimizedSocialImage({
 
       const cleanup = () => {
         clearTimeout(invalidationTimer);
-        server.watcher.off('add', handleSourceChange);
-        server.watcher.off('change', handleSourceChange);
-        server.watcher.off('unlink', handleSourceChange);
+        if (enabled) {
+          server.watcher.off('add', handleSourceChange);
+          server.watcher.off('change', handleSourceChange);
+          server.watcher.off('unlink', handleSourceChange);
+        }
       };
       server.httpServer?.once('close', cleanup);
     },
@@ -442,19 +482,48 @@ function selectSocialImageFormat(metadata: Metadata): SocialImageFormat {
 function createCacheKey({
   animated,
   format,
+  formatSettings,
   sourceHash,
   targetWidth,
 }: Readonly<{
   animated: boolean;
   format: SocialImageFormat;
+  formatSettings: SocialImageFormatSettings;
   sourceHash: string;
   targetWidth: number;
 }>) {
   return createHash('sha256')
     .update(
-      `${cacheSchemaVersion}\0${cacheEncoderVersion}\0${sourceHash}\0${format}\0${targetWidth}\0${String(animated)}`,
+      `${cacheSchemaVersion}\0${cacheEncoderVersion}\0${sourceHash}\0${format}\0${JSON.stringify(formatSettings[format])}\0${targetWidth}\0${String(animated)}`,
     )
     .digest('hex');
+}
+
+async function createSocialImageBuffer({
+  animated,
+  format,
+  formatSettings,
+  source,
+  targetWidth,
+}: Readonly<{
+  animated: boolean;
+  format: SocialImageFormat;
+  formatSettings: SocialImageFormatSettings;
+  source: Buffer;
+  targetWidth: number;
+}>) {
+  const image = sharp(source, animated ? { animated: true } : {})
+    .autoOrient()
+    .resize({ width: targetWidth, withoutEnlargement: true });
+
+  switch (format) {
+    case 'gif':
+      return image.gif(formatSettings.gif).toBuffer();
+    case 'jpeg':
+      return image.jpeg(formatSettings.jpeg).toBuffer();
+    case 'png':
+      return image.png(formatSettings.png).toBuffer();
+  }
 }
 
 async function readSocialImageCache({
@@ -541,6 +610,10 @@ function createBuildCollectionModule({
     return `${JSON.stringify(entry.publicUrl)}:{format:${JSON.stringify(entry.format)},height:${entry.height},src:${JSON.stringify(createViteAssetUrl(referenceId))},width:${entry.width}}`;
   });
   return `const manifest={${manifestEntries.join(',')}};export { manifest };`;
+}
+
+function createEmptyCollectionModule() {
+  return 'const manifest={};export { manifest };';
 }
 
 function createDevelopmentCollectionModule({

@@ -77,7 +77,9 @@ export default defineConfig(({ mode }) => {
       optimizedResponsiveImage({
         enabled: !isTest,
       }),
-      optimizedSocialImage(),
+      optimizedSocialImage({
+        enabled: !isTest,
+      }),
       !isTest &&
         ViteImageOptimizer({
           test: /\.svg$/i,
