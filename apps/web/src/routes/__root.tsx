@@ -19,8 +19,8 @@ const googleAnalyticsId = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
 
 export const Route = createRootRoute({
   head: ({ match }) => {
-    const isNotFound =
-      match.status === 'notFound' || match.globalNotFound === true;
+    const isNotFoundPage =
+      match.status === 'notFound' || match._notFound === true;
 
     return {
       links: [
@@ -67,8 +67,8 @@ export const Route = createRootRoute({
         { name: 'twitter:card', content: 'summary' },
         { name: 'twitter:site', content: '@kamatte_me' },
         ...createPageMeta({
-          title: isNotFound ? formatPageTitle('404') : siteName,
-          description: isNotFound ? notFoundMessage : slogan,
+          title: isNotFoundPage ? formatPageTitle('404') : siteName,
+          description: isNotFoundPage ? notFoundMessage : slogan,
           path: '/',
         }),
       ],
