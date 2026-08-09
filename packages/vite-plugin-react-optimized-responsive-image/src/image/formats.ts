@@ -1,11 +1,2 @@
 /** Input extensions decoded by Sharp for responsive image generation. */
-export const imageSourceExtensions = [
-  '.avif',
-  '.gif',
-  '.heif',
-  '.jpeg',
-  '.jpg',
-  '.png',
-  '.tiff',
-  '.webp',
-] as const;
+export { imageSourceExtensions } from '@kamatte-syndrome/image-optimization-core';

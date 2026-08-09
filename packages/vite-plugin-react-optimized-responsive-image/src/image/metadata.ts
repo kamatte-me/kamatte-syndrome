@@ -1,10 +1,13 @@
-import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import sharp, { type Metadata } from 'sharp';
+import {
+  getImageDisplayDimensions,
+  listSupportedImageFiles,
+  toPosixPath,
+} from '@kamatte-syndrome/image-optimization-core';
+import sharp from 'sharp';
 import type { ImageVariantEntry, ImageVariantManifest } from '../types.ts';
-import { imageSourceExtensions } from './formats.ts';
 
-const supportedImageExtensions = new Set<string>(imageSourceExtensions);
+export { getImageDisplayDimensions };
 
 export type ScanImageVariantManifestOptions = Readonly<{
   publicPath: string;
@@ -58,50 +61,7 @@ export async function scanImageVariantManifest({
   return manifest;
 }
 
-export function getImageDisplayDimensions(metadata: Metadata) {
-  return {
-    height:
-      (metadata.pages ?? 1) > 1
-        ? (metadata.pageHeight ?? metadata.autoOrient.height)
-        : metadata.autoOrient.height,
-    width: metadata.autoOrient.width,
-  };
-}
-
-async function listSupportedImageFiles(
-  directory: string,
-  relativeDirectory = '',
-): Promise<string[]> {
-  const currentDirectory = path.join(directory, relativeDirectory);
-  const entries = await readdir(currentDirectory, { withFileTypes: true });
-  const files: string[] = [];
-
-  for (const entry of [...entries].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  )) {
-    const relativePath = path.join(relativeDirectory, entry.name);
-
-    if (entry.isDirectory()) {
-      files.push(...(await listSupportedImageFiles(directory, relativePath)));
-      continue;
-    }
-
-    if (
-      entry.isFile() &&
-      supportedImageExtensions.has(path.extname(entry.name).toLowerCase())
-    ) {
-      files.push(relativePath);
-    }
-  }
-
-  return files;
-}
-
 function normalizePublicPath(publicPath: string) {
   const trimmedPath = publicPath.replace(/^\/+|\/+$/g, '');
   return trimmedPath ? `/${trimmedPath}` : '';
-}
-
-function toPosixPath(filePath: string) {
-  return filePath.split(path.sep).join('/');
 }

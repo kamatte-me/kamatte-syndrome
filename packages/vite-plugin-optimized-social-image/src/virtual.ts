@@ -1,9 +1,12 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { isPathInside } from '@kamatte-syndrome/image-optimization-core';
 import { normalizePath } from 'vite';
 
 export const socialImageCollectionVirtualModuleId =
   'virtual:optimized-social-image/collection';
+
+export { isPathInside };
 
 export type SocialImageCollectionVirtualModuleRequest = Readonly<{
   base: string;
@@ -140,15 +143,6 @@ export function resolveSocialImageCollectionVirtualModule({
     watchDirectory: normalizedWatchDirectory,
     width,
   } satisfies ResolvedSocialImageCollectionVirtualModule;
-}
-
-export function isPathInside(directory: string, filePath: string) {
-  const relativePath = path.relative(path.resolve(directory), filePath);
-  return (
-    relativePath !== '..' &&
-    !relativePath.startsWith(`..${path.sep}`) &&
-    !path.isAbsolute(relativePath)
-  );
 }
 
 function assertKnownQueryParameters(

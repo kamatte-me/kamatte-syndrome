@@ -9,12 +9,16 @@ import {
 import { readFile, realpath, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import {
+  createViteAssetUrl,
+  getImageDisplayDimensions,
+  isPathInside,
+  normalizeSourcePath,
+  normalizeViteBasePath,
+} from '@kamatte-syndrome/image-optimization-core';
 import sharp from 'sharp';
 import type { Plugin, ViteDevServer } from 'vite';
-import {
-  getImageDisplayDimensions,
-  scanImageVariantManifest,
-} from './image/metadata.ts';
+import { scanImageVariantManifest } from './image/metadata.ts';
 import {
   type GeneratedImageVariants,
   generateImageVariants,
@@ -32,7 +36,6 @@ import {
 import {
   createEmptyReactImageCollectionVirtualModule,
   createReactImageCollectionVirtualModule,
-  isPathInside,
   parseReactImageCollectionVirtualModuleRequest,
   type ResolvedReactImageCollectionVirtualModule,
   resolveManifestSourcePath,
@@ -274,7 +277,7 @@ export function optimizedResponsiveImage({
       isBuild = config.command === 'build';
       isWatchBuild = isBuild && config.build.watch != null;
       rootDirectory = config.root;
-      viteBase = normalizeBasePath(config.base);
+      viteBase = normalizeViteBasePath(config.base);
     },
     async resolveId(id, importer) {
       const imageVariantRequest = parseReactImageVirtualModuleRequest(id);
@@ -690,10 +693,6 @@ function emitImageVariant({
   return { src: createViteAssetUrl(referenceId), width: variant.width };
 }
 
-function createViteAssetUrl(referenceId: string) {
-  return `__VITE_ASSET__${referenceId}__`;
-}
-
 function createDevelopmentImageEntry({
   developmentAssets,
   image,
@@ -801,21 +800,6 @@ function getImageContentType(extension: string) {
   }
 }
 
-function normalizeBasePath(base: string) {
-  if (base === '' || base === './') {
-    return './';
-  }
-  if (isAbsoluteUrl(base)) {
-    return `${base.replace(/\/+$/, '')}/`;
-  }
-  const normalizedBase = `/${base.replace(/^\/+|\/+$/g, '')}`;
-  return normalizedBase === '/' ? '/' : `${normalizedBase}/`;
-}
-
-function isAbsoluteUrl(value: string) {
-  return /^[a-z][a-z\d+.-]*:\/\//i.test(value);
-}
-
 function createManifestCacheKey({
   base,
   sourceDirectory,
@@ -839,10 +823,6 @@ async function assertSourceDirectory(sourceDirectory: string, src: string) {
   }
 
   throw new Error(`Image source is not a directory: ${src}`);
-}
-
-function normalizeSourcePath(sourcePath: string) {
-  return sourcePath.split(path.sep).join('/');
 }
 
 async function resolveAliasedSourceDirectory({

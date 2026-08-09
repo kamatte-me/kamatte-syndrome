@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { isPathInside } from '@kamatte-syndrome/image-optimization-core';
 import { normalizePath } from 'vite';
 import type { RequestedImageVariantWidth } from '../image/transform.ts';
 import type { ImageVariantManifest } from '../types.ts';
@@ -10,6 +11,8 @@ import {
 
 export const reactImageCollectionVirtualModuleId =
   'virtual:react-optimized-responsive-image/collection';
+
+export { isPathInside };
 
 type CreateReactImageCollectionVirtualModuleOptions = Readonly<{
   manifest: ImageVariantManifest;
@@ -204,15 +207,6 @@ export function createEmptyReactImageCollectionVirtualModule() {
   return createReactImageCollectionModuleCode([
     'const imageVariantManifest={};',
   ]);
-}
-
-export function isPathInside(directory: string, filePath: string) {
-  const relativePath = path.relative(path.resolve(directory), filePath);
-  return (
-    relativePath !== '..' &&
-    !relativePath.startsWith(`..${path.sep}`) &&
-    !path.isAbsolute(relativePath)
-  );
 }
 
 function normalizeBase(base: string) {

@@ -1,18 +1,22 @@
-import { createHash, randomUUID } from 'node:crypto';
-import {
-  mkdir,
-  readdir,
-  readFile,
-  realpath,
-  rename,
-  writeFile,
-} from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { readdir, readFile, realpath } from 'node:fs/promises';
 import path from 'node:path';
+import {
+  createViteAssetUrl,
+  getImageDisplayDimensions,
+  getSharpEncoderVersion,
+  isPathInside,
+  listSupportedImageFiles,
+  normalizeSourcePath,
+  normalizeViteBasePath,
+  readCachedAsset,
+  toPosixPath,
+  writeCachedAsset,
+} from '@kamatte-syndrome/image-optimization-core';
 import sharp, { type Metadata } from 'sharp';
-import { normalizePath, type Plugin, type ViteDevServer } from 'vite';
+import type { Plugin, ViteDevServer } from 'vite';
 import type { SocialImageFormat } from './types.ts';
 import {
-  isPathInside,
   parseSocialImageCollectionVirtualModuleRequest,
   type ResolvedSocialImageCollectionVirtualModule,
   resolveSocialImageCollectionSourceDirectory,
@@ -24,21 +28,8 @@ export type OptimizedSocialImagePluginOptions = Readonly<{
   cacheDirectory?: string;
 }>;
 
-const imageSourceExtensions = new Set([
-  '.avif',
-  '.gif',
-  '.heif',
-  '.jpeg',
-  '.jpg',
-  '.png',
-  '.tiff',
-  '.webp',
-]);
 const cacheSchemaVersion = 1;
-const cacheEncoderVersion = Object.entries(sharp.versions)
-  .sort(([left], [right]) => left.localeCompare(right))
-  .map(([name, version]) => `${name}:${version}`)
-  .join('\0');
+const cacheEncoderVersion = getSharpEncoderVersion();
 const devAssetPath = '/@optimized-social-image/';
 const transformationConcurrency = 4;
 
@@ -165,7 +156,7 @@ export function optimizedSocialImage({
     const source = await readFile(sourcePath);
     const sourceMetadata = await readSourceMetadata(source);
     const { height: sourceHeight, width: sourceWidth } =
-      getDisplayDimensions(sourceMetadata);
+      getImageDisplayDimensions(sourceMetadata);
     if (!sourceWidth || !sourceHeight) {
       throw new Error(`Image dimensions are unavailable: ${sourcePath}`);
     }
@@ -243,7 +234,7 @@ export function optimizedSocialImage({
           cause: error,
         });
       });
-    const dimensions = getDisplayDimensions(metadata);
+    const dimensions = getImageDisplayDimensions(metadata);
     if (!dimensions.width || !dimensions.height) {
       throw new Error('Generated social image dimensions are unavailable');
     }
@@ -306,7 +297,7 @@ export function optimizedSocialImage({
     configResolved(config) {
       isBuild = config.command === 'build';
       rootDirectory = config.root;
-      viteBase = normalizeBasePath(config.base);
+      viteBase = normalizeViteBasePath(config.base);
       resolvedCacheDirectory = path.resolve(
         rootDirectory,
         cacheDirectory ??
@@ -369,7 +360,6 @@ export function optimizedSocialImage({
         return createBuildCollectionModule({
           emitFile: this.emitFile.bind(this),
           entries,
-          viteBase,
         });
       }
 
@@ -449,18 +439,6 @@ function selectSocialImageFormat(metadata: Metadata): SocialImageFormat {
   return metadata.hasAlpha ? 'png' : 'jpeg';
 }
 
-function getDisplayDimensions(metadata: Metadata) {
-  const width = metadata.autoOrient.width ?? metadata.width;
-  const orientedHeight = metadata.autoOrient.height ?? metadata.height;
-  return {
-    height:
-      (metadata.pages ?? 1) > 1
-        ? (metadata.pageHeight ?? orientedHeight)
-        : orientedHeight,
-    width,
-  };
-}
-
 function createCacheKey({
   animated,
   format,
@@ -488,28 +466,16 @@ async function readSocialImageCache({
   cacheKey: string;
   format: SocialImageFormat;
 }>) {
-  try {
-    const [buffer, serializedMetadata] = await Promise.all([
-      readFile(path.join(cacheDirectory, 'assets', `${cacheKey}.${format}`)),
-      readFile(
-        path.join(cacheDirectory, 'metadata', `${cacheKey}.json`),
-        'utf8',
-      ),
-    ]);
-    const metadata = JSON.parse(serializedMetadata) as CachedSocialImage;
-    if (
-      metadata.format !== format ||
-      !Number.isSafeInteger(metadata.width) ||
-      metadata.width <= 0 ||
-      !Number.isSafeInteger(metadata.height) ||
-      metadata.height <= 0
-    ) {
-      return undefined;
-    }
-    return { buffer, metadata };
-  } catch {
-    return undefined;
-  }
+  return readCachedAsset({
+    cacheDirectory,
+    cacheKey,
+    fileExtension: format,
+    parseMetadata(metadata) {
+      return isCachedSocialImageMetadata(metadata, format)
+        ? metadata
+        : undefined;
+    },
+  });
 }
 
 async function writeSocialImageCache({
@@ -523,67 +489,40 @@ async function writeSocialImageCache({
   cacheKey: string;
   metadata: CachedSocialImage;
 }>) {
-  const assetDirectory = path.join(cacheDirectory, 'assets');
-  const metadataDirectory = path.join(cacheDirectory, 'metadata');
-  await Promise.all([
-    mkdir(assetDirectory, { recursive: true }),
-    mkdir(metadataDirectory, { recursive: true }),
-  ]);
-  await Promise.all([
-    writeAtomically({
-      data: buffer,
-      filePath: path.join(assetDirectory, `${cacheKey}.${metadata.format}`),
-    }),
-    writeAtomically({
-      data: JSON.stringify(metadata),
-      filePath: path.join(metadataDirectory, `${cacheKey}.json`),
-    }),
-  ]);
+  await writeCachedAsset({
+    buffer,
+    cacheDirectory,
+    cacheKey,
+    fileExtension: metadata.format,
+    metadata,
+  });
 }
 
-async function writeAtomically({
-  data,
-  filePath,
-}: Readonly<{
-  data: string | Uint8Array;
-  filePath: string;
-}>) {
-  const temporaryPath = `${filePath}.${randomUUID()}.tmp`;
-  await writeFile(temporaryPath, data);
-  await rename(temporaryPath, filePath);
-}
-
-async function listSupportedImageFiles(
-  directory: string,
-  relativeDirectory = '',
-): Promise<string[]> {
-  const currentDirectory = path.join(directory, relativeDirectory);
-  const entries = await readdir(currentDirectory, { withFileTypes: true });
-  const files: string[] = [];
-
-  for (const entry of [...entries].sort((left, right) =>
-    left.name.localeCompare(right.name),
-  )) {
-    const relativePath = path.join(relativeDirectory, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...(await listSupportedImageFiles(directory, relativePath)));
-      continue;
-    }
-    if (
-      entry.isFile() &&
-      imageSourceExtensions.has(path.extname(entry.name).toLowerCase())
-    ) {
-      files.push(relativePath);
-    }
+function isCachedSocialImageMetadata(
+  metadata: unknown,
+  format: SocialImageFormat,
+): metadata is CachedSocialImage {
+  if (!isRecord(metadata) || metadata.format !== format) {
+    return false;
   }
+  const { height, width } = metadata;
+  return (
+    typeof width === 'number' &&
+    Number.isSafeInteger(width) &&
+    width > 0 &&
+    typeof height === 'number' &&
+    Number.isSafeInteger(height) &&
+    height > 0
+  );
+}
 
-  return files;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
 }
 
 function createBuildCollectionModule({
   emitFile,
   entries,
-  viteBase,
 }: Readonly<{
   emitFile: (asset: {
     fileName: string;
@@ -591,16 +530,15 @@ function createBuildCollectionModule({
     type: 'asset';
   }) => string;
   entries: readonly SocialImageCollectionEntry[];
-  viteBase: string;
 }>) {
   const manifestEntries = entries.map((entry) => {
     const fileName = createAssetFileName(entry);
-    emitFile({
+    const referenceId = emitFile({
       fileName,
       source: entry.buffer,
       type: 'asset',
     });
-    return `${JSON.stringify(entry.publicUrl)}:{format:${JSON.stringify(entry.format)},height:${entry.height},src:${JSON.stringify(`${viteBase}${fileName}`)},width:${entry.width}}`;
+    return `${JSON.stringify(entry.publicUrl)}:{format:${JSON.stringify(entry.format)},height:${entry.height},src:${JSON.stringify(createViteAssetUrl(referenceId))},width:${entry.width}}`;
   });
   return `const manifest={${manifestEntries.join(',')}};export { manifest };`;
 }
@@ -645,29 +583,6 @@ function parseDevelopmentAssetKey(pathname: string, viteBase: string) {
 
 function getContentType(format: SocialImageFormat) {
   return format === 'jpeg' ? 'image/jpeg' : `image/${format}`;
-}
-
-function normalizeBasePath(base: string) {
-  if (base === '' || base === './') {
-    return './';
-  }
-  if (isAbsoluteUrl(base)) {
-    return `${base.replace(/\/+$/, '')}/`;
-  }
-  const normalizedBase = `/${base.replace(/^\/+|\/+$/g, '')}`;
-  return normalizedBase === '/' ? '/' : `${normalizedBase}/`;
-}
-
-function isAbsoluteUrl(value: string) {
-  return /^[a-z][a-z\d+.-]*:\/\//i.test(value);
-}
-
-function normalizeSourcePath(sourcePath: string) {
-  return normalizePath(sourcePath);
-}
-
-function toPosixPath(filePath: string) {
-  return filePath.split(path.sep).join('/');
 }
 
 async function assertSourceDirectory(sourceDirectory: string, src: string) {

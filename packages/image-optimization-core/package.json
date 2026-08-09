@@ -1,18 +1,16 @@
 {
-  "name": "@kamatte-syndrome/vite-plugin-optimized-social-image",
+  "name": "@kamatte-syndrome/image-optimization-core",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./virtual": "./src/virtual.d.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "@kamatte-syndrome/image-optimization-core": "workspace:*",
     "sharp": "0.35.3"
   },
   "devDependencies": {

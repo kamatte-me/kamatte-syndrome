@@ -2,6 +2,7 @@ import {
   mkdir,
   mkdtemp,
   readdir,
+  readFile,
   realpath,
   rm,
   stat,
@@ -11,7 +12,7 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import sharp from 'sharp';
-import { build, createServer, type Plugin } from 'vite';
+import { build, createServer } from 'vite';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { optimizedSocialImage } from './index.ts';
 
@@ -200,28 +201,27 @@ describe('optimizedSocialImage', () => {
     }
   });
 
-  it('preserves relative and full Vite bases in production manifest URLs', async () => {
+  it('renders directly emitted assets for relative and full Vite bases', async () => {
     const rootDirectory = await createRootDirectory();
     const imageDirectory = path.join(rootDirectory, 'images');
     await mkdir(imageDirectory, { recursive: true });
     await writeSizedPng(path.join(imageDirectory, 'image.png'), 100, 50);
-    await writeCollectionImport(rootDirectory);
+    await writeCollectionImport(rootDirectory, './images', true);
 
-    for (const [base, expectedAssetUrlPrefix] of [
-      ['./', './assets/'],
-      ['https://cdn.example.com/site/', 'https://cdn.example.com/site/assets/'],
-    ] as const) {
+    for (const base of ['./', 'https://cdn.example.com/site/'] as const) {
       const outputDirectory = path.join(
         rootDirectory,
         base === './' ? 'relative-dist' : 'cdn-dist',
       );
-      let bundleCode = '';
       await build({
         base,
         build: {
           assetsInlineLimit: 0,
           outDir: outputDirectory,
-          rollupOptions: { input: path.join(rootDirectory, 'main.ts') },
+          rollupOptions: {
+            input: path.join(rootDirectory, 'main.ts'),
+            output: { entryFileNames: 'nested/main.js' },
+          },
         },
         configFile: false,
         logLevel: 'silent',
@@ -229,22 +229,29 @@ describe('optimizedSocialImage', () => {
           optimizedSocialImage({
             cacheDirectory: path.join(rootDirectory, 'cache'),
           }),
-          {
-            transform(code, id) {
-              if (
-                id.startsWith('\0virtual:optimized-social-image/collection:')
-              ) {
-                bundleCode = code;
-              }
-            },
-            name: 'capture-social-image-manifest',
-          } satisfies Plugin,
         ],
         publicDir: false,
         root: rootDirectory,
       });
 
-      expect(bundleCode).toContain(expectedAssetUrlPrefix);
+      const assetDirectory = path.join(outputDirectory, 'assets');
+      const imageAsset = (await readdir(assetDirectory)).find((asset) =>
+        asset.startsWith('image.'),
+      );
+      expect(imageAsset).toBeDefined();
+      const bundle = await readFile(
+        path.join(outputDirectory, 'nested/main.js'),
+        'utf8',
+      );
+      expect(bundle).not.toContain('__VITE_ASSET__');
+      if (base === './') {
+        expect(bundle).toContain(`../assets/${imageAsset}`);
+        expect(bundle).toContain('import.meta.url');
+      } else {
+        expect(bundle).toContain(
+          `https://cdn.example.com/site/assets/${imageAsset}`,
+        );
+      }
     }
   });
 
@@ -324,11 +331,13 @@ async function createRootDirectory() {
 async function writeCollectionImport(
   rootDirectory: string,
   source = './images',
+  logManifest = false,
 ) {
   await writeFile(
     path.join(rootDirectory, 'main.ts'),
     [
       `import { manifest } from 'virtual:optimized-social-image/collection?src=${source}&base=/media&width=1200';`,
+      ...(logManifest ? ['console.log(manifest);'] : []),
       'export { manifest };',
       '',
     ].join('\n'),

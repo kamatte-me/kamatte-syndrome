@@ -220,6 +220,28 @@ importers:
         specifier: 4.4.3
         version: 4.4.3
 
+  packages/image-optimization-core:
+    dependencies:
+      sharp:
+        specifier: 0.35.3
+        version: 0.35.3(@types/node@24.13.3)
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vite:
+        specifier: 'catalog:'
+        version: 8.2.0(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.1)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
+
   packages/oembed-endpoint-resolver:
     dependencies:
       oembed-providers:
@@ -317,6 +339,9 @@ importers:
 
   packages/vite-plugin-optimized-social-image:
     dependencies:
+      '@kamatte-syndrome/image-optimization-core':
+        specifier: workspace:*
+        version: link:../image-optimization-core
       sharp:
         specifier: 0.35.3
         version: 0.35.3(@types/node@24.13.3)
@@ -339,6 +364,9 @@ importers:
 
   packages/vite-plugin-react-optimized-responsive-image:
     dependencies:
+      '@kamatte-syndrome/image-optimization-core':
+        specifier: workspace:*
+        version: link:../image-optimization-core
       sharp:
         specifier: 0.35.3
         version: 0.35.3(@types/node@24.13.3)

@@ -1,6 +1,10 @@
-import { createHash, randomUUID } from 'node:crypto';
-import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import {
+  getSharpEncoderVersion,
+  readCachedAsset,
+  writeCachedAsset,
+} from '@kamatte-syndrome/image-optimization-core';
 import sharp from 'sharp';
 
 export type ImageVariantFormatOptions = Readonly<{
@@ -57,10 +61,7 @@ const transformedImagePromises = new Map<
 >();
 const maxCachedTransformedImages = 1_000;
 const transformedImageCacheSchemaVersion = 1;
-const transformedImageEncoderVersion = Object.entries(sharp.versions)
-  .sort(([left], [right]) => left.localeCompare(right))
-  .map(([name, version]) => `${name}:${version}`)
-  .join('\0');
+const transformedImageEncoderVersion = getSharpEncoderVersion();
 
 export function resolveImageVariantFormatSettings({
   avif,
@@ -316,30 +317,17 @@ async function readCachedImageVariant({
     return undefined;
   }
 
-  try {
-    const [buffer, serializedMetadata] = await Promise.all([
-      readFile(path.join(cacheDirectory, 'assets', `${cacheKey}.${format}`)),
-      readFile(
-        path.join(cacheDirectory, 'metadata', `${cacheKey}.json`),
-        'utf8',
-      ),
-    ]);
-    const metadata = JSON.parse(
-      serializedMetadata,
-    ) as CachedImageVariantMetadata;
-    if (
-      metadata.format !== format ||
-      !Number.isSafeInteger(metadata.width) ||
-      metadata.width <= 0 ||
-      !Number.isSafeInteger(metadata.height) ||
-      metadata.height <= 0
-    ) {
-      return undefined;
-    }
-    return { buffer, ...metadata };
-  } catch {
-    return undefined;
-  }
+  const cached = await readCachedAsset({
+    cacheDirectory,
+    cacheKey,
+    fileExtension: format,
+    parseMetadata(metadata) {
+      return isCachedImageVariantMetadata(metadata, format)
+        ? metadata
+        : undefined;
+    },
+  });
+  return cached ? { buffer: cached.buffer, ...cached.metadata } : undefined;
 }
 
 async function writeCachedImageVariant({
@@ -355,51 +343,44 @@ async function writeCachedImageVariant({
     return;
   }
 
-  const assetDirectory = path.join(cacheDirectory, 'assets');
-  const metadataDirectory = path.join(cacheDirectory, 'metadata');
   const metadata = {
     format: generated.format,
     height: generated.height,
     width: generated.width,
   } satisfies CachedImageVariantMetadata;
   try {
-    await Promise.all([
-      mkdir(assetDirectory, { recursive: true }),
-      mkdir(metadataDirectory, { recursive: true }),
-    ]);
-    await Promise.all([
-      writeAtomically({
-        data: generated.buffer,
-        filePath: path.join(assetDirectory, `${cacheKey}.${generated.format}`),
-      }),
-      writeAtomically({
-        data: JSON.stringify(metadata),
-        filePath: path.join(metadataDirectory, `${cacheKey}.json`),
-      }),
-    ]);
+    await writeCachedAsset({
+      buffer: generated.buffer,
+      cacheDirectory,
+      cacheKey,
+      fileExtension: generated.format,
+      metadata,
+    });
   } catch {
     // A cache write failure must not prevent image generation.
   }
 }
 
-async function writeAtomically({
-  data,
-  filePath,
-}: Readonly<{
-  data: string | Uint8Array;
-  filePath: string;
-}>) {
-  const temporaryPath = `${filePath}.${process.pid}-${randomUUID()}.tmp`;
-  try {
-    await writeFile(temporaryPath, data);
-    await rename(temporaryPath, filePath);
-  } finally {
-    try {
-      await rm(temporaryPath, { force: true });
-    } catch {
-      // A failed cleanup only leaves an unused temporary cache file.
-    }
+function isCachedImageVariantMetadata(
+  metadata: unknown,
+  format: 'avif' | 'webp',
+): metadata is CachedImageVariantMetadata {
+  if (!isRecord(metadata) || metadata.format !== format) {
+    return false;
   }
+  const { height, width } = metadata;
+  return (
+    typeof width === 'number' &&
+    Number.isSafeInteger(width) &&
+    width > 0 &&
+    typeof height === 'number' &&
+    Number.isSafeInteger(height) &&
+    height > 0
+  );
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
 }
 
 function resolveImageVariantFormatOptions(
