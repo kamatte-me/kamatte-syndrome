@@ -33,6 +33,9 @@ catalogs:
     react-dom:
       specifier: 19.2.8
       version: 19.2.8
+    sharp:
+      specifier: 0.35.3
+      version: 0.35.3
     typescript:
       specifier: 7.0.2
       version: 7.0.2
@@ -223,7 +226,7 @@ importers:
   packages/image-optimization-core:
     dependencies:
       sharp:
-        specifier: 0.35.3
+        specifier: 'catalog:'
         version: 0.35.3(@types/node@24.13.3)
     devDependencies:
       '@kamatte-syndrome/tsconfig':
@@ -343,7 +346,7 @@ importers:
         specifier: workspace:*
         version: link:../image-optimization-core
       sharp:
-        specifier: 0.35.3
+        specifier: 'catalog:'
         version: 0.35.3(@types/node@24.13.3)
     devDependencies:
       '@kamatte-syndrome/tsconfig':
@@ -368,7 +371,7 @@ importers:
         specifier: workspace:*
         version: link:../image-optimization-core
       sharp:
-        specifier: 0.35.3
+        specifier: 'catalog:'
         version: 0.35.3(@types/node@24.13.3)
     devDependencies:
       '@kamatte-syndrome/tsconfig':

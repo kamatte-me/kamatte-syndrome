@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "sharp": "0.35.3"
+    "sharp": "catalog:"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
