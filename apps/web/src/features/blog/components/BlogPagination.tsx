@@ -59,7 +59,7 @@ export function BlogPagination({
         />
       )}
 
-      <p className="min-w-24 text-center font-bold font-display text-cutout-hole tabular-nums leading-none">
+      <p className="min-w-24 text-center font-display font-normal text-cutout-hole tabular-nums leading-none">
         <span className="text-4xl">{currentPage}</span>
         <span className="text-2xl text-cutout-muted">
           <span className="mx-1">/</span>
