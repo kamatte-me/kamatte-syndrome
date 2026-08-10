@@ -41,7 +41,14 @@ vi.mock('./ImageZoomViewer', () => ({
       // biome-ignore lint/a11y/noNoninteractiveTabindex: This test double represents the keyboard-operable image viewer.
       <section aria-label="画像ズームビューアー" tabIndex={0}>
         <span data-image-lightbox-loading-icon="" />
-        <img src={src} alt={alt} height={height} width={width} />
+        <div className="pswp__img pswp__img--placeholder" />
+        <img
+          className="pswp__img"
+          src={src}
+          alt={alt}
+          height={height}
+          width={width}
+        />
       </section>
     );
   },
@@ -287,6 +294,42 @@ describe('ImageLightbox', () => {
     await waitFor(() => {
       expect(onClose).toHaveBeenCalledOnce();
     });
+  });
+
+  it('clears the zoom viewer fallback source before closing', async () => {
+    const onClose = vi.fn();
+
+    render(
+      <div data-cutout-layer="content">
+        <ImageLightbox
+          alt="元画像"
+          height={600}
+          onClose={onClose}
+          returnFocusElement={null}
+          src="/media/original.jpg"
+          width={800}
+        />
+      </div>,
+    );
+
+    const dialog = screen.getByRole('dialog', { name: '画像の拡大表示' });
+    const image = within(dialog).getByRole('img', { name: '元画像' });
+
+    Object.defineProperty(image, 'complete', {
+      configurable: true,
+      value: false,
+    });
+
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: '画像の拡大表示を閉じる' }),
+    );
+
+    expect(onClose).not.toHaveBeenCalled();
+
+    await nextAnimationFrame();
+
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(image).toHaveAttribute('src', 'data:,');
   });
 
   it('closes with Escape, traps focus, and restores the opener', async () => {

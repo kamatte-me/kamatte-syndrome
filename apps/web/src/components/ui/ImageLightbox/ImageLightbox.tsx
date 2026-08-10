@@ -27,6 +27,8 @@ const pageCutoutLayerSelector =
 const closeIconSelector = '[data-image-lightbox-close-icon]';
 const errorIconSelector = '[data-image-lightbox-error-icon]';
 const loadingIconSelector = '[data-image-lightbox-loading-icon]';
+const zoomViewerImageSelector = 'img.pswp__img';
+const emptyImageSrc = 'data:,';
 const closeCutoutProperties = ['height', 'left', 'top', 'width'] as const;
 const closeCutoutOpacityProperty = '--image-lightbox-close-opacity';
 const focusableSelector =
@@ -86,6 +88,20 @@ function setCutoutRect(
   );
 }
 
+function clearZoomViewerFallbackSrc(root: HTMLElement | null) {
+  const image = root?.querySelector<HTMLImageElement>(zoomViewerImageSelector);
+
+  if (!image) {
+    return false;
+  }
+
+  const isLoading = !image.complete;
+
+  image.src = emptyImageSrc;
+
+  return isLoading;
+}
+
 export function ImageLightbox({
   alt,
   height,
@@ -103,7 +119,24 @@ export function ImageLightbox({
   const errorViewerMaskTextRef = useRef<SVGTextElement>(null);
   const ignoreNextCloseClickRef = useRef(false);
   const dialogRef = useRef<HTMLElement>(null);
+  const closeFrameRef = useRef<number | null>(null);
   const restoreFocusFrameRef = useRef<number | null>(null);
+
+  const closeLightbox = useCallback(() => {
+    if (closeFrameRef.current !== null) {
+      return;
+    }
+
+    if (!clearZoomViewerFallbackSrc(dialogRef.current)) {
+      onClose();
+      return;
+    }
+
+    closeFrameRef.current = window.requestAnimationFrame(() => {
+      closeFrameRef.current = null;
+      onClose();
+    });
+  }, [onClose]);
 
   const handleBackdropOpacityChange = useCallback((opacity: number) => {
     const value = String(Math.min(Math.max(opacity, 0), 1));
@@ -151,7 +184,7 @@ export function ImageLightbox({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onClose();
+        closeLightbox();
         return;
       }
 
@@ -196,6 +229,11 @@ export function ImageLightbox({
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
+      if (closeFrameRef.current !== null) {
+        window.cancelAnimationFrame(closeFrameRef.current);
+        closeFrameRef.current = null;
+      }
+
       if (closePointerTimerRef.current !== null) {
         window.clearTimeout(closePointerTimerRef.current);
         closePointerTimerRef.current = null;
@@ -226,7 +264,7 @@ export function ImageLightbox({
         }
       });
     };
-  }, [onClose, returnFocusElement]);
+  }, [closeLightbox, returnFocusElement]);
 
   useLayoutEffect(() => {
     const closeIcon =
@@ -371,7 +409,7 @@ export function ImageLightbox({
     ignoreNextCloseClickRef.current = true;
     closePointerTimerRef.current = window.setTimeout(() => {
       closePointerTimerRef.current = null;
-      onClose();
+      closeLightbox();
     }, 0);
   };
 
@@ -381,7 +419,7 @@ export function ImageLightbox({
       return;
     }
 
-    onClose();
+    closeLightbox();
   };
 
   return createPortal(
@@ -473,7 +511,7 @@ export function ImageLightbox({
           alt={alt}
           height={height}
           onBackdropOpacityChange={handleBackdropOpacityChange}
-          onClose={onClose}
+          onClose={closeLightbox}
           onImageErrorChange={handleImageErrorChange}
           onImageLoadingChange={handleImageLoadingChange}
           src={src}

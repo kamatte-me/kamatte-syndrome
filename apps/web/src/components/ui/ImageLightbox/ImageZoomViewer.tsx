@@ -22,6 +22,7 @@ const keyboardZoomStep = 0.5;
 const loadingIndicatorDelay = 1000;
 const zoomAnimationDuration = 200;
 const closeControlSelector = '[data-image-lightbox-close]';
+const emptyImageSrc = 'data:,';
 
 type ImageZoomViewerProps = {
   alt: string;
@@ -390,6 +391,11 @@ export function ImageZoomViewer({
 
       if (content.pictureElement?.parentNode) {
         event.preventDefault();
+        // Chromium selects the img fallback src while this picture is being
+        // detached, including while its preferred source is still loading.
+        // Replace the fallback with an empty data URI first so the original
+        // JPEG is not requested after the viewer closes.
+        content.element?.setAttribute('src', emptyImageSrc);
         content.pictureElement.remove();
       }
     });

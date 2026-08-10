@@ -301,12 +301,20 @@ describe('ImageZoomViewer', () => {
     expect(onImageLoadingChange).toHaveBeenLastCalledWith(false);
 
     const contentRemoveEvent = { content, preventDefault: vi.fn() };
+    const removePicture = picture.remove.bind(picture);
+    let fallbackSrcWhenPictureIsRemoved: string | null | undefined;
+
+    vi.spyOn(picture, 'remove').mockImplementation(() => {
+      fallbackSrcWhenPictureIsRemoved = image.getAttribute('src');
+      removePicture();
+    });
 
     act(() => {
       instance.emit('contentRemove', contentRemoveEvent);
     });
 
     expect(contentRemoveEvent.preventDefault).toHaveBeenCalledOnce();
+    expect(fallbackSrcWhenPictureIsRemoved).toBe('data:,');
     expect(slideContainer).not.toContainElement(picture);
   });
 
