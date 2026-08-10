@@ -1,6 +1,9 @@
+import {
+  googlebotUserAgent,
+  serverFetchTimeoutMs,
+} from '../constants/serverFetch';
 import { buildOpenGraphMetadata, parseOpenGraphHtml } from '../utils/openGraph';
 import { normalizePublicHttpUrl } from '../utils/publicUrl';
-import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
 const maxRedirects = 5;
 const openGraphFetchHeaders = {

@@ -1,10 +1,13 @@
 import { resolveOEmbedEndpoint } from '@kamatte-syndrome/oembed-endpoint-resolver';
 import {
+  googlebotUserAgent,
+  serverFetchTimeoutMs,
+} from '../constants/serverFetch';
+import {
   createOEmbedRequestUrl,
   normalizeOEmbedResponse,
 } from '../utils/oEmbed';
 import { normalizePublicHttpUrl } from '../utils/publicUrl';
-import { googlebotUserAgent, serverFetchTimeoutMs } from './serverFetch';
 
 const oEmbedFetchHeaders = {
   Accept: 'application/json',
