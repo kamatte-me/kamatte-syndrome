@@ -1,14 +1,13 @@
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { siteName } from '@/constants/site';
 import { renderWithRouter } from '@/testing/renderWithRouter';
 import { SiteFooter } from './SiteFooter';
 
 describe('SiteFooter', () => {
-  it('renders the copyright start year with the shared site name', () => {
+  it('renders the copyright start year with the English site name', () => {
     renderWithRouter(<SiteFooter />);
 
-    expect(screen.getByText(`© 2018 ${siteName}`)).toBeInTheDocument();
+    expect(screen.getByText('© 2018 kamatte syndrome')).toBeInTheDocument();
   });
 
   it('renders policy navigation links', () => {

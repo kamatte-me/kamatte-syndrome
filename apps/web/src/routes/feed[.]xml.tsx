@@ -1,6 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { type Author, Feed as FeedGenerator } from 'feed';
-import { author, baseUrl, siteName, slogan } from '@/constants/site';
+import {
+  author,
+  baseUrl,
+  copyrightStartYear,
+  englishSiteName,
+  siteName,
+  slogan,
+} from '@/constants/site';
 import { getPosts } from '@/features/blog/server/getPosts.server';
 import {
   createFeedSummaryFromHtml,
@@ -41,7 +48,7 @@ export const Route = createFileRoute('/feed.xml')({
 
         const feed = new FeedGenerator({
           author: feedAuthor,
-          copyright: `© ${String(new Date().getFullYear())} ${siteName}`,
+          copyright: `© ${copyrightStartYear} ${englishSiteName}`,
           description: slogan,
           favicon: createAbsoluteUrl('/favicon.png'),
           feedLinks: {

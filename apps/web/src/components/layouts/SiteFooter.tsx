@@ -1,18 +1,16 @@
 import { Link } from '@tanstack/react-router';
-import { siteName } from '@/constants/site';
+import { copyrightStartYear, englishSiteName } from '@/constants/site';
 
 const policyLinks = [
   { label: 'Terms', to: '/terms' },
   { label: 'Privacy', to: '/privacy' },
 ] as const;
 
-const copyrightStartYear = 2018;
-
 export function SiteFooter() {
   return (
     <footer className="grid shrink-0 justify-items-center gap-3 px-4 pt-5 pb-6 text-center sm:px-8 lg:px-10">
       <p className="m-0 text-cutout-hole text-sm leading-normal">
-        © {copyrightStartYear} {siteName}
+        © {copyrightStartYear} {englishSiteName}
       </p>
       <nav
         aria-label="サイトポリシー"
