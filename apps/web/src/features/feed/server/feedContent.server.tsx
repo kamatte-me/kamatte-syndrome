@@ -1,6 +1,7 @@
 import { load } from 'cheerio/slim';
 import type { MDXComponents, MDXContent } from 'mdx/types';
 import type { ComponentPropsWithoutRef } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server.node';
 import { resolveContentMediaUrl } from '@/utils/contentMedia';
 
 type FeedUrlEmbedProps = {
@@ -11,10 +12,6 @@ export async function renderFeedContentHtml(
   MDXContent: MDXContent,
   contentBaseUrl: string,
 ) {
-  const { renderToStaticMarkup } = await import(
-    /* @vite-ignore */ 'react-dom/server.node'
-  );
-
   return renderToStaticMarkup(
     <MDXContent components={createFeedMdxComponents(contentBaseUrl)} />,
   );
