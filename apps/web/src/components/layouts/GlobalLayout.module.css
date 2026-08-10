@@ -12,6 +12,7 @@
 
   display: block;
   background: var(--cutout-stencil-surface-source);
+  clip-path: inset(0);
   color: var(--cutout-hole);
   filter: url("#global-cutout-filter");
   -webkit-text-fill-color: currentColor;
