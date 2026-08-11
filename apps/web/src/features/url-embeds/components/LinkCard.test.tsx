@@ -43,6 +43,33 @@ describe('LinkCard', () => {
     });
   });
 
+  it('shares an in-flight request between duplicated cards', async () => {
+    mocks.fetchOpenGraph.mockResolvedValue({
+      fetchedAt: '2026-08-12T00:00:00.000Z',
+      siteName: 'Example',
+      title: 'Example title',
+      url: 'https://example.com/article',
+    });
+    mocks.useServerFn.mockReturnValue(mocks.fetchOpenGraph);
+
+    render(
+      <>
+        <div data-cutout-layer="stencil">
+          <LinkCard url="https://example.com/article" />
+        </div>
+        <div data-cutout-layer="content">
+          <LinkCard url="https://example.com/article" />
+        </div>
+      </>,
+    );
+
+    await waitFor(() => {
+      expect(mocks.fetchOpenGraph).toHaveBeenCalledTimes(1);
+    });
+
+    expect(await screen.findAllByText('Example title')).toHaveLength(2);
+  });
+
   it('shows an unavailable preview state when metadata fetching fails', async () => {
     mocks.fetchOpenGraph.mockRejectedValue(new Error('Preview failed'));
     mocks.useServerFn.mockReturnValue(mocks.fetchOpenGraph);
