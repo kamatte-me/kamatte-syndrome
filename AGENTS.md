@@ -60,12 +60,20 @@
 ## コンテンツ
 
 - Content Collections の設定は `apps/web/content-collections.ts` です。
-- `apps/web/kamatte-syndrome-content/content` には Markdown または JSON のコンテンツが格納されています。
-- `apps/web/kamatte-syndrome-content/media` には画像などのメディアファイルが格納されています。
-- `apps/web/kamatte-syndrome-content/` は外部コンテンツ管理用ディレクトリへの symlink です。このリポジトリの作業では参照だけにし、リンク先の content repo は編集しないでください。
+- サイトコンテンツとメディアはすべて Private リポジトリ `kamatte-syndrome-content` で管理しています。公開済み・公開前を問わず、このリポジトリには含めないでください。
+- `apps/web/kamatte-syndrome-content/` は Git 管理対象外です。管理用 checkout では外部コンテンツリポジトリへの symlink になっていますが、このリポジトリの作業では参照だけにし、リンク先の content repo は編集しないでください。
+- `apps/web/kamatte-syndrome-content/content` には Markdown / MDX または JSON のコンテンツが、`media` には画像などのメディアが格納されています。コンテンツ管理には Sveltia CMS を使用しています。
 - 記事は `apps/web/kamatte-syndrome-content/content/posts` から読み込まれます。
-- 生成された `content-collections` 型や出力は手で編集せず、設定や元コンテンツを変更してください。
+- 生成された `content-collections` 型や出力は手で編集しません。このリポジトリでは設定を変更し、元コンテンツの修正は別作業としてコンテンツリポジトリ側で扱ってください。
 - 投稿の slug は現在 `apps/web/src/utils/posts.ts` の `toPostSlug` で `_meta.path` をそのまま使います。URL 互換性に影響するため、変更する場合は既存リンクへの影響を確認してください。
+- 未来の `publishedAt` を持つブログ記事の公開制御は `apps/web/src/features/blog/server/getPosts.server.ts` が担います。`VITE_SHOW_UNPUBLISHED_CONTENT=1` は明示的な公開前コンテンツ表示用のため、公開環境では意図した場合だけ設定してください。
+
+## CI とデプロイ
+
+- Vercel の Root Directory は `apps/web` です。[`apps/web/vercel.json`](apps/web/vercel.json) は `pnpm install --frozen-lockfile` の後、`pnpm sync:content && pnpm build` を実行します。
+- Vercel は非公開の `CONTENT_REPOSITORY_TOKEN` で `sync:content` を実行し、Private コンテンツリポジトリを shallow clone します。このトークンを `VITE_` 接頭辞の環境変数やクライアントコードに置かないでください。
+- CI は `sync:content` を使いません。GitHub App の短期トークンを発行し、`actions/checkout` で `apps/web/kamatte-syndrome-content` へコンテンツを checkout します。認証経路を Vercel と統一・置換しないでください。
+- `sync:content` は既存のコンテンツディレクトリを置き換えないよう、ディレクトリが存在すると停止します。ローカルの symlink や checkout を削除して実行しないでください。
 
 ## スタイルと UI
 
@@ -118,7 +126,7 @@
 
 ## 生成物と依存関係
 
-- `apps/web/dist/`、`apps/web/.output/`、`apps/web/.content-collections/`、`apps/web/src/routeTree.gen.ts`、lockfile などの生成物は、必要がある場合だけ更新してください。
+- `apps/web/.output/`、`apps/web/.content-collections/`、`apps/web/.tanstack/`、`apps/web/src/routeTree.gen.ts`、lockfile などの生成物は、必要がある場合だけ更新してください。
 - 依存関係を追加する前に、既存の React / TanStack / Tailwind や `apps/web/src/assets/icons/` の SVG アイコン、`Icon` コンポーネントで解決できるか確認してください。
 - lockfile を更新する場合は `pnpm install` を使ってください。
 
