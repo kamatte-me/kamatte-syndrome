@@ -13,24 +13,19 @@ const openGraphFetchHeaders = {
 };
 
 export async function fetchOpenGraphMetadata(url: string) {
-  return fetchAndParseOpenGraphMetadata(url);
-}
-
-async function fetchAndParseOpenGraphMetadata(url: string) {
   const fetchedAt = new Date().toISOString();
+  const { response, finalUrl } = await fetchWithValidatedRedirects(url);
+  const contentType = response.headers.get('content-type') ?? '';
 
-  try {
-    const { response, finalUrl } = await fetchWithValidatedRedirects(url);
+  if (!response.ok) {
+    throw new Error(`Open Graph request failed with ${response.status}.`);
+  }
 
-    const contentType = response.headers.get('content-type') ?? '';
-    if (!response.ok || !isHtmlContentType(contentType)) {
-      return buildOpenGraphMetadata({}, url, fetchedAt);
-    }
-
-    return parseOpenGraphHtml(await response.text(), url, fetchedAt, finalUrl);
-  } catch {
+  if (!isHtmlContentType(contentType)) {
     return buildOpenGraphMetadata({}, url, fetchedAt);
   }
+
+  return parseOpenGraphHtml(await response.text(), url, fetchedAt, finalUrl);
 }
 
 async function fetchWithValidatedRedirects(url: string) {

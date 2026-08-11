@@ -3,22 +3,22 @@ import { describe, expect, it } from 'vitest';
 import { LinkCardView } from './LinkCardView';
 
 describe('LinkCardView', () => {
-  it('renders a loading fallback with the destination domain', () => {
+  it('renders a destination fallback without a loading label', () => {
     render(
       <LinkCardView
         className="my-6"
         state={{ status: 'loading' }}
-        url="https://example.com/posts/hello"
+        url="https://www.example.com/posts/hello"
       />,
     );
 
-    const link = screen.getByRole('link', { name: /example\.com/i });
-    expect(link).toHaveAttribute('href', 'https://example.com/posts/hello');
+    const link = screen.getByRole('link', { name: /www\.example\.com/i });
+    expect(link).toHaveAttribute('href', 'https://www.example.com/posts/hello');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link.className).toContain('h-32');
     expect(link.className).toContain('my-6');
-    expect(screen.getAllByText('example.com')).toHaveLength(2);
-    expect(screen.getByText('Loading')).toBeInTheDocument();
+    expect(screen.getAllByText('www.example.com')).toHaveLength(2);
+    expect(screen.queryByText('Loading')).not.toBeInTheDocument();
   });
 
   it('renders fetched OGP metadata', () => {
@@ -55,7 +55,7 @@ describe('LinkCardView', () => {
     expect(imageShell?.className.split(/\s+/)).not.toContain('hidden');
   });
 
-  it('renders a stable fallback when OGP fetching fails', () => {
+  it('renders the same fallback without an error label when OGP fetching fails', () => {
     render(
       <LinkCardView
         state={{ status: 'error', message: 'Network error' }}
@@ -63,9 +63,9 @@ describe('LinkCardView', () => {
       />,
     );
 
-    const link = screen.getByRole('link', { name: /Preview unavailable/i });
+    const link = screen.getByRole('link', { name: /example\.net/i });
     expect(link).toHaveAttribute('href', 'https://example.net/');
     expect(screen.getAllByText('example.net')).toHaveLength(2);
-    expect(screen.getByText('Preview unavailable')).toBeInTheDocument();
+    expect(screen.queryByText('Preview unavailable')).not.toBeInTheDocument();
   });
 });

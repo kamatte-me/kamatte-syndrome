@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -49,7 +49,13 @@ describe('LinkCard', () => {
 
     render(<LinkCard url="https://example.com/article" />);
 
-    expect(await screen.findByText('Preview unavailable')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mocks.fetchOpenGraph).toHaveBeenCalledWith({
+        data: { url: 'https://example.com/article' },
+      });
+    });
+
     expect(screen.getAllByText('example.com')).toHaveLength(2);
+    expect(screen.queryByText('Preview unavailable')).not.toBeInTheDocument();
   });
 });

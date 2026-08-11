@@ -107,7 +107,7 @@ describe('fetchOpenGraphMetadata', () => {
     ]);
   });
 
-  it('does not follow redirects to blocked hosts', async () => {
+  it('rejects redirects to blocked hosts', async () => {
     const requests: string[] = [];
 
     server.use(
@@ -123,10 +123,20 @@ describe('fetchOpenGraphMetadata', () => {
 
     await expect(
       fetchOpenGraphMetadata('https://example.com/redirect'),
-    ).resolves.toMatchObject({
-      url: 'https://example.com/redirect',
-    });
+    ).rejects.toThrow('This URL host is not allowed.');
 
     expect(requests).toEqual(['https://example.com/redirect']);
+  });
+
+  it('rejects failed upstream responses', async () => {
+    server.use(
+      http.get('https://example.com/unavailable', () =>
+        HttpResponse.text('Service unavailable', { status: 503 }),
+      ),
+    );
+
+    await expect(
+      fetchOpenGraphMetadata('https://example.com/unavailable'),
+    ).rejects.toThrow('Open Graph request failed with 503.');
   });
 });

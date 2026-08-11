@@ -61,14 +61,6 @@ export function LinkCardView({ url, state, className }: LinkCardViewProps) {
             />
           ) : null}
           <span className={cn('truncate', styles.mutedText)}>{siteName}</span>
-          {state.status === 'loading' ? (
-            <span className="shrink-0 text-cutout-muted">Loading</span>
-          ) : null}
-          {state.status === 'error' ? (
-            <span className="shrink-0 text-cutout-muted">
-              Preview unavailable
-            </span>
-          ) : null}
         </span>
       </span>
       {image ? (
@@ -88,7 +80,7 @@ export function LinkCardView({ url, state, className }: LinkCardViewProps) {
 function formatDisplayUrl(value: string) {
   try {
     const url = new URL(value);
-    return url.hostname.replace(/^www\./, '');
+    return url.hostname;
   } catch {
     return value;
   }

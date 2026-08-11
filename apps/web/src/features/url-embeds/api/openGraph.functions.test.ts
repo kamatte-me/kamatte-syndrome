@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   fetchOpenGraphMetadata: vi.fn(),
@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
     | undefined
     | ((input: { data: { url: string } }) => Promise<unknown>),
   setResponseHeader: vi.fn(),
+  setResponseStatus: vi.fn(),
 }));
 
 vi.mock('@tanstack/react-start', () => ({
@@ -27,6 +28,7 @@ vi.mock('@tanstack/react-start', () => ({
 
 vi.mock('@tanstack/react-start/server', () => ({
   setResponseHeader: mocks.setResponseHeader,
+  setResponseStatus: mocks.setResponseStatus,
 }));
 
 vi.mock('../server/openGraph.server', () => ({
@@ -34,6 +36,10 @@ vi.mock('../server/openGraph.server', () => ({
 }));
 
 import './openGraph.functions';
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
 
 describe('getOpenGraph', () => {
   it('sets the public CDN cache policy before fetching metadata', async () => {
@@ -54,5 +60,20 @@ describe('getOpenGraph', () => {
     expect(mocks.fetchOpenGraphMetadata).toHaveBeenCalledWith(
       'https://example.com/article',
     );
+  });
+
+  it('sets a 500 status when metadata fetching fails', async () => {
+    mocks.fetchOpenGraphMetadata.mockRejectedValue(new Error('Upstream error'));
+
+    if (!mocks.handler) {
+      throw new Error('Expected the server-function handler to be registered');
+    }
+
+    await expect(
+      mocks.handler({ data: { url: 'https://example.com/article' } }),
+    ).rejects.toThrow('Unable to fetch Open Graph metadata.');
+
+    expect(mocks.setResponseStatus).toHaveBeenCalledWith(500);
+    expect(mocks.setResponseHeader).not.toHaveBeenCalled();
   });
 });
