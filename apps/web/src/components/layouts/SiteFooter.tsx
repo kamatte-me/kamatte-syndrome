@@ -9,7 +9,7 @@ const policyLinks = [
 export function SiteFooter() {
   return (
     <footer className="grid shrink-0 justify-items-center gap-3 px-4 pt-5 pb-6 text-center sm:px-8 lg:px-10">
-      <p className="m-0 text-cutout-hole text-sm leading-normal">
+      <p className="m-0 text-cutout-hole text-xs leading-normal">
         © {copyrightStartYear} {englishSiteName}
       </p>
       <nav
