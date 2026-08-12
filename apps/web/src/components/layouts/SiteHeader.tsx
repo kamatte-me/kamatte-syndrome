@@ -486,7 +486,10 @@ function HeaderBackdrop({
 
   return (
     <div className={styles.headerBackdrop} data-site-header-backdrop="">
-      <PsychedelicBackground className={styles.headerBackdropViewport} />
+      <PsychedelicBackground
+        className={styles.headerBackdropViewport}
+        clipRenderingToParent
+      />
     </div>
   );
 }

@@ -1,6 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import {
+  getTopEdgeRenderRegion,
+  type RenderRegion,
+} from './psychedelicRenderRegion';
 import fragmentShader from './shaders/psychedelic.frag.glsl?raw';
 import vertexShader from './shaders/psychedelic.vert.glsl?raw';
 import webgpuShader from './shaders/psychedelic.wgsl?raw';
@@ -25,8 +29,13 @@ type RenderSize = {
   width: number;
 };
 
+type RenderMetrics = RenderSize & {
+  renderRegion: RenderRegion | null;
+};
+
 type PsychedelicBackgroundProps = {
   className?: string;
+  clipRenderingToParent?: boolean;
 };
 
 const defaultBackgroundClassName =
@@ -34,14 +43,41 @@ const defaultBackgroundClassName =
 
 const sharedSeed = Math.random() * 1000;
 
-function getBackgroundRenderSize(container: HTMLElement): RenderSize {
+function getBackgroundRenderMetrics(
+  container: HTMLElement,
+  clipRenderingToParent: boolean,
+): RenderMetrics {
   const width = container.clientWidth || window.innerWidth;
   const height = container.clientHeight || window.innerHeight;
   const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-
-  return {
+  const renderSize = {
     height: Math.max(1, Math.round(height * RENDER_SCALE * pixelRatio)),
     width: Math.max(1, Math.round(width * RENDER_SCALE * pixelRatio)),
+  };
+
+  if (!clipRenderingToParent) {
+    return {
+      ...renderSize,
+      renderRegion: { ...renderSize, x: 0, y: 0 },
+    };
+  }
+
+  const clipElement = container.parentElement;
+
+  if (!clipElement) {
+    return {
+      ...renderSize,
+      renderRegion: { ...renderSize, x: 0, y: 0 },
+    };
+  }
+
+  return {
+    ...renderSize,
+    renderRegion: getTopEdgeRenderRegion(
+      renderSize,
+      { height, width },
+      clipElement.clientHeight,
+    ),
   };
 }
 
@@ -105,7 +141,10 @@ function createWebglProgram(gl: WebGLRenderingContext) {
   return program;
 }
 
-async function createWebgpuRenderer(container: HTMLDivElement) {
+async function createWebgpuRenderer(
+  container: HTMLDivElement,
+  clipRenderingToParent: boolean,
+) {
   const gpu = navigator.gpu;
 
   if (!gpu) {
@@ -167,13 +206,19 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   });
   let drawingHeight = 0;
   let drawingWidth = 0;
+  let renderRegion: RenderRegion | null = null;
 
   canvas.className = RENDERER_CANVAS_CLASS_NAME;
   container.appendChild(canvas);
 
   const resize = () => {
-    const { height: renderHeight, width: renderWidth } =
-      getBackgroundRenderSize(container);
+    const {
+      height: renderHeight,
+      renderRegion: nextRenderRegion,
+      width: renderWidth,
+    } = getBackgroundRenderMetrics(container, clipRenderingToParent);
+
+    renderRegion = nextRenderRegion;
 
     if (drawingWidth === renderWidth && drawingHeight === renderHeight) {
       return;
@@ -192,6 +237,10 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
 
   const render = (time: number) => {
     if (drawingWidth === 0 || drawingHeight === 0) {
+      return;
+    }
+
+    if (!renderRegion) {
       return;
     }
 
@@ -215,6 +264,12 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
 
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
+    pass.setScissorRect(
+      renderRegion.x,
+      renderRegion.y,
+      renderRegion.width,
+      renderRegion.height,
+    );
     pass.draw(3);
     pass.end();
 
@@ -231,7 +286,10 @@ async function createWebgpuRenderer(container: HTMLDivElement) {
   } satisfies BackgroundRenderer;
 }
 
-function createWebglRenderer(container: HTMLDivElement) {
+function createWebglRenderer(
+  container: HTMLDivElement,
+  clipRenderingToParent: boolean,
+) {
   const canvas = document.createElement('canvas');
   const gl = canvas.getContext('webgl', {
     alpha: true,
@@ -279,6 +337,7 @@ function createWebglRenderer(container: HTMLDivElement) {
 
   let drawingHeight = 0;
   let drawingWidth = 0;
+  let renderRegion: RenderRegion | null = null;
   const activateProgram = gl.useProgram.bind(gl);
 
   canvas.className = RENDERER_CANVAS_CLASS_NAME;
@@ -287,6 +346,7 @@ function createWebglRenderer(container: HTMLDivElement) {
   activateProgram(program);
   gl.disable(gl.CULL_FACE);
   gl.disable(gl.DEPTH_TEST);
+  gl.enable(gl.SCISSOR_TEST);
   gl.clearColor(0, 0, 0, 0);
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, FULLSCREEN_TRIANGLE, gl.STATIC_DRAW);
@@ -295,8 +355,13 @@ function createWebglRenderer(container: HTMLDivElement) {
   gl.uniform1f(seedLocation, sharedSeed);
 
   const resize = () => {
-    const { height: renderHeight, width: renderWidth } =
-      getBackgroundRenderSize(container);
+    const {
+      height: renderHeight,
+      renderRegion: nextRenderRegion,
+      width: renderWidth,
+    } = getBackgroundRenderMetrics(container, clipRenderingToParent);
+
+    renderRegion = nextRenderRegion;
 
     if (drawingWidth === renderWidth && drawingHeight === renderHeight) {
       return;
@@ -311,6 +376,16 @@ function createWebglRenderer(container: HTMLDivElement) {
   };
 
   const render = (time: number) => {
+    if (!renderRegion) {
+      return;
+    }
+
+    gl.scissor(
+      renderRegion.x,
+      drawingHeight - renderRegion.y - renderRegion.height,
+      renderRegion.width,
+      renderRegion.height,
+    );
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform1f(timeLocation, time);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -329,6 +404,7 @@ function createWebglRenderer(container: HTMLDivElement) {
 
 export function PsychedelicBackground({
   className = defaultBackgroundClassName,
+  clipRenderingToParent = false,
 }: PsychedelicBackgroundProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -354,8 +430,8 @@ export function PsychedelicBackground({
 
     const initialize = async () => {
       const renderer =
-        (await createWebgpuRenderer(container)) ??
-        createWebglRenderer(container);
+        (await createWebgpuRenderer(container, clipRenderingToParent)) ??
+        createWebglRenderer(container, clipRenderingToParent);
 
       if (!renderer) {
         return;
@@ -377,6 +453,10 @@ export function PsychedelicBackground({
         renderer.render(timeValue);
       };
 
+      const renderFrame = () => {
+        renderer.render(timeValue);
+      };
+
       const tick = (currentTime: number) => {
         if (document.hidden || reducedMotionQuery.matches) {
           frameId = null;
@@ -385,7 +465,7 @@ export function PsychedelicBackground({
 
         if (currentTime - lastRenderTime >= FRAME_INTERVAL_MS) {
           timeValue = currentTime / 1000;
-          renderScene();
+          renderFrame();
           lastRenderTime = currentTime;
         }
 
@@ -430,6 +510,14 @@ export function PsychedelicBackground({
 
       renderScene();
 
+      const resizeObserver = new ResizeObserver(renderScene);
+
+      resizeObserver.observe(container);
+
+      if (clipRenderingToParent && container.parentElement) {
+        resizeObserver.observe(container.parentElement);
+      }
+
       if (reducedMotionQuery.matches) {
         renderStaticFrame();
       } else {
@@ -442,6 +530,7 @@ export function PsychedelicBackground({
 
       cleanupRenderer = () => {
         stop();
+        resizeObserver.disconnect();
         window.removeEventListener('resize', renderScene);
         document.removeEventListener(
           'visibilitychange',
@@ -458,7 +547,7 @@ export function PsychedelicBackground({
       isDisposed = true;
       cleanupRenderer?.();
     };
-  }, []);
+  }, [clipRenderingToParent]);
 
   return <div aria-hidden="true" className={className} ref={containerRef} />;
 }
