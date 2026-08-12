@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { renderServerComponent } from '@tanstack/react-start/rsc';
 import { allCultures } from 'content-collections';
@@ -69,6 +69,7 @@ export const Route = createFileRoute('/culture')({
 
 function CulturePage() {
   const cultureItems = Route.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
   const pageRef = useRef<HTMLElement>(null);
   const pageContentRef = useRef<HTMLDivElement>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
@@ -85,18 +86,18 @@ function CulturePage() {
       }
 
       setSelectedSlug(slug);
-      window.history.pushState(
-        { cultureModal: slug },
-        '',
-        window.location.href,
-      );
+      void navigate({
+        to: '.',
+        state: (previous) => ({ ...previous, cultureModal: slug }),
+        resetScroll: false,
+      });
       window.dispatchEvent(
         new CustomEvent<{ slug: string | null }>(cultureModalChangeEvent, {
           detail: { slug },
         }),
       );
     },
-    [selectedSlug],
+    [navigate, selectedSlug],
   );
 
   const closeModal = useCallback(() => {

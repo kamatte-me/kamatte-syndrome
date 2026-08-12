@@ -101,39 +101,45 @@ afterEach(() => {
 describe('Modal', () => {
   it('renders as a content-layer dialog and handles close interactions', async () => {
     const onClose = vi.fn();
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus');
 
-    render(
-      <div data-cutout-layer="content">
-        <Modal onClose={onClose} titleId="modal-title">
-          {({ isContentLayer }) => (
-            <h2 id="modal-title">
-              {isContentLayer ? 'Content modal' : 'Stencil modal'}
-            </h2>
-          )}
-        </Modal>
-      </div>,
-    );
+    try {
+      render(
+        <div data-cutout-layer="content">
+          <Modal onClose={onClose} titleId="modal-title">
+            {({ isContentLayer }) => (
+              <h2 id="modal-title">
+                {isContentLayer ? 'Content modal' : 'Stencil modal'}
+              </h2>
+            )}
+          </Modal>
+        </div>,
+      );
 
-    const dialog = screen.getByRole('dialog', { name: 'Content modal' });
+      const dialog = screen.getByRole('dialog', { name: 'Content modal' });
 
-    expect(dialog).toHaveAttribute('data-ui-modal-dialog');
-    expect(dialog).toHaveFocus();
-    await waitFor(() => {
-      expect(document.body.style.overflow).toBe('hidden');
-    });
+      expect(dialog).toHaveAttribute('data-ui-modal-dialog');
+      expect(dialog).toHaveFocus();
+      expect(focus).toHaveBeenCalledWith({ preventScroll: true });
+      await waitFor(() => {
+        expect(document.body.style.overflow).toBe('hidden');
+      });
 
-    fireEvent.keyDown(window, { key: 'Escape' });
-    expect(onClose).toHaveBeenCalledTimes(1);
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(onClose).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(
-      screen.getAllByRole('button', { name: 'モーダルを閉じる' })[0],
-    );
-    expect(onClose).toHaveBeenCalledTimes(2);
+      fireEvent.click(
+        screen.getAllByRole('button', { name: 'モーダルを閉じる' })[0],
+      );
+      expect(onClose).toHaveBeenCalledTimes(2);
 
-    fireEvent.click(
-      screen.getAllByRole('button', { name: 'モーダルを閉じる' })[1],
-    );
-    expect(onClose).toHaveBeenCalledTimes(3);
+      fireEvent.click(
+        screen.getAllByRole('button', { name: 'モーダルを閉じる' })[1],
+      );
+      expect(onClose).toHaveBeenCalledTimes(3);
+    } finally {
+      focus.mockRestore();
+    }
   });
 
   it('keeps stencil-layer rendering non-interactive and syncs the scroll offset CSS variable', async () => {

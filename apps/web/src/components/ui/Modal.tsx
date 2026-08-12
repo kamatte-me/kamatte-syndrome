@@ -98,7 +98,7 @@ export function Modal({
       stencilLayerRef.current = null;
       setStencilPortalTarget(null);
       setStencilScrollY(null);
-      dialogRef.current?.focus();
+      dialogRef.current?.focus({ preventScroll: true });
 
       return;
     }
