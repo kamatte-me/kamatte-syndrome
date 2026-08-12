@@ -1,8 +1,10 @@
+import { useNavigate } from '@tanstack/react-router';
 import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -10,6 +12,7 @@ import { ImageLightbox } from './ImageLightbox';
 import { imageLightboxTriggerSelector } from './ImageLightboxTrigger';
 
 const contentLayerSelector = '[data-cutout-layer="content"]';
+const imageLightboxHistoryStateKey = 'imageLightbox';
 const maximumTapMovement = 12;
 
 type LightboxImage = {
@@ -131,6 +134,7 @@ function hasTouchPointerMoved(
 export function ImageLightboxController({
   children,
 }: ImageLightboxControllerProps) {
+  const navigate = useNavigate();
   const openerRef = useRef<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const suppressedClickRef = useRef<HTMLButtonElement | null>(null);
@@ -139,17 +143,56 @@ export function ImageLightboxController({
     null,
   );
 
-  const closeLightbox = useCallback(() => setSelectedImage(null), []);
-
-  const openLightbox = useCallback((trigger: HTMLButtonElement) => {
-    const image = getLightboxImage(trigger);
-
-    if (!image) {
+  const closeLightbox = useCallback(() => {
+    if (
+      selectedImage &&
+      window.history.state?.[imageLightboxHistoryStateKey] === selectedImage.src
+    ) {
+      window.history.back();
       return;
     }
 
-    openerRef.current = trigger;
-    setSelectedImage(image);
+    setSelectedImage(null);
+  }, [selectedImage]);
+
+  const openLightbox = useCallback(
+    (trigger: HTMLButtonElement) => {
+      const image = getLightboxImage(trigger);
+
+      if (!image) {
+        return;
+      }
+
+      openerRef.current = trigger;
+      setSelectedImage(image);
+      void navigate({
+        to: '.',
+        state: (previous) => ({
+          ...previous,
+          [imageLightboxHistoryStateKey]: image.src,
+        }),
+        resetScroll: false,
+      });
+    },
+    [navigate],
+  );
+
+  useEffect(() => {
+    const controller = rootRef.current;
+
+    if (!controller?.closest(contentLayerSelector)) {
+      return;
+    }
+
+    const closeLightboxOnPopState = () => {
+      setSelectedImage(null);
+    };
+
+    window.addEventListener('popstate', closeLightboxOnPopState);
+
+    return () => {
+      window.removeEventListener('popstate', closeLightboxOnPopState);
+    };
   }, []);
 
   const handleContentClick = useCallback(

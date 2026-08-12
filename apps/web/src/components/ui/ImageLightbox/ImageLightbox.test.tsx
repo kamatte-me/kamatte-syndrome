@@ -336,6 +336,7 @@ describe('ImageLightbox', () => {
     render(<LightboxFocusFixture />);
 
     const opener = screen.getByRole('button', { name: '画像を開く' });
+    const openerFocus = vi.spyOn(opener, 'focus');
     const externalButton = screen.getByRole('button', { name: '外部操作' });
 
     opener.focus();
@@ -368,6 +369,9 @@ describe('ImageLightbox', () => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
     expect(opener).toHaveFocus();
+    expect(openerFocus).toHaveBeenLastCalledWith({ preventScroll: true });
     expect(document.body.style.overflow).toBe('');
+
+    openerFocus.mockRestore();
   });
 });

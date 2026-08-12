@@ -260,7 +260,7 @@ export function ImageLightbox({
         restoreFocusFrameRef.current = null;
 
         if (focusReturnTarget?.isConnected) {
-          focusReturnTarget.focus();
+          focusReturnTarget.focus({ preventScroll: true });
         }
       });
     };

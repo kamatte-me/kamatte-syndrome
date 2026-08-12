@@ -5,6 +5,11 @@ import { ImageLightboxController } from './ImageLightboxController';
 import { ImageLightboxTrigger } from './ImageLightboxTrigger';
 
 const lightboxRenderSpy = vi.hoisted(() => vi.fn());
+const navigateMock = vi.hoisted(() => vi.fn());
+
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => navigateMock,
+}));
 
 vi.mock('./ImageLightbox', () => ({
   ImageLightbox: ({
@@ -35,6 +40,8 @@ vi.mock('./ImageLightbox', () => ({
 
 beforeEach(() => {
   lightboxRenderSpy.mockClear();
+  navigateMock.mockClear();
+  window.history.replaceState({}, '', '/');
 });
 
 function PostImage() {
@@ -191,6 +198,39 @@ describe('ImageLightboxController', () => {
     openImage();
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('adds a non-scrolling history entry and closes it with browser back', () => {
+    const historyBack = vi
+      .spyOn(window.history, 'back')
+      .mockImplementation(() => undefined);
+
+    try {
+      render(<LayeredControllerFixture />);
+      openImage();
+
+      expect(navigateMock).toHaveBeenCalledOnce();
+      const [navigateOptions] = navigateMock.mock.calls[0] ?? [];
+
+      expect(navigateOptions).toMatchObject({
+        resetScroll: false,
+        to: '.',
+      });
+      expect(navigateOptions.state({})).toEqual({
+        imageLightbox: '/media/original.jpg',
+      });
+
+      window.history.replaceState({ imageLightbox: '/media/original.jpg' }, '');
+      fireEvent.click(screen.getByRole('button', { name: '閉じる' }));
+
+      expect(historyBack).toHaveBeenCalledOnce();
+
+      fireEvent.popState(window);
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    } finally {
+      historyBack.mockRestore();
+    }
   });
 
   it('leaves image triggers inside links to the link interaction', () => {
