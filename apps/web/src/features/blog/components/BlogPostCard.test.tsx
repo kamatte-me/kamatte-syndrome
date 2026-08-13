@@ -35,14 +35,15 @@ describe('BlogPostCard', () => {
     expect(screen.getByText('2026/7/3')).toBeInTheDocument();
   });
 
-  it('uses the avatar image when the post has no featured image', () => {
-    renderWithRouter(
-      <BlogPostCard post={createPost({ featuredImage: undefined })} />,
-    );
+  it.each([undefined, ''])(
+    'uses the avatar image when the post featured image is %j',
+    (featuredImage) => {
+      renderWithRouter(<BlogPostCard post={createPost({ featuredImage })} />);
 
-    expect(screen.getByRole('img', { name: 'Example Post' })).toHaveAttribute(
-      'src',
-      avatarImage,
-    );
-  });
+      expect(screen.getByRole('img', { name: 'Example Post' })).toHaveAttribute(
+        'src',
+        avatarImage,
+      );
+    },
+  );
 });

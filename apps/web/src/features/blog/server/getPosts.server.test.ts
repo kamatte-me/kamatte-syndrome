@@ -4,6 +4,10 @@ import { getPosts } from './getPosts.server';
 vi.mock('content-collections', () => ({
   allPosts: [
     {
+      publishedAt: undefined,
+      slug: 'undated',
+    },
+    {
       publishedAt: new Date('2026-07-18T00:00:00+09:00'),
       slug: 'future',
     },
@@ -31,9 +35,13 @@ describe('getPosts', () => {
     expect(getPosts().map((post) => post.slug)).toEqual(['past']);
   });
 
-  it('returns all posts in descending order when unpublished posts are shown', () => {
+  it('returns undated posts first, then all other posts in descending order when unpublished posts are shown', () => {
     vi.stubEnv('VITE_SHOW_UNPUBLISHED_CONTENT', '1');
 
-    expect(getPosts().map((post) => post.slug)).toEqual(['future', 'past']);
+    expect(getPosts().map((post) => post.slug)).toEqual([
+      'undated',
+      'future',
+      'past',
+    ]);
   });
 });

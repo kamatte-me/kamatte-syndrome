@@ -18,7 +18,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
       >
         <div className="size-18 shrink-0 overflow-hidden sm:size-30">
           <ContentImage
-            src={post.featuredImage ?? avatarImage}
+            src={post.featuredImage || avatarImage}
             alt={post.title}
             width={120}
             height={120}

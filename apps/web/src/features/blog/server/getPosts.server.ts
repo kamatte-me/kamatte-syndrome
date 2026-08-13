@@ -11,8 +11,8 @@ export function getPosts() {
         );
 
   return [...posts].sort((a, b) => {
-    const aTime = a.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;
-    const bTime = b.publishedAt?.getTime() ?? Number.NEGATIVE_INFINITY;
+    const aTime = a.publishedAt?.getTime() ?? Number.POSITIVE_INFINITY;
+    const bTime = b.publishedAt?.getTime() ?? Number.POSITIVE_INFINITY;
 
     return bTime - aTime;
   });
