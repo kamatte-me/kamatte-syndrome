@@ -1,2 +1,25 @@
-onlyBuiltDependencies:
-  - sharp
+packages:
+  - apps/*
+  - packages/*
+
+catalog:
+  '@testing-library/jest-dom': 7.0.1
+  '@testing-library/react': 16.3.2
+  '@types/mdast': 4.0.4
+  '@types/node': 24.13.3
+  '@types/react': 19.2.18
+  '@types/react-dom': 19.2.4
+  happy-dom: 20.11.2
+  react: 19.2.8
+  react-dom: 19.2.8
+  sharp: 0.35.3
+  typescript: 7.0.2
+  vite: 8.2.1
+  vitest: 4.1.10
+
+saveExact: true
+minimumReleaseAge: 1440
+allowBuilds:
+  esbuild: true
+  msw: false
+  sharp: true

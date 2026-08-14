@@ -1,45 +1,27 @@
 {
   "name": "kamatte-syndrome",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "description": "plz kamatte me!!!",
   "author": "kamatte",
+  "type": "module",
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm -r start",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "lint:ci": "biome ci",
-    "start": "next start",
-    "typecheck": "tsc --noEmit",
-    "vercel:deploy": "vercel",
-    "vercel:dev": "vercel dev",
-    "vercel:env:pull": "vercel env pull .env.local"
-  },
-  "dependencies": {
-    "@emotion/react": "11.14.0",
-    "@theme-ui/mdx": "0.17.4",
-    "destyle.css": "4.0.1",
-    "domelementtype": "3.0.0",
-    "feed": "5.1.0",
-    "html-react-parser": "5.2.17",
-    "next": "15.5.22",
-    "next-seo": "6.8.0",
-    "p-limit": "7.3.1",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "react-icons": "5.5.0",
-    "sitemap": "8.0.3",
-    "theme-ui": "0.17.4"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "vercel:env:pull": "pnpm -r vercel:env:pull"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.7",
-    "@types/node": "24.13.2",
-    "@types/react": "19.2.17",
-    "typescript": "5.9.3"
+    "@biomejs/biome": "2.5.8",
+    "@tanstack/intent": "0.3.6"
   },
-  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": "24.x"
-  }
+  },
+  "packageManager": "pnpm@11.21.0"
 }

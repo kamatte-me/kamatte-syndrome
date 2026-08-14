@@ -1,0 +1,28 @@
+{
+  "name": "@kamatte-syndrome/vite-plugin-optimized-social-image",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./virtual": "./src/virtual.d.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kamatte-syndrome/image-optimization-core": "workspace:*",
+    "sharp": "catalog:"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "vite": "^8.0.0"
+  }
+}

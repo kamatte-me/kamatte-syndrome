@@ -1,0 +1,12 @@
+[data-cutout-layer="content"] .pageContent[data-culture-modal-cutout] {
+  mask-composite: exclude;
+  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-mode: alpha, alpha;
+  mask-position:
+    0 0,
+    var(--culture-modal-mask-left) var(--culture-modal-mask-top);
+  mask-repeat: no-repeat, no-repeat;
+  mask-size:
+    100% 100%,
+    var(--culture-modal-mask-width) var(--culture-modal-mask-height);
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@kamatte-syndrome/remark-mdx-url-embed",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@types/mdast": "catalog:",
+    "mdast-util-mdx-jsx": "3.2.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

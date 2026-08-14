@@ -1,0 +1,11 @@
+[data-cutout-layer="content"] .card .readableText {
+  color: var(--cutout-readable);
+  text-decoration-color: var(--cutout-readable);
+  -webkit-text-fill-color: currentColor;
+}
+
+[data-cutout-layer="content"] .card .mutedText {
+  color: var(--cutout-muted);
+  text-decoration-color: var(--cutout-muted);
+  -webkit-text-fill-color: currentColor;
+}

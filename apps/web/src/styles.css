@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  --cutout-hole: transparent;
+  --cutout-muted: rgb(127 127 127 / 0.7);
+  --cutout-readable: rgb(234 234 234 / 0.75);
+  --cutout-stencil-hole-source: #000;
+  --cutout-stencil-surface-source: #fff;
+}
+
+@theme inline {
+  --font-display: "Matemasie", sans-serif;
+
+  --color-cutout-hole: var(--cutout-hole);
+  --color-cutout-muted: var(--cutout-muted);
+  --color-cutout-readable: var(--cutout-readable);
+}
+
+body {
+  background: #000000;
+  color: #ffffff;
+}

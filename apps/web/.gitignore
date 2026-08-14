@@ -1,0 +1,10 @@
+# Content sources and generated content
+kamatte-syndrome-content
+.content-collections/
+public/media/
+
+# Build output
+.output/
+.nitro/
+.tanstack/
+stats.html

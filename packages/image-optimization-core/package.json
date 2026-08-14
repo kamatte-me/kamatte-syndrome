@@ -1,0 +1,26 @@
+{
+  "name": "@kamatte-syndrome/image-optimization-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "sharp": "catalog:"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "vite": "^8.0.0"
+  }
+}

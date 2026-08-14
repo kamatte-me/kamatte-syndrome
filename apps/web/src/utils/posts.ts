@@ -1,0 +1,62 @@
+export const BLOG_POSTS_PER_PAGE = 5;
+
+export function createPostDescription(content: string) {
+  const text = content
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return text.length <= 100 ? text : `${text.slice(0, 99)}…`;
+}
+
+export function parseBlogPageSearchParam(value: unknown) {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) && value >= 2 ? value : undefined;
+  }
+
+  if (typeof value !== 'string' || !/^[1-9]\d*$/.test(value)) {
+    return undefined;
+  }
+
+  const page = Number(value);
+  return page >= 2 ? page : undefined;
+}
+
+export function paginateItems<T>(
+  items: T[],
+  currentPage: number,
+  perPage = BLOG_POSTS_PER_PAGE,
+) {
+  const totalItems = items.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / perPage));
+  const start = (currentPage - 1) * perPage;
+
+  return {
+    items: items.slice(start, start + perPage),
+    pageInfo: {
+      totalItems,
+      totalPages,
+      currentPage,
+      perPage,
+    },
+  };
+}
+
+export function formatPostDate(date?: Date) {
+  if (!date) {
+    return 'Date unknown';
+  }
+
+  return new Intl.DateTimeFormat('ja-JP', {
+    day: 'numeric',
+    month: 'numeric',
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+  }).format(date);
+}

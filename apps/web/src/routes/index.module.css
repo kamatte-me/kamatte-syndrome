@@ -1,0 +1,78 @@
+.logoMask {
+  mask: url("../assets/logo.svg") center / contain no-repeat;
+}
+
+.speechBubble {
+  isolation: isolate;
+}
+
+.speechBubbleShape {
+  position: absolute;
+  display: block;
+  top: -1.05rem;
+  right: auto;
+  bottom: -0.95rem;
+  left: 50%;
+  z-index: -1;
+  width: 300px;
+  transform: translateX(-50%);
+  background: var(--cutout-hole);
+  -webkit-mask:
+    url("../features/index/assets/speech-bubble-mobile.svg") center / 100% 100%
+    no-repeat;
+  mask:
+    url("../features/index/assets/speech-bubble-mobile.svg") center / 100% 100%
+    no-repeat;
+  pointer-events: none;
+}
+
+.speechBubble .speechBubbleText {
+  position: relative;
+  display: inline-block;
+  transform: translateY(-0.65rem);
+  color: #000000;
+  text-decoration-color: #000000;
+  -webkit-text-fill-color: #000000;
+}
+
+@media (width >= 40rem) {
+  .speechBubbleShape {
+    top: -1.15rem;
+    bottom: -1.05rem;
+    width: 400px;
+  }
+
+  .speechBubble .speechBubbleText {
+    transform: translateY(-0.8rem);
+  }
+}
+
+@media (width >= 48rem) {
+  .speechBubbleShape {
+    top: 0.3rem;
+    right: auto;
+    bottom: -2.1rem;
+    left: -1.6rem;
+    width: 460px;
+    transform: none;
+    -webkit-mask-image: url("../features/index/assets/speech-bubble-desktop.svg");
+    mask-image: url("../features/index/assets/speech-bubble-desktop.svg");
+  }
+
+  .speechBubble .speechBubbleText {
+    transform: translate(-0.5rem, 0.5rem);
+  }
+}
+
+@media (width >= 64rem) {
+  .speechBubbleShape {
+    top: 0.4rem;
+    bottom: -2.4rem;
+    left: -2rem;
+    width: 550px;
+  }
+
+  .speechBubble .speechBubbleText {
+    transform: translate(-0.55rem, 0.6rem);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "paths": {
+      "content-collections": ["./.content-collections/generated"],
+      "@/*": ["./src/*"],
+      "@@/*": ["./*"]
+    }
+  },
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}

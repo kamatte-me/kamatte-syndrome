@@ -1,0 +1,29 @@
+.root {
+  --modal-scroll-y: 0px;
+}
+
+.panel {
+  background-color: transparent;
+}
+
+[data-cutout-layer="stencil"] .root {
+  top: calc(var(--modal-scroll-y) - var(--cutout-inset));
+  right: auto;
+  bottom: auto;
+  left: calc(-1 * var(--cutout-inset));
+  width: 100vw;
+  height: 100dvh;
+}
+
+[data-cutout-layer="modal-stencil"] .panel,
+[data-cutout-layer="stencil"] .panel {
+  background-color: var(--cutout-stencil-surface-source);
+}
+
+[data-cutout-layer="modal-stencil"] .panel {
+  filter: url("#global-cutout-filter");
+}
+
+[data-cutout-layer="content"] .panel {
+  background-color: transparent;
+}

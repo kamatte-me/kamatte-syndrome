@@ -1,0 +1,114 @@
+.shell {
+  --cutout-inset: 8px;
+}
+
+.stencilLayer {
+  --cutout-stencil-scroll-y: 0px;
+  --cutout-stencil-hole-source: #fff;
+  --cutout-stencil-surface-source: #000;
+  --cutout-hole: var(--cutout-stencil-hole-source);
+  --cutout-muted: var(--cutout-stencil-hole-source);
+  --cutout-readable: var(--cutout-stencil-hole-source);
+
+  display: block;
+  background: var(--cutout-stencil-surface-source);
+  clip-path: inset(0);
+  color: var(--cutout-hole);
+  filter: url("#global-cutout-filter");
+  -webkit-text-fill-color: currentColor;
+}
+
+.stencilLayer[data-cutout-mobile-menu-open] {
+  position: fixed;
+  inset: var(--cutout-inset);
+}
+
+.stencilLayer[data-cutout-modal-cutout] {
+  mask-composite: exclude;
+  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-mode: alpha, alpha;
+  mask-position:
+    0 0,
+    var(--cutout-modal-mask-left) var(--cutout-modal-mask-top);
+  mask-repeat: no-repeat, no-repeat;
+  mask-size:
+    100% 100%,
+    var(--cutout-modal-mask-width) var(--cutout-modal-mask-height);
+}
+
+.modalStencilLayer {
+  --cutout-stencil-hole-source: #fff;
+  --cutout-stencil-surface-source: #000;
+  --cutout-hole: var(--cutout-stencil-hole-source);
+  --cutout-muted: var(--cutout-stencil-hole-source);
+  --cutout-readable: var(--cutout-stencil-hole-source);
+
+  display: block;
+  color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.contentLayer {
+  --cutout-hole: transparent;
+
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.stencilLayer :where(*) {
+  border-color: var(--cutout-hole);
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.modalStencilLayer :where(*) {
+  border-color: var(--cutout-hole);
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.stencilLayer :where([class~="fixed"]) {
+  position: absolute;
+}
+
+.stencilLayer :where(img, video, iframe, canvas) {
+  /* biome-ignore lint/complexity/noImportantStyles: Provider widgets set visibility inline; stencil media must stay out of the filter source. */
+  visibility: hidden !important;
+}
+
+.modalStencilLayer :where(img, video, iframe, canvas) {
+  /* biome-ignore lint/complexity/noImportantStyles: Provider widgets set visibility inline; stencil media must stay out of the filter source. */
+  visibility: hidden !important;
+}
+
+.contentLayer :where(img, video, iframe, canvas) {
+  visibility: visible;
+}
+
+@media (width < 48rem) {
+  .mobileMenuSuppressed {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (width >= 40rem) {
+  .shell {
+    --cutout-inset: 20px;
+  }
+}
+
+@media (width >= 48rem) {
+  .stencilLayer {
+    background: transparent;
+    filter: none;
+  }
+
+  .stencilLayer :where([data-site-header], .stencilFilterSegment) {
+    background: var(--cutout-stencil-surface-source);
+    filter: url("#global-cutout-filter");
+  }
+}

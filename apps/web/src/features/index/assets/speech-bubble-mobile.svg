@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   preserveAspectRatio="none"
+   version="1.1"
+   viewBox="0 0 320 120"
+   id="svg1"
+   sodipodi:docname="speech-bubble-mobile.svg"
+   width="320"
+   height="120"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <title>Speech bubble</title>
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.5882353"
+     inkscape:cx="170"
+     inkscape:cy="65.102273"
+     inkscape:window-width="2304"
+     inkscape:window-height="1268"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     fill="#000000"
+     d="M 32.133727,0.59554441 C -3.810968,8.1827126 -2.5648057,49.074641 15.927926,47.899811 34.723087,45.088433 -13.858003,68.830118 4.029453,90.112766 22.870487,112.52998 53.184641,108.17564 63.18159,80.832875 76.783533,58.686144 86.624849,90.245326 99.102177,94.44364 c 41.597533,13.99655 0.605949,-21.842458 35.929473,-5.792363 32.68032,16.801843 21.44952,-6.753795 36.55026,-1.408316 19.75602,6.993393 12.96961,19.827419 6.61319,32.757039 27.99972,-14.33906 27.8206,-43.619617 63.4094,-38.734398 26.5534,5.046706 12.85928,19.070888 38.93485,13.984027 C 339.00829,77.759203 328.64046,-32.411368 274.78892,9.7967615 256.82848,23.304253 244.23671,-5.3648496 217.59285,3.0901441 193.40948,10.764344 202.41104,24.667742 174.39476,25.170077 165.21924,25.334595 152.80669,20.819814 144.71104,10.7063 134.97514,-1.4562842 118.28554,2.4663033 107.1107,7.9761125 95.18551,13.85588 89.209204,16.985403 75.728018,18.428594 34.52509,23.537678 57.665606,-4.3738514 32.133727,0.59554441 Z"
+     id="path1"
+     sodipodi:nodetypes="ccscscsccccsssscc"
+     style="stroke-width:1.0011" />
+</svg>

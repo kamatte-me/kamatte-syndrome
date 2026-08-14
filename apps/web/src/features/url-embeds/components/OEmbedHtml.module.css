@@ -1,0 +1,4 @@
+[data-cutout-layer="stencil"] .root,
+[data-cutout-layer="modal-stencil"] .root {
+  opacity: 0;
+}

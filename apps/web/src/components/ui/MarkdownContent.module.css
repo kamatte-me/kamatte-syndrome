@@ -1,0 +1,57 @@
+[data-cutout-layer="stencil"] .root,
+[data-cutout-layer="stencil"] .root :where(*) {
+  border-color: var(--cutout-hole);
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+.root :where(blockquote, blockquote *, a) {
+  overflow-wrap: anywhere;
+}
+
+[data-cutout-layer="stencil"] .root :where(pre) {
+  background-color: var(--cutout-hole);
+}
+
+[data-cutout-layer="content"] .root,
+[data-cutout-layer="content"] .root :where(*) {
+  border-color: var(--cutout-readable);
+  color: var(--cutout-readable);
+  text-decoration-color: var(--cutout-readable);
+  -webkit-text-fill-color: currentColor;
+}
+
+[data-cutout-layer="content"]
+  .root
+  :where(:is(h1, h2, h3, h4, h5, h6, a), :is(h1, h2, h3, h4, h5, h6, a) *) {
+  border-color: var(--cutout-hole);
+  color: var(--cutout-hole);
+  text-decoration-color: var(--cutout-hole);
+  -webkit-text-fill-color: currentColor;
+}
+
+[data-cutout-layer="content"] .root :where(blockquote, blockquote *) {
+  color: var(--cutout-muted);
+  text-decoration-color: var(--cutout-muted);
+  -webkit-text-fill-color: currentColor;
+}
+
+[data-cutout-layer="content"] .root :where(blockquote) {
+  border-inline-start-color: var(--cutout-muted);
+}
+
+[data-cutout-layer="content"] .root :where(:not(pre) > code) {
+  border-color: var(--cutout-muted);
+  background-color: transparent;
+}
+
+[data-cutout-layer="content"] .root :where(pre, pre *) {
+  color: #000000;
+  text-decoration-color: #000000;
+  -webkit-text-fill-color: currentColor;
+}
+
+[data-cutout-layer="content"] .root :where(pre) {
+  background-color: transparent;
+}

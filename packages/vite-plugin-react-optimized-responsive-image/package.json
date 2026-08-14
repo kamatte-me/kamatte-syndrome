@@ -1,0 +1,37 @@
+{
+  "name": "@kamatte-syndrome/vite-plugin-react-optimized-responsive-image",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/react/ContentImage.tsx",
+    "./react/virtual": "./src/react/virtual.d.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.react.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@kamatte-syndrome/image-optimization-core": "workspace:*",
+    "sharp": "catalog:"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "happy-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "vite": "^8.0.0"
+  }
+}
