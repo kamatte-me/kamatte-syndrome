@@ -13,23 +13,23 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: pnpm/action-setup@v6.0.10
+      - uses: actions/setup-node@v6.5.0
         with:
           node-version-file: .node-version
           cache: pnpm
       - id: content-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@v3.2.0
         with:
           client-id: ${{ vars.CONTENT_REPO_APP_CLIENT_ID }}
           private-key: ${{ secrets.CONTENT_REPO_APP_PRIVATE_KEY }}
           owner: kamatte-me
           repositories: kamatte-syndrome-content
           permission-contents: read
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           repository: kamatte-me/kamatte-syndrome-content
           ref: main
