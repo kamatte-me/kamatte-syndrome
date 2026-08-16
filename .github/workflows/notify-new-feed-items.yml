@@ -1,0 +1,143 @@
+name: Notify new feed items
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Choose whether to publish, initialize state, or inspect pending items.
+        required: true
+        default: publish
+        type: choice
+        options:
+          - publish
+          - initialize
+          - dry-run
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notify-new-feed-items
+  cancel-in-progress: false
+
+jobs:
+  watch-feed:
+    permissions:
+      actions: write
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      has-new-items: ${{ steps.watcher.outputs.has-new-items }}
+      new-items: ${{ steps.watcher.outputs.new-items }}
+    env:
+      RSS_READ_STATE_ARTIFACT_PREFIX: rss-read-state-
+      FEED_WATCHER_STATE_FILE: .feed-watcher/state.json
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - id: state
+        name: Find latest RSS publication state
+        uses: ./.github/actions/find-latest-artifact
+        with:
+          artifact-prefix: ${{ env.RSS_READ_STATE_ARTIFACT_PREFIX }}
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+
+      - name: Restore RSS read state
+        if: steps.state.outputs.found == 'true'
+        uses: actions/download-artifact@v8.0.1
+        with:
+          github-token: ${{ github.token }}
+          name: ${{ steps.state.outputs.name }}
+          path: .feed-watcher
+          run-id: ${{ steps.state.outputs.run-id }}
+
+      - id: watcher
+        name: Watch feed
+        uses: ./.github/actions/feed-watcher
+        with:
+          feed-url: https://kamatte.me/feed.xml
+          initialize: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'initialize' }}
+          state-file: ${{ env.FEED_WATCHER_STATE_FILE }}
+
+      - id: save-state
+        name: Save RSS read state
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'dry-run'
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          include-hidden-files: true
+          if-no-files-found: error
+          name: ${{ env.RSS_READ_STATE_ARTIFACT_PREFIX }}${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.FEED_WATCHER_STATE_FILE }}
+          retention-days: 90
+
+      - name: Remove superseded RSS read states
+        if: steps.save-state.outcome == 'success'
+        continue-on-error: true
+        uses: ./.github/actions/cleanup-artifacts
+        with:
+          artifact-prefix: ${{ env.RSS_READ_STATE_ARTIFACT_PREFIX }}
+          github-token: ${{ github.token }}
+          keep: 2
+          repository: ${{ github.repository }}
+
+  post-to-x:
+    needs: watch-feed
+    if: >-
+      needs.watch-feed.outputs.has-new-items == 'true' &&
+      (github.event_name != 'workflow_dispatch' || inputs.mode == 'publish')
+    strategy:
+      fail-fast: false
+      matrix:
+        item: ${{ fromJSON(needs.watch-feed.outputs.new-items) }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Post feed item to X
+        uses: ./.github/actions/post-to-x
+        with:
+          access-token: ${{ secrets.X_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          api-key: ${{ secrets.X_API_KEY }}
+          api-key-secret: ${{ secrets.X_API_KEY_SECRET }}
+          text: |
+            ウェブログｺｼｰﾝしますた
+
+            ${{ matrix.item.title }}
+            ${{ matrix.item.url }}
+
+  broadcast-to-line:
+    needs: watch-feed
+    if: >-
+      needs.watch-feed.outputs.has-new-items == 'true' &&
+      (github.event_name != 'workflow_dispatch' || inputs.mode == 'publish')
+    strategy:
+      fail-fast: false
+      matrix:
+        item: ${{ fromJSON(needs.watch-feed.outputs.new-items) }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Broadcast feed item to LINE
+        uses: ./.github/actions/broadcast-to-line
+        with:
+          channel-access-token: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          text: |
+            ウェブログｺｼｰﾝしますた
+
+            ${{ matrix.item.title }}
+            ${{ matrix.item.url }}

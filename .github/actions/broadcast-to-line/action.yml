@@ -1,0 +1,12 @@
+name: Broadcast to LINE
+description: Broadcast one text message to LINE.
+inputs:
+  text:
+    description: Text to broadcast.
+    required: true
+  channel-access-token:
+    description: LINE Messaging API channel access token.
+    required: true
+runs:
+  using: node24
+  main: dist/index.js

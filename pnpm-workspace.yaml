@@ -1,5 +1,6 @@
 packages:
   - apps/*
+  - .github/actions/*
   - packages/*
 
 catalog:
@@ -9,6 +10,7 @@ catalog:
   '@types/node': 24.13.3
   '@types/react': 19.2.18
   '@types/react-dom': 19.2.4
+  esbuild: 0.28.2
   happy-dom: 20.11.2
   react: 19.2.8
   react-dom: 19.2.8

@@ -1,0 +1,140 @@
+import { createHmac, randomBytes } from 'node:crypto';
+
+type FetchFunction = typeof fetch;
+
+export type XCredentials = Readonly<{
+  accessToken: string;
+  accessTokenSecret: string;
+  apiKey: string;
+  apiKeySecret: string;
+}>;
+
+class DeliveryResponseError extends Error {}
+
+export async function publishTextToX(
+  text: string,
+  options: Readonly<{
+    credentials: XCredentials;
+    fetchFn?: FetchFunction;
+  }>,
+): Promise<void> {
+  const postText = text.trim();
+
+  if (postText === '') {
+    throw new Error('X text must not be empty.');
+  }
+
+  const url = 'https://api.x.com/2/tweets';
+
+  try {
+    const response = await (options.fetchFn ?? fetch)(url, {
+      body: JSON.stringify({ text: postText }),
+      headers: {
+        Authorization: createOAuthAuthorizationHeader(
+          'POST',
+          url,
+          options.credentials,
+        ),
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      throw new DeliveryResponseError(
+        `X delivery failed with HTTP ${response.status}.`,
+      );
+    }
+  } catch (error) {
+    if (error instanceof DeliveryResponseError) {
+      throw error;
+    }
+
+    throw new Error(
+      `X delivery has an unknown outcome and will not be retried automatically: ${toErrorMessage(error)}`,
+    );
+  }
+}
+
+function createOAuthAuthorizationHeader(
+  method: string,
+  url: string,
+  credentials: XCredentials,
+): string {
+  const oauthParameters = {
+    oauth_consumer_key: credentials.apiKey,
+    oauth_nonce: randomBytes(16).toString('hex'),
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: String(Math.floor(Date.now() / 1000)),
+    oauth_token: credentials.accessToken,
+    oauth_version: '1.0',
+  };
+  const target = new URL(url);
+  const parameters = [
+    ...target.searchParams.entries(),
+    ...Object.entries(oauthParameters),
+  ]
+    .map(([key, value]) => [oauthEncode(key), oauthEncode(value)] as const)
+    .sort(([leftKey, leftValue], [rightKey, rightValue]) => {
+      const keyOrder = leftKey.localeCompare(rightKey);
+      return keyOrder === 0 ? leftValue.localeCompare(rightValue) : keyOrder;
+    });
+  const baseUrl = `${target.protocol}//${target.host}${target.pathname}`;
+  const parameterString = parameters
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+  const signatureBase = [
+    method.toUpperCase(),
+    oauthEncode(baseUrl),
+    oauthEncode(parameterString),
+  ].join('&');
+  const signingKey = `${oauthEncode(credentials.apiKeySecret)}&${oauthEncode(credentials.accessTokenSecret)}`;
+  const signature = createHmac('sha1', signingKey)
+    .update(signatureBase)
+    .digest('base64');
+  const headerParameters = {
+    ...oauthParameters,
+    oauth_signature: signature,
+  };
+
+  return `OAuth ${Object.entries(headerParameters)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, value]) => `${oauthEncode(key)}="${oauthEncode(value)}"`)
+    .join(', ')}`;
+}
+
+function oauthEncode(value: string): string {
+  return encodeURIComponent(value).replace(
+    /[!'()*]/g,
+    (character) => `%${character.codePointAt(0)?.toString(16).toUpperCase()}`,
+  );
+}
+
+function getInput(name: string): string {
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll('-', '_')}`];
+
+  if (value === undefined || value.trim() === '') {
+    throw new Error(`Missing required input: ${name}`);
+  }
+
+  return value.trim();
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function main(): Promise<void> {
+  await publishTextToX(getInput('text'), {
+    credentials: {
+      accessToken: getInput('access-token'),
+      accessTokenSecret: getInput('access-token-secret'),
+      apiKey: getInput('api-key'),
+      apiKeySecret: getInput('api-key-secret'),
+    },
+  });
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  void main();
+}
