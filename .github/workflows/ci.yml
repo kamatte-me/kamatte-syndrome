@@ -39,5 +39,12 @@ jobs:
           persist-credentials: false
       - run: pnpm install
       - run: pnpm build
+      - name: Verify GitHub Action bundles
+        run: |
+          changes="$(git status --porcelain --untracked-files=all -- .github/actions/*/dist)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
       - run: pnpm typecheck
       - run: pnpm lint:ci
