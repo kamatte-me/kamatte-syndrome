@@ -76,4 +76,19 @@ describe('createPageMeta', () => {
       content: 'https://kamatte.me/icon.png',
     });
   });
+
+  it('uses the site icon when the image is empty', () => {
+    const meta = createPageMeta({
+      title: 'Article title',
+      description: 'Article description',
+      image: '',
+      path: '/blog/example',
+      type: 'article',
+    });
+
+    expect(meta).toContainEqual({
+      property: 'og:image',
+      content: 'https://kamatte.me/icon.png',
+    });
+  });
 });

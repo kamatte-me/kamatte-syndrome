@@ -35,7 +35,10 @@ export function createPageMeta({
   type = 'website',
 }: PageMetaOptions): PageMeta[] {
   const url = new URL(path, baseUrl).href;
-  const imageUrl = new URL(resolveContentMediaUrl(image), baseUrl).href;
+  const imageUrl = new URL(
+    resolveContentMediaUrl(image) || '/icon.png',
+    baseUrl,
+  ).href;
 
   return [
     { title },
