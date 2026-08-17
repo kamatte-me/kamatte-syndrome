@@ -106,8 +106,8 @@ jobs:
         with:
           access-token: ${{ secrets.X_ACCESS_TOKEN }}
           access-token-secret: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-          api-key: ${{ secrets.X_API_KEY }}
-          api-key-secret: ${{ secrets.X_API_KEY_SECRET }}
+          consumer-key: ${{ secrets.X_CONSUMER_KEY }}
+          consumer-secret: ${{ secrets.X_CONSUMER_SECRET }}
           text: |
             ウェブログｺｼｰﾝしますた
 

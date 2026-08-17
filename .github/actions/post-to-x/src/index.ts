@@ -5,8 +5,8 @@ type FetchFunction = typeof fetch;
 export type XCredentials = Readonly<{
   accessToken: string;
   accessTokenSecret: string;
-  apiKey: string;
-  apiKeySecret: string;
+  consumerKey: string;
+  consumerSecret: string;
 }>;
 
 class DeliveryResponseError extends Error {}
@@ -62,7 +62,7 @@ function createOAuthAuthorizationHeader(
   credentials: XCredentials,
 ): string {
   const oauthParameters = {
-    oauth_consumer_key: credentials.apiKey,
+    oauth_consumer_key: credentials.consumerKey,
     oauth_nonce: randomBytes(16).toString('hex'),
     oauth_signature_method: 'HMAC-SHA1',
     oauth_timestamp: String(Math.floor(Date.now() / 1000)),
@@ -88,7 +88,7 @@ function createOAuthAuthorizationHeader(
     oauthEncode(baseUrl),
     oauthEncode(parameterString),
   ].join('&');
-  const signingKey = `${oauthEncode(credentials.apiKeySecret)}&${oauthEncode(credentials.accessTokenSecret)}`;
+  const signingKey = `${oauthEncode(credentials.consumerSecret)}&${oauthEncode(credentials.accessTokenSecret)}`;
   const signature = createHmac('sha1', signingKey)
     .update(signatureBase)
     .digest('base64');
@@ -129,8 +129,8 @@ async function main(): Promise<void> {
     credentials: {
       accessToken: getInput('access-token'),
       accessTokenSecret: getInput('access-token-secret'),
-      apiKey: getInput('api-key'),
-      apiKeySecret: getInput('api-key-secret'),
+      consumerKey: getInput('consumer-key'),
+      consumerSecret: getInput('consumer-secret'),
     },
   });
 }

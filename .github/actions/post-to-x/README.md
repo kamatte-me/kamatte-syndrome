@@ -7,8 +7,8 @@ OAuth 1.0aでX APIの投稿エンドポイントへテキストを1件投稿す�
 | Input | Required | Description |
 | --- | --- | --- |
 | `text` | Yes | 投稿する本文 |
-| `api-key` | Yes | X API key |
-| `api-key-secret` | Yes | X API key secret |
+| `consumer-key` | Yes | X OAuth 1.0a consumer key |
+| `consumer-secret` | Yes | X OAuth 1.0a consumer secret |
 | `access-token` | Yes | 投稿アカウントのaccess token |
 | `access-token-secret` | Yes | 投稿アカウントのaccess token secret |
 
@@ -19,8 +19,8 @@ OAuth 1.0aでX APIの投稿エンドポイントへテキストを1件投稿す�
 ```yaml
 - uses: ./.github/actions/post-to-x
   with:
-    api-key: ${{ secrets.X_API_KEY }}
-    api-key-secret: ${{ secrets.X_API_KEY_SECRET }}
+    consumer-key: ${{ secrets.X_CONSUMER_KEY }}
+    consumer-secret: ${{ secrets.X_CONSUMER_SECRET }}
     access-token: ${{ secrets.X_ACCESS_TOKEN }}
     access-token-secret: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
     text: |

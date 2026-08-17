@@ -4,8 +4,8 @@ import { getInput, publishTextToX, type XCredentials } from './index.ts';
 const credentials: XCredentials = {
   accessToken: 'access-token',
   accessTokenSecret: 'access-token-secret',
-  apiKey: 'api-key',
-  apiKeySecret: 'api-key-secret',
+  consumerKey: 'consumer-key',
+  consumerSecret: 'consumer-secret',
 };
 
 describe('publishTextToX', () => {
