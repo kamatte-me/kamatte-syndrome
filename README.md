@@ -37,6 +37,8 @@ flowchart LR
 
 ## リポジトリ構成
 
+pnpm workspaceと[Turborepo](https://turborepo.dev/)を使用したモノレポ構成です。
+
 ```text
 .
 ├── .github/
@@ -60,7 +62,8 @@ flowchart LR
 │   ├── vite-plugin-optimized-social-image/
 │   └── vite-plugin-react-optimized-responsive-image/
 ├── pnpm-workspace.yaml
-└── package.json
+├── package.json
+└── turbo.json
 ```
 
 アプリ固有の構成、環境変数、デプロイ方法は [apps/web/README.md](apps/web/README.md) を参照してください。
@@ -103,6 +106,8 @@ pnpm install
 | `pnpm vercel:env:pull` | Vercelの環境変数を各workspaceに取得 |
 
 Webアプリだけを対象にする場合は、たとえば`pnpm --filter web test`のように`--filter web`を付けます。
+
+workspaceタスクの実行・キャッシュには[Turborepo](https://turborepo.dev/)を使用しています。設定はリポジトリルートの[`turbo.json`](turbo.json)で管理し、キャッシュは`.turbo/`に保存されます。
 
 ## 品質チェック
 

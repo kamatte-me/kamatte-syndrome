@@ -6,6 +6,7 @@
 
 - `kamatte-syndrome` は TanStack Start / React 19 / Vite ベースのサイトです。
 - pnpm workspace 構成です。Vite アプリ本体は `apps/web/`、共有パッケージは `packages/` にあります。
+- `pnpm build`、`pnpm test`、`pnpm typecheck`はTurborepoで実行します。タスクの依存グラフとキャッシュ設定はリポジトリルートの`turbo.json`で管理します。
 - ルーティングは TanStack Router の file-based routing です。ルートは `apps/web/src/routes/` に置きます。
 - 記事などのコンテンツは `@content-collections/*` で収集され、設定は `apps/web/content-collections.ts` にあります。
 - スタイルは Tailwind CSS v4 を基本に、Tailwind だけでは表現しにくい場合に CSS Modules を使います。グローバル CSS は `apps/web/src/styles.css` です。
@@ -17,14 +18,21 @@
 - Node.js は `package.json` の `engines.node` に合わせて `24.x` を想定します。
 - よく使うコマンド:
   - `pnpm dev`: `apps/web` の開発サーバー
-  - `pnpm build`: `apps/web` の本番ビルド
+  - `pnpm build`: Turborepoで依存順に実行するworkspace全体の本番ビルド
   - `pnpm start`: `apps/web/.output` の Node サーバー起動
   - `pnpm lint`: Biome によるチェック
   - `pnpm lint:fix`: Biome の自動修正
-  - `pnpm typecheck`: workspace 各 package/app の TypeScript 型チェック
-  - `pnpm test`: workspace 各 package/app の Vitest
+  - `pnpm typecheck`: Turborepoで実行するworkspace各package/appのTypeScript型チェック
+  - `pnpm test`: Turborepoで実行するworkspace各package/appのVitest
 
 変更後は、影響範囲に応じて `pnpm lint`、`pnpm typecheck`、`pnpm test`、`pnpm build` のうち必要なものを実行してください。
+
+### Turborepo
+
+- タスク設定はルートの`turbo.json`で管理します。ビルド・テスト・型チェックは、キャッシュを利用できるルートスクリプト（`pnpm build`、`pnpm test`、`pnpm typecheck`）で実行してください。
+- 新しいタスクを追加したり、生成物を変えたりする場合は、対応する`outputs`を`turbo.json`に明示します。テストと型チェックのように出力を再利用しないタスクは`outputs: []`を維持します。
+- タスクがPrivateコンテンツ、環境変数、設定ファイルなどを読む場合は、キャッシュの正しさを保つため、対応する`inputs`、`env`、`globalDependencies`を更新してください。Webビルドではコンテンツと`VITE_*`環境変数を既に追跡しています。
+- `.turbo/`は生成されるローカルキャッシュです。コミットしないでください。
 
 ## コーディング規約
 
@@ -73,6 +81,7 @@
 - Vercel の Root Directory は `apps/web` です。[`apps/web/vercel.json`](apps/web/vercel.json) は `pnpm install --frozen-lockfile` の後、`pnpm sync:content && pnpm build` を実行します。
 - Vercel は非公開の `CONTENT_REPOSITORY_TOKEN` で `sync:content` を実行し、Private コンテンツリポジトリを shallow clone します。このトークンを `VITE_` 接頭辞の環境変数やクライアントコードに置かないでください。
 - CI は `sync:content` を使いません。GitHub App の短期トークンを発行し、`actions/checkout` で `apps/web/kamatte-syndrome-content` へコンテンツを checkout します。認証経路を Vercel と統一・置換しないでください。
+- CIは`pnpm install`の後、`.turbo/`全体をGitHub Actions Cacheから復元します。Turborepoのキャッシュ対象を`.turbo/cache`だけに狭めたり、キャッシュキーから`pnpm-lock.yaml`を外したりしないでください。
 - `sync:content` は既存のコンテンツディレクトリを置き換えないよう、ディレクトリが存在すると停止します。ローカルの symlink や checkout を削除して実行しないでください。
 
 ## Atomフィード通知
