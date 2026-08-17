@@ -41,6 +41,15 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
       - run: pnpm install
+      - name: Restore image optimization cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            apps/web/node_modules/.cache/vite-plugin-react-optimized-responsive-image
+            apps/web/node_modules/.cache/vite-plugin-optimized-social-image
+          key: image-optimization-v1-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/vite.config.ts', 'packages/image-optimization-core/src/**', 'packages/vite-plugin-react-optimized-responsive-image/src/**', 'packages/vite-plugin-optimized-social-image/src/**', 'apps/web/kamatte-syndrome-content/media/**') }}
+          restore-keys: |
+            image-optimization-v1-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - run: pnpm build
       - id: verify-action-bundles
         name: Verify GitHub Action bundles
