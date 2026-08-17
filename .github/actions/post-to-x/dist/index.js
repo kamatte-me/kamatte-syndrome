@@ -37,7 +37,7 @@ async function publishTextToX(text, options) {
 }
 function createOAuthAuthorizationHeader(method, url, credentials) {
   const oauthParameters = {
-    oauth_consumer_key: credentials.apiKey,
+    oauth_consumer_key: credentials.consumerKey,
     oauth_nonce: randomBytes(16).toString("hex"),
     oauth_signature_method: "HMAC-SHA1",
     oauth_timestamp: String(Math.floor(Date.now() / 1e3)),
@@ -59,7 +59,7 @@ function createOAuthAuthorizationHeader(method, url, credentials) {
     oauthEncode(baseUrl),
     oauthEncode(parameterString)
   ].join("&");
-  const signingKey = `${oauthEncode(credentials.apiKeySecret)}&${oauthEncode(credentials.accessTokenSecret)}`;
+  const signingKey = `${oauthEncode(credentials.consumerSecret)}&${oauthEncode(credentials.accessTokenSecret)}`;
   const signature = createHmac("sha1", signingKey).update(signatureBase).digest("base64");
   const headerParameters = {
     ...oauthParameters,
@@ -88,8 +88,8 @@ async function main() {
     credentials: {
       accessToken: getInput("access-token"),
       accessTokenSecret: getInput("access-token-secret"),
-      apiKey: getInput("api-key"),
-      apiKeySecret: getInput("api-key-secret")
+      consumerKey: getInput("consumer-key"),
+      consumerSecret: getInput("consumer-secret")
     }
   });
 }

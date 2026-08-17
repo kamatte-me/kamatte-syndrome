@@ -4,11 +4,11 @@ inputs:
   text:
     description: Text to publish.
     required: true
-  api-key:
-    description: X API key.
+  consumer-key:
+    description: X OAuth 1.0a consumer key.
     required: true
-  api-key-secret:
-    description: X API key secret.
+  consumer-secret:
+    description: X OAuth 1.0a consumer secret.
     required: true
   access-token:
     description: X access token.
