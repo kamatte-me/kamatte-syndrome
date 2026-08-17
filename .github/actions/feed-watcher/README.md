@@ -14,7 +14,6 @@ Atomフィードを読み取り、保存済みの最新公開日時より新し�
 
 | Output | Description |
 | --- | --- |
-| `has-new-items` | 新着記事が1件以上あるかを表す文字列の真偽値 |
 | `new-items` | 新着記事のJSON配列。各要素は`id`、`title`、`url`、`publishedAt`を持つ |
 
 ## Usage

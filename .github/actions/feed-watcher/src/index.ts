@@ -26,7 +26,7 @@ async function main(): Promise<void> {
 
   if (initialize) {
     await writeFeedState(stateFile, createInitializedFeedState(items));
-    await setOutputs([]);
+    await setNewItemsOutput([]);
     return;
   }
 
@@ -36,7 +36,7 @@ async function main(): Promise<void> {
     stateFile,
     advanceLatestPublishedAt(state, pendingItems),
   );
-  await setOutputs(pendingItems);
+  await setNewItemsOutput(pendingItems);
 }
 
 export async function readStateOrExplainInitialization(stateFile: string) {
@@ -53,11 +53,10 @@ export async function readStateOrExplainInitialization(stateFile: string) {
   }
 }
 
-async function setOutputs(pendingItems: readonly unknown[]): Promise<void> {
-  await Promise.all([
-    setOutput('has-new-items', String(pendingItems.length > 0)),
-    setOutput('new-items', JSON.stringify(pendingItems)),
-  ]);
+export async function setNewItemsOutput(
+  items: readonly unknown[],
+): Promise<void> {
+  await setOutput('new-items', JSON.stringify(items));
 }
 
 function isMissingFileError(error: unknown): error is NodeJS.ErrnoException {
