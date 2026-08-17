@@ -1,0 +1,7 @@
+{
+  "root": false,
+  "extends": "//",
+  "files": {
+    "includes": ["src/**/*.ts", "action.yml", "package.json", "tsconfig.json"]
+  }
+}

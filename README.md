@@ -4,15 +4,53 @@ https://kamatte.me/
 
 > plz kamatte me!!!
 
-[かまって☆しんどろ〜む](https://kamatte.me/)のソースコードです。サイトコンテンツとメディアはPrivateリポジトリ`kamatte-syndrome-content`で管理しています。
+kamatteの公式サイト「[かまって☆しんどろ〜む](https://kamatte.me/)」のソースコードです。
+
+## 特徴
+
+### コンテンツとメディア
+
+サイトコンテンツとメディアはPrivateリポジトリ`kamatte-syndrome-content`で管理しています。コンテンツ管理にはGitベースのヘッドレスCMSである[Sveltia CMS](https://sveltiacms.app/en/)を使用しています。
+
+ブログ記事、プロフィール、ポートフォリオ、CultureページのデータはContent CollectionsでMarkdown / MDX / JSONとして読み込み、画像はビルド時に最適化します。
+
+#### 非公開コンテンツの保護
+
+TanStack StartのSSRで、公開日が未来または未設定の記事をサーバー側で除外します。公開前記事はHTML、RSS、sitemap、クライアントへ渡すデータに含まれません。`VITE_SHOW_UNPUBLISHED_CONTENT=1`を明示的に設定した場合だけ、開発用に表示できます。
+
+### Vercelでホスティング
+
+Webサイトは[Vercel](https://vercel.com/)でホスティングしています。本当はCloudflare Workersを使いたかったけど、無料枠の制限が厳山厳男だったため、やむなくVercelを利用しています。
+
+余談ですが、`kamatte-syndrome-content`のSveltia CMSはCloudflare Workersでホスティングしています。
+
+### Twitter（現 X） / 公式LINE への新着ブログ記事通知
+
+GitHub Actionsの[`Notify new feed items`](.github/workflows/notify-new-feed-items.yml)でAtomフィードを監視し、新着ブログ記事をXと公式LINEへ通知します。
+
+```mermaid
+flowchart LR
+  atom[kamatte.me/feed.xml] --> actions[GitHub Actions<br/>Notify new feed items]
+  actions --> x[Twitter（現 X）]
+  actions --> line[公式LINE]
+```
 
 ## リポジトリ構成
 
 ```text
 .
+├── .github/
+│   ├── actions/                     # リポジトリ内で使うGitHub Actions
+│   │   ├── broadcast-to-line/
+│   │   ├── cleanup-artifacts/
+│   │   ├── feed-watcher/
+│   │   ├── find-latest-artifact/
+│   │   └── post-to-x/
+│   └── workflows/                   # CI・新着記事通知などのWorkflow
 ├── apps/
 │   └── web/                         # サイト本体
 ├── packages/                        # アプリ内で使う共有パッケージ
+│   ├── github-actions-artifacts/     # GitHub Actions Artifact操作の共通処理
 │   ├── image-optimization-core/
 │   ├── oembed-endpoint-resolver/
 │   ├── remark-gfm-subset/
@@ -65,22 +103,6 @@ pnpm install
 | `pnpm vercel:env:pull` | Vercelの環境変数を各workspaceに取得 |
 
 Webアプリだけを対象にする場合は、たとえば`pnpm --filter web test`のように`--filter web`を付けます。
-
-## コンテンツとメディア
-
-記事、プロフィール、ポートフォリオ、Cultureページのデータとメディアは、Privateリポジトリ`kamatte-syndrome-content`にあります。アプリはContent CollectionsでMarkdown / MDX / JSONを読み込み、画像はビルド時に最適化します。
-
-なお、`kamatte-syndrome-content`のコンテンツ管理には、GitベースのヘッドレスCMSである[Sveltia CMS](https://sveltiacms.app/en/)を使用しています。
-
-### 非公開コンテンツの保護
-
-公開済み・公開前を問わず、記事本文とメディアはすべてPrivateリポジトリ`kamatte-syndrome-content`で管理します。公開リポジトリ`kamatte-syndrome`にはサイトアプリケーションのソースコードのみを置き、コンテンツそのものは含めません。
-
-この分離により、サイトリポジトリを閲覧できるだけでは、公開前や下書き中の記事本文・メディアにアクセスできず、開発中のコンテンツが意図せず公開ソースに含まれることを防げます。
-
-リポジトリの公開範囲とサイトでの公開制御は別です。未来の `publishedAt` を持つブログ記事は、`VITE_SHOW_UNPUBLISHED_CONTENT=1` を明示的に設定しない限りサイトに表示されません。公開環境でこの値を設定する場合は、意図して公開前記事を表示するケースに限定してください。
-
-Vercelでは、公開されない`CONTENT_REPOSITORY_TOKEN`を用いて`pnpm sync:content`を実行し、コンテンツリポジトリを取得します。このトークンは外部には配布しません。CIではGitHub Appの短期トークンを発行し、`actions/checkout`でコンテンツリポジトリを配置します。`pnpm --filter web sync:content`は既存のコンテンツディレクトリを置き換えないよう、存在時に停止します。
 
 ## 品質チェック
 

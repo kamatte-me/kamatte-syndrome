@@ -1,0 +1,19 @@
+name: Cleanup artifacts
+description: Delete artifacts whose names start with a prefix, retaining the newest ones.
+inputs:
+  artifact-prefix:
+    description: Prefix used to identify artifacts.
+    required: true
+  github-token:
+    description: Token used to access GitHub Actions artifacts.
+    required: true
+  keep:
+    description: Number of newest matching artifacts to retain.
+    required: false
+    default: '1'
+  repository:
+    description: Repository containing the artifacts.
+    required: true
+runs:
+  using: node24
+  main: dist/index.js

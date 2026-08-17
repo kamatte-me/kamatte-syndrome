@@ -1,0 +1,24 @@
+name: Find latest artifact
+description: Find the newest non-expired artifact whose name starts with a prefix.
+inputs:
+  artifact-prefix:
+    description: Prefix used to identify artifacts.
+    required: true
+  github-token:
+    description: Token used to access GitHub Actions artifacts.
+    required: true
+  repository:
+    description: Repository containing the artifacts.
+    required: true
+outputs:
+  artifact-id:
+    description: ID of the newest matching artifact.
+  found:
+    description: Whether a matching artifact was found.
+  name:
+    description: Name of the newest matching artifact.
+  run-id:
+    description: Workflow run ID containing the newest matching artifact.
+runs:
+  using: node24
+  main: dist/index.js

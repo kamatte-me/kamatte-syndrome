@@ -1,0 +1,21 @@
+name: Post to X
+description: Post one text message to X.
+inputs:
+  text:
+    description: Text to publish.
+    required: true
+  api-key:
+    description: X API key.
+    required: true
+  api-key-secret:
+    description: X API key secret.
+    required: true
+  access-token:
+    description: X access token.
+    required: true
+  access-token-secret:
+    description: X access token secret.
+    required: true
+runs:
+  using: node24
+  main: dist/index.js

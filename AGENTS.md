@@ -75,6 +75,13 @@
 - CI は `sync:content` を使いません。GitHub App の短期トークンを発行し、`actions/checkout` で `apps/web/kamatte-syndrome-content` へコンテンツを checkout します。認証経路を Vercel と統一・置換しないでください。
 - `sync:content` は既存のコンテンツディレクトリを置き換えないよう、ディレクトリが存在すると停止します。ローカルの symlink や checkout を削除して実行しないでください。
 
+## Atomフィード通知
+
+- `.github/workflows/notify-new-feed-items.yml` は `https://kamatte.me/feed.xml` を毎時監視し、新着記事をXと公式LINEへ通知します。Atomフィードの検知、Xへの投稿、LINEへの配信は、それぞれ `feed-watcher`、`post-to-x`、`broadcast-to-line` のローカルActionが担います。
+- 既読stateはGitHub Actions Artifactに保存します。初回実行またはstate消失時は、手動実行で `mode: initialize` を選び、既存のアイテムを既読化してから通常運用を再開してください。このモードでは通知しません。
+- stateは投稿処理より先に保存します。XまたはLINEへの投稿が失敗したアイテムは、定期実行で自動再送されません。必要なら手動対応または明示的な再送機能で扱ってください。
+- XとLINEの認証情報はGitHub Secretsだけで扱い、ソースコード、workflow、ログへ値を出力しないでください。ローカルActionのソースを変更した場合は、対応する `dist/` を再生成してコミットします。CIが `dist/` の差分を検査します。
+
 ## スタイルと UI
 
 - スタイリングは Tailwind CSS のユーティリティを基本にしてください。Tailwind だけでは表現しにくい演出や複雑なスタイルが必要な場合は CSS Modules を使い、グローバル CSS は必要最小限にしてください。

@@ -11,6 +11,9 @@ permissions:
 
 jobs:
   ci:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -39,5 +42,58 @@ jobs:
           persist-credentials: false
       - run: pnpm install
       - run: pnpm build
+      - id: verify-action-bundles
+        name: Verify GitHub Action bundles
+        run: |
+          changes="$(git status --porcelain --untracked-files=all -- .github/actions/*/dist)"
+          if [ -n "$changes" ]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi
+      - name: Suggest updating GitHub Action bundles
+        if: >-
+          failure() &&
+          steps.verify-action-bundles.outcome == 'failure' &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const marker = '<!-- update-action-bundles -->';
+            const body = [
+              marker,
+              'GitHub Actionのバンドルに未コミットの差分があります。',
+              '',
+              '`update-action-bundles` ラベルを付けると、GitHub App botが`.github/actions/*/dist`を再生成してコミットします。',
+            ].join('\n');
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              },
+            );
+            const existingComment = comments.find(
+              (comment) =>
+                comment.user.login === 'github-actions[bot]' &&
+                comment.body.includes(marker),
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
       - run: pnpm typecheck
       - run: pnpm lint:ci

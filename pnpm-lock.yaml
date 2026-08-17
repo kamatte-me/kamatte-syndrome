@@ -24,6 +24,9 @@ catalogs:
     '@types/react-dom':
       specifier: 19.2.4
       version: 19.2.4
+    esbuild:
+      specifier: 0.28.2
+      version: 0.28.2
     happy-dom:
       specifier: 20.11.2
       version: 20.11.2
@@ -56,6 +59,108 @@ importers:
       '@tanstack/intent':
         specifier: 0.3.6
         version: 0.3.6
+
+  .github/actions/broadcast-to-line:
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../../../packages/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.28.2
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+
+  .github/actions/cleanup-artifacts:
+    dependencies:
+      '@kamatte-syndrome/github-actions-artifacts':
+        specifier: workspace:*
+        version: link:../../../packages/github-actions-artifacts
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../../../packages/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.28.2
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+
+  .github/actions/feed-watcher:
+    dependencies:
+      fast-xml-parser:
+        specifier: 5.10.1
+        version: 5.10.1
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../../../packages/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.28.2
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+
+  .github/actions/find-latest-artifact:
+    dependencies:
+      '@kamatte-syndrome/github-actions-artifacts':
+        specifier: workspace:*
+        version: link:../../../packages/github-actions-artifacts
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../../../packages/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.28.2
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+
+  .github/actions/post-to-x:
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../../../packages/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.28.2
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
 
   apps/web:
     dependencies:
@@ -222,6 +327,21 @@ importers:
       zod:
         specifier: 4.4.3
         version: 4.4.3
+
+  packages/github-actions-artifacts:
+    devDependencies:
+      '@kamatte-syndrome/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.10(@types/node@24.13.3)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
 
   packages/image-optimization-core:
     dependencies:
@@ -1136,6 +1256,9 @@ packages:
     peerDependencies:
       '@neodrag/core': 3.0.0-next.11
       solid-js: ^1.0.0
+
+  '@nodable/entities@3.0.0':
+    resolution: {integrity: sha512-8L9xFeTYKhm49xfIypoe2W5wV1m/3Z58kT+7kR9A8OyFxcPduI4VmxaUMQyKYrRjUoLLSXv6EKKID5Tvj9cUVw==}
 
   '@oozcitak/dom@2.0.2':
     resolution: {integrity: sha512-GjpKhkSYC3Mj4+lfwEyI1dqnsKTgwGy48ytZEhm4A/xnH/8z9M3ZVXKr/YGQi3uCLs1AEBS+x5T2JPiueEDW8w==}
@@ -2204,6 +2327,9 @@ packages:
     resolution: {integrity: sha512-BJ8/l4R5LRE7hW9WdSuGYrLSHi2ynxeFpDFbH0K/CgNeY/tyhk+vO6TYxXC5r5CpUhNVX310xzPsN/H9lCdfOA==}
     engines: {node: '>=14'}
 
+  anynum@1.0.1:
+    resolution: {integrity: sha512-N6//FLET/tXYNM/F6ABca1oH6fWB+KlTt909Le28WMDBk8oaT4vY17DCrwg2MvmuqUKt3Ni4N5dGJ/EoBgcO6A==}
+
   argparse@1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
 
@@ -2601,6 +2727,13 @@ packages:
   fast-wrap-ansi@0.2.2:
     resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
 
+  fast-xml-builder@1.3.0:
+    resolution: {integrity: sha512-F74cZEdCvuw9P41GAC3rod4X04jjWGM1JPEv/GWSqFTWLsdyMSBMBMlm9Hk3GLBgLBbdBNY8yee0pQh2RBVESQ==}
+
+  fast-xml-parser@5.10.1:
+    resolution: {integrity: sha512-IEMIf7298kXuZSRFoGfMYrl7is8LpavODgbNz1cwIudv7KwVFnuU+UsMporfq6PD6aXSlawZlARiA3UywCTfMw==}
+    hasBin: true
+
   fault@2.0.1:
     resolution: {integrity: sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==}
 
@@ -2756,6 +2889,9 @@ packages:
   is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
     engines: {node: '>=12'}
+
+  is-unsafe@2.0.0:
+    resolution: {integrity: sha512-2LdV822R+wmI86unXA93WCFpL6g+av8ynWk0nrHyJqGop5VoocYsSLFgN8jrfalT6iGeLNM4KXuVSsULP53kEA==}
 
   is-wsl@3.1.1:
     resolution: {integrity: sha512-e6rvdUCiQCAuumZslxRJWR/Doq4VpPR82kqclvcS0efgt430SlGIk05vdCN58+VrzgtIcfNODjozVielycD4Sw==}
@@ -3256,6 +3392,10 @@ packages:
   parse5@7.3.0:
     resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
 
+  path-expression-matcher@1.6.2:
+    resolution: {integrity: sha512-enSlaiat05iasnzmgNxRj8reFdj3puY2QpNgP1aPIaVfT6nn9ICuPoFlKHk8EN22HcwewshO+mN2DGbkCEOtqQ==}
+    engines: {node: '>=14.0.0'}
+
   path-to-regexp@6.3.0:
     resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
@@ -3566,6 +3706,9 @@ packages:
 
   strip-literal@3.1.0:
     resolution: {integrity: sha512-8r3mkIM/2+PpjHoOtiAW8Rg3jJLHaV7xPwG+YRGrv6FP0wwk/toTpATxWYOW0BKdWwl82VT2tFYi5DlROa0Mxg==}
+
+  strnum@2.4.1:
+    resolution: {integrity: sha512-M9eUSMT2dCB2cTNPG7UYj6KuK7RJR2SN2+yCV/fTW3xzTCS6EaGZ5pSMgDIjB7r8zSfTGk+dvvn9rTjpVS9Mwg==}
 
   style-to-js@1.1.21:
     resolution: {integrity: sha512-RjQetxJrrUJLQPHbLku6U/ocGtzyjbJMP9lCNK7Ag0CNh690nSH8woqWH9u16nMjYBAok+i7JO1NP2pOy8IsPQ==}
@@ -3962,6 +4105,10 @@ packages:
   xml-js@1.6.11:
     resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
     hasBin: true
+
+  xml-naming@0.3.0:
+    resolution: {integrity: sha512-ghig2TBE/H11aOVgmahA3MhimvkBr6JIYknH/Dhdk10nXwdbIqBJsbfMxpvFPG8bAw77gN29aQWvKpmVoPlvPQ==}
+    engines: {node: '>=16.0.0'}
 
   xmlbuilder2@4.0.3:
     resolution: {integrity: sha512-bx8Q1STctnNaaDymWnkfQLKofs0mGNN7rLLapJlGuV3VlvegD7Ls4ggMjE3aUSWItCCzU0PEv45lI87iSigiCA==}
@@ -4568,6 +4715,8 @@ snapshots:
     dependencies:
       '@neodrag/core': 3.0.0-next.11
       solid-js: 1.9.14
+
+  '@nodable/entities@3.0.0': {}
 
   '@oozcitak/dom@2.0.2':
     dependencies:
@@ -5494,6 +5643,8 @@ snapshots:
 
   ansis@4.3.1: {}
 
+  anynum@1.0.1: {}
+
   argparse@1.0.10:
     dependencies:
       sprintf-js: 1.0.3
@@ -5888,6 +6039,20 @@ snapshots:
     dependencies:
       fast-string-width: 3.0.2
 
+  fast-xml-builder@1.3.0:
+    dependencies:
+      path-expression-matcher: 1.6.2
+      xml-naming: 0.3.0
+
+  fast-xml-parser@5.10.1:
+    dependencies:
+      '@nodable/entities': 3.0.0
+      fast-xml-builder: 1.3.0
+      is-unsafe: 2.0.0
+      path-expression-matcher: 1.6.2
+      strnum: 2.4.1
+      xml-naming: 0.3.0
+
   fault@2.0.1:
     dependencies:
       format: 0.2.2
@@ -6052,6 +6217,8 @@ snapshots:
   is-node-process@1.2.0: {}
 
   is-plain-obj@4.1.0: {}
+
+  is-unsafe@2.0.0: {}
 
   is-wsl@3.1.1:
     dependencies:
@@ -6796,6 +6963,8 @@ snapshots:
     dependencies:
       entities: 6.0.1
 
+  path-expression-matcher@1.6.2: {}
+
   path-to-regexp@6.3.0: {}
 
   pathe@2.0.3: {}
@@ -7165,6 +7334,10 @@ snapshots:
     dependencies:
       js-tokens: 9.0.1
 
+  strnum@2.4.1:
+    dependencies:
+      anynum: 1.0.1
+
   style-to-js@1.1.21:
     dependencies:
       style-to-object: 1.0.14
@@ -7440,6 +7613,8 @@ snapshots:
   xml-js@1.6.11:
     dependencies:
       sax: 1.6.1
+
+  xml-naming@0.3.0: {}
 
   xmlbuilder2@4.0.3:
     dependencies:

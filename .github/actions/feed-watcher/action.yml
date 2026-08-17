@@ -1,0 +1,22 @@
+name: Feed watcher
+description: Read a feed, record the latest published timestamp, and report newer items.
+inputs:
+  feed-url:
+    description: Atom feed URL to monitor.
+    required: true
+  state-file:
+    description: Path to the persisted latest-publication timestamp JSON file.
+    required: false
+    default: .feed-watcher/state.json
+  initialize:
+    description: Record the latest current publication timestamp without publishing items.
+    required: false
+    default: 'false'
+outputs:
+  has-new-items:
+    description: Whether at least one previously unread item was found.
+  new-items:
+    description: JSON array of newly observed items.
+runs:
+  using: node24
+  main: dist/index.js

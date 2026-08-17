@@ -1,0 +1,21 @@
+{
+  "name": "@kamatte-syndrome/feed-watcher",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --format=esm --minify-whitespace --outdir=dist --platform=node --target=node24",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "fast-xml-parser": "5.10.1"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "esbuild": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
