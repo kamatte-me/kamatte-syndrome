@@ -35,8 +35,8 @@ async function main(): Promise<void> {
   ]);
 }
 
-function getInput(name: string): string {
-  const value = process.env[`INPUT_${name.toUpperCase().replaceAll('-', '_')}`];
+export function getInput(name: string): string {
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll(' ', '_')}`];
 
   if (value === undefined || value.trim() === '') {
     throw new Error(`Missing required input: ${name}`);

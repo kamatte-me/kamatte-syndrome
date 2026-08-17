@@ -56,8 +56,8 @@ export function createLineRetryKey(text: string): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-function getInput(name: string): string {
-  const value = process.env[`INPUT_${name.toUpperCase().replaceAll('-', '_')}`];
+export function getInput(name: string): string {
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll(' ', '_')}`];
 
   if (value === undefined || value.trim() === '') {
     throw new Error(`Missing required input: ${name}`);

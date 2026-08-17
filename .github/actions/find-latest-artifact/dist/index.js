@@ -58,7 +58,7 @@ async function main() {
   ]);
 }
 function getInput(name) {
-  const value = process.env[`INPUT_${name.toUpperCase().replaceAll("-", "_")}`];
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll(" ", "_")}`];
   if (value === void 0 || value.trim() === "") {
     throw new Error(`Missing required input: ${name}`);
   }
@@ -82,5 +82,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   void main();
 }
 export {
-  findLatestArtifact
+  findLatestArtifact,
+  getInput
 };

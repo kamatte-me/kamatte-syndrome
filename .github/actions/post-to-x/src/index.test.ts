@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { publishTextToX, type XCredentials } from './index.ts';
+import { getInput, publishTextToX, type XCredentials } from './index.ts';
 
 const credentials: XCredentials = {
   accessToken: 'access-token',
@@ -9,6 +9,22 @@ const credentials: XCredentials = {
 };
 
 describe('publishTextToX', () => {
+  it('reads a hyphenated GitHub Actions input', () => {
+    const key = 'INPUT_ACCESS-TOKEN';
+    const original = process.env[key];
+    process.env[key] = 'access-token';
+
+    try {
+      expect(getInput('access-token')).toBe('access-token');
+    } finally {
+      if (original === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = original;
+      }
+    }
+  });
+
   it('publishes the supplied text', async () => {
     const requests: Request[] = [];
     const text = 'New post: Example title\nhttps://kamatte.me/blog/example';

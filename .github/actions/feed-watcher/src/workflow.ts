@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { appendFile } from 'node:fs/promises';
 
 export function getInput(name: string, defaultValue?: string): string {
-  const value = process.env[`INPUT_${name.toUpperCase().replaceAll('-', '_')}`];
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll(' ', '_')}`];
 
   if (value === undefined || value.trim() === '') {
     if (defaultValue !== undefined) {

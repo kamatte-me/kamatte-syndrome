@@ -1,7 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { cleanupArtifacts } from './index.ts';
+import { cleanupArtifacts, getInput } from './index.ts';
 
 describe('cleanupArtifacts', () => {
+  it('reads a hyphenated GitHub Actions input', () => {
+    const key = 'INPUT_ARTIFACT-PREFIX';
+    const original = process.env[key];
+    process.env[key] = 'state-';
+
+    try {
+      expect(getInput('artifact-prefix')).toBe('state-');
+    } finally {
+      if (original === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = original;
+      }
+    }
+  });
+
   it('deletes matching artifacts beyond the configured generations', async () => {
     const requests: Request[] = [];
 

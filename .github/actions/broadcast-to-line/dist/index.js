@@ -37,7 +37,7 @@ function createLineRetryKey(text) {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 function getInput(name) {
-  const value = process.env[`INPUT_${name.toUpperCase().replaceAll("-", "_")}`];
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll(" ", "_")}`];
   if (value === void 0 || value.trim() === "") {
     throw new Error(`Missing required input: ${name}`);
   }
@@ -53,5 +53,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 export {
   broadcastTextToLine,
-  createLineRetryKey
+  createLineRetryKey,
+  getInput
 };
