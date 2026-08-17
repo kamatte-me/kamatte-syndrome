@@ -1,5 +1,4 @@
 import ContentImage from 'virtual:react-optimized-responsive-image/collection?src=@@/kamatte-syndrome-content/media&base=/media&widths=160;176;320;352';
-import { cn } from '@/utils/classNames';
 import type { PortfolioListItem } from '../types';
 import { PortfolioImagePlaceholder } from './PortfolioImagePlaceholder';
 
@@ -36,7 +35,7 @@ export function PortfolioImage({ item, link }: PortfolioImageProps) {
       href={link}
       target="_blank"
       rel="noreferrer"
-      className={cn(frameClassName, 'hover:opacity-80')}
+      className={frameClassName}
       aria-label={`${item.name} を開く`}
     >
       {imageContent}
