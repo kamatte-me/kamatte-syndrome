@@ -11,6 +11,7 @@
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
+        ".env*",
         "kamatte-syndrome-content/content/**",
         "kamatte-syndrome-content/media/**"
       ],
