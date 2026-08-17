@@ -1,28 +1,26 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['config:js-app', 'schedule:daily'],
+  extends: ['config:js-app', 'schedule:weekly'],
   timezone: 'Asia/Tokyo',
   prHourlyLimit: 0,
+  prConcurrentLimit: 0,
   labels: ['dependencies'],
   automerge: true,
   separateMajorMinor: true,
+  minimumReleaseAge: '1 days',
   packageRules: [
-    // Auto merge
-    {
-      matchDepTypes: ['dependencies'],
-      matchUpdateTypes: ['minor'],
-      automerge: false,
-    },
     {
       matchUpdateTypes: ['major'],
       automerge: false,
     },
-
-    // Scheduling
     {
       matchPackageNames: ['node'],
       extends: ['schedule:monthly'],
       minimumReleaseAge: '3 days',
+    },
+    {
+      matchUpdateTypes: ['lockFileMaintenance'],
+      minimumReleaseAge: null,
     },
   ],
   lockFileMaintenance: {
