@@ -46,6 +46,7 @@ describe('PortfolioImage', () => {
     expect(link).toHaveAttribute('href', 'https://example.com');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noreferrer');
+    expect(link).not.toHaveClass('hover:opacity-80');
   });
 
   it('renders the placeholder when the item has no image', () => {
