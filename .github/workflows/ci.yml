@@ -95,5 +95,6 @@ jobs:
                 body,
               });
             }
+      - run: pnpm test
       - run: pnpm typecheck
       - run: pnpm lint:ci
