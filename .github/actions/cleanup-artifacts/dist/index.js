@@ -84,7 +84,7 @@ async function main() {
   });
 }
 function getInput(name, defaultValue) {
-  const value = process.env[`INPUT_${name.toUpperCase().replaceAll("-", "_")}`];
+  const value = process.env[`INPUT_${name.toUpperCase().replaceAll(" ", "_")}`];
   if (value === void 0 || value.trim() === "") {
     if (defaultValue !== void 0) {
       return defaultValue;
@@ -97,5 +97,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   void main();
 }
 export {
-  cleanupArtifacts
+  cleanupArtifacts,
+  getInput
 };
