@@ -41,6 +41,13 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
       - run: pnpm install
+      - name: Restore Turborepo cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: .turbo
+          key: turborepo-v1-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            turborepo-v1-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
       - name: Restore image optimization cache
         uses: actions/cache@v6.1.0
         with:

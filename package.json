@@ -7,18 +7,19 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter web dev",
-    "build": "pnpm -r build",
+    "build": "turbo run build",
     "start": "pnpm -r start",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "lint:ci": "biome ci",
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "vercel:env:pull": "pnpm -r vercel:env:pull"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.8",
-    "@tanstack/intent": "0.3.6"
+    "@tanstack/intent": "0.3.6",
+    "turbo": "2.10.10"
   },
   "engines": {
     "node": "24.x"
