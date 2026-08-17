@@ -29,7 +29,6 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      has-new-items: ${{ steps.watcher.outputs.has-new-items }}
       new-items: ${{ steps.watcher.outputs.new-items }}
     env:
       RSS_READ_STATE_ARTIFACT_PREFIX: rss-read-state-
@@ -88,7 +87,7 @@ jobs:
   post-to-x:
     needs: watch-feed
     if: >-
-      needs.watch-feed.outputs.has-new-items == 'true' &&
+      needs.watch-feed.outputs.new-items != '[]' &&
       (github.event_name != 'workflow_dispatch' || inputs.mode == 'notify')
     strategy:
       fail-fast: false
@@ -118,7 +117,7 @@ jobs:
   broadcast-to-line:
     needs: watch-feed
     if: >-
-      needs.watch-feed.outputs.has-new-items == 'true' &&
+      needs.watch-feed.outputs.new-items != '[]' &&
       (github.event_name != 'workflow_dispatch' || inputs.mode == 'notify')
     strategy:
       fail-fast: false
