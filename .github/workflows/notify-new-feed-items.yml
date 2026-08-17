@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Choose whether to publish, initialize state, or inspect pending items.
+        description: Choose whether to notify, initialize state, or inspect pending items.
         required: true
-        default: publish
+        default: notify
         type: choice
         options:
-          - publish
+          - notify
           - initialize
           - dry-run
 
@@ -89,7 +89,7 @@ jobs:
     needs: watch-feed
     if: >-
       needs.watch-feed.outputs.has-new-items == 'true' &&
-      (github.event_name != 'workflow_dispatch' || inputs.mode == 'publish')
+      (github.event_name != 'workflow_dispatch' || inputs.mode == 'notify')
     strategy:
       fail-fast: false
       matrix:
@@ -119,7 +119,7 @@ jobs:
     needs: watch-feed
     if: >-
       needs.watch-feed.outputs.has-new-items == 'true' &&
-      (github.event_name != 'workflow_dispatch' || inputs.mode == 'publish')
+      (github.event_name != 'workflow_dispatch' || inputs.mode == 'notify')
     strategy:
       fail-fast: false
       matrix:
