@@ -3,19 +3,21 @@ import { describe, expect, it } from 'vitest';
 import { HistoryList } from './HistoryList';
 
 describe('HistoryList', () => {
-  it('renders each history year and description', () => {
+  it('renders each history entry in ascending year order', () => {
     render(
       <HistoryList
         history={[
-          { year: 2018, description: 'Opened the site' },
           { year: 2026, description: 'Refined the biography page' },
+          { year: 2018, description: 'Opened the site' },
         ]}
       />,
     );
 
-    expect(screen.getByText('2018年')).toBeInTheDocument();
-    expect(screen.getByText('Opened the site')).toBeInTheDocument();
-    expect(screen.getByText('2026年')).toBeInTheDocument();
-    expect(screen.getByText('Refined the biography page')).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('term').map(({ textContent }) => textContent),
+    ).toEqual(['2018年', '2026年']);
+    expect(
+      screen.getAllByRole('definition').map(({ textContent }) => textContent),
+    ).toEqual(['Opened the site', 'Refined the biography page']);
   });
 });

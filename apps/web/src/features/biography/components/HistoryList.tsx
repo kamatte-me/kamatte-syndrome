@@ -5,9 +5,11 @@ type HistoryListProps = {
 };
 
 export function HistoryList({ history }: HistoryListProps) {
+  const chronologicalHistory = [...history].sort((a, b) => a.year - b.year);
+
   return (
     <dl className="mx-auto grid w-fit max-w-full gap-0.5 text-left text-sm leading-6 sm:text-base md:mx-0 md:max-w-md">
-      {history.map((item) => (
+      {chronologicalHistory.map((item) => (
         <div
           key={`${item.year}-${item.description}`}
           className="grid grid-cols-[3.5rem_minmax(0,1fr)] gap-1 sm:gap-4"
