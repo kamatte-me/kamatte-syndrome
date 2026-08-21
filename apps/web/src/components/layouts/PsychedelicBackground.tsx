@@ -20,6 +20,7 @@ const RENDERER_CANVAS_CLASS_NAME =
 
 type BackgroundRenderer = {
   dispose: () => void;
+  onDeviceLost: (callback: () => void) => () => void;
   render: (time: number) => void;
   resize: () => void;
 };
@@ -281,6 +282,19 @@ async function createWebgpuRenderer(
       uniformBuffer.destroy();
       canvas.remove();
     },
+    onDeviceLost: (callback) => {
+      let isActive = true;
+
+      void device.lost.then(() => {
+        if (isActive) {
+          callback();
+        }
+      });
+
+      return () => {
+        isActive = false;
+      };
+    },
     render,
     resize,
   } satisfies BackgroundRenderer;
@@ -397,6 +411,18 @@ function createWebglRenderer(
       gl.deleteProgram(program);
       canvas.remove();
     },
+    onDeviceLost: (callback) => {
+      const handleContextLost = (event: Event) => {
+        event.preventDefault();
+        callback();
+      };
+
+      canvas.addEventListener('webglcontextlost', handleContextLost);
+
+      return () => {
+        canvas.removeEventListener('webglcontextlost', handleContextLost);
+      };
+    },
     render,
     resize,
   } satisfies BackgroundRenderer;
@@ -415,9 +441,20 @@ export function PsychedelicBackground({
       return;
     }
 
+    const backgroundContainer = container;
     let cleanupRenderer: (() => void) | null = null;
     let frameId: number | null = null;
+    let isInitializing = false;
     let isDisposed = false;
+
+    const reinitialize = () => {
+      cleanupRenderer?.();
+      cleanupRenderer = null;
+
+      if (!isDisposed) {
+        void initialize();
+      }
+    };
 
     const stop = () => {
       if (frameId === null) {
@@ -428,10 +465,18 @@ export function PsychedelicBackground({
       frameId = null;
     };
 
-    const initialize = async () => {
+    async function initialize() {
+      if (isDisposed || isInitializing) {
+        return;
+      }
+
+      isInitializing = true;
       const renderer =
-        (await createWebgpuRenderer(container, clipRenderingToParent)) ??
-        createWebglRenderer(container, clipRenderingToParent);
+        (await createWebgpuRenderer(
+          backgroundContainer,
+          clipRenderingToParent,
+        )) ?? createWebglRenderer(backgroundContainer, clipRenderingToParent);
+      isInitializing = false;
 
       if (!renderer) {
         return;
@@ -512,10 +557,10 @@ export function PsychedelicBackground({
 
       const resizeObserver = new ResizeObserver(renderScene);
 
-      resizeObserver.observe(container);
+      resizeObserver.observe(backgroundContainer);
 
-      if (clipRenderingToParent && container.parentElement) {
-        resizeObserver.observe(container.parentElement);
+      if (clipRenderingToParent && backgroundContainer.parentElement) {
+        resizeObserver.observe(backgroundContainer.parentElement);
       }
 
       if (reducedMotionQuery.matches) {
@@ -527,6 +572,7 @@ export function PsychedelicBackground({
       window.addEventListener('resize', renderScene);
       document.addEventListener('visibilitychange', handleVisibilityChange);
       reducedMotionQuery.addEventListener('change', handleMotionChange);
+      const removeDeviceLostListener = renderer.onDeviceLost(reinitialize);
 
       cleanupRenderer = () => {
         stop();
@@ -537,14 +583,29 @@ export function PsychedelicBackground({
           handleVisibilityChange,
         );
         reducedMotionQuery.removeEventListener('change', handleMotionChange);
+        removeDeviceLostListener();
         renderer.dispose();
       };
+    }
+
+    const handleRecoveryVisibilityChange = () => {
+      if (!document.hidden && cleanupRenderer === null) {
+        void initialize();
+      }
     };
 
+    document.addEventListener(
+      'visibilitychange',
+      handleRecoveryVisibilityChange,
+    );
     void initialize();
 
     return () => {
       isDisposed = true;
+      document.removeEventListener(
+        'visibilitychange',
+        handleRecoveryVisibilityChange,
+      );
       cleanupRenderer?.();
     };
   }, [clipRenderingToParent]);
