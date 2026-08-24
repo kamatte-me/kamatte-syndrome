@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  ci:
+  checks:
     outputs:
       action_bundles_changed: ${{ steps.verify-action-bundles.outputs.changed }}
     runs-on: ubuntu-latest
@@ -77,10 +77,10 @@ jobs:
 
   update-action-bundles:
     name: Update GitHub Action bundles
-    needs: ci
+    needs: checks
     if: >-
       !cancelled() &&
-      needs.ci.outputs.action_bundles_changed == 'true' &&
+      needs.checks.outputs.action_bundles_changed == 'true' &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
