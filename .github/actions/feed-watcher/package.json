@@ -9,7 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "fast-xml-parser": "5.10.1"
+    "fast-xml-parser": "5.11.0"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
