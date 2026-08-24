@@ -2,22 +2,25 @@ name: Update GitHub Action bundles
 
 on:
   pull_request:
-    types:
-      - labeled
+    paths:
+      - '.github/actions/**'
+      - 'packages/github-actions-artifacts/**'
+      - 'packages/tsconfig/**'
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .node-version
 
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
   group: update-action-bundles-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   update:
-    if: >-
-      github.event.label.name == 'update-action-bundles' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -65,9 +68,3 @@ jobs:
           git -c core.hooksPath=/dev/null push \
             "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
             "HEAD:${PR_HEAD_REF}"
-
-      - name: Remove trigger label
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: gh pr edit "$PR_NUMBER" --remove-label update-action-bundles
