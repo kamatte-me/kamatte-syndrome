@@ -16,7 +16,7 @@ catalog:
   react-dom: 19.2.8
   sharp: 0.35.3
   typescript: 7.0.2
-  vite: 8.2.1
+  vite: 8.2.2
   vitest: 4.1.11
 
 saveExact: true
