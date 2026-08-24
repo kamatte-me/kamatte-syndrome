@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: update-action-bundles-${{ github.event.pull_request.number }}
@@ -64,3 +65,9 @@ jobs:
           git -c core.hooksPath=/dev/null push \
             "https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
             "HEAD:${PR_HEAD_REF}"
+
+      - name: Remove trigger label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: gh pr edit "$PR_NUMBER" --remove-label update-action-bundles
