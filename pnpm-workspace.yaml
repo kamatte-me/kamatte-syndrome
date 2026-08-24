@@ -19,6 +19,10 @@ catalog:
   vite: 8.2.2
   vitest: 4.1.11
 
+overrides:
+  '@types/node@': 'catalog:'
+  '@types/react@': 'catalog:'
+
 saveExact: true
 minimumReleaseAge: 1440
 allowBuilds:
