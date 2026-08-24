@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   checks:
+    name: Checks
     outputs:
       action_bundles_changed: ${{ steps.verify-action-bundles.outputs.changed }}
     runs-on: ubuntu-latest
