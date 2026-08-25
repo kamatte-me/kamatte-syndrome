@@ -1,12 +1,15 @@
 {
   "files.watcherExclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/.github/actions/*/dist/**": true
   },
   "search.exclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/.github/actions/*/dist/**": true
   },
   "files.readonlyInclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/.github/actions/*/dist/**": true
   },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
