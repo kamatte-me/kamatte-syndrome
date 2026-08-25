@@ -26,6 +26,6 @@ overrides:
 saveExact: true
 minimumReleaseAge: 1440
 allowBuilds:
-  esbuild: true
+  esbuild: false
   msw: false
   sharp: true
