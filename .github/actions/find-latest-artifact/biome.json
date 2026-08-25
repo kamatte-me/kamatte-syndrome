@@ -2,6 +2,12 @@
   "root": false,
   "extends": "//",
   "files": {
-    "includes": ["src/**/*.ts", "action.yml", "package.json", "tsconfig.json"]
+    "includes": [
+      "src/**/*.ts",
+      "action.yml",
+      "package.json",
+      "rolldown.config.ts",
+      "tsconfig.json"
+    ]
   }
 }

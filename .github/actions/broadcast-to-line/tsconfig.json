@@ -1,4 +1,4 @@
 {
   "extends": "@kamatte-syndrome/tsconfig/tsconfig.node.json",
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "rolldown.config.ts"]
 }
