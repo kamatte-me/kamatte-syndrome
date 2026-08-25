@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --format=esm --minify-whitespace --outdir=dist --platform=node --target=node24",
+    "build": "rolldown --config",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -14,7 +14,7 @@
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
     "@types/node": "catalog:",
-    "esbuild": "catalog:",
+    "rolldown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

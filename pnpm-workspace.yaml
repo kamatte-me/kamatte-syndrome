@@ -10,10 +10,10 @@ catalog:
   '@types/node': 24.13.3
   '@types/react': 19.2.18
   '@types/react-dom': 19.2.4
-  esbuild: 0.28.2
   happy-dom: 20.11.6
   react: 19.2.8
   react-dom: 19.2.8
+  rolldown: 1.2.5
   sharp: 0.35.3
   typescript: 7.0.2
   vite: 8.2.2
