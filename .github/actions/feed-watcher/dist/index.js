@@ -28,6 +28,9 @@ const isName = function(string) {
 function isExist(v) {
 	return typeof v !== "undefined";
 }
+/**
+* Dangerous property names that could lead to prototype pollution or security issues
+*/
 const DANGEROUS_PROPERTY_NAMES = [
 	"hasOwnProperty",
 	"toString",
@@ -147,6 +150,11 @@ function validate(xmlData, options) {
 function isWhiteSpace(char) {
 	return char === " " || char === "	" || char === "\n" || char === "\r";
 }
+/**
+* Read Processing insstructions and skip
+* @param {*} xmlData
+* @param {*} i
+*/
 function readPI(xmlData, i) {
 	const start = i;
 	for (; i < xmlData.length; i++) if (xmlData[i] == "?" || xmlData[i] == " ") {
@@ -182,6 +190,11 @@ function readCommentAndCDATA(xmlData, i) {
 }
 const doubleQuote = "\"";
 const singleQuote = "'";
+/**
+* Keep reading xmlData until '<' is found outside the attribute value.
+* @param {string} xmlData
+* @param {number} i
+*/
 function readAttributeStr(xmlData, i) {
 	let attrStr = "";
 	let startChar = "";
@@ -205,6 +218,9 @@ function readAttributeStr(xmlData, i) {
 		tagClosed
 	};
 }
+/**
+* Select all the attributes whether valid or invalid.
+*/
 const validAttrStrRegxp = /* @__PURE__ */ new RegExp("(\\s*)([^\\s=]+)(\\s*=)?(\\s*(['\"])(([\\s\\S])*?)\\5)?", "g");
 function validateAttributeString(attrStr, options) {
 	const matches = getAllMatches(attrStr, validAttrStrRegxp);
@@ -274,6 +290,10 @@ function getPositionFromMatch(match) {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/@nodable+entities@3.0.0/node_modules/@nodable/entities/src/entities.js
+/**
+* Currency Symbols
+* @type {Record<string, string>}
+*/
 const CURRENCY = {
 	cent: "¢",
 	pound: "£",
@@ -323,17 +343,48 @@ const COMMON_HTML = {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/@nodable+entities@3.0.0/node_modules/@nodable/entities/src/EntityDecoder.js
+/**
+* Action constants for `onExternalEntity` and `onInputEntity` hooks.
+*
+* Use these instead of raw strings to avoid typos:
+*
+* @example
+* import EntityDecoder, { ENTITY_ACTION } from './EntityDecoder.js';
+* const dec = new EntityDecoder({
+*   onInputEntity: (name, value) => ENTITY_ACTION.BLOCK,
+* });
+*/
 const ENTITY_ACTION = Object.freeze({
+	/** Resolve and expand the entity normally. */
 	ALLOW: "allow",
+	/** Silently skip this entity — it will not be registered. */
 	BLOCK: "block",
+	/** Throw an error, aborting entity registration entirely. */
 	THROW: "throw"
 });
 const SPECIAL_CHARS = /* @__PURE__ */ new Set("!?\\\\/[]$%{}^&*()<>|+");
+/**
+* Validate that an entity name contains no dangerous characters.
+* @param {string} name
+* @returns {string} the name, unchanged
+* @throws {Error} on invalid characters
+*/
 function validateEntityName$1(name) {
 	if (name[0] === "#") throw new Error(`[EntityReplacer] Invalid character '#' in entity name: "${name}"`);
 	for (const ch of name) if (SPECIAL_CHARS.has(ch)) throw new Error(`[EntityReplacer] Invalid character '${ch}' in entity name: "${name}"`);
 	return name;
 }
+/**
+* Merge one or more entity maps into a flat name→string map.
+* Accepts either:
+*   - plain string values:             { amp: '&' }
+*   - legacy {regex,val} / {regx,val}: { lt: { regex: /.../, val: '<' } }
+*
+* Values containing '&' are skipped (recursive expansion risk).
+*
+* @param {...object} maps
+* @returns {Record<string, string>}
+*/
 function mergeEntityMaps(...maps) {
 	const out = Object.create(null);
 	for (const map of maps) {
@@ -352,6 +403,13 @@ function mergeEntityMaps(...maps) {
 const LIMIT_TIER_EXTERNAL = "external";
 const LIMIT_TIER_BASE = "base";
 const LIMIT_TIER_ALL = "all";
+/**
+* Resolve `applyLimitsTo` option into a normalised Set of tier strings.
+* Accepted values: 'external' | 'base' | 'all' | string[]
+* Default: 'external' (only untrusted injected entities are counted).
+* @param {string|string[]|undefined} raw
+* @returns {Set<string>}
+*/
 function parseLimitTiers(raw) {
 	if (!raw || raw === LIMIT_TIER_EXTERNAL) return /* @__PURE__ */ new Set([LIMIT_TIER_EXTERNAL]);
 	if (raw === LIMIT_TIER_ALL) return /* @__PURE__ */ new Set([LIMIT_TIER_ALL]);
@@ -370,6 +428,11 @@ const XML10_ALLOWED_C0 = /* @__PURE__ */ new Set([
 	10,
 	13
 ]);
+/**
+* Parse the `ncr` constructor option into flat, hot-path-friendly fields.
+* @param {object|undefined} ncr
+* @returns {{ xmlVersion: number, onLevel: number, nullLevel: number }}
+*/
 function parseNCRConfig(ncr) {
 	if (!ncr) return {
 		xmlVersion: 1,
@@ -385,7 +448,67 @@ function parseNCRConfig(ncr) {
 		nullLevel: Math.max(nullLevel, NCR_LEVEL.remove)
 	};
 }
+/**
+* Single-pass, zero-regex entity replacer for XML/HTML content.
+*
+* Algorithm: scan the string once for '&', read to ';', resolve via map
+* or direct codepoint conversion, build output chunks, join once at the end.
+*
+* Entity lookup priority (highest → lowest):
+*   1. input / runtime  (DOCTYPE entities for current document)
+*   2. persistent external (survive across documents)
+*   3. base named map   (DEFAULT_XML_ENTITIES + user-supplied namedEntities)
+*
+* Both input and external resolve as the 'external' tier for limit purposes.
+* Base map entities resolve as the 'base' tier.
+*
+* Numeric / hex references (&#NNN; / &#xHH;) are resolved directly via
+* String.fromCodePoint() — no map needed. They count as 'base' tier.
+*
+* @example
+* const replacer = new EntityReplacer({ namedEntities: COMMON_HTML });
+* replacer.setExternalEntities({ brand: 'Acme' });
+*
+* const instance = replacer.reset();
+* instance.addInputEntities({ version: '1.0' });
+* instance.encode('&brand; v&version; &lt;'); // 'Acme v1.0 <'
+*/
 var EntityDecoder = class {
+	/**
+	* @param {object} [options]
+	* @param {object|null}  [options.namedEntities]        — extra named entities merged into base map
+	* @param {object}  [options.limit]                 — security limits
+	* @param {number}       [options.limit.maxTotalExpansions=0]  — 0 = unlimited
+	* @param {number}       [options.limit.maxExpandedLength=0]   — 0 = unlimited
+	* @param {'external'|'base'|'all'|string[]} [options.limit.applyLimitsTo='external']
+	*   Which entity tiers count against the security limits:
+	*   - 'external' (default) — only input/runtime + persistent external entities
+	*   - 'base'               — only DEFAULT_XML_ENTITIES + namedEntities
+	*   - 'all'                — every entity regardless of tier
+	*   - string[]             — explicit combination, e.g. ['external', 'base']
+	* @param {((resolved: string, original: string) => string)|null} [options.postCheck=null]
+	* @param {string[]} [options.remove=[]] — entity names (e.g. ['nbsp', '#13']) to delete (replace with empty string)
+	* @param {string[]} [options.leave=[]]  — entity names to keep as literal (unchanged in output)
+	* @param {object}   [options.ncr]       — Numeric Character Reference controls
+	* @param {1.0|1.1}  [options.ncr.xmlVersion=1.0]
+	*   XML version governing which codepoint ranges are restricted:
+	*   - 1.0 — C0 controls U+0001–U+001F (except U+0009/000A/000D) are prohibited
+	*   - 1.1 — C0 controls are allowed when written as NCRs; C1 (U+007F–U+009F) decoded as-is
+	* @param {'allow'|'leave'|'remove'|'throw'} [options.ncr.onNCR='allow']
+	*   Base action for numeric references. Severity order: allow < leave < remove < throw.
+	*   For codepoint ranges that carry a minimum level (surrogates → remove, XML 1.0 C0 → remove),
+	*   the effective action is max(onNCR, rangeMinimum).
+	* @param {'remove'|'throw'} [options.ncr.nullNCR='remove']
+	*   Action for U+0000 (null). 'allow' and 'leave' are clamped to 'remove' since null is never safe.
+	* @param {((name: string, value: string) => 'allow'|'block'|'throw')|null} [options.onExternalEntity=null]
+	*   Hook called when an external entity is registered via `setExternalEntities()` or
+	*   `addExternalEntity()`. Return `ENTITY_ACTION.ALLOW` to accept the entity,
+	*   `ENTITY_ACTION.BLOCK` to silently skip it, or `ENTITY_ACTION.THROW` to abort with an error.
+	* @param {((name: string, value: string) => 'allow'|'block'|'throw')|null} [options.onInputEntity=null]
+	*   Hook called when an input entity is registered via `addInputEntities()`. Return
+	*   `ENTITY_ACTION.ALLOW` to accept, `ENTITY_ACTION.BLOCK` to silently skip, or
+	*   `ENTITY_ACTION.THROW` to abort with an error.
+	*/
 	constructor(options = {}) {
 		this._limit = options.limit || {};
 		this._maxTotalExpansions = this._limit.maxTotalExpansions || 0;
@@ -394,19 +517,36 @@ var EntityDecoder = class {
 		this._limitTiers = parseLimitTiers(this._limit.applyLimitsTo ?? LIMIT_TIER_EXTERNAL);
 		this._numericAllowed = options.numericAllowed ?? true;
 		this._baseMap = mergeEntityMaps(XML, options.namedEntities || null);
+		/** @type {Record<string, string>} */
 		this._externalMap = Object.create(null);
+		/** @type {Record<string, string>} */
 		this._inputMap = Object.create(null);
 		this._totalExpansions = 0;
 		this._expandedLength = 0;
+		/** @type {Set<string>} */
 		this._removeSet = new Set(options.remove && Array.isArray(options.remove) ? options.remove : []);
+		/** @type {Set<string>} */
 		this._leaveSet = new Set(options.leave && Array.isArray(options.leave) ? options.leave : []);
 		const ncrCfg = parseNCRConfig(options.ncr);
 		this._ncrXmlVersion = ncrCfg.xmlVersion;
 		this._ncrOnLevel = ncrCfg.onLevel;
 		this._ncrNullLevel = ncrCfg.nullLevel;
+		/** @type {((name: string, value: string) => 'allow'|'block'|'throw')|null} */
 		this._onExternalEntity = typeof options.onExternalEntity === "function" ? options.onExternalEntity : null;
+		/** @type {((name: string, value: string) => 'allow'|'block'|'throw')|null} */
 		this._onInputEntity = typeof options.onInputEntity === "function" ? options.onInputEntity : null;
 	}
+	/**
+	* Invoke a registration hook for a single entity name/value pair.
+	* Returns true when the entity should be accepted, false when it should be
+	* silently skipped (BLOCK), and throws when the hook returns THROW.
+	*
+	* @param {((name: string, value: string) => 'allow'|'block'|'throw')|null} hook
+	* @param {string} name
+	* @param {string} value
+	* @param {string} context  — used in error messages ('external' | 'input')
+	* @returns {boolean}  true = accept, false = skip
+	*/
 	_applyRegistrationHook(hook, name, value, context) {
 		if (!hook) return true;
 		const action = hook(name, value);
@@ -414,6 +554,14 @@ var EntityDecoder = class {
 		if (action === ENTITY_ACTION.THROW) throw new Error(`[EntityDecoder] Registration of ${context} entity "&${name};" was rejected by hook`);
 		return true;
 	}
+	/**
+	* Replace the full set of persistent external entities.
+	* All keys are validated — throws on invalid characters.
+	* If `onExternalEntity` is set, it is called once per entry; entries that
+	* return `ENTITY_ACTION.BLOCK` are silently omitted, `ENTITY_ACTION.THROW`
+	* aborts the whole call.
+	* @param {Record<string, string | { regex?: RegExp, val: string }>} map
+	*/
 	setExternalEntities(map) {
 		if (map) for (const key of Object.keys(map)) validateEntityName$1(key);
 		if (!this._onExternalEntity) {
@@ -425,12 +573,26 @@ var EntityDecoder = class {
 		for (const [name, value] of Object.entries(flat)) if (this._applyRegistrationHook(this._onExternalEntity, name, value, "external")) filtered[name] = value;
 		this._externalMap = filtered;
 	}
+	/**
+	* Add a single persistent external entity.
+	* If `onExternalEntity` is set it is called before the entity is stored;
+	* `ENTITY_ACTION.BLOCK` silently skips storage, `ENTITY_ACTION.THROW` raises.
+	* @param {string} key
+	* @param {string} value
+	*/
 	addExternalEntity(key, value) {
 		validateEntityName$1(key);
 		if (typeof value === "string" && value.indexOf("&") === -1) {
 			if (this._applyRegistrationHook(this._onExternalEntity, key, value, "external")) this._externalMap[key] = value;
 		}
 	}
+	/**
+	* Inject DOCTYPE entities for the current document.
+	* Also resets per-document expansion counters.
+	* If `onInputEntity` is set it is called once per entry; entries returning
+	* `ENTITY_ACTION.BLOCK` are silently omitted, `ENTITY_ACTION.THROW` aborts.
+	* @param {Record<string, string | { regx?: RegExp, regex?: RegExp, val: string }>} map
+	*/
 	addInputEntities(map) {
 		this._totalExpansions = 0;
 		this._expandedLength = 0;
@@ -443,15 +605,31 @@ var EntityDecoder = class {
 		for (const [name, value] of Object.entries(flat)) if (this._applyRegistrationHook(this._onInputEntity, name, value, "input")) filtered[name] = value;
 		this._inputMap = filtered;
 	}
+	/**
+	* Wipe input/runtime entities and reset counters.
+	* Call this before processing each new document.
+	* @returns {this}
+	*/
 	reset() {
 		this._inputMap = Object.create(null);
 		this._totalExpansions = 0;
 		this._expandedLength = 0;
 		return this;
 	}
+	/**
+	* Update the XML version used for NCR classification.
+	* Call this as soon as the document's `<?xml version="...">` declaration is parsed.
+	* @param {1.0|1.1|number} version
+	*/
 	setXmlVersion(version) {
 		this._ncrXmlVersion = version === 1.1 ? 1.1 : 1;
 	}
+	/**
+	* Replace all entity references in `str` in a single pass.
+	*
+	* @param {string} str
+	* @returns {string}
+	*/
 	decode(str) {
 		if (typeof str !== "string" || str.length === 0) return str;
 		if (str.indexOf("&") === -1) return str;
@@ -526,10 +704,24 @@ var EntityDecoder = class {
 		const result = chunks.length === 0 ? str : chunks.join("");
 		return this._postCheck(result, original);
 	}
+	/**
+	* Returns true if a resolved entity of the given tier should count
+	* against the expansion/length limits.
+	* @param {string} tier  — LIMIT_TIER_EXTERNAL | LIMIT_TIER_BASE
+	* @returns {boolean}
+	*/
 	_tierCounts(tier) {
 		if (this._limitTiers.has(LIMIT_TIER_ALL)) return true;
 		return this._limitTiers.has(tier);
 	}
+	/**
+	* Resolve a named entity token (without & and ;).
+	* Priority: inputMap > externalMap > baseMap
+	* Returns the resolved value tagged with its limit tier.
+	*
+	* @param {string} name
+	* @returns {{ value: string, tier: string }|undefined}
+	*/
 	_resolveName(name) {
 		if (name in this._inputMap) return {
 			value: this._inputMap[name],
@@ -544,6 +736,19 @@ var EntityDecoder = class {
 			tier: LIMIT_TIER_BASE
 		};
 	}
+	/**
+	* Classify a codepoint and return the minimum action level that must be applied.
+	* Returns -1 when no minimum is imposed (normal allow path).
+	*
+	* Ranges checked (in priority order):
+	*   1. U+0000            — null, governed by nullNCR (always ≥ remove)
+	*   2. U+D800–U+DFFF     — surrogates, always prohibited (min: remove)
+	*   3. U+0001–U+001F \ {0x09,0x0A,0x0D}  — XML 1.0 restricted C0 (min: remove)
+	*      (skipped in XML 1.1 — C0 controls are allowed when written as NCRs)
+	*
+	* @param {number} cp  — codepoint
+	* @returns {number}   — minimum NCR_LEVEL value, or -1 for no restriction
+	*/
 	_classifyNCR(cp) {
 		if (cp === 0) return this._ncrNullLevel;
 		if (cp >= 55296 && cp <= 57343) return NCR_LEVEL.remove;
@@ -552,6 +757,18 @@ var EntityDecoder = class {
 		}
 		return -1;
 	}
+	/**
+	* Execute a resolved NCR action.
+	*
+	* @param {number} action   — NCR_LEVEL value
+	* @param {string} token    — raw token (e.g. '#38') for error messages
+	* @param {number} cp       — codepoint, used only for error messages
+	* @returns {string|undefined}
+	*   - decoded character string  → 'allow'
+	*   - ''                        → 'remove'
+	*   - undefined                 → 'leave' (caller must skip past '&' only)
+	*   - throws Error              → 'throw'
+	*/
 	_applyNCRAction(action, token, cp) {
 		switch (action) {
 			case NCR_LEVEL.allow: return String.fromCodePoint(cp);
@@ -561,6 +778,22 @@ var EntityDecoder = class {
 			default: return String.fromCodePoint(cp);
 		}
 	}
+	/**
+	* Full NCR resolution pipeline for a numeric token.
+	*
+	* Steps:
+	*   1. Parse the codepoint (decimal or hex).
+	*   2. Validate the raw codepoint range (NaN, <0, >0x10FFFF).
+	*   3. If numericAllowed is false and no minimum restriction applies → leave as-is.
+	*   4. Classify the codepoint to find the minimum required action level.
+	*   5. Resolve effective action = max(onNCR, minimum).
+	*   6. Apply and return.
+	*
+	* @param {string} token  — e.g. '#38', '#x26', '#X26'
+	* @returns {string|undefined}
+	*   - string (incl. '')  — replacement ('' = remove)
+	*   - undefined          — leave original &token; as-is
+	*/
 	_resolveNCR(token) {
 		const second = token.charCodeAt(1);
 		let cp;
@@ -625,12 +858,23 @@ const defaultOptions = {
 	jPath: true,
 	onDangerousProperty: defaultOnDangerousProperty
 };
+/**
+* Validates that a property name is safe to use
+* @param {string} propertyName - The property name to validate
+* @param {string} optionName - The option field name (for error message)
+* @throws {Error} If property name is dangerous
+*/
 function validatePropertyName(propertyName, optionName) {
 	if (typeof propertyName !== "string") return;
 	const normalized = propertyName.toLowerCase();
 	if (DANGEROUS_PROPERTY_NAMES.some((dangerous) => normalized === dangerous.toLowerCase())) throw new Error(`[SECURITY] Invalid ${optionName}: "${propertyName}" is a reserved JavaScript keyword that could cause prototype pollution`);
 	if (criticalProperties.some((dangerous) => normalized === dangerous.toLowerCase())) throw new Error(`[SECURITY] Invalid ${optionName}: "${propertyName}" is a reserved JavaScript keyword that could cause prototype pollution`);
 }
+/**
+* Normalizes processEntities option for backward compatibility
+* @param {boolean|object} value 
+* @returns {object} Always returns normalized object
+*/
 function normalizeProcessEntities(value, htmlEntities) {
 	if (typeof value === "boolean") return {
 		enabled: value,
@@ -722,6 +966,7 @@ var XmlNode = class {
 		const lastChild = this.child[this.child.length - 1];
 		if (lastChild !== void 0 && lastChild[METADATA_SYMBOL$1] !== void 0 && lastChild[METADATA_SYMBOL$1].endIndex === void 0) lastChild[METADATA_SYMBOL$1].endIndex = endIndex;
 	}
+	/** symbol used for metadata */
 	static getMetaDataSymbol() {
 		return METADATA_SYMBOL$1;
 	}
@@ -729,6 +974,15 @@ var XmlNode = class {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/xml-naming@0.3.0/node_modules/xml-naming/src/index.js
+/**
+* xml-naming
+* Validates XML Name productions as defined in the XML 1.0 and 1.1 specifications.
+* Covers: Name, NCName, QName, NMToken, NMTokens
+*
+* XML 1.0 spec: https://www.w3.org/TR/xml/#NT-Name
+* XML 1.1 spec: https://www.w3.org/TR/xml11/#NT-NameStartChar
+* XML NS spec:  https://www.w3.org/TR/xml-names/#NT-NCName
+*/
 const nameStartChar10 = ":A-Za-z_À-ÖØ-öø-˿Ͱ-ͽͿ-҆҈-῿‌-‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�";
 const nameChar10 = nameStartChar10 + "\\-\\.\\d" + "·" + "̀-ͯ" + "‿-⁀";
 const nameStartChar11 = ":A-Za-z_À-˿Ͱ-ͽͿ-҆҈-῿‌-‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�𐀀-󯿿";
@@ -750,6 +1004,14 @@ const getRegexes = (xmlVersion = "1.0", asciiOnly = false) => {
 	if (asciiOnly) return regexesAscii;
 	return xmlVersion === "1.1" ? regexes11 : regexes10;
 };
+/**
+* Returns true if the string is a valid QName (Qualified Name).
+* Allows exactly one colon as a prefix separator: prefix:localName.
+* Used for: element and attribute names in namespace-aware XML/SVG.
+*
+* @param {{ xmlVersion?: '1.0'|'1.1', asciiOnly?: boolean }} [opts]
+*   asciiOnly: skip unicode-aware matching, ASCII names only (default false).
+*/
 const qName = (str, { xmlVersion = "1.0", asciiOnly = false } = {}) => getRegexes(xmlVersion, asciiOnly).qName.test(str);
 
 //#endregion
@@ -991,6 +1253,17 @@ function validateEntityName(name, xmlVersion) {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
+/**
+* Flat lookup table: maps Unicode code point → ASCII digit (0-9).
+* Only decimal digit characters (Unicode category Nd) are included.
+*
+* Strategy: Int32Array of size (maxCodePoint - minCodePoint + 1).
+* Value 0xFF means "not a digit". Value 0-9 is the ASCII digit value.
+* This gives O(1) lookup with no branching, no bisect, no loop.
+*
+* Memory: range is 0x0660 to 0x1FBF0 → ~129,936 entries × 1 byte = ~127 KB.
+* Acceptable for a one-time init; lookup is a single array index.
+*/
 const SCRIPT_ZEROS = [
 	48,
 	1632,
@@ -1075,6 +1348,22 @@ const MINUS_SET = /* @__PURE__ */ new Set([
 	65293,
 	65123
 ]);
+/**
+* Normalize all Unicode decimal digit characters in a string to ASCII (0-9),
+* and normalize Unicode minus variants to ASCII '-' (U+002D).
+*
+* Non-digit, non-minus characters are passed through unchanged.
+*
+* Performance design:
+* - Fast path: if the string has no convertible characters, return it unchanged
+*   (zero allocation).
+* - BMP digits (0x0660..0xFFFF excl. surrogates): flat Uint8Array lookup (O(1)).
+* - Supplementary plane digits (> 0xFFFF, encoded as surrogate pairs): Map lookup.
+* - Minus variants: checked inline with a small fixed Set.
+*
+* @param {string} str
+* @returns {string}
+*/
 function anynum(str) {
 	if (typeof str !== "string") return str;
 	const len = str.length;
@@ -1226,6 +1515,11 @@ function resolveEnotation(str, trimmedStr, options) {
 		} else return Number(trimmedStr);
 	} else return str;
 }
+/**
+* 
+* @param {string} numStr without leading zeros
+* @returns 
+*/
 function trimZeros(numStr) {
 	if (numStr && numStr.indexOf(".") !== -1) {
 		let end = numStr.length;
@@ -1246,6 +1540,13 @@ function parse_int(numStr, base) {
 	else if (window && window.parseInt) return window.parseInt(numStr, base);
 	else throw new Error("parseInt, Number.parseInt, window.parseInt are not supported");
 }
+/**
+* Handle infinite values based on user option
+* @param {string} str - original input string
+* @param {number} num - parsed number (Infinity or -Infinity)
+* @param {object} options - user options
+* @returns {string|number|null} based on infinity option
+*/
 function handleInfinity(str, num, options) {
 	const isPositive = num === Infinity;
 	switch (options.infinity.toLowerCase()) {
@@ -1271,7 +1572,23 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Expression.js
+/**
+* Expression - Parses and stores a tag pattern expression
+* 
+* Patterns are parsed once and stored in an optimized structure for fast matching.
+* 
+* @example
+* const expr = new Expression("root.users.user");
+* const expr2 = new Expression("..user[id]:first");
+* const expr3 = new Expression("root/users/user", { separator: '/' });
+*/
 var Expression = class {
+	/**
+	* Create a new Expression
+	* @param {string} pattern - Pattern string (e.g., "root.users.user", "..user[id]")
+	* @param {Object} options - Configuration options
+	* @param {string} options.separator - Path separator (default: '.')
+	*/
 	constructor(pattern, options = {}, data) {
 		this.pattern = pattern;
 		this.separator = options.separator || ".";
@@ -1281,6 +1598,12 @@ var Expression = class {
 		this._hasAttributeCondition = this.segments.some((seg) => seg.attrName !== void 0);
 		this._hasPositionSelector = this.segments.some((seg) => seg.position !== void 0);
 	}
+	/**
+	* Parse pattern string into segments
+	* @private
+	* @param {string} pattern - Pattern to parse
+	* @returns {Array} Array of segment objects
+	*/
 	_parse(pattern) {
 		const segments = [];
 		let i = 0;
@@ -1305,6 +1628,12 @@ var Expression = class {
 		if (currentPart.trim()) segments.push(this._parseSegment(currentPart.trim()));
 		return segments;
 	}
+	/**
+	* Parse a single segment
+	* @private
+	* @param {string} part - Segment string (e.g., "user", "ns::user", "user[id]", "ns::user:first")
+	* @returns {Object} Segment object
+	*/
 	_parseSegment(part) {
 		const segment = { type: "tag" };
 		let bracketContent = null;
@@ -1360,18 +1689,38 @@ var Expression = class {
 		}
 		return segment;
 	}
+	/**
+	* Get the number of segments
+	* @returns {number}
+	*/
 	get length() {
 		return this.segments.length;
 	}
+	/**
+	* Check if expression contains deep wildcard
+	* @returns {boolean}
+	*/
 	hasDeepWildcard() {
 		return this._hasDeepWildcard;
 	}
+	/**
+	* Check if expression has attribute conditions
+	* @returns {boolean}
+	*/
 	hasAttributeCondition() {
 		return this._hasAttributeCondition;
 	}
+	/**
+	* Check if expression has position selectors
+	* @returns {boolean}
+	*/
 	hasPositionSelector() {
 		return this._hasPositionSelector;
 	}
+	/**
+	* Get string representation
+	* @returns {string}
+	*/
 	toString() {
 		return this.pattern;
 	}
@@ -1379,15 +1728,58 @@ var Expression = class {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/ExpressionSet.js
+/**
+* ExpressionSet - An indexed collection of Expressions for efficient bulk matching
+*
+* Instead of iterating all expressions on every tag, ExpressionSet pre-indexes
+* them at insertion time by depth and terminal tag name. At match time, only
+* the relevant bucket is evaluated — typically reducing checks from O(E) to O(1)
+* lookup plus O(small bucket) matches.
+*
+* Three buckets are maintained:
+*  - `_byDepthAndTag`  — exact depth + exact tag name  (tightest, used first)
+*  - `_wildcardByDepth` — exact depth + wildcard tag `*` (depth-matched only)
+*  - `_deepWildcards`  — expressions containing `..`  (cannot be depth-indexed)
+*
+* @example
+* import { Expression, ExpressionSet } from 'fast-xml-tagger';
+*
+* // Build once at config time
+* const stopNodes = new ExpressionSet();
+* stopNodes.add(new Expression('root.users.user'));
+* stopNodes.add(new Expression('root.config.setting'));
+* stopNodes.add(new Expression('..script'));
+*
+* // Query on every tag — hot path
+* if (stopNodes.matchesAny(matcher)) { ... }
+*/
 var ExpressionSet = class {
 	constructor() {
+		/** @type {Map<string, import('./Expression.js').default[]>} depth:tag → expressions */
 		this._byDepthAndTag = /* @__PURE__ */ new Map();
+		/** @type {Map<number, import('./Expression.js').default[]>} depth → wildcard-tag expressions */
 		this._wildcardByDepth = /* @__PURE__ */ new Map();
+		/** @type {import('./Expression.js').default[]} expressions containing deep wildcard (..) */
 		this._deepWildcards = [];
+		/** @type {Map<string, import('./Expression.js').default[]>} terminalTag → deep wildcard expressions */
 		this._deepByTerminalTag = /* @__PURE__ */ new Map();
+		/** @type {Set<string>} pattern strings already added — used for deduplication */
 		this._patterns = /* @__PURE__ */ new Set();
+		/** @type {boolean} whether the set is sealed against further additions */
 		this._sealed = false;
 	}
+	/**
+	* Add an Expression to the set.
+	* Duplicate patterns (same pattern string) are silently ignored.
+	*
+	* @param {import('./Expression.js').default} expression - A pre-constructed Expression instance
+	* @returns {this} for chaining
+	* @throws {TypeError} if called after seal()
+	*
+	* @example
+	* set.add(new Expression('root.users.user'));
+	* set.add(new Expression('..script'));
+	*/
 	add(expression) {
 		if (this._sealed) throw new TypeError("ExpressionSet is sealed. Create a new ExpressionSet to add more expressions.");
 		if (this._patterns.has(expression.pattern)) return this;
@@ -1413,26 +1805,92 @@ var ExpressionSet = class {
 		}
 		return this;
 	}
+	/**
+	* Add multiple expressions at once.
+	*
+	* @param {import('./Expression.js').default[]} expressions - Array of Expression instances
+	* @returns {this} for chaining
+	*
+	* @example
+	* set.addAll([
+	*   new Expression('root.users.user'),
+	*   new Expression('root.config.setting'),
+	* ]);
+	*/
 	addAll(expressions) {
 		for (const expr of expressions) this.add(expr);
 		return this;
 	}
+	/**
+	* Check whether a pattern string is already present in the set.
+	*
+	* @param {import('./Expression.js').default} expression
+	* @returns {boolean}
+	*/
 	has(expression) {
 		return this._patterns.has(expression.pattern);
 	}
+	/**
+	* Number of expressions in the set.
+	* @type {number}
+	*/
 	get size() {
 		return this._patterns.size;
 	}
+	/**
+	* Seal the set against further modifications.
+	* Useful to prevent accidental mutations after config is built.
+	* Calling add() or addAll() on a sealed set throws a TypeError.
+	*
+	* @returns {this}
+	*/
 	seal() {
 		this._sealed = true;
 		return this;
 	}
+	/**
+	* Whether the set has been sealed.
+	* @type {boolean}
+	*/
 	get isSealed() {
 		return this._sealed;
 	}
+	/**
+	* Test whether the matcher's current path matches any expression in the set.
+	*
+	* Evaluation order (cheapest → most expensive):
+	*  1. Exact depth + tag bucket  — O(1) lookup, typically 0–2 expressions
+	*  2. Depth-only wildcard bucket — O(1) lookup, rare
+	*  3. Deep-wildcard list         — always checked, but usually small
+	*
+	* @param {import('./Matcher.js').default} matcher - Matcher instance (or readOnly view)
+	* @returns {boolean} true if any expression matches the current path
+	*
+	* @example
+	* if (stopNodes.matchesAny(matcher)) {
+	*   // handle stop node
+	* }
+	*/
 	matchesAny(matcher) {
 		return this.findMatch(matcher) !== null;
 	}
+	/**
+	* Find and return the first Expression that matches the matcher's current path.
+	*
+	* Uses the same evaluation order as matchesAny (cheapest → most expensive):
+	*  1. Exact depth + tag bucket
+	*  2. Depth-only wildcard bucket
+	*  3. Deep-wildcard list
+	*
+	* @param {import('./Matcher.js').default} matcher - Matcher instance (or readOnly view)
+	* @returns {import('./Expression.js').default | null} the first matching Expression, or null
+	*
+	* @example
+	* const expr = stopNodes.findMatch(matcher);
+	* if (expr) {
+	*   // access expr.config, expr.pattern, etc.
+	* }
+	*/
 	findMatch(matcher) {
 		const depth = matcher.getDepth();
 		const tag = matcher.getCurrentTag();
@@ -1456,68 +1914,185 @@ var ExpressionSet = class {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Matcher.js
+/**
+* MatcherView - A lightweight read-only view over a Matcher's internal state.
+*
+* Created once by Matcher and reused across all callbacks. Holds a direct
+* reference to the parent Matcher so it always reflects current parser state
+* with zero copying or freezing overhead.
+*
+* Users receive this via {@link Matcher#readOnly} or directly from parser
+* callbacks. It exposes all query and matching methods but has no mutation
+* methods — misuse is caught at the TypeScript level rather than at runtime.
+*
+* @example
+* const matcher = new Matcher();
+* const view = matcher.readOnly();
+*
+* matcher.push("root", {});
+* view.getCurrentTag(); // "root"
+* view.getDepth();      // 1
+*/
 var MatcherView = class {
+	/**
+	* @param {Matcher} matcher - The parent Matcher instance to read from.
+	*/
 	constructor(matcher) {
 		this._matcher = matcher;
 	}
+	/**
+	* Get the path separator used by the parent matcher.
+	* @returns {string}
+	*/
 	get separator() {
 		return this._matcher.separator;
 	}
+	/**
+	* Get current tag name.
+	* @returns {string|undefined}
+	*/
 	getCurrentTag() {
 		const path = this._matcher.path;
 		return path.length > 0 ? path[path.length - 1].tag : void 0;
 	}
+	/**
+	* Get current namespace.
+	* @returns {string|undefined}
+	*/
 	getCurrentNamespace() {
 		const path = this._matcher.path;
 		return path.length > 0 ? path[path.length - 1].namespace : void 0;
 	}
+	/**
+	* Get current node's attribute value.
+	* @param {string} attrName
+	* @returns {*}
+	*/
 	getAttrValue(attrName) {
 		const path = this._matcher.path;
 		if (path.length === 0) return void 0;
 		return path[path.length - 1].values?.[attrName];
 	}
+	/**
+	* Check if current node has an attribute.
+	* @param {string} attrName
+	* @returns {boolean}
+	*/
 	hasAttr(attrName) {
 		const path = this._matcher.path;
 		if (path.length === 0) return false;
 		const current = path[path.length - 1];
 		return current.values !== void 0 && attrName in current.values;
 	}
+	/**
+	* Get the value of a "kept" attribute from the nearest ancestor (or
+	* current node) that declared it via `push(tag, attrs, ns, { keep: [...] })`.
+	* @param {string} attrName
+	* @returns {*}
+	*/
 	getAnyParentAttr(attrName) {
 		return this._matcher.getAnyParentAttr(attrName);
 	}
+	/**
+	* Check whether any ancestor (or the current node) kept the given
+	* attribute via `push(tag, attrs, ns, { keep: [...] })`.
+	* @param {string} attrName
+	* @returns {boolean}
+	*/
 	hasAnyParentAttr(attrName) {
 		return this._matcher.hasAnyParentAttr(attrName);
 	}
+	/**
+	* Get current node's sibling position (child index in parent).
+	* @returns {number}
+	*/
 	getPosition() {
 		const path = this._matcher.path;
 		if (path.length === 0) return -1;
 		return path[path.length - 1].position ?? 0;
 	}
+	/**
+	* Get current node's repeat counter (occurrence count of this tag name).
+	* @returns {number}
+	*/
 	getCounter() {
 		const path = this._matcher.path;
 		if (path.length === 0) return -1;
 		return path[path.length - 1].counter ?? 0;
 	}
+	/**
+	* Get current node's sibling index (alias for getPosition).
+	* @returns {number}
+	* @deprecated Use getPosition() or getCounter() instead
+	*/
 	getIndex() {
 		return this.getPosition();
 	}
+	/**
+	* Get current path depth.
+	* @returns {number}
+	*/
 	getDepth() {
 		return this._matcher.path.length;
 	}
+	/**
+	* Get path as string.
+	* @param {string} [separator] - Optional separator (uses default if not provided)
+	* @param {boolean} [includeNamespace=true]
+	* @returns {string}
+	*/
 	toString(separator, includeNamespace = true) {
 		return this._matcher.toString(separator, includeNamespace);
 	}
+	/**
+	* Get path as array of tag names.
+	* @returns {string[]}
+	*/
 	toArray() {
 		return this._matcher.path.map((n) => n.tag);
 	}
+	/**
+	* Match current path against an Expression.
+	* @param {Expression} expression
+	* @returns {boolean}
+	*/
 	matches(expression) {
 		return this._matcher.matches(expression);
 	}
+	/**
+	* Match any expression in the given set against the current path.
+	* @param {ExpressionSet} exprSet
+	* @returns {boolean}
+	*/
 	matchesAny(exprSet) {
 		return exprSet.matchesAny(this._matcher);
 	}
 };
+/**
+* Matcher - Tracks current path in XML/JSON tree and matches against Expressions.
+*
+* The matcher maintains a stack of nodes representing the current path from root to
+* current tag. It only stores attribute values for the current (top) node to minimize
+* memory usage. Sibling tracking is used to auto-calculate position and counter.
+*
+* Use {@link Matcher#readOnly} to obtain a {@link MatcherView} safe to pass to
+* user callbacks — it always reflects current state with no Proxy overhead.
+*
+* @example
+* const matcher = new Matcher();
+* matcher.push("root", {});
+* matcher.push("users", {});
+* matcher.push("user", { id: "123", type: "admin" });
+*
+* const expr = new Expression("root.users.user");
+* matcher.matches(expr); // true
+*/
 var Matcher = class {
+	/**
+	* Create a new Matcher.
+	* @param {Object} [options={}]
+	* @param {string} [options.separator='.'] - Default path separator
+	*/
 	constructor(options = {}) {
 		this.separator = options.separator || ".";
 		this.path = [];
@@ -1526,6 +2101,14 @@ var Matcher = class {
 		this._view = new MatcherView(this);
 		this._keptAttrs = [];
 	}
+	/**
+	* Push a new tag onto the path.
+	* @param {string} tagName
+	* @param {Object|null} [attrValues=null]
+	* @param {string|null} [namespace=null]
+	* @param {Object|null} [options=null]
+	* @param {string[]} [options.keep] - Names of attributes (from attrValues)
+	*/
 	push(tagName, attrValues = null, namespace = null, options = null) {
 		this._pathStringCache = null;
 		if (this.path.length > 0) this.path[this.path.length - 1].values = void 0;
@@ -1562,6 +2145,10 @@ var Matcher = class {
 			});
 		}
 	}
+	/**
+	* Pop the last tag from the path.
+	* @returns {Object|undefined} The popped node
+	*/
 	pop() {
 		if (this.path.length === 0) return void 0;
 		this._pathStringCache = null;
@@ -1571,50 +2158,112 @@ var Matcher = class {
 		while (this._keptAttrs.length > 0 && this._keptAttrs[this._keptAttrs.length - 1].depth >= poppedDepth) this._keptAttrs.pop();
 		return node;
 	}
+	/**
+	* Update current node's attribute values.
+	* Useful when attributes are parsed after push.
+	* @param {Object} attrValues
+	*/
 	updateCurrent(attrValues) {
 		if (this.path.length > 0) {
 			const current = this.path[this.path.length - 1];
 			if (attrValues !== null && attrValues !== void 0) current.values = attrValues;
 		}
 	}
+	/**
+	* Get current tag name.
+	* @returns {string|undefined}
+	*/
 	getCurrentTag() {
 		return this.path.length > 0 ? this.path[this.path.length - 1].tag : void 0;
 	}
+	/**
+	* Get current namespace.
+	* @returns {string|undefined}
+	*/
 	getCurrentNamespace() {
 		return this.path.length > 0 ? this.path[this.path.length - 1].namespace : void 0;
 	}
+	/**
+	* Get current node's attribute value.
+	* @param {string} attrName
+	* @returns {*}
+	*/
 	getAttrValue(attrName) {
 		if (this.path.length === 0) return void 0;
 		return this.path[this.path.length - 1].values?.[attrName];
 	}
+	/**
+	* Check if current node has an attribute.
+	* @param {string} attrName
+	* @returns {boolean}
+	*/
 	hasAttr(attrName) {
 		if (this.path.length === 0) return false;
 		const current = this.path[this.path.length - 1];
 		return current.values !== void 0 && attrName in current.values;
 	}
+	/**
+	* Get the value of a "kept" attribute from the nearest ancestor (or
+	* current node) that declared it via `push(tag, attrs, ns, { keep: [...] })`.
+	* Unlike getAttrValue(), this works regardless of how deep the path has
+	* gone since the attribute was pushed — but only for attribute names that
+	* were explicitly marked with `keep` at push time. Cost is proportional to
+	* the number of currently-kept attributes (typically 0-3), not path depth.
+	* @param {string} attrName
+	* @returns {*} the value, or undefined if no ancestor kept this attribute
+	*/
 	getAnyParentAttr(attrName) {
 		const kept = this._keptAttrs;
 		for (let i = kept.length - 1; i >= 0; i--) if (kept[i].name === attrName) return kept[i].value;
 	}
+	/**
+	* Check whether any ancestor (or the current node) kept the given
+	* attribute via `push(tag, attrs, ns, { keep: [...] })`.
+	* @param {string} attrName
+	* @returns {boolean}
+	*/
 	hasAnyParentAttr(attrName) {
 		const kept = this._keptAttrs;
 		for (let i = kept.length - 1; i >= 0; i--) if (kept[i].name === attrName) return true;
 		return false;
 	}
+	/**
+	* Get current node's sibling position (child index in parent).
+	* @returns {number}
+	*/
 	getPosition() {
 		if (this.path.length === 0) return -1;
 		return this.path[this.path.length - 1].position ?? 0;
 	}
+	/**
+	* Get current node's repeat counter (occurrence count of this tag name).
+	* @returns {number}
+	*/
 	getCounter() {
 		if (this.path.length === 0) return -1;
 		return this.path[this.path.length - 1].counter ?? 0;
 	}
+	/**
+	* Get current node's sibling index (alias for getPosition).
+	* @returns {number}
+	* @deprecated Use getPosition() or getCounter() instead
+	*/
 	getIndex() {
 		return this.getPosition();
 	}
+	/**
+	* Get current path depth.
+	* @returns {number}
+	*/
 	getDepth() {
 		return this.path.length;
 	}
+	/**
+	* Get path as string.
+	* @param {string} [separator] - Optional separator (uses default if not provided)
+	* @param {boolean} [includeNamespace=true]
+	* @returns {string}
+	*/
 	toString(separator, includeNamespace = true) {
 		const sep = separator || this.separator;
 		if (sep === this.separator && includeNamespace === true) {
@@ -1625,26 +2274,44 @@ var Matcher = class {
 		}
 		return this.path.map((n) => includeNamespace && n.namespace ? `${n.namespace}:${n.tag}` : n.tag).join(sep);
 	}
+	/**
+	* Get path as array of tag names.
+	* @returns {string[]}
+	*/
 	toArray() {
 		return this.path.map((n) => n.tag);
 	}
+	/**
+	* Reset the path to empty.
+	*/
 	reset() {
 		this._pathStringCache = null;
 		this.path = [];
 		this.siblingStacks = [];
 		this._keptAttrs = [];
 	}
+	/**
+	* Match current path against an Expression.
+	* @param {Expression} expression
+	* @returns {boolean}
+	*/
 	matches(expression) {
 		const segments = expression.segments;
 		if (segments.length === 0) return false;
 		if (expression.hasDeepWildcard()) return this._matchWithDeepWildcard(segments);
 		return this._matchSimple(segments);
 	}
+	/**
+	* @private
+	*/
 	_matchSimple(segments) {
 		if (this.path.length !== segments.length) return false;
 		for (let i = 0; i < segments.length; i++) if (!this._matchSegment(segments[i], this.path[i], i === this.path.length - 1)) return false;
 		return true;
 	}
+	/**
+	* @private
+	*/
 	_matchWithDeepWildcard(segments) {
 		let pathIdx = this.path.length - 1;
 		let segIdx = segments.length - 1;
@@ -1670,6 +2337,9 @@ var Matcher = class {
 		}
 		return segIdx < 0;
 	}
+	/**
+	* @private
+	*/
 	_matchSegment(segment, node, isCurrentNode) {
 		if (segment.tag !== "*" && segment.tag !== node.tag) return false;
 		if (segment.namespace !== void 0) {
@@ -1692,9 +2362,18 @@ var Matcher = class {
 		}
 		return true;
 	}
+	/**
+	* Match any expression in the given set against the current path.
+	* @param {ExpressionSet} exprSet
+	* @returns {boolean}
+	*/
 	matchesAny(exprSet) {
 		return exprSet.matchesAny(this);
 	}
+	/**
+	* Create a snapshot of current state.
+	* @returns {Object}
+	*/
 	snapshot() {
 		return {
 			path: this.path.map((node) => ({ ...node })),
@@ -1705,6 +2384,10 @@ var Matcher = class {
 			keptAttrs: this._keptAttrs.map((entry) => ({ ...entry }))
 		};
 	}
+	/**
+	* Restore state from snapshot.
+	* @param {Object} snapshot
+	*/
 	restore(snapshot) {
 		this._pathStringCache = null;
 		this.path = snapshot.path.map((node) => ({ ...node }));
@@ -1714,6 +2397,22 @@ var Matcher = class {
 		} : level);
 		this._keptAttrs = (snapshot.keptAttrs || []).map((entry) => ({ ...entry }));
 	}
+	/**
+	* Return the read-only {@link MatcherView} for this matcher.
+	*
+	* The same instance is returned on every call — no allocation occurs.
+	* It always reflects the current parser state and is safe to pass to
+	* user callbacks without risk of accidental mutation.
+	*
+	* @returns {MatcherView}
+	*
+	* @example
+	* const view = matcher.readOnly();
+	* // pass view to callbacks — it stays in sync automatically
+	* view.matches(expr);       // ✓
+	* view.getCurrentTag();     // ✓
+	* // view.push(...)         // ✗ method does not exist — caught by TypeScript
+	*/
 	readOnly() {
 		return this._view;
 	}
@@ -1721,6 +2420,15 @@ var Matcher = class {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/html.js
+/**
+* HTML context patterns.
+*
+* Detects XSS vectors that are dangerous when a string ends up rendered as HTML.
+* All patterns use bounded quantifiers to ensure linear-time matching (ReDoS-safe).
+*
+* Each entry is { pattern: RegExp, id: string, description: string }
+* so callers can inspect which rule fired if they need to.
+*/
 const HTML_PATTERNS = [
 	{
 		id: "html-script-open",
@@ -1811,6 +2519,17 @@ const HTML_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/xml.js
+/**
+* XML context patterns.
+*
+* Detects injection vectors that are specifically dangerous when a string
+* is inserted into an XML document (not HTML rendering context).
+*
+* Key distinction from HTML: these patterns target parser-level attacks —
+* things that can confuse or subvert an XML parser, trigger external entity
+* resolution, or inject DTD content. HTML rendering concerns (XSS) belong
+* in the HTML context.
+*/
 const XML_PATTERNS = [
 	{
 		id: "xml-cdata-injection",
@@ -1876,6 +2595,15 @@ const XML_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/svg.js
+/**
+* SVG context patterns.
+*
+* SVG is XML-based but renders in browsers, giving it a unique attack surface
+* that combines XML parser behaviour with browser rendering and JavaScript execution.
+*
+* Many of these vectors bypass HTML sanitizers that don't understand SVG semantics
+* (DOMPurify has documented bypass vulnerabilities specifically in SVG/XML context).
+*/
 const SVG_PATTERNS = [
 	{
 		id: "svg-script-element",
@@ -1946,6 +2674,19 @@ const SVG_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql.js
+/**
+* SQL context patterns — high-precision rules only.
+*
+* These rules have very low false-positive risk and are safe to apply to
+* general user text (names, descriptions, search queries, etc.).
+* All patterns are ReDoS-safe — unlike the `sql-injection` npm package
+* which has an active CVE on its own detection regexes.
+*
+* For exhaustive coverage including noisier heuristics (comment sequences,
+* hex literals, stacked queries with semicolons), use 'SQL-STRICT' instead.
+* Apply 'SQL-STRICT' only to strings that are specifically SQL fragments,
+* not to general free-text fields.
+*/
 const SQL_PATTERNS = [
 	{
 		id: "sql-block-comment-open",
@@ -2026,6 +2767,13 @@ const SQL_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/shell.js
+/**
+* SHELL context patterns.
+*
+* Detects shell injection vectors and path traversal patterns.
+* Designed for use when a string will be passed to a shell command,
+* used as a file path, or interpolated into OS-level operations.
+*/
 const SHELL_PATTERNS = [
 	{
 		id: "shell-path-traversal-unix",
@@ -2121,6 +2869,17 @@ const SHELL_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/redos.js
+/**
+* REDOS context patterns.
+*
+* Detects strings that, if used as regular expressions, could cause
+* catastrophic backtracking (ReDoS — Regular Expression Denial of Service).
+*
+* These patterns detect the structural forms that lead to exponential or
+* polynomial backtracking in NFA-based regex engines (V8, PCRE, Java, etc.).
+*
+* Use this context when user-supplied strings will be compiled into RegExp objects.
+*/
 const REDOS_PATTERNS = [
 	{
 		id: "redos-nested-quantifier-plus",
@@ -2252,6 +3011,26 @@ const NOSQL_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/log.js
+/**
+* LOG context patterns.
+*
+* Detects injection vectors that are dangerous when a string is written
+* to a log file, passed to a logging framework, or interpolated into
+* a log message that will be parsed or displayed.
+*
+* Attack categories:
+*   1. CRLF injection — injects fake log lines by embedding newlines
+*   2. Log4Shell (CVE-2021-44228) — ${jndi:...} triggers JNDI lookup in Log4j
+*   3. SSTI in log templates — {{...}}, #{...} trigger template evaluation
+*      if the log message is passed through a template engine
+*   4. Null byte injection — truncates log entries in some implementations
+*   5. ANSI escape injection — manipulates terminal output when logs are
+*      tailed in a terminal (colour codes, cursor movement, etc.)
+*
+* Note: Newline characters (\n, \r) will produce false positives for
+* multi-line legitimate values. Use this context only for single-line
+* log field values (usernames, IDs, request parameters, etc.).
+*/
 const LOG_PATTERNS = [
 	{
 		id: "log-crlf-injection",
@@ -2317,6 +3096,28 @@ const LOG_PATTERNS = [
 
 //#endregion
 //#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql-strict.js
+/**
+* SQL-STRICT context patterns.
+*
+* Extends the base 'SQL' context with three additional rules that are
+* effective at detecting real injections but carry a higher false-positive
+* risk on general free-text input.
+*
+* Use 'SQL-STRICT' when:
+*   - The string is specifically a SQL fragment or database identifier
+*   - You control the input domain (e.g. a dedicated SQL search field)
+*   - You can tolerate occasional false positives in exchange for broader coverage
+*
+* Use 'SQL' (not STRICT) when:
+*   - The field is general user text (names, descriptions, comments)
+*   - False positives would block legitimate content (e.g. "see note -- above")
+*
+* Rules moved here from 'SQL' due to false-positive risk:
+*
+*   sql-line-comment   — "--" fires on "see note -- above", "value--", CSS var(--primary)
+*   sql-stacked-query  — "; SELECT" fires on legitimate prose with semicolons + SQL words
+*   sql-hex-encoding   — "0xDEAD" fires on hex values in technical docs and log output
+*/
 const SQL_STRICT_EXTRA = [
 	{
 		id: "sql-line-comment",
@@ -2358,9 +3159,28 @@ const VALID_CONTEXTS = Object.freeze({
 	NOSQL: NOSQL_PATTERNS,
 	LOG: LOG_PATTERNS
 });
+/**
+* @typedef {{ id: string, description: string, pattern: RegExp }} Rule
+*/
+/**
+* @typedef {Rule[]} PatternList
+*/
+/**
+* @typedef {Object} MatchResult
+* @property {string} context     - Label identifying which context matched ('HTML', 'CUSTOM', etc.)
+* @property {string} id          - Rule identifier
+* @property {string} description - Human-readable description of what was matched
+* @property {RegExp} pattern     - The pattern that matched
+*/
+/**
+* @param {unknown} value
+*/
 function assertString(value) {
 	if (typeof value !== "string") throw new TypeError(`is-unsafe: first argument must be a string, got ${typeof value}`);
 }
+/**
+* @param {unknown} context
+*/
 function assertContext(context) {
 	if (context instanceof RegExp) return;
 	if (Array.isArray(context)) {
@@ -2372,6 +3192,12 @@ function assertContext(context) {
 	}
 	throw new TypeError(`is-unsafe: second argument must be a PatternList (e.g. HTML), an array of PatternLists (e.g. [HTML, XML]), or a RegExp. Got: ${typeof context}`);
 }
+/**
+* Normalise any valid context arg into an array of PatternLists.
+*
+* @param {Rule[]|Rule[][]|RegExp} context
+* @returns {{ lists: Rule[][]|null, regex: RegExp|null }}
+*/
 function normalise(context) {
 	if (context instanceof RegExp) return {
 		lists: null,
@@ -2386,6 +3212,13 @@ function normalise(context) {
 		regex: null
 	};
 }
+/**
+* Test value against a single PatternList. Returns the first MatchResult or null.
+*
+* @param {string} value
+* @param {Rule[]} list
+* @returns {MatchResult|null}
+*/
 function matchList(value, list) {
 	const label = list.label ?? "CUSTOM";
 	for (const rule of list) if (rule.pattern.test(value)) return {
@@ -2396,6 +3229,24 @@ function matchList(value, list) {
 	};
 	return null;
 }
+/**
+* Returns `true` if `value` is unsafe in the given context(s), `false` otherwise.
+*
+* @param {string} value - The string to test
+* @param {PatternList | PatternList[] | RegExp} context
+*   - A PatternList imported from is-unsafe (e.g. `HTML`, `XML`)
+*   - An array of PatternLists — returns true if unsafe in **any** of them
+*   - A custom RegExp — returns true if the pattern matches
+* @returns {boolean}
+*
+* @example
+* import { isUnsafe, HTML, SQL } from 'is-unsafe';
+*
+* isUnsafe('<script>alert(1)<\/script>', HTML)       // true
+* isUnsafe('hello world', HTML)                     // false
+* isUnsafe('value', [HTML, SQL])                    // false
+* isUnsafe('value', /my-pattern/i)                  // false
+*/
 function isUnsafe(value, context) {
 	assertString(value);
 	assertContext(context);
@@ -2407,6 +3258,12 @@ function isUnsafe(value, context) {
 
 //#endregion
 //#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.0/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+/**
+* Extract raw attributes (without prefix) from prefixed attribute map
+* @param {object} prefixedAttrs - Attributes with prefix from buildAttributesMap
+* @param {object} options - Parser options containing attributeNamePrefix
+* @returns {object} Raw attributes for matcher
+*/
 function extractRawAttributes(prefixedAttrs, options) {
 	if (!prefixedAttrs) return {};
 	const attrs = options.attributesGroupName ? prefixedAttrs[options.attributesGroupName] : prefixedAttrs;
@@ -2418,6 +3275,11 @@ function extractRawAttributes(prefixedAttrs, options) {
 	} else rawAttrs[key] = attrs[key];
 	return rawAttrs;
 }
+/**
+* Extract namespace from raw tag name
+* @param {string} rawTagName - Tag name possibly with namespace (e.g., "soap:Envelope")
+* @returns {string|undefined} Namespace or undefined
+*/
 function extractNamespace(rawTagName) {
 	if (!rawTagName || typeof rawTagName !== "string") return void 0;
 	const colonIndex = rawTagName.indexOf(":");
@@ -2481,6 +3343,15 @@ var OrderedObjParser = class {
 		}
 	}
 };
+/**
+* @param {string} val
+* @param {string} tagName
+* @param {string|Matcher} jPath - jPath string or Matcher instance based on options.jPath
+* @param {boolean} dontTrim
+* @param {boolean} hasAttributes
+* @param {boolean} isLeafNode
+* @param {boolean} escapeEntities
+*/
 function parseTextData(val, tagName, jPath, dontTrim, hasAttributes, isLeafNode, escapeEntities) {
 	const options = this.options;
 	if (val !== void 0) {
@@ -2736,6 +3607,11 @@ function addChild(currentNode, childNode, matcher, startIndex) {
 		currentNode.addChild(childNode, startIndex);
 	} else currentNode.addChild(childNode, startIndex);
 }
+/**
+* @param {object} val - Entity object with regex and val properties
+* @param {string} tagName - Tag name
+* @param {string|Matcher} jPath - jPath string or Matcher instance based on options.jPath
+*/
 function replaceEntitiesValue(val, tagName, jPath) {
 	const entityConfig = this.options.processEntities;
 	if (!entityConfig || !entityConfig.enabled) return val;
@@ -2758,10 +3634,20 @@ function saveTextToParentTag(textData, parentNode, matcher, isLeafNode) {
 	}
 	return textData;
 }
+/**
+* @param {Array<Expression>} stopNodeExpressions - Array of compiled Expression objects
+* @param {Matcher} matcher - Current path matcher
+*/
 function isItStopNode() {
 	if (this.stopNodeExpressionsSet.size === 0) return false;
 	return this.matcher.matchesAny(this.stopNodeExpressionsSet);
 }
+/**
+* Returns the tag Expression and where it is ending handling single-double quotes situation
+* @param {string} xmlData 
+* @param {number} i starting index
+* @returns 
+*/
 function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
 	let attrBoundary = 0;
 	const len = xmlData.length;
@@ -2834,6 +3720,12 @@ function readTagExp(xmlData, i, removeNSPrefix, closingChar = ">") {
 		rawTagName
 	};
 }
+/**
+* find paired tag for a stop node
+* @param {string} xmlData 
+* @param {string} tagName 
+* @param {number} i 
+*/
 function readStopNodeData(xmlData, tagName, i) {
 	const startIndex = i;
 	let openTagCount = 1;
@@ -2892,6 +3784,12 @@ function sanitizeName(name, options) {
 //#endregion
 //#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.0/node_modules/fast-xml-parser/src/xmlparser/node2json.js
 const METADATA_SYMBOL = XmlNode.getMetaDataSymbol();
+/**
+* Helper function to strip attribute prefix from attribute map
+* @param {object} attrs - Attributes with prefix (e.g., {"@_class": "code"})
+* @param {string} prefix - Attribute prefix to remove (e.g., "@_")
+* @returns {object} Attributes without prefix (e.g., {"class": "code"})
+*/
 function stripAttributePrefix(attrs, prefix) {
 	if (!attrs || typeof attrs !== "object") return {};
 	if (!prefix) return attrs;
@@ -2902,9 +3800,22 @@ function stripAttributePrefix(attrs, prefix) {
 	} else rawAttrs[key] = attrs[key];
 	return rawAttrs;
 }
+/**
+* 
+* @param {array} node 
+* @param {any} options 
+* @param {Matcher} matcher - Path matcher instance
+* @returns 
+*/
 function prettify(node, options, matcher, readonlyMatcher) {
 	return compress(node, options, matcher, readonlyMatcher);
 }
+/**
+* @param {array} arr 
+* @param {object} options 
+* @param {Matcher} matcher - Path matcher instance
+* @returns object
+*/
 function compress(arr, options, matcher, readonlyMatcher) {
 	let text;
 	const compressedObj = {};
@@ -2981,6 +3892,11 @@ var XMLParser = class {
 		this.externalEntities = {};
 		this.options = buildOptions(options);
 	}
+	/**
+	* Parse XML dats to JS object 
+	* @param {string|Uint8Array} xmlData 
+	* @param {boolean|Object} validationOption 
+	*/
 	parse(xmlData, validationOption) {
 		if (typeof xmlData !== "string" && xmlData.toString) xmlData = xmlData.toString();
 		else if (typeof xmlData !== "string") throw new Error("XML data is accepted in String or Bytes[] form.");
@@ -2994,12 +3910,27 @@ var XMLParser = class {
 		if (this.options.preserveOrder || orderedResult === void 0) return orderedResult;
 		else return prettify(orderedResult, this.options, orderedObjParser.matcher, orderedObjParser.readonlyMatcher);
 	}
+	/**
+	* Add Entity which is not by default supported by this library
+	* @param {string} key 
+	* @param {string} value 
+	*/
 	addEntity(key, value) {
 		if (value.indexOf("&") !== -1) throw new Error("Entity value can't have '&'");
 		else if (key.indexOf("&") !== -1 || key.indexOf(";") !== -1) throw new Error("An entity must be set without '&' and ';'. Eg. use '#xD' for '&#xD;'");
 		else if (value === "&") throw new Error("An entity with value '&' is not permitted");
 		else this.externalEntities[key] = value;
 	}
+	/**
+	* Returns a Symbol that can be used to access the metadata
+	* property on a node.
+	* 
+	* If Symbol is not available in the environment, an ordinary property is used
+	* and the name of the property is here returned.
+	* 
+	* The XMLMetaData property is only present when `captureMetaData`
+	* is true in the options.
+	*/
 	static getMetaDataSymbol() {
 		return XmlNode.getMetaDataSymbol();
 	}
