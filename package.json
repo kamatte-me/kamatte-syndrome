@@ -17,7 +17,7 @@
     "vercel:env:pull": "pnpm -r vercel:env:pull"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.10",
+    "@biomejs/biome": "2.5.11",
     "@tanstack/intent": "0.3.7",
     "turbo": "2.10.11"
   },
