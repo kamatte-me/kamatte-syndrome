@@ -61,8 +61,8 @@ importers:
         specifier: 2.5.10
         version: 2.5.10
       '@tanstack/intent':
-        specifier: 0.3.6
-        version: 0.3.6
+        specifier: 0.3.7
+        version: 0.3.7
       turbo:
         specifier: 2.10.11
         version: 2.10.11
@@ -1699,8 +1699,8 @@ packages:
     resolution: {integrity: sha512-DR9t6lfLVdrjgCwpglrR9DR7Ok8/HlXjcOE+goWXF3zyuLUO/ug7vMbSFxTqrQTtbRghJfyhmIZ0S6LhPIy44w==}
     engines: {node: '>=20.19'}
 
-  '@tanstack/intent@0.3.6':
-    resolution: {integrity: sha512-ylew/4T3layUXSfE/SDGUSAi1B3U/wuoNUE0adC3j/s6wzX7omV6e6hAv0WyMC52Inren8kqvwpHj+G/ZBbQHQ==}
+  '@tanstack/intent@0.3.7':
+    resolution: {integrity: sha512-119d81v2JpdFtvLlX8C7Kmx0zqaNUnY4iTyd5Q8rVyE7sVCnuBYIS/NNCa8T6Ni0bdVkcOVDl1zdz78Oz2dfAg==}
     hasBin: true
 
   '@tanstack/react-devtools@0.10.12':
@@ -4933,7 +4933,7 @@ snapshots:
 
   '@tanstack/history@1.162.1': {}
 
-  '@tanstack/intent@0.3.6':
+  '@tanstack/intent@0.3.7':
     dependencies:
       cac: 6.7.14
       jsonc-parser: 3.3.1
