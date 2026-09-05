@@ -131,7 +131,6 @@ export default defineConfig(({ mode }) => {
       setupFiles: ['src/testing/setup-tests.ts'],
       projects: [
         {
-          extends: true,
           test: {
             name: 'node',
             environment: 'node',
@@ -139,7 +138,6 @@ export default defineConfig(({ mode }) => {
           },
         },
         {
-          extends: true,
           test: {
             name: 'dom',
             environment: 'happy-dom',

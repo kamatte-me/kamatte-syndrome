@@ -13,6 +13,7 @@ node_modules/
 .vercel/
 
 # Testing
+.vitest/
 coverage/
 
 # Local machine files
