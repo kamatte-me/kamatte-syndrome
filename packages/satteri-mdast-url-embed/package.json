@@ -1,5 +1,5 @@
 {
-  "name": "@kamatte-syndrome/remark-gfm-subset",
+  "name": "@kamatte-syndrome/satteri-mdast-url-embed",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -11,19 +11,16 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "mdast-util-gfm-footnote": "2.1.0",
-    "mdast-util-gfm-strikethrough": "2.0.0",
-    "mdast-util-gfm-table": "2.0.0",
-    "micromark-extension-gfm-footnote": "2.1.0",
-    "micromark-extension-gfm-strikethrough": "2.1.0",
-    "micromark-extension-gfm-table": "2.1.1"
+    "@kamatte-syndrome/oembed-endpoint-resolver": "workspace:*"
+  },
+  "peerDependencies": {
+    "satteri": "catalog:"
   },
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
     "@types/mdast": "catalog:",
-    "remark-parse": "11.0.0",
+    "satteri": "catalog:",
     "typescript": "catalog:",
-    "unified": "11.0.5",
     "vitest": "catalog:"
   }
 }

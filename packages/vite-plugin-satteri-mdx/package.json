@@ -1,0 +1,27 @@
+{
+  "name": "@kamatte-syndrome/vite-plugin-satteri-mdx",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@kamatte-syndrome/satteri-mdast-newline-to-break": "workspace:*",
+    "@kamatte-syndrome/satteri-mdast-url-embed": "workspace:*",
+    "@kamatte-syndrome/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "satteri": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "satteri": "catalog:",
+    "vite": "catalog:"
+  }
+}

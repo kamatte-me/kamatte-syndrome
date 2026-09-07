@@ -8,7 +8,7 @@ provider registryには`oembed-providers/providers.json`を使います。この
 
 このリポジトリでは、記事本文のURL単独段落を`LinkCard`または`OEmbed`として表示します。
 
-`@kamatte-syndrome/remark-mdx-url-embed`はMarkdown ASTをMDX componentに変換する時点で、そのURLがoEmbed providerに対応しているかを判定する必要があります。また、app側のserver codeは、実際にoEmbed metadataを取得するためのendpoint URLを知る必要があります。
+`@kamatte-syndrome/satteri-mdast-url-embed`はMarkdown ASTをMDX componentに変換する時点で、そのURLがoEmbed providerに対応しているかを判定する必要があります。また、app側のserver codeは、実際にoEmbed metadataを取得するためのendpoint URLを知る必要があります。
 
 このpackageは、その両方で使う共通のprovider判定を提供します。
 
