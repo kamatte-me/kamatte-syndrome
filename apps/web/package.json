@@ -27,7 +27,7 @@
     "photoswipe": "5.4.4",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "tailwind-merge": "3.6.0"
+    "tailwind-merge": "3.7.0"
   },
   "devDependencies": {
     "@content-collections/core": "0.15.2",
