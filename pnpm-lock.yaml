@@ -241,7 +241,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: 'catalog:'
-        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
 
   .github/actions/cleanup-artifacts:
     dependencies:
@@ -410,7 +410,7 @@ importers:
         version: 10.4.1
       '@testing-library/jest-dom':
         specifier: 'catalog:'
-        version: 7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)))
+        version: 7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)))
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -436,8 +436,8 @@ importers:
         specifier: 0.1.72
         version: 0.1.72
       autoprefixer:
-        specifier: 10.6.0
-        version: 10.6.0(postcss@8.5.28)
+        specifier: 10.6.1
+        version: 10.6.1(postcss@8.5.28)
       happy-dom:
         specifier: 'catalog:'
         version: 20.14.5
@@ -482,7 +482,7 @@ importers:
         version: 2.0.3(sharp@0.35.4(@types/node@24.13.3))(svgo@4.1.0)(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
       vitest:
         specifier: 'catalog:'
-        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
       zod:
         specifier: 4.6.2
         version: 4.6.2
@@ -522,7 +522,7 @@ importers:
         version: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
 
   packages/oembed-endpoint-resolver:
     dependencies:
@@ -538,7 +538,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: 'catalog:'
-        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
 
   packages/remark-gfm-subset:
     dependencies:
@@ -642,7 +642,7 @@ importers:
         version: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
 
   packages/vite-plugin-react-optimized-responsive-image:
     dependencies:
@@ -658,7 +658,7 @@ importers:
         version: link:../tsconfig
       '@testing-library/jest-dom':
         specifier: 'catalog:'
-        version: 7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)))
+        version: 7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)))
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -688,7 +688,7 @@ importers:
         version: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        version: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
 
 packages:
 
@@ -2376,8 +2376,8 @@ packages:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
 
-  autoprefixer@10.6.0:
-    resolution: {integrity: sha512-A26d6qs9kqGgkmImIXMYvXTzqb4Qv7AVgpY1NXzr9Y659J8qHHnLOO/zE8ewIGFMprOolAoRAQYDgNryXIJKBw==}
+  autoprefixer@10.6.1:
+    resolution: {integrity: sha512-cL1Qz6ADZhcEbny/8HPfe99J6HhNoYtpX2LFLIbhgGE7Q1hlQVkYFdetDN7Id3KiQxhDrHwzlHr/YQCnZ8+xSA==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -5371,7 +5371,7 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)))':
+  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.1)(vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)))':
     dependencies:
       '@adobe/css-tools': 4.5.0
       '@testing-library/dom': 10.4.1
@@ -5381,7 +5381,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
     optionalDependencies:
-      vitest: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+      vitest: 5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
 
   '@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -5556,17 +5556,7 @@ snapshots:
       vite: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
       vitefu: 1.1.3(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
 
-  '@vitest/mocker@5.0.0(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))':
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.31
-      '@vitest/spy': 5.0.0
-      estree-walker: 3.0.3
-      magic-string: 1.3.1
-    optionalDependencies:
-      msw: 2.15.0(@types/node@24.13.3)(typescript@7.0.2)
-      vite: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
-
-  '@vitest/mocker@5.0.0(msw@2.15.0(typescript@7.0.2))(vite@8.3.0)':
+  '@vitest/mocker@5.0.0(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.0
@@ -5620,7 +5610,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  autoprefixer@10.6.0(postcss@8.5.28):
+  autoprefixer@10.6.1(postcss@8.5.28):
     dependencies:
       browserslist: 4.28.9
       caniuse-lite: 1.0.30001810
@@ -7500,32 +7490,10 @@ snapshots:
     optionalDependencies:
       vite: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
 
-  vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)):
-    dependencies:
-      '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.0(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
-      chai: 6.2.2
-      es-module-lexer: 2.3.2
-      expect-type: 1.4.0
-      magic-string: 1.3.1
-      obug: 2.2.1
-      picomatch: 4.0.7
-      std-env: 4.2.0
-      tinybench: 6.1.4
-      tinyexec: 1.3.0
-      tinyglobby: 0.2.17
-      vite: 8.3.0(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 24.13.3
-      happy-dom: 20.14.5
-    transitivePeerDependencies:
-      - msw
-
   vitest@5.0.0(@types/node@24.13.3)(happy-dom@20.14.5)(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.0(msw@2.15.0(typescript@7.0.2))(vite@8.3.0)
+      '@vitest/mocker': 5.0.0(msw@2.15.0(@types/node@24.13.3)(typescript@7.0.2))(vite@8.3.0(@types/node@24.13.3))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
