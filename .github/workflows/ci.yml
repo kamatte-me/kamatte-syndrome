@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-node@v7.0.0
         with:
           node-version-file: .node-version
-      - uses: pnpm/setup@v2.1.0
+      - uses: pnpm/setup@v3.0.0
         with:
           cache: true
       - id: content-token
@@ -94,7 +94,7 @@ jobs:
       - uses: actions/setup-node@v7.0.0
         with:
           node-version-file: .node-version
-      - uses: pnpm/setup@v2.1.0
+      - uses: pnpm/setup@v3.0.0
         with:
           cache: true
       - run: pnpm --filter './.github/actions/*' build
