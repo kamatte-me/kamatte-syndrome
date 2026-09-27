@@ -30,7 +30,7 @@
     "tailwind-merge": "3.7.0"
   },
   "devDependencies": {
-    "@content-collections/core": "0.15.2",
+    "@content-collections/core": "0.15.3",
     "@content-collections/vite": "0.3.0",
     "@kamatte-syndrome/remark-gfm-subset": "workspace:*",
     "@kamatte-syndrome/remark-mdx-url-embed": "workspace:*",
