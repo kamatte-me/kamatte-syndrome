@@ -376,8 +376,8 @@ importers:
         specifier: 0.15.3
         version: 0.15.3(typescript@7.0.2)
       '@content-collections/vite':
-        specifier: 0.3.0
-        version: 0.3.0(@content-collections/core@0.15.3(typescript@7.0.2))(vite@8.3.1(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
+        specifier: 0.3.1
+        version: 0.3.1(@content-collections/core@0.15.3(typescript@7.0.2))(vite@8.3.1(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))
       '@kamatte-syndrome/remark-gfm-subset':
         specifier: workspace:*
         version: link:../../packages/remark-gfm-subset
@@ -845,8 +845,8 @@ packages:
     peerDependencies:
       '@content-collections/core': 0.x
 
-  '@content-collections/vite@0.3.0':
-    resolution: {integrity: sha512-1YDIQNXRKfU4diHQswX8xxhBk+0cJTfC54RRQMNMGOWPnkREVcCySt8ZbPZ9/osx3ACT0+kiWvHRzOKMKPubYA==}
+  '@content-collections/vite@0.3.1':
+    resolution: {integrity: sha512-iDVLDAmihnXh1n2U8G/QV9Dd50tbd8IqRz4sYE2IiHte/YHWkQiTFuXLbYzwJz/ogxI8Pay2/vl3cxGWbPOWVg==}
     peerDependencies:
       '@content-collections/core': ^0.x
       vite: ^6 || ^7 || ^8
@@ -4455,7 +4455,7 @@ snapshots:
     dependencies:
       '@content-collections/core': 0.15.3(typescript@7.0.2)
 
-  '@content-collections/vite@0.3.0(@content-collections/core@0.15.3(typescript@7.0.2))(vite@8.3.1(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))':
+  '@content-collections/vite@0.3.1(@content-collections/core@0.15.3(typescript@7.0.2))(vite@8.3.1(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@content-collections/core': 0.15.3(typescript@7.0.2)
       '@content-collections/integrations': 0.5.0(@content-collections/core@0.15.3(typescript@7.0.2))
