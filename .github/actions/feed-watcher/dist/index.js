@@ -364,7 +364,7 @@ function getPositionFromMatch(match) {
 }
 
 //#endregion
-//#region ../../../node_modules/.pnpm/@nodable+entities@3.0.0/node_modules/@nodable/entities/src/entities.js
+//#region ../../../node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/entities.js
 /**
 * Currency Symbols
 * @type {Record<string, string>}
@@ -417,7 +417,7 @@ const COMMON_HTML = {
 };
 
 //#endregion
-//#region ../../../node_modules/.pnpm/@nodable+entities@3.0.0/node_modules/@nodable/entities/src/EntityDecoder.js
+//#region ../../../node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/EntityDecoder.js
 /**
 * Action constants for `onExternalEntity` and `onInputEntity` hooks.
 *
