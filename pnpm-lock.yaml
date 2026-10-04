@@ -219,8 +219,8 @@ importers:
         specifier: 2.5.14
         version: 2.5.14
       '@tanstack/intent':
-        specifier: 0.4.0
-        version: 0.4.0
+        specifier: 0.5.1
+        version: 0.5.1
       turbo:
         specifier: 2.11.4
         version: 2.11.4
@@ -826,14 +826,6 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
-
-  '@clack/core@1.4.3':
-    resolution: {integrity: sha512-/kr3UWNtdJfxZtPgDqUOmG2pvwlmcLGheex5yiZKdwbzZJxhV+HMNR9QNmyY5cGwTNV6LrR7Jtp+KjhUAP1qBQ==}
-    engines: {node: '>= 20.12.0'}
-
-  '@clack/prompts@1.7.0':
-    resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
-    engines: {node: '>= 20.12.0'}
 
   '@content-collections/core@0.15.3':
     resolution: {integrity: sha512-0tdMU9I6U1wQWh8/TcKbcSKWOzICujaWFpogltiZ7trDh8q7RSAEmO4QOs4+wrd2QtMgRmOcFgmT7P8iElH3jw==}
@@ -1865,8 +1857,8 @@ packages:
     resolution: {integrity: sha512-utTS5L2OkeYUzXGohL1Z8sefu1GLNOJcxe8Hd6iIdc/Xo1K1nDB2JEp4iSFhvYh33xKC9V91TxrS8qfrpoKobQ==}
     engines: {node: '>=20.19'}
 
-  '@tanstack/intent@0.4.0':
-    resolution: {integrity: sha512-tTmNJ3+R/J+g/aTikTya39W6jVLEoLQbow1xm7j/zIbTbSY+91ypZDFaPAe9wzeHmDopsKIJxzuUSi+yJnzS4Q==}
+  '@tanstack/intent@0.5.1':
+    resolution: {integrity: sha512-4uw5m/SqvUlDL8o4t+MBde0sepppqFYjPZTk2QlV7tLobGiYsr0bkqrlJJ/pyGMO8gBPReqQd0EVdEEbeVXZGg==}
     engines: {node: '>=20.12.0'}
     hasBin: true
 
@@ -2411,10 +2403,6 @@ packages:
     resolution: {integrity: sha512-DdH81/zPLVS11EUgWq3tEu/xn+EzljlMYooDNdzWEnFha3R3NBMpMV1UqYIpjYHV/SgpFKMIX1Oh7o06SjM/oA==}
     engines: {node: '>=18'}
 
-  cac@7.0.0:
-    resolution: {integrity: sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ==}
-    engines: {node: '>=20.19.0'}
-
   camelcase@8.0.0:
     resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
     engines: {node: '>=16'}
@@ -2947,9 +2935,6 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
-
-  jsonc-parser@3.3.1:
-    resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
@@ -3649,9 +3634,6 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  sisteransi@1.0.5:
-    resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
-
   smol-toml@1.9.0:
     resolution: {integrity: sha512-hpd+HLON7HdZXqYchMM/+LaTTbdK0AU3NngIJ4KVyWbY9bfQqdL9cD+4yf6dUoU2Ap4VsU0JkQi6FxAI1B2mXQ==}
     engines: {node: '>= 18'}
@@ -4139,11 +4121,6 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  yaml@2.9.0:
-    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
-    engines: {node: '>= 14.6'}
-    hasBin: true
-
   yaml@2.9.1:
     resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
@@ -4320,18 +4297,6 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.5.14':
     optional: true
-
-  '@clack/core@1.4.3':
-    dependencies:
-      fast-wrap-ansi: 0.2.2
-      sisteransi: 1.0.5
-
-  '@clack/prompts@1.7.0':
-    dependencies:
-      '@clack/core': 1.4.3
-      fast-string-width: 3.0.2
-      fast-wrap-ansi: 0.2.2
-      sisteransi: 1.0.5
 
   '@content-collections/core@0.15.3(typescript@7.0.2)':
     dependencies:
@@ -5091,14 +5056,7 @@ snapshots:
 
   '@tanstack/history@1.162.4': {}
 
-  '@tanstack/intent@0.4.0':
-    dependencies:
-      '@clack/prompts': 1.7.0
-      cac: 7.0.0
-      jsonc-parser: 3.3.1
-      semver: 7.8.5
-      std-env: 4.3.0
-      yaml: 2.9.0
+  '@tanstack/intent@0.5.1': {}
 
   '@tanstack/react-devtools@0.10.13(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(csstype@3.2.3)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(solid-js@1.9.15)':
     dependencies:
@@ -5636,8 +5594,6 @@ snapshots:
     dependencies:
       run-applescript: 7.1.0
 
-  cac@7.0.0: {}
-
   camelcase@8.0.0: {}
 
   caniuse-lite@1.0.30001814: {}
@@ -6150,8 +6106,6 @@ snapshots:
   jsesc@3.1.0: {}
 
   json5@2.2.3: {}
-
-  jsonc-parser@3.3.1: {}
 
   kind-of@6.0.3: {}
 
@@ -7179,8 +7133,6 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  sisteransi@1.0.5: {}
-
   smol-toml@1.9.0: {}
 
   solid-js@1.9.15:
@@ -7531,8 +7483,6 @@ snapshots:
   y18n@5.0.8: {}
 
   yallist@3.1.1: {}
-
-  yaml@2.9.0: {}
 
   yaml@2.9.1: {}
 
