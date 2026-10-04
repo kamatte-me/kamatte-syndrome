@@ -19,7 +19,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
     "@tanstack/intent": "0.5.1",
-    "turbo": "2.11.4"
+    "turbo": "2.11.7"
   },
   "engines": {
     "node": "24.x"
