@@ -69,7 +69,7 @@
 
 - Content Collections の設定は `apps/web/content-collections.ts` です。
 - サイトコンテンツとメディアはすべて Private リポジトリ `kamatte-syndrome-content` で管理しています。公開済み・公開前を問わず、このリポジトリには含めないでください。
-- `apps/web/kamatte-syndrome-content/` は Git 管理対象外です。管理用 checkout では外部コンテンツリポジトリへの symlink になっていますが、このリポジトリの作業では参照だけにし、リンク先の content repo は編集しないでください。
+- `apps/web/kamatte-syndrome-content/` は Git 管理対象外です。ローカルではコンテンツリポジトリを実ディレクトリとして配置します。`.worktreeinclude` には、対応ツールがworktreeを作成する際のコピー対象として `content/` と `media/` を指定しています。このリポジトリの作業では参照だけにし、コンテンツは編集しないでください。コピーされたコンテンツに元のcheckoutの変更は自動反映されません。
 - `apps/web/kamatte-syndrome-content/content` には Markdown / MDX または JSON のコンテンツが、`media` には画像などのメディアが格納されています。コンテンツ管理には Sveltia CMS を使用しています。
 - 記事は `apps/web/kamatte-syndrome-content/content/posts` から読み込まれます。
 - 生成された `content-collections` 型や出力は手で編集しません。このリポジトリでは設定を変更し、元コンテンツの修正は別作業としてコンテンツリポジトリ側で扱ってください。

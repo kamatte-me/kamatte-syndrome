@@ -1,3 +1,7 @@
 # ローカル開発用の環境変数
 /.env.local
 /apps/web/.env.local
+
+# サイトコンテンツとメディア（管理用ファイルはコピーしない）
+/apps/web/kamatte-syndrome-content/content/
+/apps/web/kamatte-syndrome-content/media/
