@@ -1,0 +1,3 @@
+# ローカル開発用の環境変数
+/.env.local
+/apps/web/.env.local
