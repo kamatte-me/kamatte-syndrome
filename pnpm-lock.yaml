@@ -219,8 +219,8 @@ importers:
         specifier: 2.5.14
         version: 2.5.14
       '@tanstack/intent':
-        specifier: 0.5.1
-        version: 0.5.1
+        specifier: 0.5.4
+        version: 0.5.4
       turbo:
         specifier: 2.11.7
         version: 2.11.7
@@ -1867,8 +1867,8 @@ packages:
     resolution: {integrity: sha512-utTS5L2OkeYUzXGohL1Z8sefu1GLNOJcxe8Hd6iIdc/Xo1K1nDB2JEp4iSFhvYh33xKC9V91TxrS8qfrpoKobQ==}
     engines: {node: '>=20.19'}
 
-  '@tanstack/intent@0.5.1':
-    resolution: {integrity: sha512-4uw5m/SqvUlDL8o4t+MBde0sepppqFYjPZTk2QlV7tLobGiYsr0bkqrlJJ/pyGMO8gBPReqQd0EVdEEbeVXZGg==}
+  '@tanstack/intent@0.5.4':
+    resolution: {integrity: sha512-veyJDHwIHrylKucn8UgLlMYZbhLZ3gO1OlYiXLcmIKazCd8bTDXRfcWvmwNK3q63jS8K40pYudZV3HQPbHsBWg==}
     engines: {node: '>=20.12.0'}
     hasBin: true
 
@@ -5106,7 +5106,7 @@ snapshots:
 
   '@tanstack/history@1.162.4': {}
 
-  '@tanstack/intent@0.5.1': {}
+  '@tanstack/intent@0.5.4': {}
 
   '@tanstack/react-devtools@0.10.13(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(csstype@3.2.3)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(solid-js@1.9.15)':
     dependencies:
