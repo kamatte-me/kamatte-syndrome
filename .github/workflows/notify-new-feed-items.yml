@@ -48,7 +48,7 @@ jobs:
 
       - name: Restore RSS read state
         if: steps.state.outputs.found == 'true'
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         with:
           github-token: ${{ github.token }}
           name: ${{ steps.state.outputs.name }}
