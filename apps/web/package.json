@@ -60,7 +60,7 @@
     "remark-frontmatter": "5.0.0",
     "remark-mdx-frontmatter": "6.0.0",
     "rollup-plugin-visualizer": "7.1.1",
-    "schema-dts": "2.0.0",
+    "schema-dts": "2.1.0",
     "svgo": "4.1.0",
     "tailwindcss": "4.3.3",
     "typescript": "catalog:",
