@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "mdast-util-gfm-footnote": "2.1.0",
-    "mdast-util-gfm-strikethrough": "2.0.0",
+    "mdast-util-gfm-strikethrough": "2.0.1",
     "mdast-util-gfm-table": "2.0.0",
     "micromark-extension-gfm-footnote": "2.1.0",
     "micromark-extension-gfm-strikethrough": "2.1.0",
