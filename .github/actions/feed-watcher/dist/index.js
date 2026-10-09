@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
 import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/util.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/util.js
 const nameStartChar = ":A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
 const nameChar = nameStartChar + "\\-.\\d\\u00B7\\u0300-\\u036F\\u203F-\\u2040";
 const nameRegexp = "[" + nameStartChar + "][" + nameChar + "]*";
@@ -47,7 +47,7 @@ const criticalProperties = [
 ];
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/validator.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/validator.js
 const defaultOptions$1 = {
 	allowBooleanAttributes: false,
 	unpairedTags: []
@@ -883,7 +883,7 @@ var EntityDecoder = class {
 };
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
 const defaultOnDangerousProperty = (name) => {
 	if (DANGEROUS_PROPERTY_NAMES.includes(name)) return "__" + name;
 	return name;
@@ -1011,7 +1011,7 @@ const buildOptions = function(options) {
 };
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
 let METADATA_SYMBOL$1;
 if (typeof Symbol !== "function") METADATA_SYMBOL$1 = "@@xmlMetadata";
 else METADATA_SYMBOL$1 = Symbol("XML Node Metadata");
@@ -1090,7 +1090,7 @@ const getRegexes = (xmlVersion = "1.0", asciiOnly = false) => {
 const qName = (str, { xmlVersion = "1.0", asciiOnly = false } = {}) => getRegexes(xmlVersion, asciiOnly).qName.test(str);
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 var DocTypeReader = class {
 	constructor(options, xmlVersion) {
 		this.suppressValidationErr = !options;
@@ -1633,7 +1633,7 @@ function handleInfinity(str, num, options) {
 }
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/ignoreAttributes.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/ignoreAttributes.js
 function getIgnoreAttributesFn(ignoreAttributes) {
 	if (typeof ignoreAttributes === "function") return ignoreAttributes;
 	if (Array.isArray(ignoreAttributes)) return (attrName) => {
@@ -3332,7 +3332,7 @@ function isUnsafe(value, context) {
 }
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 /**
 * Extract raw attributes (without prefix) from prefixed attribute map
 * @param {object} prefixedAttrs - Attributes with prefix from buildAttributesMap
@@ -3857,7 +3857,7 @@ function sanitizeName(name, options) {
 }
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/node2json.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/node2json.js
 const METADATA_SYMBOL = XmlNode.getMetaDataSymbol();
 /**
 * Helper function to strip attribute prefix from attribute map
@@ -3961,7 +3961,7 @@ function isLeafTag(obj, options) {
 }
 
 //#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
+//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
 var XMLParser = class {
 	constructor(options) {
 		this.externalEntities = {};
@@ -3973,8 +3973,10 @@ var XMLParser = class {
 	* @param {boolean|Object} validationOption 
 	*/
 	parse(xmlData, validationOption) {
-		if (typeof xmlData !== "string" && xmlData.toString) xmlData = xmlData.toString();
-		else if (typeof xmlData !== "string") throw new Error("XML data is accepted in String or Bytes[] form.");
+		if (typeof xmlData !== "string" && xmlData.toString) {
+			if (xmlData instanceof Uint8Array && !(typeof Buffer !== "undefined" && Buffer.isBuffer(xmlData))) xmlData = new TextDecoder("utf-8", { ignoreBOM: true }).decode(xmlData);
+			else xmlData = xmlData.toString();
+		} else if (typeof xmlData !== "string") throw new Error("XML data is accepted in String or Bytes[] form.");
 		if (validationOption) {
 			if (validationOption === true) validationOption = {};
 			const result = validate(xmlData, validationOption);
