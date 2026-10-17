@@ -67,7 +67,7 @@
     "vite": "catalog:",
     "vite-plugin-image-optimizer": "2.0.3",
     "vitest": "catalog:",
-    "zod": "4.6.5"
+    "zod": "4.6.7"
   },
   "engines": {
     "node": "24.x"
