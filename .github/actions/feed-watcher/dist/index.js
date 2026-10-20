@@ -1509,7 +1509,7 @@ function anynum(str) {
 }
 
 //#endregion
-//#region ../../../node_modules/.pnpm/strnum@2.4.2/node_modules/strnum/strnum.js
+//#region ../../../node_modules/.pnpm/strnum@2.5.1/node_modules/strnum/strnum.js
 const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
 const binRegex = /^0b[01]+$/;
 const octRegex = /^0o[0-7]+$/;
@@ -1538,15 +1538,18 @@ function toNumber(str, options = {}) {
 	if (options.hex && hexRegex.test(trimmedStr)) return parse_int(trimmedStr, 16);
 	else if (options.binary && binRegex.test(trimmedStr)) return parse_int(trimmedStr, 2);
 	else if (options.octal && octRegex.test(trimmedStr)) return parse_int(trimmedStr, 8);
-	else if (!isFinite(trimmedStr)) return handleInfinity(str, Number(trimmedStr), options);
-	else if (trimmedStr.includes("e") || trimmedStr.includes("E")) return resolveEnotation(str, trimmedStr, options);
+	else if (!isFinite(trimmedStr)) {
+		const num = Number(trimmedStr);
+		if (Number.isNaN(num)) return str;
+		return handleInfinity(str, num, options);
+	} else if (trimmedStr.includes("e") || trimmedStr.includes("E")) return resolveEnotation(str, trimmedStr, options);
 	else {
 		const match = numRegex.exec(trimmedStr);
 		if (match) {
 			const sign = match[1] || "";
 			const leadingZeros = match[2];
 			let numTrimmedByZeros = trimZeros(match[3]);
-			const decimalAdjacentToLeadingZeros = sign ? str[leadingZeros.length + 1] === "." : str[leadingZeros.length] === ".";
+			const decimalAdjacentToLeadingZeros = sign ? trimmedStr[leadingZeros.length + 1] === "." : trimmedStr[leadingZeros.length] === ".";
 			if (!options.leadingZeros && (leadingZeros.length > 1 || leadingZeros.length === 1 && !decimalAdjacentToLeadingZeros)) return str;
 			else {
 				const num = Number(trimmedStr);
@@ -1576,14 +1579,12 @@ function resolveEnotation(str, trimmedStr, options) {
 		let sign = notation[1] || "";
 		const eChar = notation[3].indexOf("e") === -1 ? "E" : "e";
 		const leadingZeros = notation[2];
-		const eAdjacentToLeadingZeros = sign ? str[leadingZeros.length + 1] === eChar : str[leadingZeros.length] === eChar;
+		const eAdjacentToLeadingZeros = sign ? trimmedStr[leadingZeros.length + 1] === eChar : trimmedStr[leadingZeros.length] === eChar;
 		if (leadingZeros.length > 1 && eAdjacentToLeadingZeros) return str;
 		else if (leadingZeros.length === 1 && (notation[3].startsWith(`.${eChar}`) || notation[3][0] === eChar)) return Number(trimmedStr);
 		else if (leadingZeros.length > 0) {
-			if (options.leadingZeros && !eAdjacentToLeadingZeros) {
-				trimmedStr = (notation[1] || "") + notation[3];
-				return Number(trimmedStr);
-			} else return str;
+			if (options.leadingZeros && !eAdjacentToLeadingZeros) return Number(trimmedStr);
+			else return str;
 		} else return Number(trimmedStr);
 	} else return str;
 }
