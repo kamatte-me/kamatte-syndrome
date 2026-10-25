@@ -1,4 +1,4 @@
-//#region ../../../packages/github-actions-artifacts/src/index.ts
+// ../../../packages/github-actions-artifacts/src/index.ts
 function selectArtifactsByPrefix(artifacts, prefix) {
 	return [...artifacts].filter((artifact) => !artifact.expired && artifact.name.startsWith(prefix)).sort((left, right) => right.created_at.localeCompare(left.created_at));
 }
@@ -34,8 +34,7 @@ async function deleteArtifact(fetchFn, options) {
 	if (!response.ok) throw new Error(`Unable to delete workflow artifact: HTTP ${response.status}`);
 }
 
-//#endregion
-//#region src/index.ts
+// src/index.ts
 async function cleanupArtifacts(fetchFn, options) {
 	const artifacts = await listRepositoryArtifacts(fetchFn, options);
 	const supersededArtifacts = selectArtifactsByPrefix(artifacts, options.prefix).slice(options.keep);
@@ -67,6 +66,5 @@ function getInput(name, defaultValue) {
 }
 if (import.meta.url === `file://${process.argv[1]}`) main();
 
-//#endregion
 export { cleanupArtifacts, getInput };
 //# sourceMappingURL=index.js.map

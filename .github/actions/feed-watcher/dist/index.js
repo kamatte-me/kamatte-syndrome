@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
 import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/util.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/util.js
 const regexName = /* @__PURE__ */ new RegExp("^[:A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD][:A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\-.\\d\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$");
 function getAllMatches(string, regex) {
 	const matches = [];
@@ -43,8 +43,7 @@ const criticalProperties = [
 	"prototype"
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/validator.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/validator.js
 const defaultOptions$1 = {
 	allowBooleanAttributes: false,
 	unpairedTags: []
@@ -360,8 +359,7 @@ function getPositionFromMatch(match) {
 	return match.startIndex + match[1].length;
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/entities.js
+// ../../../node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/entities.js
 /**
 * Currency Symbols
 * @type {Record<string, string>}
@@ -413,8 +411,7 @@ const COMMON_HTML = {
 	frac34: "¾"
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/EntityDecoder.js
+// ../../../node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/EntityDecoder.js
 /**
 * Action constants for `onExternalEntity` and `onInputEntity` hooks.
 *
@@ -879,8 +876,7 @@ var EntityDecoder = class {
 	}
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
 const defaultOnDangerousProperty = (name) => {
 	if (DANGEROUS_PROPERTY_NAMES.includes(name)) return "__" + name;
 	return name;
@@ -1007,8 +1003,7 @@ const buildOptions = function(options) {
 	return built;
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
 let METADATA_SYMBOL$1;
 if (typeof Symbol !== "function") METADATA_SYMBOL$1 = "@@xmlMetadata";
 else METADATA_SYMBOL$1 = Symbol("XML Node Metadata");
@@ -1044,8 +1039,7 @@ var XmlNode = class {
 	}
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/xml-naming@0.3.0/node_modules/xml-naming/src/index.js
+// ../../../node_modules/.pnpm/xml-naming@0.3.0/node_modules/xml-naming/src/index.js
 /**
 * xml-naming
 * Validates XML Name productions as defined in the XML 1.0 and 1.1 specifications.
@@ -1086,8 +1080,7 @@ const getRegexes = (xmlVersion = "1.0", asciiOnly = false) => {
 */
 const qName = (str, { xmlVersion = "1.0", asciiOnly = false } = {}) => getRegexes(xmlVersion, asciiOnly).qName.test(str);
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 var DocTypeReader = class {
 	constructor(options, xmlVersion) {
 		this.suppressValidationErr = !options;
@@ -1323,8 +1316,7 @@ function validateEntityName(name, xmlVersion) {
 	else throw new Error(`Invalid entity name ${name}`);
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
+// ../../../node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
 /**
 * Flat lookup table: maps Unicode code point → ASCII digit (0-9).
 * Only decimal digit characters (Unicode category Nd) are included.
@@ -1410,8 +1402,7 @@ for (const zero of SCRIPT_ZEROS) for (let d = 0; d < 10; d++) {
 	else HIGH_MAP.set(cp, d);
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/anynum.js
+// ../../../node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/anynum.js
 const CHAR_0 = 48;
 const CHAR_9 = 57;
 const CHAR_MINUS = 45;
@@ -1508,8 +1499,7 @@ function anynum(str) {
 	return chars.join("");
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/strnum@2.5.1/node_modules/strnum/strnum.js
+// ../../../node_modules/.pnpm/strnum@2.5.1/node_modules/strnum/strnum.js
 const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
 const binRegex = /^0b[01]+$/;
 const octRegex = /^0o[0-7]+$/;
@@ -1630,8 +1620,7 @@ function handleInfinity(str, num, options) {
 	}
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/ignoreAttributes.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/ignoreAttributes.js
 function getIgnoreAttributesFn(ignoreAttributes) {
 	if (typeof ignoreAttributes === "function") return ignoreAttributes;
 	if (Array.isArray(ignoreAttributes)) return (attrName) => {
@@ -1643,8 +1632,7 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 	return () => false;
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Expression.js
+// ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Expression.js
 /**
 * Expression - Parses and stores a tag pattern expression
 * 
@@ -1799,8 +1787,7 @@ var Expression = class {
 	}
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/ExpressionSet.js
+// ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/ExpressionSet.js
 /**
 * ExpressionSet - An indexed collection of Expressions for efficient bulk matching
 *
@@ -1985,8 +1972,7 @@ var ExpressionSet = class {
 	}
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Matcher.js
+// ../../../node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Matcher.js
 /**
 * MatcherView - A lightweight read-only view over a Matcher's internal state.
 *
@@ -2491,8 +2477,7 @@ var Matcher = class {
 	}
 };
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/html.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/html.js
 /**
 * HTML context patterns.
 *
@@ -2590,8 +2575,7 @@ const HTML_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/xml.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/xml.js
 /**
 * XML context patterns.
 *
@@ -2666,8 +2650,7 @@ const XML_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/svg.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/svg.js
 /**
 * SVG context patterns.
 *
@@ -2745,8 +2728,7 @@ const SVG_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql.js
 /**
 * SQL context patterns — high-precision rules only.
 *
@@ -2838,8 +2820,7 @@ const SQL_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/shell.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/shell.js
 /**
 * SHELL context patterns.
 *
@@ -2940,8 +2921,7 @@ const SHELL_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/redos.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/redos.js
 /**
 * REDOS context patterns.
 *
@@ -2996,8 +2976,7 @@ const REDOS_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/nosql.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/nosql.js
 const sep = "[\"'\\s]*:";
 const NOSQL_PATTERNS = [
 	{
@@ -3082,8 +3061,7 @@ const NOSQL_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/log.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/log.js
 /**
 * LOG context patterns.
 *
@@ -3167,8 +3145,7 @@ const LOG_PATTERNS = [
 	}
 ];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql-strict.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql-strict.js
 /**
 * SQL-STRICT context patterns.
 *
@@ -3210,8 +3187,7 @@ const SQL_STRICT_EXTRA = [
 ];
 const SQL_STRICT_PATTERNS = [...SQL_PATTERNS, ...SQL_STRICT_EXTRA];
 
-//#endregion
-//#region ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/index.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/index.js
 HTML_PATTERNS.label = "HTML";
 XML_PATTERNS.label = "XML";
 SVG_PATTERNS.label = "SVG";
@@ -3329,8 +3305,7 @@ function isUnsafe(value, context) {
 	return false;
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 /**
 * Extract raw attributes (without prefix) from prefixed attribute map
 * @param {object} prefixedAttrs - Attributes with prefix from buildAttributesMap
@@ -3854,8 +3829,7 @@ function sanitizeName(name, options) {
 	return name;
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/node2json.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/node2json.js
 const METADATA_SYMBOL = XmlNode.getMetaDataSymbol();
 /**
 * Helper function to strip attribute prefix from attribute map
@@ -3958,8 +3932,7 @@ function isLeafTag(obj, options) {
 	return false;
 }
 
-//#endregion
-//#region ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
 var XMLParser = class {
 	constructor(options) {
 		this.externalEntities = {};
@@ -4011,16 +3984,14 @@ var XMLParser = class {
 	}
 };
 
-//#endregion
-//#region src/model.ts
+// src/model.ts
 function getPublishedAtTimestamp(item) {
 	const timestamp = Date.parse(item.publishedAt);
 	if (!Number.isFinite(timestamp)) throw new Error(`The Atom entry ${item.id} has an invalid published date.`);
 	return timestamp;
 }
 
-//#endregion
-//#region src/atom.ts
+// src/atom.ts
 const parser = new XMLParser({
 	attributeNamePrefix: "",
 	cdataPropName: "#cdata",
@@ -4082,22 +4053,19 @@ function compareFeedItems(left, right) {
 	return left.id.localeCompare(right.id);
 }
 
-//#endregion
-//#region src/entrypoint.ts
+// src/entrypoint.ts
 function isMainModule(moduleUrl) {
 	return process.argv[1] !== void 0 && moduleUrl === pathToFileURL(process.argv[1]).href;
 }
 
-//#endregion
-//#region src/monitor.ts
+// src/monitor.ts
 function findPendingItems(items, state) {
 	if (state.latestPublishedAt === null) return items;
 	const latestTimestamp = Date.parse(state.latestPublishedAt);
 	return items.filter((item) => getPublishedAtTimestamp(item) > latestTimestamp);
 }
 
-//#endregion
-//#region src/state.ts
+// src/state.ts
 function createFeedState(latestPublishedAt = null) {
 	return {
 		latestPublishedAt: latestPublishedAt === null ? null : new Date(Date.parse(latestPublishedAt)).toISOString(),
@@ -4145,8 +4113,7 @@ function asRecord(value) {
 	return value;
 }
 
-//#endregion
-//#region src/workflow.ts
+// src/workflow.ts
 function getInput(name, defaultValue) {
 	const value = process.env[`INPUT_${name.toUpperCase().replaceAll(" ", "_")}`];
 	if (value === void 0 || value.trim() === "") {
@@ -4168,8 +4135,7 @@ async function setOutput(name, value) {
 	await appendFile(outputPath, `${name}<<${delimiter}\n${value}\n${delimiter}\n`);
 }
 
-//#endregion
-//#region src/index.ts
+// src/index.ts
 async function main() {
 	const feedUrl = getInput("feed-url");
 	const stateFile = resolve(getInput("state-file", ".feed-watcher/state.json"));
@@ -4203,6 +4169,5 @@ function isMissingFileError(error) {
 }
 if (isMainModule(import.meta.url)) main();
 
-//#endregion
 export { readStateOrExplainInitialization, setNewItemsOutput };
 //# sourceMappingURL=index.js.map
