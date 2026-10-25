@@ -1,6 +1,6 @@
 import { createHmac, randomBytes } from "node:crypto";
 
-//#region src/index.ts
+// src/index.ts
 var DeliveryResponseError = class extends Error {};
 async function publishTextToX(text, options) {
 	const postText = text.trim();
@@ -71,6 +71,5 @@ async function main() {
 }
 if (import.meta.url === `file://${process.argv[1]}`) main();
 
-//#endregion
 export { getInput, publishTextToX };
 //# sourceMappingURL=index.js.map

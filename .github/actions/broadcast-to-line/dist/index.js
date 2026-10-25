@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-//#region src/index.ts
+// src/index.ts
 async function broadcastTextToLine(text, options) {
 	const messageText = text.trim();
 	if (messageText === "") throw new Error("LINE text must not be empty.");
@@ -36,6 +36,5 @@ async function main() {
 }
 if (import.meta.url === `file://${process.argv[1]}`) main();
 
-//#endregion
 export { broadcastTextToLine, createLineRetryKey, getInput };
 //# sourceMappingURL=index.js.map

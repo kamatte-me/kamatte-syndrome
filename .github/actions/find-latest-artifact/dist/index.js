@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { appendFile } from "node:fs/promises";
 
-//#region ../../../packages/github-actions-artifacts/src/index.ts
+// ../../../packages/github-actions-artifacts/src/index.ts
 function selectArtifactsByPrefix(artifacts, prefix) {
 	return [...artifacts].filter((artifact) => !artifact.expired && artifact.name.startsWith(prefix)).sort((left, right) => right.created_at.localeCompare(left.created_at));
 }
@@ -26,8 +26,7 @@ async function listRepositoryArtifacts(fetchFn, options) {
 	return artifacts;
 }
 
-//#endregion
-//#region src/index.ts
+// src/index.ts
 async function findLatestArtifact(fetchFn, options) {
 	const artifacts = await listRepositoryArtifacts(fetchFn, options);
 	return selectArtifactsByPrefix(artifacts, options.prefix)[0];
@@ -59,6 +58,5 @@ async function setOutput(name, value) {
 }
 if (import.meta.url === `file://${process.argv[1]}`) main();
 
-//#endregion
 export { findLatestArtifact, getInput };
 //# sourceMappingURL=index.js.map
