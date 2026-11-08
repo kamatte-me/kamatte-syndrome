@@ -2477,7 +2477,7 @@ var Matcher = class {
 	}
 };
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/html.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/html.js
 /**
 * HTML context patterns.
 *
@@ -2575,7 +2575,7 @@ const HTML_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/xml.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/xml.js
 /**
 * XML context patterns.
 *
@@ -2650,7 +2650,7 @@ const XML_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/svg.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/svg.js
 /**
 * SVG context patterns.
 *
@@ -2728,7 +2728,7 @@ const SVG_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/sql.js
 /**
 * SQL context patterns — high-precision rules only.
 *
@@ -2820,7 +2820,7 @@ const SQL_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/shell.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/shell.js
 /**
 * SHELL context patterns.
 *
@@ -2921,7 +2921,7 @@ const SHELL_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/redos.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/redos.js
 /**
 * REDOS context patterns.
 *
@@ -2976,7 +2976,7 @@ const REDOS_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/nosql.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/nosql.js
 const sep = "[\"'\\s]*:";
 const NOSQL_PATTERNS = [
 	{
@@ -3061,7 +3061,7 @@ const NOSQL_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/log.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/log.js
 /**
 * LOG context patterns.
 *
@@ -3145,7 +3145,7 @@ const LOG_PATTERNS = [
 	}
 ];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/sql-strict.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/sql-strict.js
 /**
 * SQL-STRICT context patterns.
 *
@@ -3187,10 +3187,57 @@ const SQL_STRICT_EXTRA = [
 ];
 const SQL_STRICT_PATTERNS = [...SQL_PATTERNS, ...SQL_STRICT_EXTRA];
 
-// ../../../node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/index.js
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/util/decode-entities.js
+/**
+* Decode the HTML character references that matter for markup-context
+* detection.
+*
+* Browsers decode character references in attribute values before they
+* interpret a URL, so `javascript&#58;alert(1)` in an href is the
+* `javascript:` scheme. The HTML/XML/SVG rules match literal characters, so
+* without this step such payloads slip through.
+*
+* Deliberately NOT a full entity decoder. It decodes only:
+*   - decimal refs  &#58;  &#058;  &#00000058;  &#58   (any leading zeros,
+*                   trailing ; optional — browsers accept both)
+*   - hex refs      &#x3a; &#X3A; &#x0000003a; &#x3a   (same)
+*   - named refs    &colon;  &Tab;  &NewLine;
+*       Named refs are CASE-SENSITIVE and REQUIRE the trailing ';', exactly
+*       like a browser (so `&COLON;` and `&colon` are not decoded).
+*       &Tab; / &NewLine; matter because the URL parser strips tab/newline,
+*       so `java&Tab;script:` is still a javascript: URL.
+*
+* It does NOT decode &amp; (single pass only), so double-encoded text such as
+* "&amp;lt;script&amp;gt;" stays literal — a browser renders that as text.
+*
+* All quantifiers are bounded; no ReDoS risk.
+*
+* @param {string} input
+* @returns {string}
+*/
+const NAMED = Object.freeze({
+	colon: ":",
+	Tab: "	",
+	NewLine: "\n"
+});
+const ENTITY_RE = /&(?:#[xX]0*([0-9a-fA-F]{1,6});?|#0*([0-9]{1,7});?|([a-zA-Z][a-zA-Z0-9]{1,15});)/g;
+function decodeEntities(input) {
+	if (input.indexOf("&") === -1) return input;
+	return input.replace(ENTITY_RE, (match, hex, dec, name) => {
+		if (name !== void 0) return Object.prototype.hasOwnProperty.call(NAMED, name) ? NAMED[name] : match;
+		const cp = hex !== void 0 ? parseInt(hex, 16) : parseInt(dec, 10);
+		if (!Number.isFinite(cp) || cp > 1114111) return match;
+		return String.fromCodePoint(cp);
+	});
+}
+
+// ../../../node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/index.js
 HTML_PATTERNS.label = "HTML";
 XML_PATTERNS.label = "XML";
 SVG_PATTERNS.label = "SVG";
+HTML_PATTERNS.decodeEntities = true;
+XML_PATTERNS.decodeEntities = true;
+SVG_PATTERNS.decodeEntities = true;
 SQL_PATTERNS.label = "SQL";
 SQL_STRICT_PATTERNS.label = "SQL-STRICT";
 SHELL_PATTERNS.label = "SHELL";
@@ -3262,6 +3309,19 @@ function normalise(context) {
 	};
 }
 /**
+* For markup contexts, return an entity-decoded copy of `value` to test
+* alongside the raw input, or null when there is nothing extra to test.
+*
+* @param {string} value
+* @param {Rule[]} list
+* @returns {string|null}
+*/
+function decodedCopy(value, list) {
+	if (!list.decodeEntities) return null;
+	const decoded = decodeEntities(value);
+	return decoded === value ? null : decoded;
+}
+/**
 * Test value against a single PatternList. Returns the first MatchResult or null.
 *
 * @param {string} value
@@ -3270,7 +3330,8 @@ function normalise(context) {
 */
 function matchList(value, list) {
 	const label = list.label ?? "CUSTOM";
-	for (const rule of list) if (rule.pattern.test(value)) return {
+	const decoded = decodedCopy(value, list);
+	for (const rule of list) if (rule.pattern.test(value) || decoded !== null && rule.pattern.test(decoded)) return {
 		context: label,
 		id: rule.id,
 		description: rule.description,
