@@ -16,7 +16,7 @@
   "devDependencies": {
     "@kamatte-syndrome/tsconfig": "workspace:*",
     "@types/mdast": "catalog:",
-    "mdast-util-mdx-jsx": "3.2.0",
+    "mdast-util-mdx-jsx": "3.2.1",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }
