@@ -51,7 +51,7 @@
     "@vitejs/plugin-react": "6.1.2",
     "@vitejs/plugin-rsc": "0.5.39",
     "@webgpu/types": "0.1.74",
-    "autoprefixer": "10.6.1",
+    "autoprefixer": "10.6.2",
     "happy-dom": "catalog:",
     "msw": "3.0.3",
     "nitro": "3.0.260610-beta",
