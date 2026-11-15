@@ -948,7 +948,7 @@ function normalizeProcessEntities(value, htmlEntities) {
 		enabled: value,
 		maxEntitySize: 1e4,
 		maxExpansionDepth: 1e4,
-		maxTotalExpansions: Infinity,
+		maxTotalExpansions: 1e400,
 		maxExpandedLength: 1e5,
 		maxEntityCount: 1e3,
 		allowedTags: null,
@@ -959,7 +959,7 @@ function normalizeProcessEntities(value, htmlEntities) {
 		enabled: value.enabled !== false,
 		maxEntitySize: Math.max(1, value.maxEntitySize ?? 1e4),
 		maxExpansionDepth: Math.max(1, value.maxExpansionDepth ?? 1e4),
-		maxTotalExpansions: Math.max(1, value.maxTotalExpansions ?? Infinity),
+		maxTotalExpansions: Math.max(1, value.maxTotalExpansions ?? 1e400),
 		maxExpandedLength: Math.max(1, value.maxExpandedLength ?? 1e5),
 		maxEntityCount: Math.max(1, value.maxEntityCount ?? 1e3),
 		allowedTags: value.allowedTags ?? null,
@@ -1611,7 +1611,7 @@ function parse_int(numStr, base) {
 * @returns {string|number|null} based on infinity option
 */
 function handleInfinity(str, num, options) {
-	const isPositive = num === Infinity;
+	const isPositive = num === 1e400;
 	switch (options.infinity.toLowerCase()) {
 		case "null": return null;
 		case "infinity": return num;
