@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { randomUUID } from "node:crypto";
 import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/util.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/util.js
 const regexName = /* @__PURE__ */ new RegExp("^[:A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD][:A-Za-z_\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\-.\\d\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$");
 function getAllMatches(string, regex) {
 	const matches = [];
@@ -43,7 +43,7 @@ const criticalProperties = [
 	"prototype"
 ];
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/validator.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/validator.js
 const defaultOptions$1 = {
 	allowBooleanAttributes: false,
 	unpairedTags: []
@@ -226,9 +226,9 @@ function readAttributeStr(xmlData, i) {
 * and moving to the next starting position — one full backtrack per
 * position, which is quadratic in the length of the run.
 *
-* A single forward-only scan can never backtrack, so it can't be made slow
-* this way no matter how much whitespace the input contains — it's always
-* proportional to the length of the string, once.
+* The scan is forward-only: the cursor never moves backwards, so each
+* character is visited a constant number of times and the cost is linear
+* in the length of the string.
 *
 * Each returned token mirrors the shape the old regex match array had, so
 * the validation logic below (which reads token[1]..token[6]) didn't need
@@ -255,7 +255,7 @@ function scanAttributeTokens(attrStr) {
 		while (i < len && isWhiteSpace(attrStr[i])) i++;
 		if (i >= len) break;
 		if (attrStr[i] === "=") {
-			i = tokenStart + 1;
+			i++;
 			continue;
 		}
 		const leadingWs = attrStr.slice(tokenStart, i);
@@ -876,7 +876,7 @@ var EntityDecoder = class {
 	}
 };
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
 const defaultOnDangerousProperty = (name) => {
 	if (DANGEROUS_PROPERTY_NAMES.includes(name)) return "__" + name;
 	return name;
@@ -1003,7 +1003,7 @@ const buildOptions = function(options) {
 	return built;
 };
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
 let METADATA_SYMBOL$1;
 if (typeof Symbol !== "function") METADATA_SYMBOL$1 = "@@xmlMetadata";
 else METADATA_SYMBOL$1 = Symbol("XML Node Metadata");
@@ -1080,7 +1080,7 @@ const getRegexes = (xmlVersion = "1.0", asciiOnly = false) => {
 */
 const qName = (str, { xmlVersion = "1.0", asciiOnly = false } = {}) => getRegexes(xmlVersion, asciiOnly).qName.test(str);
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 var DocTypeReader = class {
 	constructor(options, xmlVersion) {
 		this.suppressValidationErr = !options;
@@ -1620,7 +1620,7 @@ function handleInfinity(str, num, options) {
 	}
 }
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/ignoreAttributes.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/ignoreAttributes.js
 function getIgnoreAttributesFn(ignoreAttributes) {
 	if (typeof ignoreAttributes === "function") return ignoreAttributes;
 	if (Array.isArray(ignoreAttributes)) return (attrName) => {
@@ -3366,7 +3366,7 @@ function isUnsafe(value, context) {
 	return false;
 }
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 /**
 * Extract raw attributes (without prefix) from prefixed attribute map
 * @param {object} prefixedAttrs - Attributes with prefix from buildAttributesMap
@@ -3486,7 +3486,10 @@ function resolveNameSpace(tagname) {
 	}
 	return tagname;
 }
-const attrsRegx = /* @__PURE__ */ new RegExp("([^\\s=]+)\\s*(=\\s*(['\"])([\\s\\S]*?)\\3)?", "gm");
+const attrsRegx = /([^\s=]+)\s*(=\s*(?:"([^"]*)"|'([^']*)'))?/gm;
+function attrValue(match) {
+	return match[3] !== void 0 ? match[3] : match[4];
+}
 function buildAttributesMap(attrStr, jPath, tagName, force = false) {
 	const options = this.options;
 	if (force === true || options.ignoreAttributes !== true && typeof attrStr === "string") {
@@ -3498,7 +3501,7 @@ function buildAttributesMap(attrStr, jPath, tagName, force = false) {
 		const rawAttrsForMatcher = {};
 		for (let i = 0; i < len; i++) {
 			const attrName = this.resolveNameSpace(matches[i][1]);
-			const oldVal = matches[i][4];
+			const oldVal = attrValue(matches[i]);
 			if (attrName.length && oldVal !== void 0) {
 				let val = oldVal;
 				if (options.trimValues) val = val.trim();
@@ -3518,7 +3521,7 @@ function buildAttributesMap(attrStr, jPath, tagName, force = false) {
 			if (attrName.length) {
 				if (options.transformAttributeName) aName = options.transformAttributeName(aName);
 				aName = sanitizeName(aName, options);
-				if (matches[i][4] !== void 0) {
+				if (attrValue(matches[i]) !== void 0) {
 					const oldVal = processedVals[i];
 					const newVal = options.attributeValueProcessor(attrName, oldVal, jPathStr);
 					if (newVal === null || newVal === void 0) attrs[aName] = oldVal;
@@ -3773,7 +3776,6 @@ function isItStopNode() {
 * @returns 
 */
 function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
-	let attrBoundary = 0;
 	const len = xmlData.length;
 	const closeCode0 = closingChar.charCodeAt(0);
 	const closeCode1 = closingChar.length > 1 ? closingChar.charCodeAt(1) : -1;
@@ -3781,10 +3783,10 @@ function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
 	let segmentStart = i;
 	for (let index = i; index < len; index++) {
 		const code = xmlData.charCodeAt(index);
-		if (attrBoundary) {
-			if (code === attrBoundary) attrBoundary = 0;
-		} else if (code === 34 || code === 39) attrBoundary = code;
-		else if (code === closeCode0) {
+		if (code === 34 || code === 39) {
+			index = xmlData.indexOf(xmlData[index], index + 1);
+			if (index === -1) return;
+		} else if (code === closeCode0) {
 			if (closeCode1 !== -1) {
 				if (xmlData.charCodeAt(index + 1) === closeCode1) {
 					result += xmlData.substring(segmentStart, index);
@@ -3800,7 +3802,7 @@ function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
 					index
 				};
 			}
-		} else if (code === 9 && !attrBoundary) {
+		} else if (code === 9) {
 			result += xmlData.substring(segmentStart, index) + " ";
 			segmentStart = index + 1;
 		}
@@ -3920,7 +3922,7 @@ function sanitizeName(name, options) {
 	return name;
 }
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/node2json.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/node2json.js
 const METADATA_SYMBOL = XmlNode.getMetaDataSymbol();
 /**
 * Helper function to strip attribute prefix from attribute map
@@ -4023,7 +4025,7 @@ function isLeafTag(obj, options) {
 	return false;
 }
 
-// ../../../node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
+// ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
 var XMLParser = class {
 	constructor(options) {
 		this.externalEntities = {};
