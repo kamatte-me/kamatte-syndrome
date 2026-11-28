@@ -1039,7 +1039,7 @@ var XmlNode = class {
 	}
 };
 
-// ../../../node_modules/.pnpm/xml-naming@0.3.0/node_modules/xml-naming/src/index.js
+// ../../../node_modules/.pnpm/xml-naming@0.3.1/node_modules/xml-naming/src/index.js
 /**
 * xml-naming
 * Validates XML Name productions as defined in the XML 1.0 and 1.1 specifications.
@@ -1053,6 +1053,7 @@ const nameStartChar10 = ":A-Za-z_À-ÖØ-öø-˿Ͱ-ͽͿ-҆҈-῿‌-‍⁰-↏�
 const nameChar10 = nameStartChar10 + "\\-\\.\\d" + "·" + "̀-ͯ" + "‿-⁀";
 const nameStartChar11 = ":A-Za-z_À-˿Ͱ-ͽͿ-҆҈-῿‌-‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�𐀀-󯿿";
 const nameChar11 = nameStartChar11 + "\\-\\.\\d" + "·" + "̀-ͯ" + "҇" + "‿-⁀";
+const XML_WS = "\\x20\\x09\\x0D\\x0A";
 const buildRegexes = (startChar, char, flags = "") => {
 	const ncNamePat = `[${startChar.replace(":", "")}][${char.replace(":", "")}]*`;
 	return {
@@ -1060,7 +1061,7 @@ const buildRegexes = (startChar, char, flags = "") => {
 		ncName: new RegExp(`^${ncNamePat}$`, flags),
 		qName: new RegExp(`^${ncNamePat}(?::${ncNamePat})?$`, flags),
 		nmToken: new RegExp(`^[${char}]+$`, flags),
-		nmTokens: new RegExp(`^[${char}]+(?:\\s+[${char}]+)*$`, flags)
+		nmTokens: new RegExp(`^[${char}]+(?:[${XML_WS}]+[${char}]+)*$`, flags)
 	};
 };
 const regexes10 = buildRegexes(nameStartChar10, nameChar10);
@@ -1078,7 +1079,7 @@ const getRegexes = (xmlVersion = "1.0", asciiOnly = false) => {
 * @param {{ xmlVersion?: '1.0'|'1.1', asciiOnly?: boolean }} [opts]
 *   asciiOnly: skip unicode-aware matching, ASCII names only (default false).
 */
-const qName = (str, { xmlVersion = "1.0", asciiOnly = false } = {}) => getRegexes(xmlVersion, asciiOnly).qName.test(str);
+const qName = (str, { xmlVersion = "1.0", asciiOnly = false } = {}) => typeof str === "string" && getRegexes(xmlVersion, asciiOnly).qName.test(str);
 
 // ../../../node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 var DocTypeReader = class {
